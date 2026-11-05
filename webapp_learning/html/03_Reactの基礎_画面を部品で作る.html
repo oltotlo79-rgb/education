@@ -314,6 +314,8 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>&lt;span&gt;</code></strong>（React）: 文の一部分を囲む、特別な意味の無いタグ（JSX の中でも HTML と同じ）。状態の札など、一部だけ見た目を変える時に使います。</li>
+<li><strong><code>({ 名前 })</code></strong>（JavaScript・TypeScript）: 関数の引数の <code>({ status, label })</code> は、渡されたオブジェクトから、<code>status</code> と <code>label</code> を取り出して受け取る書き方です。React の部品（コンポーネント）が props を受け取る時によく使います。</li>
+<li><strong><code>className=</code></strong>（React）: JSX では、HTML の <code>class</code> の代わりに <code>className</code> と書きます（<code>class</code> は JavaScript の言葉として使われているからです）。<code>className="btn-primary"</code>。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -400,6 +402,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>useState()</code></strong>（React）: React の部品に「覚えておく値」（state）を作る関数（フック）。<code>const [keyword, setKeyword] = useState("");</code> で、今の値 <code>keyword</code> と、値を変える関数 <code>setKeyword</code> ができます。<code>setKeyword(新しい値)</code> を呼ぶと、画面が描き直されます。</li>
+<li><strong><code>const [ … ] =</code></strong>（JavaScript・TypeScript）: <code>const [a, b] = 並び;</code> は、並びの 0 番目を <code>a</code> に、1 番目を <code>b</code> に取り出す書き方です（分割代入）。React の <code>const [count, setCount] = useState(0);</code> もこれで、「今の値」と「値を変える関数」の 2 つを受け取っています。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -490,6 +493,14 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;th&gt;</code></strong>（React）: 表の見出しのますのタグ。</li>
 <li><strong><code>&lt;tbody&gt;</code></strong>（React）: 表の中身の行をまとめるタグ。</li>
 <li><strong><code>&lt;td&gt;</code></strong>（React）: 表の中身のますのタグ。<code>&lt;td&gt;{r.id}&lt;/td&gt;</code> のように、<code>{ }</code> の中に値を書けます。</li>
+<li><strong><code>/…/</code></strong>（JavaScript・TypeScript）: JavaScript の <code>/…/</code> は、正規表現（文字の形を表す書き方）をそのまま書く形です。<code>/\d+/</code> は「数字が 1 つ以上」。<code>.match(/…/)</code>・<code>.test(…)</code>・<code>.split(/…/)</code> などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>() =&gt;</code></strong>（JavaScript・TypeScript）: <code>() =&gt; { … }</code> は、名前の無い関数（アロー関数）の書き方です。<code>( )</code> の中が引数、<code>=&gt;</code> の右が中身です。<code>(e) =&gt; setKeyword(e.target.value)</code> のように、1 つの式なら <code>{ }</code> を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。</li>
+<li><strong><code>.target</code></strong>（JavaScript・TypeScript）: イベント（<code>e</code>）の <code>.target</code> は、イベントが起きたタグ（入力欄など）です。<code>e.target.value</code> で、入力欄に今入っている文字を読めます。</li>
+<li><strong><code>placeholder=</code></strong>（React）: <code>placeholder="件名でしぼる"</code> は、入力欄が空の時に、うすく見せる例の文字です。</li>
+<li><strong><code>value=</code></strong>（React）: 入力欄の <code>value={keyword}</code> は、「入力欄に表示する値は、この変数」という結び付けです。<code>onChange</code> で変数を変えると、表示も変わります（制御されたコンポーネント）。</li>
+<li><strong><code>onChange=</code></strong>（React）: <code>onChange={(e) =&gt; setKeyword(e.target.value)}</code> は、入力欄の中身が変わるたびに動く処理です。</li>
+<li><strong><code>key=</code></strong>（React）: <code>key={r.id}</code> は、並びを <code>map</code> で表示する時に、1 つずつに付ける「見分けの印」です。React は、これで、どれが増えた・消えた・動いたかを見分けます。並びの中で重ならない値（番号など）にします。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -647,6 +658,17 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;select&gt;</code></strong>（React）: 選ぶ欄のタグ。React では <code>value</code> と <code>onChange</code> で、選んだ値を state と結び付けます。</li>
 <li><strong><code>&lt;option&gt;</code></strong>（React）: <code>&lt;select&gt;</code> の中の選べる 1 つ（JSX でも HTML と同じ）。React では、選ばれている物を <code>&lt;select value={…}&gt;</code> の方で決めます。</li>
 <li><strong><code>&lt;button&gt;</code></strong>（React）: ボタンのタグ。<code>onClick={() =&gt; …}</code> で、押した時にすることを決めます。</li>
+<li><strong><code>Set</code></strong>（JavaScript・TypeScript）: <code>new Set(並び)</code> は、同じ値を 1 つにまとめた集まりを作ります。<code>new Set(chosen).size !== chosen.length</code> は、「重なりを消すと数が減る」＝「同じ人が 2 回選ばれている」の確かめです。</li>
+<li><strong><code>.size</code></strong>（JavaScript・TypeScript）: <code>Set</code> や <code>Map</code> の <code>.size</code> は、中の数です。</li>
+<li><strong><code>{条件 &amp;&amp; …}</code></strong>（React）: JSX の <code>{errors.length &gt; 0 &amp;&amp; &lt;ul&gt;…&lt;/ul&gt;}</code> は、「条件が合う時だけ、右を表示する」書き方です。合わない時は、何も表示しません。</li>
+<li><strong><code>onSubmit=</code></strong>（React）: <code>&lt;form onSubmit={handleSubmit}&gt;</code> は、フォームを送った時（送信ボタン・Enter）に動く処理です。中で <code>e.preventDefault()</code> を呼ぶと、ページの読み直しを止められます。</li>
+<li><strong><code>role=</code></strong>（React）: <code>role="alert"</code> は、その部分の役わりを、読み上げソフトに伝える印です。<code>alert</code> は、すぐ知らせる大事なお知らせです。</li>
+<li><strong><code>htmlFor=</code></strong>（React）: JSX では、<code>&lt;label&gt;</code> の <code>for</code> の代わりに <code>htmlFor</code> と書きます。</li>
+<li><strong><code>id=</code></strong>（React）: <code>id</code> は、ページの中で 1 つだけの名前です。<code>&lt;label htmlFor="title"&gt;</code> と組で使います。</li>
+<li><strong><code>rows=</code></strong>（React）: <code>&lt;textarea rows={3}&gt;</code> の <code>rows</code> は、見える行の数です。</li>
+<li><strong><code>type=</code></strong>（React）: <code>&lt;input type="date"&gt;</code>・<code>&lt;button type="submit"&gt;</code> の <code>type</code> は、入力欄やボタンの種類です。</li>
+<li><strong><code>aria-*=</code></strong>（React）: <code>aria-label="…"</code> のように <code>aria-</code> で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。</li>
+<li><strong><code>disabled=</code></strong>（React）: <code>disabled={sending}</code> は、<code>sending</code> が true の間、ボタンを押せなくします（2 回送るのを防ぎます）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -798,6 +820,18 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;svg&gt;</code></strong>（React）: 図（線や四角）を描くタグ。中に <code>&lt;rect&gt;</code>（四角）・<code>&lt;line&gt;</code>（線）などを並べます。拡大しても線がぼやけません。</li>
 <li><strong><code>&lt;h2&gt;</code></strong>（React）: 2 番目の大きさの見出しのタグ。</li>
 <li><strong><code>&lt;pre&gt;</code></strong>（React）: 中の文字を、空白や改行もそのまま表示するタグ。JSON を見やすく表示する時に使います。</li>
+<li><strong><code>Math</code></strong>（JavaScript・TypeScript）: <code>Math</code> は、計算の関数が集まった物です。<code>Math.round(3.6)</code> は四捨五入で <code>4</code>、<code>Math.max(1, 5)</code> は大きい方の <code>5</code> です。</li>
+<li><strong><code>.currentTarget</code></strong>（JavaScript・TypeScript）: イベントの <code>.currentTarget</code> は、イベントを受け取る処理（<code>onPointerDown</code> など）を付けたタグそのものです（<code>.target</code> は、中の、実際に押された物のことがあります）。</li>
+<li><strong><code>.clientX</code></strong>（JavaScript・TypeScript）: マウスやペンのイベントの <code>.clientX</code>・<code>.clientY</code> は、画面の左上からの位置（ピクセル）です。</li>
+<li><strong><code>.clientY</code></strong>（JavaScript・TypeScript）: <code>.clientY</code> は、画面の上からの位置（ピクセル）です。</li>
+<li><strong><code>viewBox=</code></strong>（React）: <code>&lt;svg viewBox="0 0 400 300"&gt;</code> の <code>viewBox</code> は、SVG の絵の中の座標の範囲です。</li>
+<li><strong><code>onPointerDown=</code></strong>（React）: <code>onPointerDown</code> は、マウス・ペン・指で押した瞬間に動く処理です。<code>onPointerUp</code> は離した時です。</li>
+<li><strong><code>onPointerUp=</code></strong>（React）: <code>onPointerUp</code> は、マウス・ペン・指を離した時に動く処理です。</li>
+<li><strong><code>x=</code></strong>（React）: SVG の <code>x</code>・<code>y</code> は、図形を置く位置です。</li>
+<li><strong><code>y=</code></strong>（React）: SVG の <code>y</code> は、図形を置く縦の位置です。</li>
+<li><strong><code>width=</code></strong>（React）: <code>width</code> は、幅です。</li>
+<li><strong><code>height=</code></strong>（React）: <code>height</code> は、高さです。</li>
+<li><strong><code>onClick=</code></strong>（React）: <code>onClick={() =&gt; …}</code> は、押された時に動く処理です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -885,8 +919,9 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;header&gt;</code></strong>（React）: ページの上の帯を表すタグ（JSX の中でも HTML と同じ）。</li>
 <li><strong><code>&lt;strong&gt;</code></strong>（React）: 「大事」という意味のタグ（太字）。</li>
 <li><strong><code>&lt;nav&gt;</code></strong>（React）: メニューを表すタグ。</li>
-<li><strong><code>&lt;a&gt;</code></strong>（HTML）: リンクのタグ。<code>&lt;a href="../URL"&gt;文字&lt;/a&gt;</code> で、押すとその URL へ移ります。</li>
 <li><strong><code>&lt;main&gt;</code></strong>（HTML）: ページの「いちばん大事な中身」を表すタグ。ヘッダーやメニューを除いた本体を囲みます。</li>
+<li><strong><code>&lt;&gt;…&lt;/&gt;</code></strong>（React）: JSX の <code>&lt;&gt; … &lt;/&gt;</code> は、名前の無い入れ物（フラグメント）です。部品は 1 つの物を返す決まりなので、いくつも並べたい時に、余分なタグを増やさずに包みます。</li>
+<li><strong><code>href=</code></strong>（React）: <code>&lt;a href="#/"&gt;</code> の <code>href</code> は、リンク先です。<code>#/</code> で始まる場所は、ページを読み直さずに、画面の中だけで切りかえるのに使っています。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -912,6 +947,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.getElementById()</code></strong>（TypeScript）: <code>document.getElementById("root")</code> は、<code>id="root"</code> のタグを探して返す関数。React は、ここに画面を描きます。最後の <code>!</code> は「必ずある」と TypeScript に伝える印です。</li>
 <li><strong><code>.render()</code></strong>（React）: <code>createRoot(要素).render(&lt;App /&gt;)</code> は、React の部品（ここでは <code>&lt;App /&gt;</code>）を、その要素の中に表示します。React の画面は、ここから始まります。</li>
 <li><strong><code>&lt;StrictMode&gt;</code></strong>（React）: 開発の時だけ、まちがいを見つけやすくするために、部品をわざと 2 回描いてみるなどの確かめをする、React の部品。本番の動きには影響しません。</li>
+<li><strong><code>値!</code></strong>（TypeScript）: <code>document.getElementById("root")!</code> の最後の <code>!</code> は、「これは null ではないと、自分が保証する」と TypeScript に伝える印です（非 null 表明）。本当に null だと、動く時にエラーになるので、確かな時だけ使います。</li>
+<li><strong><code>createRoot()</code></strong>（React）: <code>createRoot(document.getElementById("root")!)</code> は、HTML の <code>&lt;div id="root"&gt;</code> の中に、React の画面を描く場所を作る関数です。<code>.render(&lt;App /&gt;)</code> で、いちばん外側の部品を描きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

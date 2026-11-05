@@ -74,6 +74,10 @@ CREATE DATABASE webapp_dev OWNER webapp_dev_app ENCODING 'UTF8' TEMPLATE templat
 > - **`OWNER`**（SQL）: `OWNER ユーザー` で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。
 > - **`ENCODING`**（SQL）: `ENCODING 'UTF8'` で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。
 > - **`TEMPLATE`**（SQL）: `TEMPLATE template0` で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。
+> - **`'文字'`**（SQL）: SQL では、文字の値を `'…'`（シングルクォート）で囲みます（`'2026-11-05'`・`'山田'`）。`"…"`（ダブルクォート）は表や列の名前に使う物なので、文字の値には使いません。中に `'` を入れる時は `''` と 2 つ書きます。
+> - **`--`**（SQL）: SQL では、`--` から行の終わりまでがコメントです。
+> - **`\password`**（psql）: psql の `\password 名前` は、その利用者（ロール）のパスワードを変える命令です。打つとパスワードを 2 回聞かれ、画面には表示されません（コマンドの履歴にも残りません）。
+> - **`;`**（SQL）: SQL の `;` は、1 つの命令（文）の終わりの印です。psql では、`;` を打つまで命令が送られません（`;` を忘れると、続きを待つ `practice-#` の表示になります）。
 
 <!-- /first-use -->
 
@@ -181,6 +185,25 @@ exit $code
 > - **`Remove-Item -ErrorAction`**（PowerShell）: `Remove-Item` で、エラーが起きた時の動きを決めるオプション。`-ErrorAction SilentlyContinue` は「無くてもエラーを出さずに次へ進む」。
 > - **`Pop-Location`**（PowerShell）: `Push-Location` で覚えたフォルダへ戻るコマンド。
 > - **`exit`**（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。`exit $code` は、manage.py の終了コードをそのまま返します。
+> - **`'…'`**（PowerShell）: `'…'`（シングルクォート）で囲んだ文字は、書いたとおりの文字で、中の `$` や `` ` `` は特別な意味になりません。正規表現（`'^\s*#'`）や、そのまま渡したい文字に使います。中に `'` を入れる時は `''` と 2 つ書きます。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`\s`**（正規表現）: 正規表現の `\s` は、「空白 1 つ」（スペース・タブ・改行など）を表します。`\s*` は「空白が 0 個以上」。
+> - **`*`**（正規表現）: 正規表現の `*` は、「すぐ前の物が、0 回以上くり返す」を表します。`\s*` は「空白が 0 個以上」、`.*` は「何でも、何文字でも」。
+> - **`^`**（正規表現）: 正規表現の `^` は、「行（文字）の頭」を表します。`^#` は「`#` で始まる」。
+> - **`"…$変数…"`**（PowerShell）: `"…"`（ダブルクォート）で囲んだ文字の中の `$名前` は、変数の中身に置きかわります。`"こんにちは、$name さん"` → `こんにちは、太郎 さん`。そのまま `$` を出したい時は、`'…'`（シングルクォート）で囲みます。
+> - **`$( … )`**（PowerShell）: `"…$($t.Port)…"` の `$( )` は、「中の式やコマンドの結果を、文字の中に入れる」書き方です。`"$x.Name"` のように書くと `$x` だけが置きかわってしまうので、`.` の付いた物や計算は `$( )` で囲みます。
+> - **`$true`**（PowerShell）: `$true` は「はい（真）」を表す値です。`-Recurse:$true` のように、スイッチに値を渡す時にも使います。反対は `$false` です。
+> - **`$名前`**（PowerShell）: `$os = …` のように `$` で始まる名前は「変数」（値に付けた名前）です。`=` の右の結果を覚えておき、あとで `$os` と書けば使えます。名前の大文字・小文字は区別しません。
+> - **`$ErrorActionPreference`**（PowerShell）: `$ErrorActionPreference = "Stop"` は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（`.exe` のコマンドの失敗は止まらないので、`$LASTEXITCODE` も調べます）。
+> - **`$PSScriptRoot`**（PowerShell）: `$PSScriptRoot` は、「今動いているスクリプト（`.ps1`）が置いてあるフォルダ」の場所が入った、特別な変数です。今いるフォルダがどこでも、スクリプトの隣のファイルを `Join-Path $PSScriptRoot "dev.env"` で見つけられます。
+> - **`$LASTEXITCODE`**（PowerShell）: `$LASTEXITCODE` は、最後に動かしたプログラム（`cargo`・`git`・`psql` など、`.exe` のコマンド）の「終了コード」が入る、特別な変数です。`0` なら成功、`0` 以外なら失敗です。`if ($LASTEXITCODE -ne 0) { … }` で、失敗した時の処理を書けます。
+> - **`[Parameter()]`**（PowerShell）: `param( )` の中の `[Parameter(ValueFromRemainingArguments = $true)]` は、引数の受け取り方を決める印です。この指定なら、名前を付けずに渡した残りの引数を、全部その変数に受け取ります。`[Parameter(Mandatory)]` なら「必ず渡す」です。
+> - **`[string[]]`**（PowerShell）: `[string[]]` は「文字列の並び（配列）」という型です。
+> - **`&`**（PowerShell）: `& "C:\Program Files\…\vswhere.exe"` の先頭の `&` は、「この文字（や変数）が指すプログラムを動かす」という印です。場所に空白が入っていて `"` で囲んだ時や、変数に入れた場所を動かす時に必要です。
+> - **`@( … )`**（PowerShell）: `@( … )` は「並び（配列）」を作る書き方です。`@("a", "b")` で 2 つの並び、`@()` で空の並び。中のコマンドの結果が 1 つでも、必ず並びとして扱えます。
+> - **`@名前`**（PowerShell）: `コマンド @CurlArgs` のように、`$` の代わりに `@` を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。
+> - **`param( … )`**（PowerShell）: スクリプトの最初に書く `param([string]$Base = "http://…")` は、「このスクリプトが受け取る引数」の決まりです。`.\smoke.ps1 -Base http://…` のように、名前を付けて渡せます。`=` の右は、渡さなかった時の値です。
+> - **`+=`**（PowerShell）: `$x += 1` は `$x = $x + 1` の短い形です。並びに `$names += "山田"` と書くと、後ろに 1 つ足した並びになります。
 
 <!-- /first-use -->
 
@@ -379,6 +402,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 > - **`.match()`**（Python）: `re.match(パターン, 文字列)` は、文字列の**先頭から**正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ `None`）。
 > - **`str()`**（Python）: 値を文字列に変える関数。`str(8080)` は `"8080"`。数と文字列は `==` で比べても等しくならないので、そろえる時に使います。
 > - **`int()`**（Python）: 文字列などを整数にする関数。`int("25")` は 25。数でない文字だと `ValueError` です。
+> - **`\.`**（正規表現）: 正規表現の `\.` のように、記号の前に `\` を付けると、その記号を特別な意味にせず、文字そのものとして表します。`\.` は `.`、`\/` は `/` です。
+> - **`[…]`**（正規表現）: 正規表現の `[ ]` は、「中に書いた文字の、どれか 1 つ」を表します。`[0-9a-zA-Z_-]` は「数字・英字・`_`・`-` のどれか」、`[.-]` は「`.` か `-`」。`-` で範囲を書けます。
+> - **`+`**（正規表現）: 正規表現の `+` は、「すぐ前の物が、1 回以上くり返す」を表します。`\d+` は「数字が 1 つ以上」。
+> - **`.`**（正規表現）: 正規表現の `.` は、「どんな 1 文字でも」を表します。`.` という文字そのものを表したい時は、`\.` と書きます。
+> - **`^`**（正規表現）: 正規表現の `^` は、「行（文字）の頭」を表します。`^#` は「`#` で始まる」。
+> - **`$`**（正規表現）: 正規表現の `$` は、「行（文字）の終わり」を表します。`\d+$` は「数字で終わる」。`^…$` と両方書くと、「全体がこの形か」を調べられます。
+> - **`型 | None`**（Python）: `str | None` は、「文字か、None（何も無い）」という型です。
+> - **`__file__`**（Python）: `__file__` は、今のファイルの場所が入った、特別な変数です。`Path(__file__).resolve().parent` で、このファイルが置いてあるフォルダが分かります。
+> - **`RuntimeError`**（Python）: `RuntimeError` は、ほかの種類に当てはまらない、動いている時のエラーです。`raise RuntimeError("…")` で、説明を付けて止めます。
+> - **`.parent`**（Python）: `Path` の `.parent` は、1 つ上のフォルダです。`.parent.parent` で 2 つ上です。
+> - **`.environ`**（Python）: `os.environ` は、環境変数の入れ物（辞書のような物）です。`os.environ.get("名前", 無い時の値)` で読みます。
 
 <!-- /first-use -->
 
@@ -463,6 +497,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 > - **`.update()`**（Python）: 辞書に、別の辞書の中身をまとめて入れる（上書きする）メソッド。Django の問い合わせの `.update(項目=値)` は、合う行をまとめて書きかえる、別の意味です。
 > - **`.EmailField()`**（Django）: メールアドレスの列を表すモデルの項目。入力がメールアドレスの形かを確かめてくれます。
 > - **`.BooleanField()`**（Django）: はい・いいえ（`True`・`False`）の列を表すモデルの項目。
+> - **`**kwargs`**（Python）: `def create_user(self, email, password=None, **extra):` の `**` は、「名前付きの引数を、いくつでも受け取り、辞書にまとめる」書き方です。
+> - **`**辞書`**（Python）: `create_user(email, **extra)` のように、呼ぶ時に辞書の前に `**` を付けると、辞書の中身を、名前付きの引数としてばらして渡します。
+> - **`AbstractBaseUser`**（Django）: Django の `AbstractBaseUser` は、ログインする人（ユーザー）のモデルを、自分で作る時の元になる型です。パスワードの保存や確かめの仕組みが入っています。
+> - **`BaseUserManager`**（Django）: Django の `BaseUserManager` は、ユーザーを作る係（`create_user`・`create_superuser`）を書く時の、元になる型です。
+> - **`PermissionsMixin`**（Django）: Django の `PermissionsMixin` は、ユーザーのモデルに、管理者かどうか・グループ・権限の項目を足す部品です。
 
 <!-- /first-use -->
 
@@ -887,6 +926,9 @@ def notify_due_soon(r: Request) -> None:
 > - **`render_to_string()`**（Django）: テンプレート（文の型）に値を入れて、文字列（メールの本文など）を作る関数。
 > - **`send_mail()`**（Django）: メールを送る関数。`send_mail(件名, 本文, 差出人, [宛先])`。送り先のサーバー（SMTP）は設定で決めます（09 巻）。
 > - **`@transaction`**（Django）: `@transaction.atomic` を関数の上に付けると、その関数の中のデータベースの変更が「全部成功か、全部取り消し」になります。
+> - **`\n`**（文字列の中の特別な書き方）: 文字列の中の `\n` は「改行」を表す書き方です。`\`（バックスラッシュ。日本語のキーボードやフォントでは `¥` に見えることがあります）と `n` の 2 文字で、改行 1 つを表します。`"1行目\n2行目"` を表示すると 2 行になります。
+> - **`{日時:%Y-%m-%d}`**（Python）: f 文字列で日時の値に `{now:%m/%d %H:%M}` のように `%` の書式を書くと、その形の文字になります（`11/05 09:03`）。`%Y`（年）・`%m`（月）・`%d`（日）・`%H`（時）・`%M`（分）。
+> - **`+=`**（Python）: `total += n` は `total = total + n` の短い形です。
 
 <!-- /first-use -->
 
@@ -1038,6 +1080,8 @@ def approve_page(request, token: str):
 >
 > - **`require_http_methods()`**（Django）: 画面（ビュー）が受け付ける HTTP のメソッドを決める物。`@require_http_methods(["GET", "POST"])` 以外で来たら、405 で断ります。
 > - **`@require_http_methods`**（Django）: `@require_http_methods(["GET", "POST"])` を画面の関数の上に付けて、使えるメソッドを絞ります。
+> - **`.method`**（Django）: Django の `request.method` は、要求の種類（`"GET"`・`"POST"`）です。
+> - **`.POST`**（Django）: Django の `request.POST` は、フォームで送られた値の入れ物です。`request.POST.get("decision")` で読みます。
 
 <!-- /first-use -->
 
@@ -1091,6 +1135,18 @@ def approve_page(request, token: str):
 > - **`<h2>`**（HTML）: 2 番目の大きさの見出しのタグ。
 > - **`<svg>`**（HTML）: 図（線や四角）を描くタグ。中に `<rect>`（四角）・`<line>`（線）などを並べます。
 > - **`<rect>`**（HTML）: SVG の中で、四角を描くタグ。`x`・`y`（左上の位置）・`width`・`height`（大きさ）で決めます。
+> - **`viewBox=`**（HTML）: `<svg viewBox="0 0 400 300">` の `viewBox` は、SVG の絵の中の座標の範囲です（左上の x・y と、幅・高さ）。表示の大きさが変わっても、絵はこの範囲に合わせて伸び縮みします。
+> - **`x=`**（HTML）: SVG の `x`・`y` は、図形（`<rect>`・`<text>`）を置く位置です。左上が 0 で、右と下へ行くほど大きくなります。
+> - **`y=`**（HTML）: SVG の `y` は、図形を置く縦の位置です（上が 0）。
+> - **`width=`**（HTML）: `width` は、幅です（SVG の `<rect>` なら四角の幅）。
+> - **`height=`**（HTML）: `height` は、高さです。
+> - **`{% extends %}`**（Django）: Django のテンプレートの `{% extends "workflow/base.html" %}` は、「土台のテンプレートを受け継ぎ、`{% block %}` の所だけを書きかえる」という宣言です。ページの共通の外枠を、1 か所にまとめられます。
+> - **`{% block %}`**（Django）: `{% block title %} … {% endblock %}` は、土台のテンプレートの中で「ここは、ページごとに書きかえる」場所です。受け継いだテンプレートで、同じ名前の `block` を書くと、その中身に置きかわります。
+> - **`{% endblock %}`**（Django）: `{% endblock %}` は、`{% block %}` の終わりの印です。
+> - **`{% if %}`**（Django）: Django のテンプレートの `{% if 条件 %} … {% endif %}` は、条件が合う時だけ、間の HTML を表示します。`{% else %}` も書けます。
+> - **`{% endif %}`**（Django）: `{% endif %}` は、`{% if %}` の終わりの印です。
+> - **`{% csrf_token %}`**（Django）: `{% csrf_token %}` は、フォームの中に書く、CSRF（ほかのサイトからのなりすましの送信）を防ぐための、見えない合言葉の欄を作る命令です。Django は、POST のフォームにこれが無いと、403 で断ります。
+> - **`{{ 値|linebreaksbr }}`**（Django）: `{{ r.detail|linebreaksbr }}` の `|linebreaksbr` は、文の中の改行を、HTML の改行（`<br>`）にして表示するフィルターです。
 
 <!-- /first-use -->
 
@@ -1205,6 +1261,12 @@ def validate_upload(name: str, head: bytes, size: int) -> None:
 > - **`.startswith()`**（Python）: 文字列（バイト）が、その中身で始まっていれば `True` を返すメソッド。ファイルの先頭の数バイトで、本当の種類を確かめる時に使います。
 > - **`isinstance()`**（Python）: 値が、その型かどうかを調べる関数。`isinstance(value, dict)` は「辞書か」。
 > - **`any()`**（Python）: 並びの中に、1 つでも `True` があれば `True` を返す関数。
+> - **`b"…"`**（Python）: `b"…"` は、文字ではなく「バイトの並び」（`bytes`）を作る書き方です。`b"\xff\xd8\xff"` は、JPEG の画像のファイルの、最初の 3 バイトです。
+> - **`\x…`**（文字列の中の特別な書き方）: `\xff` のように `\x` の後ろに 16 進数を 2 けた書くと、その番号の 1 バイト（文字列なら 1 文字）を表します。`b"\xef\xbb\xbf"` は、UTF-8 のファイルの先頭に付くことがある、BOM という 3 バイトです。
+> - **`\r`**（文字列の中の特別な書き方）: 文字列の中の `\r` は「行の頭に戻る」（CR）という、目に見えない文字です。Windows のファイルや HTTP の通信では、行の終わりを `\r\n`（CR と LF の 2 文字）で表します。
+> - **`[-1]`**（Python）: `items[-1]` は、最後の 1 つです。`[-2]` は後ろから 2 つ目です。
+> - **`A if 条件 else B`**（Python）: `a if 条件 else b` は、「条件が合えば a、合わなければ b」になる式です。`ext = name.rsplit(".", 1)[-1] if "." in name else ""`。
+> - **`ValidationError`**（Django）: Django の `ValidationError` は、入力の値が決まりに合わない時に起こすエラーです。フォームや DRF が受け止めて、利用者にメッセージを返します。
 
 <!-- /first-use -->
 
@@ -1375,6 +1437,16 @@ def me(request):
 > - **`dict()`**（Python）: 辞書を作る関数。`dict(Request.Status.choices)` は、「値 → 画面の名前」の辞書になります。
 > - **`@api_view`**（Django REST framework）: `@api_view(["GET", "POST"])` を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。
 > - **`@parser_classes`**（Django REST framework）: `@parser_classes([MultiPartParser])` を付けて、ファイル付きのフォーム（multipart）を受け付けるようにします。
+> - **`DjangoValidationError`**（Django）: `from django.core.exceptions import ValidationError as DjangoValidationError` で、Django の `ValidationError` を、DRF の同じ名前の物と取り違えないように、別の名前で読み込んでいます。
+> - **`Q`**（Django）: Django の `Q(…)` は、ORM の条件を、`|`（または）・`&`（かつ）・`~`（ではない）で組み合わせる道具です。`filter(Q(requester=u) | Q(approver=u))`。
+> - **`FileResponse`**（Django）: Django の `FileResponse(開いたファイル)` は、ファイルを、少しずつ送る答えです。添付ファイルのダウンロードに使います。
+> - **`PermissionDenied`**（Django REST framework）: DRF の `PermissionDenied` は、「権限が無い」というエラーです。起こすと、403 の答えになります。
+> - **`MultiPartParser`**（Django REST framework）: DRF の `MultiPartParser` は、ファイルの付いたフォーム（`multipart/form-data`）を読む係です。
+> - **`Response`**（Django REST framework）: DRF の `Response(data)` は、API の答えです。辞書や並びを、JSON にして返します。
+> - **`.query_params`**（Django REST framework）: DRF の `request.query_params` は、URL の `?mine=1` の部分の値です。
+> - **`.data`**（Django REST framework）: DRF の `serializer.data` は、モデルの値を、JSON にできる形（辞書）にした物です。`request.data` は、届いた中身（JSON やフォーム）です。
+> - **`.validated_data`**（Django REST framework）: DRF の `serializer.validated_data` は、確かめ（`is_valid()`）を通った後の、安全な値です。
+> - **`.FILES`**（Django）: Django の `request.FILES` は、送られたファイルの入れ物です。`request.FILES.get("file")` で 1 つ取り出します。
 
 <!-- /first-use -->
 
@@ -1404,6 +1476,14 @@ urlpatterns = [
     path("api/stats/", api.stats),
 ]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<int:名前>`**（Django）: Django の URL の `"api/requests/<int:pk>/"` の `<int:pk>` は、「ここに来た数を、`pk` という名前で、ビューの関数に渡す」書き方です。`int` は数だけ受け付けます（`str`・`slug`・`uuid` もあります）。
+
+<!-- /first-use -->
 
 | URL | 方法 | 何をする | だれが |
 |---|---|---|---|
@@ -1516,6 +1596,10 @@ class Command(BaseCommand):
 > - **`.update_or_create()`**（Django）: 条件に合う行があれば書きかえ、無ければ作るメソッド。`(物, 新しく作ったか)` の組が返ります。
 > - **`.SUCCESS()`**（Django の道具）: `self.style.SUCCESS(文)` は、manage.py のコマンドの出力を、成功の色（緑）にする関数です。
 > - **`validate_email()`**（Django）: メールアドレスの形として正しいかを調べ、正しくなければ `ValidationError` を起こす関数。
+> - **`BaseCommand`**（Django）: Django の `BaseCommand` は、`python manage.py 名前` で動かす、自分のコマンドを作る時の元になる型です。`handle(self, …)` に処理を書きます。
+> - **`CommandError`**（Django）: Django の `CommandError` は、自分のコマンドの中で、失敗を知らせるエラーです。
+> - **`.stderr`**（Django）: `self.stderr.write(…)` は、エラーの文を出します。
+> - **`.stdout`**（Django）: Django のコマンド（`BaseCommand`）の `self.stdout.write(…)` は、画面に文を出します（`print` の代わり）。
 
 <!-- /first-use -->
 

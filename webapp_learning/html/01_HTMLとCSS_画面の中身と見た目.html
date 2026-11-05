@@ -341,6 +341,10 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;body&gt;</code></strong>（HTML）: 画面に出す中身を全部入れるタグ。見出し・段落・フォームなどは、全部この中に書きます。</li>
 <li><strong><code>&lt;h1&gt;</code></strong>（HTML）: いちばん大きな見出し（heading 1）のタグ。数が大きいほど小さな見出しになります（<code>&lt;h2&gt;</code>〜<code>&lt;h6&gt;</code>）。<code>&lt;h1&gt;</code> は、1 ページに 1 つにします。</li>
 <li><strong><code>&lt;p&gt;</code></strong>（HTML）: 段落（paragraph）のタグ。ひとまとまりの文を囲みます。段落と段落の間には、自動で少し間が空きます。</li>
+<li><strong><code>&lt;!DOCTYPE html&gt;</code></strong>（HTML）: <code>&lt;!DOCTYPE html&gt;</code> は、「これは今の HTML（HTML5）で書いたページです」という、ページのいちばん最初に書く宣言です。大文字でも小文字（<code>&lt;!doctype html&gt;</code>）でもかまいません。</li>
+<li><strong><code>lang=</code></strong>（HTML）: <code>&lt;html lang="ja"&gt;</code> の <code>lang</code> は、ページの言葉（<code>ja</code> は日本語、<code>en</code> は英語）です。読み上げソフトの読み方や、ブラウザーの翻訳の判断に使われます。</li>
+<li><strong><code>charset=</code></strong>（HTML）: <code>&lt;meta charset="utf-8"&gt;</code> の <code>charset</code> は、ページの文字の符号（エンコーディング）です。いつも <code>utf-8</code> にしておくと、日本語が文字化けしません。</li>
+<li><strong><code>class=</code></strong>（HTML）: <code>class</code> は、タグに付ける「グループの名前」です。CSS で <code>.note { … }</code> と書くと、<code>class="note"</code> の物全部に、同じ見た目が付きます。<code>class="note done"</code> のように、空白で区切っていくつも付けられます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -550,6 +554,24 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;select&gt;</code></strong>（HTML）: 選ぶ欄（プルダウン）のタグ。中に <code>&lt;option value="値"&gt;表示する文字&lt;/option&gt;</code> を並べます。<code>selected</code> を付けた物が、最初に選ばれます。</li>
 <li><strong><code>&lt;option&gt;</code></strong>（HTML）: <code>&lt;select&gt;</code>（選ぶ欄）の中の、選べる 1 つ。<code>&lt;option value="new"&gt;新しく作る&lt;/option&gt;</code> の <code>value</code> が送られる値、間の文字が画面に出る文字です。<code>selected</code> で最初に選ばれます。</li>
 <li><strong><code>&lt;button&gt;</code></strong>（HTML）: ボタンのタグ。フォームの中の <code>&lt;button type="submit"&gt;送る&lt;/button&gt;</code> は、押すとフォームを送ります。<code>type="button"</code> にすると、送らない、ふつうのボタンになります。</li>
+<li><strong><code>name=</code></strong>（HTML）: <code>name</code> は、入力欄（<code>&lt;input&gt;</code>・<code>&lt;textarea&gt;</code>・<code>&lt;select&gt;</code>）の名前です。フォームを送ると、<code>title=牛乳</code> のように、この名前と入れた値の組がサーバーに届きます。<code>&lt;meta name="viewport" …&gt;</code> の <code>name</code> は、設定の種類の名前です。</li>
+<li><strong><code>content=</code></strong>（HTML）: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> の <code>content</code> は、その設定の値です。この <code>viewport</code> の設定は、「スマホでも、画面の幅に合わせて表示する」という意味で、いつも書いておきます。</li>
+<li><strong><code>rel=</code></strong>（HTML）: <code>&lt;link rel="stylesheet" …&gt;</code> の <code>rel</code> は、つなぐファイルが「何か」です。<code>stylesheet</code> は CSS のファイル、<code>icon</code> はタブの小さな絵です。</li>
+<li><strong><code>href=</code></strong>（HTML）: <code>href</code> は、リンク先や、読み込むファイルの場所（URL）です。<code>&lt;a href="/notes"&gt;一覧&lt;/a&gt;</code> は、押すと <code>/notes</code> へ移るリンクです。</li>
+<li><strong><code>action=</code></strong>（HTML）: <code>&lt;form action="/notes"&gt;</code> の <code>action</code> は、フォームの送り先の URL です。書かなければ、今のページに送ります。</li>
+<li><strong><code>method=</code></strong>（HTML）: <code>&lt;form method="post"&gt;</code> の <code>method</code> は、フォームの送り方です。<code>post</code> はデータを送って何かを変える時（登録・削除）、<code>get</code> は検索のように、URL の <code>?q=…</code> に入れて送る時に使います。</li>
+<li><strong><code>enctype=</code></strong>（HTML）: <code>&lt;form enctype="multipart/form-data"&gt;</code> の <code>enctype</code> は、フォームの送り方の形です。ファイルを送るフォームでは、必ずこの <code>multipart/form-data</code> にします。</li>
+<li><strong><code>for=</code></strong>（HTML）: <code>&lt;label for="q"&gt;</code> の <code>for</code> は、この説明の文字が、どの入力欄（<code>id="q"</code>）のための物かを結び付けます。文字を押しても、その欄に入力できるようになり、読み上げソフトも欄の名前を読めます。</li>
+<li><strong><code>id=</code></strong>（HTML）: <code>id</code> は、ページの中で 1 つだけの名前です。<code>&lt;label for="title"&gt;</code> で欄と結び付けたり、<code>#title</code> のリンクでその場所へ飛んだりできます。同じ <code>id</code> を 2 つ付けてはいけません。</li>
+<li><strong><code>type=</code></strong>（HTML）: <code>&lt;input type="…"&gt;</code> の <code>type</code> は、入力欄の種類です。<code>text</code>（文字）・<code>email</code>・<code>password</code>（伏せ字）・<code>number</code>・<code>date</code>・<code>checkbox</code>（チェック）・<code>file</code>（ファイル）・<code>search</code> などがあります。<code>&lt;button type="submit"&gt;</code> は、押すとフォームを送るボタンです。</li>
+<li><strong><code>maxlength=</code></strong>（HTML）: <code>maxlength="100"</code> は、入力できる文字の数の上限です。それより長くは打てません（サーバー側でも、必ず確かめます）。</li>
+<li><strong><code>required</code></strong>（HTML）: <code>required</code> は、「この欄は必ず入れる」という印です。値は書かず、名前だけで ON になります。空のまま送ろうとすると、ブラウザーが止めます。</li>
+<li><strong><code>placeholder=</code></strong>（HTML）: <code>placeholder</code> は、入力欄が空の時に、うすく見せる例の文字です。入力の説明の代わりにはならないので、<code>&lt;label&gt;</code> も付けます。</li>
+<li><strong><code>rows=</code></strong>（HTML）: <code>&lt;textarea rows="6"&gt;</code> の <code>rows</code> は、見える行の数です。</li>
+<li><strong><code>accept=</code></strong>（HTML）: <code>&lt;input type="file" accept=".jpg,.png,.pdf"&gt;</code> の <code>accept</code> は、選べるファイルの種類です。ファイルを選ぶ画面で、ほかの種類が見えにくくなります（ブラウザーの手助けなので、サーバー側でも必ず確かめます）。</li>
+<li><strong><code>multiple</code></strong>（HTML）: <code>&lt;input type="file" multiple&gt;</code> の <code>multiple</code> は、ファイルを一度にいくつも選べるようにする印です。</li>
+<li><strong><code>aria-*=</code></strong>（HTML）: <code>aria-label="…"</code>・<code>aria-current="page"</code> のように <code>aria-</code> で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。<code>aria-label</code> は名前、<code>aria-current="page"</code> は「今開いているページ」、<code>aria-invalid="true"</code> は「入力に間違いがある」です。</li>
+<li><strong><code>value=</code></strong>（HTML）: <code>value</code> は、入力欄の最初の値や、選び肢（<code>&lt;option&gt;</code>）を選んだ時に送られる値です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -758,6 +780,10 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>navy:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--navy</code>：濃紺。文字や線の色）。<code>:root { --navy: #1e3a5f; }</code> のように、名前の頭を <code>--</code> にして決め、<code>color: var(--navy);</code> のように使います。色を 1 か所で決めておくと、あとで変える時に 1 か所直すだけで済みます。</li>
 <li><strong><code>blue:</code></strong>（CSS）: この資料の CSS で決めた色の変数（<code>--blue</code>：青。ボタンやリンクの色）。<code>var(--blue)</code> で使います。</li>
 <li><strong><code>color:</code></strong>（CSS）: 文字の色を決める項目。<code>color: var(--navy);</code> や <code>color: #eb5757;</code> のように書きます。</li>
+<li><strong><code>:root</code></strong>（CSS）: CSS の <code>:root</code> は、ページ全体（いちばん外側の <code>&lt;html&gt;</code>）を選ぶ書き方です。ページのどこからでも使う色などの変数（<code>--color-text</code>）を、ここに書きます。</li>
+<li><strong><code>--名前</code></strong>（CSS）: CSS の <code>--color-text: #0f172a;</code> のように <code>--</code> で始まる名前は、自分で決める変数（カスタムプロパティ）です。<code>color: var(--color-text);</code> で使います。色を 1 か所で決めておけば、変える時も 1 か所で済みます。</li>
+<li><strong><code>#rrggbb</code></strong>（CSS）: CSS の <code>#0f172a</code> のような <code>#</code> と 6 けた（または 3 けた）の 16 進数は、色の書き方です。2 けたずつ、赤・緑・青の強さ（00〜ff）を表します。<code>#ffffff</code> は白、<code>#000000</code> は黒です。</li>
+<li><strong><code>var()</code></strong>（CSS）: CSS の <code>var(--color-text)</code> は、<code>--</code> で始まる変数の値を使う書き方です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -830,6 +856,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>display:</code></strong>（CSS）: 箱の並べ方を決める項目。<code>display: flex;</code> は「中身を横一列に並べる」、<code>display: grid;</code> は「ます目に並べる」、<code>display: none;</code> は「表示しない」です。</li>
 <li><strong><code>align-items:</code></strong>（CSS）: <code>display: flex</code> の中身を、上下（横に並べた時の縦）のどこにそろえるかを決める項目。<code>center</code> で真ん中にそろえます。</li>
 <li><strong><code>justify-content:</code></strong>（CSS）: <code>display: flex</code> の中身を、並ぶ向きにどう配るかを決める項目。<code>space-between</code> は「両端に寄せて、間を均等に空ける」。</li>
+<li><strong><code>/* */</code></strong>（CSS）: CSS では、<code>/*</code> から <code>*/</code> までがコメントです。</li>
+<li><strong><code>.クラス名</code></strong>（CSS）: CSS の <code>.note { … }</code> のように <code>.</code> で始まる名前は、「<code>class="note"</code> の付いたタグ全部」を選ぶ書き方（クラスセレクター）です。<code>{ }</code> の中の見た目が、その全部に付きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -849,6 +877,8 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>grid-template-columns:</code></strong>（CSS）: <code>display: grid</code> の、列の幅を決める項目。<code>160px 1fr</code> は「1 列目は 160px、2 列目は残り全部」。<code>fr</code> は「残りを分ける割合」です。</li>
 <li><strong><code>gap:</code></strong>（CSS）: <code>flex</code> や <code>grid</code> の中身どうしの間の幅を決める項目。<code>gap: 12px 16px;</code> は「行の間 12px、列の間 16px」。</li>
+<li><strong><code>数px</code></strong>（CSS）: CSS の <code>16px</code> の <code>px</code> は、画面の点（ピクセル）の数で表す大きさの単位です。</li>
+<li><strong><code>数fr</code></strong>（CSS）: CSS のグリッドの <code>1fr</code> は、「残りの場所を分ける割合」の単位です。<code>grid-template-columns: 1fr 2fr;</code> なら、残りを 1 対 2 で分けた 2 列になります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -874,6 +904,9 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>margin:</code></strong>（CSS）: 箱の外側の余白を決める項目。<code>margin: 12px;</code> は上下左右に 12px。2 つ書くと「上下 左右」、4 つ書くと「上 右 下 左」の順です。</li>
 <li><strong><code>padding:</code></strong>（CSS）: 箱の内側の余白（枠と中身の間）を決める項目。書き方は <code>margin</code> と同じです。</li>
 <li><strong><code>flex-direction:</code></strong>（CSS）: <code>display: flex</code> の中身を並べる向きを決める項目。<code>row</code> は横（最初の値）、<code>column</code> は縦に並べます。</li>
+<li><strong><code>@media</code></strong>（CSS）: CSS の <code>@media (max-width: 640px) { … }</code> は、「画面の幅が 640px 以下の時だけ」の見た目を書く所です（メディアクエリ）。スマホでは 1 列にする、などに使います。</li>
+<li><strong><code>(max-width)</code></strong>（CSS）: <code>@media</code> の <code>(max-width: 640px)</code> は、「画面の幅が 640px 以下」という条件です。<code>(min-width: …)</code> なら「以上」、<code>(prefers-color-scheme: dark)</code> なら「暗い色の設定の時」です。</li>
+<li><strong><code>minmax()</code></strong>（CSS）: CSS の <code>minmax(0, 1fr)</code> は、グリッドの列の幅を「いちばん小さくて 0、いちばん大きくて残りの 1 つ分」の範囲で決める書き方です。中身が長くても、列がはみ出さなくなります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

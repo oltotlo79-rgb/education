@@ -1365,6 +1365,16 @@ warning: `async_lab` (bin &quot;e01_unused_future&quot;) generated 1 warning
 <div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">clippy</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">e01_unused_future</span> <span class="p">--</span> <span class="n">-D</span> <span class="n">warnings</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo clippy --bin</code></strong>（cargo のコマンド）: <code>cargo clippy --bin 名前</code> は、<code>src\bin</code> の中の 1 つだけを調べます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Checking async_lab v0.1.0 (...\async_lab)
 error: unused implementer of `std::future::Future` that must be used
  --&gt; src\bin\e01_unused_future.rs:8:5
@@ -1450,6 +1460,7 @@ error: could not compile `async_lab` (bin &quot;e01_unused_future&quot;) due to 
 <ul>
 <li><strong><code>params!</code></strong>（データベース）: <code>libsql::params![a, b]</code> は、SQL の <code>?1</code>・<code>?2</code> の場所に入れる値を並べるマクロ。値は SQL の文字列につながず、必ずこの形で渡します（SQL インジェクションを防ぐ。第7巻）。</li>
 <li><strong><code>.connect()</code></strong>（データベース）: libSQL の <code>Database</code> から、SQL を送るための接続（<code>Connection</code>）を取るメソッド。<code>let conn = db.connect()?;</code>。</li>
+<li><strong><code>?1</code></strong>（SQL）: SQL の <code>?1</code>・<code>?2</code> は、「ここに 1 番目・2 番目の値を入れる」という、あとから値を渡す場所（プレースホルダー）です。値は SQL の文字とは別に渡すので、入力に <code>'</code> などが入っていても、SQL の命令として読まれません（SQL インジェクションを防ぎます）。入力の値を、SQL の文字に直接つないではいけません。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5296,6 +5307,16 @@ warning: `async_lab` (bin &quot;e05_guard_no_spawn&quot;) generated 1 warning
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[tokio::main(flavor)]</code></strong>（非同期）: <code>#[tokio::main(flavor = "current_thread")]</code> は、非同期の仕事を回す係（tokio）を、スレッド 1 本だけで動かす指定です。何も書かなければ、CPU の数に合わせて何本も使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>このプログラムは終わらないので、Git Bash の <code>timeout 5</code>（5 秒たったら止める）を付けて実行しました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-164"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>A: 鍵を取りに行きます
 A: 鍵を取りました
@@ -5411,6 +5432,7 @@ B: 終わりました（2）
 <li><strong><code>Argon2::default()</code></strong>（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（<code>argon2</code> の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。</li>
 <li><strong><code>LazyLock</code></strong>（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。<code>static DUMMY: LazyLock&lt;String&gt; = LazyLock::new(|| { … });</code> のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。</li>
 <li><strong><code>Argon2</code></strong>（認証）: パスワードをハッシュにする方法の 1 つ（Argon2）を使うための型。<code>Argon2::default()</code> で、おすすめの設定のものを作ります。わざと時間とメモリを使うので、総当たりで破られにくくなります。</li>
+<li><strong><code>b"…"</code></strong>（文字列）: <code>b"…"</code> は、文字列ではなく「バイトの並び」（<code>&amp;[u8; N]</code>）を作る書き方です。中には英数字と記号（ASCII）だけを書けます。通信やファイルの中身を、バイトのまま扱う時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6202,6 +6224,8 @@ error: could not compile `async_lab` (bin &quot;e06_elapsed_question&quot;) due 
 <li><strong><code>tokio::signal::unix::signal()</code></strong>（非同期）: Linux などで、OS からの合図（シグナル）を受け取る関数。<code>SignalKind::terminate()</code>（「終わって」の合図）を受け取って、サーバーを片づけてから終わる時に使います（Fly.io などで動かす時。第12巻）。</li>
 <li><strong><code>tokio::signal::unix::SignalKind::terminate()</code></strong>（非同期）: Linux などの「終わって」（SIGTERM）の合図の種類。Fly.io などがサーバーを止める時に送ってきます。</li>
 <li><strong><code>SignalKind</code></strong>（非同期）: 受け取る OS の合図（シグナル）の種類。<code>SignalKind::terminate()</code> は「終わって」（SIGTERM）の合図です。</li>
+<li><strong><code>#[cfg(unix)]</code></strong>（モジュール）: <code>#[cfg(unix)]</code> は、「Linux や macOS（Unix の仲間）向けに翻訳する時だけ、この部分を使う」という印です。<code>#[cfg(windows)]</code> なら Windows の時だけです。OS ごとにちがう処理を書き分けます。</li>
+<li><strong><code>#[cfg(not)]</code></strong>（モジュール）: <code>#[cfg(not(unix))]</code> の <code>not( )</code> は、「その条件に合わない時だけ」という意味です。<code>#[cfg(not(test))]</code> なら、テストでない時だけ。<code>all( )</code>（全部に合う）・<code>any( )</code>（どれかに合う）もあります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6246,6 +6270,8 @@ error: could not compile `async_lab` (bin &quot;e06_elapsed_question&quot;) due 
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.execute_batch()</code></strong>（データベース）: <code>;</code> で区切った、いくつもの SQL の文を、まとめて実行するメソッド（libsql）。表を作る時などに使います。値を入れる文には使わず、<code>execute</code> と <code>params!</code> を使います。</li>
+<li><strong><code>PRAGMA</code></strong>（SQL）: SQLite（libSQL）の設定を見る・変える命令。<code>PRAGMA foreign_keys = ON;</code> は、表どうしのつながりの決まり（外部キー）を確かめるようにします。</li>
+<li><strong><code>ON</code></strong>（SQL）: SQL の「〜の時」「〜で」。<code>ON DELETE CASCADE</code> は「消された時は」、<code>JOIN … ON a.id = b.user_id</code> は「この条件で横につなぐ」、<code>CREATE INDEX … ON 表 (列)</code> は「この表の、この列に」という意味です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7388,6 +7414,18 @@ Err(&quot;読めません: 指定されたファイルが見つかりません�
 <span class="n">tokio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;=1.54.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
 <span class="n">tokio-util</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;=0.7.20&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;rt&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>argon2</code></strong>（Rust の部品（クレート））: <code>argon2</code> は、パスワードを、元に戻せない形（ハッシュ）にして保存するための部品です。わざと時間とメモリを使う計算なので、盗まれても、元のパスワードを当てにくくなります。</li>
+<li><strong><code>reqwest</code></strong>（Rust の部品（クレート））: <code>reqwest</code> は、Rust のプログラムから、ほかのサーバーへ HTTP の要求を送る（ブラウザーのように Web にアクセスする）部品です。</li>
+<li><strong><code>tokio-util</code></strong>（Rust の部品（クレート））: <code>tokio-util</code> は、<code>tokio</code> で使う便利な道具（止める合図の <code>CancellationToken</code> など）を集めた部品です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>外の API の代わりに、自分のパソコンの中（127.0.0.1）だけで動く、とても小さな HTTP サーバーを用意します。インターネットには出ないので、どの例も安全に何度でも試せます。次の2つのファイルを作ってください。中身をくわしく理解する必要はありません（本物の Web サーバーは、第6巻で Topcoat を使って作ります）。「決まった答えを返すだけの、練習用の相手」として使います。</p>
 <p><code>src/lib.rs</code>（<code>src/bin/</code> のプログラムから <code>async_lab::mini_server</code> で使えるようにする）:</p>
@@ -8657,6 +8695,8 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <li><strong><code>debug!</code></strong>（ログ）: ログを「細かい調査用」の重さで書くマクロ。ふだんは表示されず、ログの細かさを <code>debug</code> にした時だけ出ます。</li>
 <li><strong><code>.init()</code></strong>（ログ）: ログの設定を、プログラム全体で使えるように登録するメソッド。<code>tracing_subscriber::fmt().init();</code> を <code>main</code> の最初に 1 回だけ呼びます。</li>
 <li><strong><code>std::time::Duration::from_millis()</code></strong>（時間）: ミリ秒から、時間の長さを作る関数（<code>Duration::from_millis</code> と同じ）。</li>
+<li><strong><code>%値</code></strong>（ログ）: <code>tracing</code> のログの欄に <code>user_id = %id</code> と書くと、値を人が読む形（Display。<code>{}</code> と同じ）で記録します。<code>%id</code> のように、欄の名前を省くと、変数の名前がそのまま欄の名前になります。</li>
+<li><strong><code>?値</code></strong>（ログ）: <code>tracing</code> のログの欄に <code>error = ?e</code> と書くと、値をプログラマー向けの形（Debug。<code>{:?}</code> と同じ）で記録します。<code>Display</code> の無い型も記録できます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -8755,6 +8795,8 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <li><strong><code>.with_timer()</code></strong>（ログ）: ログの行の頭に付ける時刻の形を決めるメソッド。</li>
 <li><strong><code>FmtSpan</code></strong>（ログ）: スパンのどの時点でログを出すかの指定。<code>FmtSpan::CLOSE</code> は「終わった時」です。</li>
 <li><strong><code>CLOSE</code></strong>（ログ）: <code>FmtSpan::CLOSE</code> は、「スパン（ひとまとまりの処理）が終わった時に、かかった時間と一緒にログを出す」指定です。</li>
+<li><strong><code>#[instrument(skip)]</code></strong>（ログ）: <code>#[instrument(skip(db, password))]</code> の <code>skip</code> は、「この引数は、ログに記録しない」という指定です。パスワードのような秘密の値や、大きくて記録できない値（データベースの接続など）を外します。</li>
+<li><strong><code>#[instrument(fields)]</code></strong>（ログ）: <code>#[instrument(fields(user_id = %id))]</code> の <code>fields</code> は、スパン（処理の区間の記録）に、引数のほかに記録したい欄を足す指定です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -9055,6 +9097,7 @@ error: could not compile `async_lab` (bin &quot;e08_forgot_await&quot;) due to 1
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.is_multiple_of()</code></strong>（数）: その数が、指定した数で割り切れるなら <code>true</code> を返すメソッド。<code>n.is_multiple_of(5)</code> は「5 の倍数か」。</li>
+<li><strong><code>{{ }}</code></strong>（画面に出す）: <code>println!</code> や <code>format!</code> の文字の中で、<code>{</code> や <code>}</code> そのものを出したい時は、<code>{{</code>・<code>}}</code> と 2 つ重ねて書きます。<code>format!("{{\"id\": {id}}}")</code> は <code>{"id": 7}</code> になります。1 つだけ書くと、値を入れる場所の印だと思われます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -9842,6 +9885,9 @@ help: consider annotating `Password` with `#[derive(Debug)]`
 <li><strong><code>THEN</code></strong>（SQL）: <code>CASE WHEN 条件 THEN 値</code> の「その時は、この値」の部分。</li>
 <li><strong><code>ELSE</code></strong>（SQL）: <code>CASE</code> の中の「どの条件にも合わなかった時は、この値」の部分。</li>
 <li><strong><code>END</code></strong>（SQL）: <code>CASE … END</code> の終わりの印。</li>
+<li><strong><code>COUNT</code></strong>（SQL）: 行の数を数える SQL の関数。<code>SELECT COUNT(*) FROM notes</code> は、ノートの数です。<code>COUNT(列)</code> は、その列が NULL でない行の数です。</li>
+<li><strong><code>GROUP</code></strong>（SQL）: <code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</li>
+<li><strong><code>COUNT(*)</code></strong>（SQL）: SQL の <code>COUNT(*)</code> は、行の数を数えます。<code>GROUP BY status</code> と組み合わせると、<code>status</code> ごとの件数になります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -10702,6 +10748,16 @@ dead: #3 broken@example.com（5 回）最後のエラー: 宛先のサーバー�
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>IGNORE</code></strong>（SQL）: SQLite の <code>INSERT OR IGNORE</code> は、「入れようとした行が、決まり（<code>UNIQUE</code> など）に合わなかったら、エラーにせず、何もしない」という書き方です。同じ物を 2 回入れても、1 回分だけ残ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-319"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① worker A
   hanako@example.com にメールを送りました（1 回目）

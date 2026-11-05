@@ -1096,6 +1096,14 @@ warning: `async_lab` (bin "e01_unused_future") generated 1 warning
 cargo clippy --bin e01_unused_future -- -D warnings
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo clippy --bin`**（cargo のコマンド）: `cargo clippy --bin 名前` は、`src\bin` の中の 1 つだけを調べます。
+
+<!-- /first-use -->
+
 ```text
     Checking async_lab v0.1.0 (...\async_lab)
 error: unused implementer of `std::future::Future` that must be used
@@ -1182,6 +1190,7 @@ async fn find(&self, owner: UserId, id: NoteId) -> Result<Option<Note>, RepoErro
 >
 > - **`params!`**（データベース）: `libsql::params![a, b]` は、SQL の `?1`・`?2` の場所に入れる値を並べるマクロ。値は SQL の文字列につながず、必ずこの形で渡します（SQL インジェクションを防ぐ。第7巻）。
 > - **`.connect()`**（データベース）: libSQL の `Database` から、SQL を送るための接続（`Connection`）を取るメソッド。`let conn = db.connect()?;`。
+> - **`?1`**（SQL）: SQL の `?1`・`?2` は、「ここに 1 番目・2 番目の値を入れる」という、あとから値を渡す場所（プレースホルダー）です。値は SQL の文字とは別に渡すので、入力に `'` などが入っていても、SQL の命令として読まれません（SQL インジェクションを防ぎます）。入力の値を、SQL の文字に直接つないではいけません。
 
 <!-- /first-use -->
 
@@ -5196,6 +5205,14 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[tokio::main(flavor)]`**（非同期）: `#[tokio::main(flavor = "current_thread")]` は、非同期の仕事を回す係（tokio）を、スレッド 1 本だけで動かす指定です。何も書かなければ、CPU の数に合わせて何本も使います。
+
+<!-- /first-use -->
+
 このプログラムは終わらないので、Git Bash の `timeout 5`（5 秒たったら止める）を付けて実行しました。
 
 ```text
@@ -5321,6 +5338,7 @@ static DUMMY_HASH: LazyLock<String> = LazyLock::new(|| {
 > - **`Argon2::default()`**（認証）: パスワードを安全に保存するための計算（Argon2id）を、おすすめの設定で用意する書き方（`argon2` の部品）。この計算は、わざと重く作られていて、パスワードを総当たりで当てるのを難しくします（第8巻）。
 > - **`LazyLock`**（スレッドと共有）: 初めて使われた時に 1 回だけ作られ、その後はずっと同じ値を使う入れ物。`static DUMMY: LazyLock<String> = LazyLock::new(|| { … });` のように、作るのに手間がかかる物を、プログラム全体で共有する時に使います。
 > - **`Argon2`**（認証）: パスワードをハッシュにする方法の 1 つ（Argon2）を使うための型。`Argon2::default()` で、おすすめの設定のものを作ります。わざと時間とメモリを使うので、総当たりで破られにくくなります。
+> - **`b"…"`**（文字列）: `b"…"` は、文字列ではなく「バイトの並び」（`&[u8; N]`）を作る書き方です。中には英数字と記号（ASCII）だけを書けます。通信やファイルの中身を、バイトのまま扱う時に使います。
 
 <!-- /first-use -->
 
@@ -6154,6 +6172,8 @@ async fn shutdown_signal() {
 > - **`tokio::signal::unix::signal()`**（非同期）: Linux などで、OS からの合図（シグナル）を受け取る関数。`SignalKind::terminate()`（「終わって」の合図）を受け取って、サーバーを片づけてから終わる時に使います（Fly.io などで動かす時。第12巻）。
 > - **`tokio::signal::unix::SignalKind::terminate()`**（非同期）: Linux などの「終わって」（SIGTERM）の合図の種類。Fly.io などがサーバーを止める時に送ってきます。
 > - **`SignalKind`**（非同期）: 受け取る OS の合図（シグナル）の種類。`SignalKind::terminate()` は「終わって」（SIGTERM）の合図です。
+> - **`#[cfg(unix)]`**（モジュール）: `#[cfg(unix)]` は、「Linux や macOS（Unix の仲間）向けに翻訳する時だけ、この部分を使う」という印です。`#[cfg(windows)]` なら Windows の時だけです。OS ごとにちがう処理を書き分けます。
+> - **`#[cfg(not)]`**（モジュール）: `#[cfg(not(unix))]` の `not( )` は、「その条件に合わない時だけ」という意味です。`#[cfg(not(test))]` なら、テストでない時だけ。`all( )`（全部に合う）・`any( )`（どれかに合う）もあります。
 
 <!-- /first-use -->
 
@@ -6198,6 +6218,8 @@ conn.execute_batch("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;")
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.execute_batch()`**（データベース）: `;` で区切った、いくつもの SQL の文を、まとめて実行するメソッド（libsql）。表を作る時などに使います。値を入れる文には使わず、`execute` と `params!` を使います。
+> - **`PRAGMA`**（SQL）: SQLite（libSQL）の設定を見る・変える命令。`PRAGMA foreign_keys = ON;` は、表どうしのつながりの決まり（外部キー）を確かめるようにします。
+> - **`ON`**（SQL）: SQL の「〜の時」「〜で」。`ON DELETE CASCADE` は「消された時は」、`JOIN … ON a.id = b.user_id` は「この条件で横につなぐ」、`CREATE INDEX … ON 表 (列)` は「この表の、この列に」という意味です。
 
 <!-- /first-use -->
 
@@ -7382,6 +7404,16 @@ serde = { version = "=1.0.229", features = ["derive"] }
 tokio = { version = "=1.54.1", features = ["full"] }
 tokio-util = { version = "=0.7.20", features = ["rt"] }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`argon2`**（Rust の部品（クレート））: `argon2` は、パスワードを、元に戻せない形（ハッシュ）にして保存するための部品です。わざと時間とメモリを使う計算なので、盗まれても、元のパスワードを当てにくくなります。
+> - **`reqwest`**（Rust の部品（クレート））: `reqwest` は、Rust のプログラムから、ほかのサーバーへ HTTP の要求を送る（ブラウザーのように Web にアクセスする）部品です。
+> - **`tokio-util`**（Rust の部品（クレート））: `tokio-util` は、`tokio` で使う便利な道具（止める合図の `CancellationToken` など）を集めた部品です。
+
+<!-- /first-use -->
 
 外の API の代わりに、自分のパソコンの中（127.0.0.1）だけで動く、とても小さな HTTP サーバーを用意します。インターネットには出ないので、どの例も安全に何度でも試せます。次の2つのファイルを作ってください。中身をくわしく理解する必要はありません（本物の Web サーバーは、第6巻で Topcoat を使って作ります）。「決まった答えを返すだけの、練習用の相手」として使います。
 
@@ -8687,6 +8719,8 @@ fn main() {
 > - **`debug!`**（ログ）: ログを「細かい調査用」の重さで書くマクロ。ふだんは表示されず、ログの細かさを `debug` にした時だけ出ます。
 > - **`.init()`**（ログ）: ログの設定を、プログラム全体で使えるように登録するメソッド。`tracing_subscriber::fmt().init();` を `main` の最初に 1 回だけ呼びます。
 > - **`std::time::Duration::from_millis()`**（時間）: ミリ秒から、時間の長さを作る関数（`Duration::from_millis` と同じ）。
+> - **`%値`**（ログ）: `tracing` のログの欄に `user_id = %id` と書くと、値を人が読む形（Display。`{}` と同じ）で記録します。`%id` のように、欄の名前を省くと、変数の名前がそのまま欄の名前になります。
+> - **`?値`**（ログ）: `tracing` のログの欄に `error = ?e` と書くと、値をプログラマー向けの形（Debug。`{:?}` と同じ）で記録します。`Display` の無い型も記録できます。
 
 <!-- /first-use -->
 
@@ -8789,6 +8823,8 @@ async fn main() {
 > - **`.with_timer()`**（ログ）: ログの行の頭に付ける時刻の形を決めるメソッド。
 > - **`FmtSpan`**（ログ）: スパンのどの時点でログを出すかの指定。`FmtSpan::CLOSE` は「終わった時」です。
 > - **`CLOSE`**（ログ）: `FmtSpan::CLOSE` は、「スパン（ひとまとまりの処理）が終わった時に、かかった時間と一緒にログを出す」指定です。
+> - **`#[instrument(skip)]`**（ログ）: `#[instrument(skip(db, password))]` の `skip` は、「この引数は、ログに記録しない」という指定です。パスワードのような秘密の値や、大きくて記録できない値（データベースの接続など）を外します。
+> - **`#[instrument(fields)]`**（ログ）: `#[instrument(fields(user_id = %id))]` の `fields` は、スパン（処理の区間の記録）に、引数のほかに記録したい欄を足す指定です。
 
 <!-- /first-use -->
 
@@ -9104,6 +9140,7 @@ async fn main() {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.is_multiple_of()`**（数）: その数が、指定した数で割り切れるなら `true` を返すメソッド。`n.is_multiple_of(5)` は「5 の倍数か」。
+> - **`{{ }}`**（画面に出す）: `println!` や `format!` の文字の中で、`{` や `}` そのものを出したい時は、`{{`・`}}` と 2 つ重ねて書きます。`format!("{{\"id\": {id}}}")` は `{"id": 7}` になります。1 つだけ書くと、値を入れる場所の印だと思われます。
 
 <!-- /first-use -->
 
@@ -9934,6 +9971,9 @@ pub async fn counts(conn: &Connection) -> Result<Vec<(String, i64)>, libsql::Err
 > - **`THEN`**（SQL）: `CASE WHEN 条件 THEN 値` の「その時は、この値」の部分。
 > - **`ELSE`**（SQL）: `CASE` の中の「どの条件にも合わなかった時は、この値」の部分。
 > - **`END`**（SQL）: `CASE … END` の終わりの印。
+> - **`COUNT`**（SQL）: 行の数を数える SQL の関数。`SELECT COUNT(*) FROM notes` は、ノートの数です。`COUNT(列)` は、その列が NULL でない行の数です。
+> - **`GROUP`**（SQL）: `GROUP BY 列` で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。`SELECT user_id, COUNT(*) FROM notes GROUP BY user_id` は、人ごとのノートの数です。
+> - **`COUNT(*)`**（SQL）: SQL の `COUNT(*)` は、行の数を数えます。`GROUP BY status` と組み合わせると、`status` ごとの件数になります。
 
 <!-- /first-use -->
 
@@ -10796,6 +10836,14 @@ async fn main() -> Result<(), libsql::Error> {
     Ok(())
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`IGNORE`**（SQL）: SQLite の `INSERT OR IGNORE` は、「入れようとした行が、決まり（`UNIQUE` など）に合わなかったら、エラーにせず、何もしない」という書き方です。同じ物を 2 回入れても、1 回分だけ残ります。
+
+<!-- /first-use -->
 
 ```text
 ① worker A

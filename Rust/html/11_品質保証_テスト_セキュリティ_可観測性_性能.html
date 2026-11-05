@@ -1010,6 +1010,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-lib</span> <span class="p">--</span> <span class="p">-</span><span class="n">-list</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test --lib</code></strong>（cargo のコマンド）: <code>cargo test --lib</code> は、<code>src\lib.rs</code> とその中のモジュールに書いたテストだけを動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h3 id="_14">練習問題</h3>
 <p><strong>問1:</strong> <code>Email::parse</code> の決まり（前後の空白を除いて小文字にそろえる・<code>@</code> の前後が空でない・ドメインに <code>.</code> がある・空白が無い・254 バイトまで）を、例1-1と同じ表の形のテストにしてください。境界値として、254 バイトと 255 バイトの行も入れます。</p>
 <p><strong>問2:</strong> URL の <code>/notes/{id}</code> の <code>{id}</code> は、<code>"42".parse::&lt;NoteId&gt;()</code> で <code>NoteId</code> にします。<code>"1"</code>・<code>"0"</code>・<code>"-1"</code>・<code>"9223372036854775807"</code>（<code>i64</code> の最大値）・<code>"9223372036854775808"</code>（最大値 + 1）・<code>"abc"</code>・<code>" 1"</code>（前に空白）・<code>"01"</code> を試して、それぞれどうなるかを表示してください。結果で気になる点はありますか。</p>
@@ -2571,6 +2581,16 @@ assertion `left == right` failed: 移動先
 <div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">add</span> <span class="p">-</span><span class="n">-dev</span> <span class="n">scraper</span><span class="p">@=</span><span class="n">0</span><span class="p">.</span><span class="n">29</span><span class="p">.</span><span class="n">0</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo add --dev</code></strong>（cargo のコマンド）: <code>cargo add --dev scraper</code> は、テストの時だけ使う部品として、<code>[dev-dependencies]</code> に足します。本番の実行ファイルには入りません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-70"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Updating crates.io index
       Adding scraper =0.29.0 to dev-dependencies
              Features:
@@ -3555,6 +3575,16 @@ test random_inputs_never_give_500 ... FAILED
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>\0</code></strong>（文字列の中の特別な書き方）: 文字列の中の <code>\0</code> は、番号 0 の文字（NUL）です。目に見えない文字で、ほかのプログラムとのやり取りでは「ここで終わり」の印に使われることがあるので、入力に混ざっていたら断るのが安全です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-105"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>題 &quot;\0&quot;: chars().count()=1・parse の合格=true・SQLite の length()=0 → 500 Internal Server Error
 題 &quot;\0a&quot;: chars().count()=2・parse の合格=true・SQLite の length()=0 → 500 Internal Server Error
 題 &quot;a\0&quot;: chars().count()=2・parse の合格=true・SQLite の length()=1 → 303 See Other
@@ -3678,6 +3708,7 @@ cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo +nightly</code></strong>（cargo のコマンド）: <code>+nightly</code> で、毎日作られている試し版（nightly）の Rust で cargo を動かします。ファズテスト（<code>cargo fuzz</code>）など、まだ安定版に無い機能を使う時に要ります。</li>
+<li><strong><code>cargo fuzz init --target</code></strong>（テスト）: <code>cargo +nightly fuzz init --target parsers</code> の <code>--target</code> は、fuzz（でたらめな入力で試すテスト）の、試す対象の名前を決めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3714,6 +3745,7 @@ cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>fuzz_target!</code></strong>（テスト）: ファズテスト（でたらめな入力を大量に与えて、止まらないかを確かめる）の中身を書くマクロ（<code>libfuzzer-sys</code> の部品）。</li>
+<li><strong><code>#![…]</code></strong>（モジュール）: <code>#![no_main]</code> のように <code>#!</code> で始まる印は、その印を書いたファイル（モジュール）や、クレート全体に付く印です。すぐ下の 1 つに付く <code>#[…]</code> とちがい、ファイルのいちばん上に書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3737,6 +3769,17 @@ cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"
 <p><code>parsers</code> を 60 秒だけ動かします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-116"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>cargo<span class="w"> </span>+nightly<span class="w"> </span>fuzz<span class="w"> </span>run<span class="w"> </span>parsers<span class="w"> </span>--<span class="w"> </span>-max_total_time<span class="o">=</span><span class="m">60</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo fuzz run --</code></strong>（テスト）: <code>cargo +nightly fuzz run parsers -- -max_total_time=60</code> の <code>--</code> は、「ここから後ろは、fuzz を動かす係（libFuzzer）に渡す」という区切りです。</li>
+<li><strong><code>cargo fuzz run -- -max_total_time</code></strong>（テスト）: <code>-max_total_time=60</code> は、fuzz を 60 秒で止める指定です。付けないと、問題が見つかるまでずっと続けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-117"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>INFO: Seed: 1219589596
 INFO: A corpus is not provided, starting from an empty corpus
@@ -4148,8 +4191,12 @@ Done 10639929 runs in 31 second(s)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>npm init</code></strong>（Node.js）: Node.js のプロジェクトを始めるコマンド。<code>package.json</code>（使う部品やコマンドを書くファイル）を作ります。<code>-y</code> を付けると、質問に全部「既定のまま」と答えます。</li>
+<li><strong><code>npm init -y</code></strong>（Node.js）: <code>npm init -y</code> の <code>-y</code>（yes）は、質問に全部「決まりの答え」で答えて、<code>package.json</code> をすぐに作る指定です。</li>
 <li><strong><code>npm install</code></strong>（Node.js）: Node.js の部品を入れるコマンド。<code>--save-dev</code> は「作る時・試す時だけ使う部品」として、<code>--save-exact</code> は版を固定して、<code>package.json</code> に書きます。</li>
+<li><strong><code>npm install --save-dev</code></strong>（Node.js）: <code>--save-dev</code> は、開発やテストの時だけ使う部品として、<code>package.json</code> の <code>devDependencies</code> に書く指定です。</li>
+<li><strong><code>npm install --save-exact</code></strong>（Node.js）: <code>--save-exact</code> は、版を <code>^1.64.1</code>（これ以上なら新しくてもよい）ではなく、<code>1.64.1</code> ぴったりで記録する指定です。いつ入れても同じ版になります。</li>
 <li><strong><code>npx playwright</code></strong>（Node.js）: <code>npx</code> は、入れた部品のコマンドを動かす道具。<code>npx playwright install chromium</code> で、Playwright（ブラウザーを自動で操作してテストする道具）が使うブラウザーを入れ、<code>npx playwright test</code> でテストを動かします。</li>
+<li><strong><code>npx playwright --version</code></strong>（Node.js）: <code>npx playwright --version</code> は、入っている Playwright の版を表示します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4208,6 +4255,9 @@ Version 1.64.1
 <ul>
 <li><strong><code>export</code></strong>（JavaScript・TypeScript）: 「このファイルの外から使ってよい」という印。<code>export default 値</code> は、そのファイルのいちばんの物を 1 つ外に出します。</li>
 <li><strong><code>default</code></strong>（JavaScript・TypeScript）: <code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</li>
+<li><strong><code>join()</code></strong>（Node.js）: <code>join(tmpdir(), "rustnote")</code> は、Node.js（<code>node:path</code>）で、フォルダの場所をつなぐ関数です（OS に合った区切り文字を使います）。</li>
+<li><strong><code>tmpdir()</code></strong>（Node.js）: <code>tmpdir()</code> は、Node.js（<code>node:os</code>）で、一時ファイルを置くフォルダの場所を返す関数です。</li>
+<li><strong><code>defineConfig()</code></strong>（JavaScript・TypeScript）: <code>defineConfig({ … })</code> は、設定ファイル（Vite の <code>vite.config</code> や Playwright の <code>playwright.config</code>）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4261,6 +4311,12 @@ Version 1.64.1
 <li><strong><code>.getByText()</code></strong>（Playwright）: 表示されている文字で、部品を探すメソッド。</li>
 <li><strong><code>.toBeVisible()</code></strong>（Playwright）: 「その部品が画面に見えているか」を確かめるメソッド。</li>
 <li><strong><code>.toHaveText()</code></strong>（Playwright）: 「その部品の文字が、これと同じか」を確かめるメソッド。</li>
+<li><strong><code>\d</code></strong>（正規表現）: 正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</li>
+<li><strong><code>\.</code></strong>（正規表現）: 正規表現の <code>\.</code> のように、記号の前に <code>\</code> を付けると、その記号を特別な意味にせず、文字そのものとして表します。<code>\.</code> は <code>.</code>、<code>\/</code> は <code>/</code> です。</li>
+<li><strong><code>+</code></strong>（正規表現）: 正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</li>
+<li><strong><code>$</code></strong>（正規表現）: 正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</li>
+<li><strong><code>test()</code></strong>（Playwright）: Playwright の <code>test("名前", async ({ page }) =&gt; { … })</code> は、テストを 1 つ書く関数です。<code>page</code> は、本物のブラウザーのタブです。</li>
+<li><strong><code>expect()</code></strong>（Playwright）: Playwright の <code>expect(値)</code> は、「こうなっているはず」を確かめる関数です。<code>await expect(page).toHaveURL(/…/)</code> は、URL がその形になるまで待って確かめます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4447,6 +4503,10 @@ landmark-unique（moderate）: 1 か所
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.analyze()</code></strong>（Playwright）: <code>@axe-core/playwright</code> の部品で、ページのアクセシビリティ（目の見えにくい人なども使えるか）の問題を調べるメソッド。</li>
+<li><strong><code>import()</code></strong>（JavaScript・TypeScript）: <code>import("…")</code> は、プログラムの途中で、部品（モジュール）を読み込む書き方です。TypeScript の型の所に書く <code>import("@playwright/test").Page</code> は、「その部品の <code>Page</code> という型」を指します。</li>
+<li><strong><code>string</code></strong>（TypeScript）: <code>string</code> は、文字の型です。</li>
+<li><strong><code>AxeBuilder</code></strong>（Playwright）: <code>AxeBuilder</code> は、axe（ページの使いやすさの問題を、自動で見つける道具）を、Playwright のページで動かすための部品です。<code>new AxeBuilder({ page }).analyze()</code> で調べます。</li>
+<li><strong><code>.pathname</code></strong>（JavaScript・TypeScript）: URL の <code>.pathname</code> は、<code>/notes/3</code> のような、場所の部分です（<code>?</code> から後ろを除きます）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4498,6 +4558,7 @@ landmark-unique（moderate）: 1 か所
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.setTimeout()</code></strong>（Playwright）: <code>test.setTimeout(5_000)</code> は、そのテストの制限時間（ミリ秒）を決める関数です。</li>
+<li><strong><code>1_000</code></strong>（JavaScript・TypeScript）: 数の中の <code>_</code> は、読みやすくするための区切りです。<code>86_400_000</code> は <code>86400000</code> と同じです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4605,6 +4666,7 @@ Error: Process from config.webServer was not able to start. Exit code: 1
 <li><strong><code>.status()</code></strong>（Playwright）: Playwright の答え（レスポンス）から、HTTP の状態コード（200・303 など）を返すメソッド。</li>
 <li><strong><code>.textContent()</code></strong>（Playwright）: 部品の中の文字を取り出すメソッド。</li>
 <li><strong><code>.toBe()</code></strong>（Playwright）: <code>expect(値).toBe(期待する値)</code> で、「同じか」を確かめるメソッド。</li>
+<li><strong><code>.length</code></strong>（JavaScript・TypeScript）: <code>.length</code> は、並びの数や、文字の数です。文字の場合は、UTF-16 という数え方なので、絵文字などは 2 と数えることがあります（<code>[...文字].length</code> なら、見た目の文字の数に近くなります）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4657,6 +4719,11 @@ Error: Process from config.webServer was not able to start. Exit code: 1
 <li><strong><code>.evaluate()</code></strong>（Playwright）: ブラウザーの中で、JavaScript を動かして結果を受け取るメソッド。</li>
 <li><strong><code>.getAttribute()</code></strong>（JavaScript・TypeScript）: タグの属性（<code>placeholder</code>・<code>name</code> など）の値を取り出すメソッド。無ければ <code>null</code> です。</li>
 <li><strong><code>===</code></strong>（JavaScript・TypeScript）: JavaScript で「型も値も同じか」を比べる書き方。<code>==</code> は型を勝手にそろえて比べるので、ふつうは <code>===</code> を使います（違うかは <code>!==</code>）。</li>
+<li><strong><code>||</code></strong>（JavaScript・TypeScript）: <code>a || b</code> は、「a か b のどちらか」（または）です。<code>el.innerText || el.getAttribute("name") || ""</code> のように、「左が空なら右を使う」という使い方もします（<code>0</code> や <code>""</code> も「空」とみなされるので、<code>null</code>・<code>undefined</code> だけを見たい時は <code>??</code> を使います）。</li>
+<li><strong><code>!</code></strong>（JavaScript・TypeScript）: <code>!res.ok</code> のように前に付けた <code>!</code> は、「〜ではない」です。<code>if (!res.ok)</code> は「うまくいかなかったら」。</li>
+<li><strong><code>() =&gt;</code></strong>（JavaScript・TypeScript）: <code>() =&gt; { … }</code> は、名前の無い関数（アロー関数）の書き方です。<code>( )</code> の中が引数、<code>=&gt;</code> の右が中身です。<code>(e) =&gt; setKeyword(e.target.value)</code> のように、1 つの式なら <code>{ }</code> を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。</li>
+<li><strong><code>HTMLElement</code></strong>（TypeScript）: <code>HTMLElement</code> は、ページの中のタグ（要素）1 つの型です。<code>as HTMLElement</code> で、「これはタグです」と TypeScript に伝えます。</li>
+<li><strong><code>.innerText</code></strong>（JavaScript・TypeScript）: <code>.innerText</code> は、タグの中の、画面に見えている文字です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5084,6 +5151,8 @@ cargo<span class="w"> </span>mutants<span class="w"> </span>--list<span class="w
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo mutants</code></strong>（cargo のコマンド）: コードをわざと少しだけ変えて（<code>&gt;</code> を <code>&gt;=</code> にする など）、テストがそれに気付くかを確かめる道具（ミューテーションテスト）。気付かなければ、テストが足りない所です。</li>
+<li><strong><code>cargo mutants --list</code></strong>（テスト）: <code>cargo mutants --list</code> は、コードをどう書きかえて試すか（変異）の一覧だけを表示し、テストは動かしません。</li>
+<li><strong><code>cargo mutants --file</code></strong>（テスト）: <code>--file src/auth.rs</code> は、指定したファイルの中だけを書きかえて試す指定です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5112,6 +5181,18 @@ src/auth.rs:171:5: replace require_user -&gt; Result&lt;&amp;User&gt; with Ok(Bo
 <p>RustNote の <code>tests/http.rs</code> だけで、13 個を確かめます（<code>--</code> のうしろは、<code>cargo test</code> に渡す引数です）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-163"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>cargo<span class="w"> </span>mutants<span class="w"> </span>--file<span class="w"> </span>src/auth.rs<span class="w"> </span>--timeout<span class="w"> </span><span class="m">300</span><span class="w"> </span>--<span class="w"> </span>--test<span class="w"> </span>http
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo mutants --timeout</code></strong>（テスト）: <code>--timeout 300</code> は、1 つの変異のテストを、最長 300 秒で打ち切る指定です。書きかえのせいで終わらなくなったテストを止めます。</li>
+<li><strong><code>cargo mutants --</code></strong>（テスト）: <code>cargo mutants … -- --test http</code> の <code>--</code> は、「ここから後ろは、<code>cargo test</code> に渡す」という区切りです。</li>
+<li><strong><code>cargo mutants -- --test</code></strong>（テスト）: <code>-- --test http</code> は、変異のたびに動かすテストを、<code>tests\http.rs</code> だけにする指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-164"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Found 13 mutants to test
 ok       Unmutated baseline in 50s build + 7s test
@@ -5166,6 +5247,16 @@ ok       Unmutated baseline in 37s build + 7s test
 <h4 id="1-ignored">エラー1: まだ無い守りのテストを、<code>--ignored</code> で動かした</h4>
 <div class="codehilite"><div class="code-wrap" id="code-171"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u06_attacks</span> <span class="p">--</span> <span class="p">-</span><span class="n">-ignored</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test -- --ignored</code></strong>（cargo のコマンド）: <code>--ignored</code> は、<code>#[ignore]</code> を付けた（ふだんは飛ばす）テストだけを動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-172"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>running 1 test
 test security_headers ... FAILED
@@ -5335,6 +5426,16 @@ alice はログインしたまま: 200 OK
 <p><strong>問2の解答:</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-179"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u06_attacks</span> <span class="p">--</span> <span class="p">-</span><span class="n">-include-ignored</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test -- --include-ignored</code></strong>（cargo のコマンド）: <code>--include-ignored</code> は、ふだんのテストと、<code>#[ignore]</code> を付けたテストの、両方を動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-180"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>test security_headers ... FAILED
 test stored_xss_is_text ... ok
@@ -6167,6 +6268,17 @@ RustNote を起動しました: http://127.0.0.1:3012
 <span class="n">harness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[[bench]]</code></strong>（設定ファイル（TOML））: <code>[[bench]]</code> は、速さを測るプログラム（ベンチマーク）を 1 つ登録する見出しです。<code>[[ ]]</code> と 2 重にした見出しは、何回も書いて、同じ種類の物を並べられます。</li>
+<li><strong><code>harness =</code></strong>（設定ファイル（TOML））: <code>harness = false</code> は、Rust の標準のベンチマークの係を使わず、<code>criterion</code> などの部品が自分で測る、という指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>NoteTitle::parse</code> に、半角の <code>a</code>・ひらがなの <code>あ</code>・絵文字の <code>😀</code> を、それぞれ 80 個並べた題を渡す速さと、<code>Email::parse</code> に、前後に空白のある大文字まじりのアドレスを渡す速さを測ります。<code>black_box</code> は、「この値を、組み立てのときに計算し終えてしまわないで」とコンパイラーに伝える印です（解説2）。</p>
 </blockquote>
@@ -6243,6 +6355,7 @@ Found 16 outliers among 100 measurements (16.00%)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo bench</code></strong>（cargo のコマンド）: 速さを測るコード（ベンチマーク）を動かすコマンド。最適化した版（release）で動きます。</li>
+<li><strong><code>cargo bench --bench</code></strong>（cargo のコマンド）: <code>cargo bench --bench parse</code> は、<code>benches</code> フォルダの中の <code>parse.rs</code>（速さを測るコード）だけを動かします。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6337,6 +6450,16 @@ DB でユーザーを探す :     1.43ms
 POST /login 全体   :   450.69ms
 照合が全体に占める割合: 86%
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test --release</code></strong>（cargo のコマンド）: <code>--release</code> を付けると、最適化した速いプログラムでテストを動かします。速さやメモリを測るテストで使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>▼ 実行結果（release）</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-215"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>--- release ビルド（5回のうち、いちばん短い時間）
@@ -6734,6 +6857,7 @@ oha 1.16.0
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>cargo build --release</code></strong>（cargo のコマンド）: <code>cargo build --release</code> は、時間をかけて最適化した、速い本番用の実行ファイルを作ります（動かしはしません）。できた物は <code>target\release</code> に置かれます。</li>
 <li><strong><code>.\target\release\rustnote.exe</code></strong>（PowerShell）: <code>cargo build --release</code> で作った、最適化した（速い）RustNote の実行ファイルを、直接動かす書き方。</li>
 </ul>
 </blockquote>
@@ -6773,6 +6897,9 @@ Status code distribution:
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>oha</code></strong>（性能）: Web サーバーに、たくさんの頼みを一度に送って、速さを測る道具。<code>oha -n 5000 -c 10 URL</code> は、5000 回を、同時に 10 本ずつ送ります。</li>
+<li><strong><code>oha --no-tui</code></strong>（性能）: <code>--no-tui</code> は、途中の動く画面を出さず、終わった後に結果だけを文字で表示する指定です。</li>
+<li><strong><code>oha -n</code></strong>（性能）: <code>-n 5000</code> は、送る要求の合計の数です。</li>
+<li><strong><code>oha -c</code></strong>（性能）: <code>-c 10</code> は、同時に送る数（同時に使う人の数のようなもの）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6821,6 +6948,18 @@ Status code distribution:
   99.00% in 2.2789 sec
   [303] 480 responses
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>oha -m</code></strong>（性能）: <code>-m POST</code> は、要求の種類（メソッド）を指定します。</li>
+<li><strong><code>oha -T</code></strong>（性能）: <code>-T application/x-www-form-urlencoded</code> は、送る中身の種類（<code>Content-Type</code>）を指定します。</li>
+<li><strong><code>oha -d</code></strong>（性能）: <code>-d "email=…&amp;password=…"</code> は、送る中身（本文）を指定します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>4つの同時の数を、表にまとめます（それぞれの出力の数）。</p>
 <table>
@@ -6957,6 +7096,16 @@ c=48: 218 MiB
 <div class="codehilite"><div class="code-wrap" id="code-234"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">oha</span> <span class="p">-</span><span class="n">-no-tui</span> <span class="n">-n</span> <span class="n">2000</span> <span class="n">-c</span> <span class="n">10</span> <span class="n">-m</span> <span class="n">POST</span> <span class="n">-T</span> <span class="n">application</span><span class="p">/</span><span class="n">x-www-form-urlencoded</span> <span class="p">`</span>
   <span class="n">-H</span> <span class="s2">&quot;Sec-Fetch-Site: cross-site&quot;</span> <span class="n">-d</span> <span class="s2">&quot;email=…&amp;password=…&quot;</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">3013</span><span class="p">/</span><span class="n">login</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>oha -H</code></strong>（性能）: <code>-H "Cookie: …"</code> は、要求に見出し（ヘッダー）を足します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-235"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>  Success rate: 100.00%
   Average:  0.1467 ms
@@ -7245,6 +7394,37 @@ domain=#HttpOnly_127.0.0.1 secure=TRUE name=__Host-session value=KugU8H…
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker build -t rustnote Rust/rustnote</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#</code></strong>（GitHub Actions）: YAML（GitHub Actions の設定などの書き方）では、<code>#</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>on:</code></strong>（GitHub Actions）: <code>on:</code> は、「いつ動かすか」です。<code>push:</code>（送った時）・<code>pull_request:</code>（プルリクエストの時）・<code>schedule:</code>（決まった時刻）などを並べます。</li>
+<li><strong><code>push:</code></strong>（GitHub Actions）: <code>push:</code> は、「リポジトリに送った（push）時に動かす」指定です。</li>
+<li><strong><code>branches:</code></strong>（GitHub Actions）: <code>branches: [main]</code> は、「<code>main</code> ブランチに送った時だけ」としぼる指定です。</li>
+<li><strong><code>[ … ]</code></strong>（GitHub Actions）: YAML の <code>[main]</code> のように <code>[ ]</code> で囲むと、並び（いくつかの値）を 1 行で書けます。</li>
+<li><strong><code>pull_request:</code></strong>（GitHub Actions）: <code>pull_request:</code> は、「プルリクエスト（変更を取り込んでほしいというお願い）が作られた・更新された時に動かす」指定です。</li>
+<li><strong><code>jobs:</code></strong>（GitHub Actions）: <code>jobs:</code> の下に、動かす仕事（ジョブ）を並べます。ジョブは、ふつう同時に動きます。</li>
+<li><strong><code>test:</code></strong>（GitHub Actions）: <code>jobs:</code> の下の <code>test:</code> は、仕事（ジョブ）に付けた名前です（自分で決めます）。</li>
+<li><strong><code>runs-on:</code></strong>（GitHub Actions）: <code>runs-on: ubuntu-26.04</code> は、その仕事を、どの OS の機械で動かすかです。GitHub が用意した機械を、その時だけ借ります。</li>
+<li><strong><code>defaults:</code></strong>（GitHub Actions）: <code>defaults:</code> は、その仕事の全部の手順に共通の設定です。</li>
+<li><strong><code>working-directory:</code></strong>（GitHub Actions）: <code>working-directory: Rust</code> は、コマンドを動かすフォルダです。リポジトリの一番上ではなく、その中のフォルダで動かす時に書きます。</li>
+<li><strong><code>steps:</code></strong>（GitHub Actions）: <code>steps:</code> の下に、その仕事の手順を、上から順に <code>-</code> で並べます。</li>
+<li><strong><code>uses:</code></strong>（GitHub Actions）: <code>uses: actions/checkout@v7</code> は、ほかの人が作った決まった手順（アクション）を使う指定です。<code>actions/checkout</code> は、リポジトリのファイルを取ってくる手順、<code>@v7</code> はその版です。</li>
+<li><strong><code>with:</code></strong>（GitHub Actions）: <code>with:</code> は、<code>uses:</code> で使うアクションに渡す設定です。</li>
+<li><strong><code>toolchain:</code></strong>（GitHub Actions）: Rust を入れるアクションの <code>toolchain: 1.99.1</code> は、入れる Rust の版です。</li>
+<li><strong><code>components:</code></strong>（GitHub Actions）: <code>components: rustfmt, clippy</code> は、Rust と一緒に入れる部品です。</li>
+<li><strong><code>workspaces:</code></strong>（GitHub Actions）: <code>workspaces: Rust</code> は、翻訳した物を取っておく（キャッシュ）アクションに、どのフォルダの <code>target</code> を取っておくかを伝える設定です。</li>
+<li><strong><code>docker:</code></strong>（GitHub Actions）: <code>jobs:</code> の下の <code>docker:</code> は、仕事（ジョブ）に付けた名前です（自分で決めます）。ここでは、イメージを作れるかを確かめる仕事です。</li>
+<li><strong><code>needs:</code></strong>（GitHub Actions）: <code>needs: test</code> は、「<code>test</code> の仕事が成功してから動かす」という順番の指定です。</li>
+<li><strong><code>cargo test --locked</code></strong>（cargo のコマンド）: <code>--locked</code> は、<code>Cargo.lock</code> の版のままテストし、<code>Cargo.lock</code> を書きかえない指定です。</li>
+<li><strong><code>docker build</code></strong>（Docker）: <code>Dockerfile</code>（箱の作り方を書いたファイル）から、イメージ（箱の設計図）を作るコマンド。<code>-t 名前:タグ</code> で名前を付けます。最後の <code>.</code> は「今のフォルダの中身を使う」という意味です。</li>
+<li><strong><code>docker build -t</code></strong>（Docker）: <code>docker build -t rustnote:u02 .</code> の <code>-t</code> は、作ったイメージに名前と札（<code>名前:札</code>）を付ける指定です。最後の <code>.</code> は「今いるフォルダの Dockerfile で作る」という意味です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>▼ このコマンドがやること（先に日本語で）:</strong> CI の <code>test</code> の仕事と同じ3つの手順を、教材と同じ RustNote のコピーで、同じ順に動かします。①<code>cargo fmt --check</code>（整形が決まりどおりか。直さずに、違いがあれば失敗）、②<code>cargo clippy --all-targets --locked -- -D warnings</code>（テストも含めて Clippy にかけ、警告も失敗にする）、③<code>cargo test --locked</code>（<code>Cargo.lock</code> の版のまま、全部のテスト）。</p>
 </blockquote>
@@ -7366,6 +7546,16 @@ warning: 2 allowed warnings found
 <span class="n">cargo</span> <span class="n">tree</span> <span class="n">-i</span> <span class="n">h2</span><span class="nv">@0</span><span class="p">.</span><span class="n">3</span><span class="p">.</span><span class="n">27</span> <span class="p">-</span><span class="n">-depth</span> <span class="n">4</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree -i</code></strong>（cargo のコマンド）: <code>cargo tree -i rustls-webpki@0.102.8</code> の <code>-i</code>（invert＝逆さに）は、「その部品を、だれが使っているか」を、下からたどって表示します。古い版の部品が、どこから入ったかを調べる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-246"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>rustls-webpki v0.102.8
 └── rustls v0.22.4
     ├── hyper-rustls v0.25.0
@@ -7443,6 +7633,17 @@ warning: 1 allowed warning found
 <span class="w">    </span><span class="s2">&quot;RUSTSEC-2026-0382&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># rustls-webpki 0.102.8</span>
 <span class="p">]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[advisories]</code></strong>（設定ファイル（TOML））: <code>deny.toml</code>（<code>cargo deny</code> の設定）の <code>[advisories]</code> は、「弱点が知られている部品」の確かめ方の設定です。</li>
+<li><strong><code>ignore =</code></strong>（設定ファイル（TOML））: <code>ignore = ["RUSTSEC-…"]</code> は、知られている弱点のうち、「今は直せないので、理由を書いて見逃す」物の一覧です。見直す日を、コメントに書いておきます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-252"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Crate:     bincode
 Warning:   unmaintained
@@ -7522,11 +7723,32 @@ error: could not compile `rustnote` (lib test) due to 1 previous error
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>schedule:</code></strong>（GitHub Actions）: <code>schedule:</code> は、「決まった時刻に動かす」指定です。下に <code>- cron: "…"</code> で時刻を書きます。</li>
+<li><strong><code>cron:</code></strong>（GitHub Actions）: <code>cron: "0 0 * * *"</code> は、動かす時刻の書き方（cron）です。5 つの欄は左から「分 時 日 月 曜日」で、<code>*</code> は「毎」。<code>0 0 * * *</code> は「毎日 0 時 0 分」です。時刻は UTC（日本は 9 時間進んでいるので、日本の 9 時）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-258"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">部品の弱点の確かめ</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">          </span><span class="no">cargo install cargo-audit --version 0.22.2 --locked</span>
 <span class="w">          </span><span class="no">cargo audit</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>|</code></strong>（GitHub Actions）: <code>run: |</code> の <code>|</code> は、「次の行から、字下げした所までを、改行も含めてそのまま 1 つの文字にする」という印です。コマンドを何行も書く時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>弱点の知らせ（RustSec）は、コードを変えなくても、<strong>毎日増えます</strong>。例10-2の 8 件のうち 3 件は、この 1 か月の間に出た知らせでした（<code>RUSTSEC-2026-0346</code>・<code>0349</code> は 2026-10-14、<code>0382</code> は 2026-10-20。出力の <code>Date</code>）。9 月の終わりに同じ <code>Cargo.lock</code> を調べていたら、5 件だったはずです。変更のある日だけ確かめていると、変更の無い間に出た知らせに気づけません。</li>

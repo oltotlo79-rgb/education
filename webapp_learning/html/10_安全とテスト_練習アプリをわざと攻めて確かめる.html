@@ -568,6 +568,17 @@ forbidden
 href=&quot;/requests/7&quot;&gt;<span class="ni">&amp;lt;</span>b<span class="ni">&amp;gt;</span>太字<span class="ni">&amp;lt;</span>/b<span class="ni">&amp;gt;&amp;lt;</span>script<span class="ni">&amp;gt;</span>alert(&#39;xss&#39;)<span class="ni">&amp;lt;</span>/script<span class="ni">&amp;gt;</span><span class="err">&lt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&amp;lt;</code></strong>（HTML）: <code>&amp;lt;</code> は、<code>&lt;</code> という文字そのものを表す書き方（文字参照）です。HTML では <code>&lt;</code> がタグの始まりの印なので、文字として見せたい時は <code>&amp;lt;</code> と書きます。<code>&amp;gt;</code> は <code>&gt;</code>、<code>&amp;amp;</code> は <code>&amp;</code>、<code>&amp;quot;</code> は <code>"</code> です。入力された文字をこの形に変えておくと、<code>&lt;script&gt;</code> を書かれても、ただの文字として表示されます（エスケープ）。</li>
+<li><strong><code>&amp;gt;</code></strong>（HTML）: <code>&amp;gt;</code> は、<code>&gt;</code> という文字そのものを表す書き方（文字参照）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>画面の見え方:</p>
 <p><img src="../images/L10-s1_xss_title.webp" alt="件名に\<b>太字\</b>\<script>alert('xss')\</script>が、そのまま文字として出ている" style="width: 100%;"></p>
 <ul>
@@ -664,6 +675,7 @@ href=&quot;/requests/7&quot;&gt;<span class="ni">&amp;lt;</span>b<span class="ni
 <ul>
 <li><strong><code>PREPARE</code></strong>（SQL）: PostgreSQL で、値を入れる場所（<code>$1</code>）付きの SQL を、名前を付けて用意する命令。値は文と別に渡るので、SQL インジェクションが起きません。</li>
 <li><strong><code>EXECUTE</code></strong>（SQL）: <code>PREPARE</code> で用意した SQL に、値を渡して実行する命令。</li>
+<li><strong><code>\echo</code></strong>（psql）: psql の <code>\echo '文字'</code> は、文字を画面に表示する命令です。SQL のファイルの中で、区切りの説明を出す時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

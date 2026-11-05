@@ -874,6 +874,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>while</code></strong>（くり返し）: 条件が <code>true</code> の間、くり返す書き方。<code>while 条件 { … }</code>。条件が最初から <code>false</code> なら、1 回も動きません。</li>
+<li><strong><code>u16</code></strong>（数）: 0〜65535 の整数の型（16 ビット）。ポート番号（<code>8080</code> など）はこの範囲に収まるので、<code>u16</code> で表します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1246,6 +1247,8 @@ warning: `basics` (bin &quot;basics&quot;) generated 1 warning (run `cargo fix -
 <ul>
 <li><strong><code>MIN</code></strong>（数）: 数の型が持っている「いちばん小さい値」。<code>i32::MIN</code> は -2147483648。<code>u8::MIN</code> は 0 です。</li>
 <li><strong><code>MAX</code></strong>（数）: 数の型が持っている「いちばん大きい値」。<code>i32::MAX</code> は 2147483647、<code>u8::MAX</code> は 255 です。これより大きくなる計算は「あふれ（オーバーフロー）」になります。</li>
+<li><strong><code>u8</code></strong>（数）: 0〜255 の整数の型（8 ビット＝1 バイト）。<code>u</code> は unsigned（マイナスが無い）の意味です。ファイルや通信の中身（バイトの並び <code>Vec&lt;u8&gt;</code>）は、この型の並びです。</li>
+<li><strong><code>char</code></strong>（文字）: 1 文字を入れる型です。<code>'a'</code>・<code>'あ'</code>・<code>'😀'</code> のように <code>'</code> で囲んで書きます。日本語の文字も絵文字も、1 つの <code>char</code> です（大きさはいつも 4 バイト）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1551,6 +1554,8 @@ u8::try_from(100) = Ok(100)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.abs()</code></strong>（数）: 絶対値（マイナスを取った値）を返すメソッド。<code>(-5).abs()</code> は 5。小数に使う時は、値の型が <code>f64</code> などと決まっている必要があります。</li>
+<li><strong><code>{:.桁}</code></strong>（画面に出す）: <code>{:.1}</code> の <code>.</code> と数は、「小数点の下を何けた出すか」の指定です。<code>{:.1}</code> で <code>3.14159</code> は <code>3.1</code>、<code>{:.2}</code> で <code>3.14</code>、<code>{:.0}</code> なら <code>3</code>。けたを切りそろえて（丸めて）表示します。<code>{:.2?}</code> のように Debug（<code>?</code>）と組み合わせると、かかった時間（<code>Duration</code>）を <code>1.23ms</code> のように短く出せます。</li>
+<li><strong><code>1e6</code></strong>（数）: <code>1e6</code> は「1 × 10 の 6 乗」（1000000.0）を表す、小数の書き方です。<code>2.5e-3</code> は 0.0025 です。とても大きい数や小さい数を、短く書けます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1614,6 +1619,8 @@ u8::try_from(100) = Ok(100)
 <li><strong><code>.is_alphabetic()</code></strong>（文字）: その文字が「文字（英字・かな・漢字など）」なら <code>true</code> を返すメソッド。</li>
 <li><strong><code>.is_ascii_alphanumeric()</code></strong>（文字）: その文字が、ASCII（半角）の英字か数字（<code>A</code>〜<code>Z</code>・<code>a</code>〜<code>z</code>・<code>0</code>〜<code>9</code>）なら <code>true</code> を返すメソッド。<code>'あ'</code> は <code>false</code> です。</li>
 <li><strong><code>char::from_u32()</code></strong>（文字）: 番号（文字コード）から 1 文字を作る関数。<code>char::from_u32(0x41)</code> は <code>Some('A')</code>。文字に無い番号なら <code>None</code> です。</li>
+<li><strong><code>{:X}</code></strong>（画面に出す）: <code>{:X}</code> は、整数を大文字の 16 進数（0〜9 と A〜F）で表示する指定です。<code>255</code> は <code>FF</code>、<code>'A' as u32</code>（65）は <code>41</code>。文字の番号や色の値を見る時に使います。</li>
+<li><strong><code>0xff</code></strong>（数）: <code>0x</code> で始まる数は 16 進数です。<code>0xff</code> は 255、<code>0x3C</code> は 60。バイトの値や色（<code>0xFF0000</code>）を書く時に使います。<code>0b1010</code>（2 進数）という書き方もあります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1712,6 +1719,16 @@ ID -7 は使えません: number too small to fit in target type
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{sum}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>i64</code></strong>（数）: マイナスもある整数の型（64 ビット。約 ±922 京）。データベースの整数の列や、番号（id）によく使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling basics v0.1.0 (.../basics)
 error[E0308]: mismatched types
@@ -2190,6 +2207,16 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 ブロックの中で表示だけする
 nothing の中身: ()
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;=</code></strong>（条件）: <code>a &lt;= b</code> は「a が b 以下」、<code>a &gt;= b</code> は「a が b 以上」です。<code>&lt;</code>（より小さい）・<code>&gt;</code>（より大きい）と合わせて、比べた結果は <code>true</code> か <code>false</code> になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_20">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_21">解説1: ブロックで「作業用の変数」を閉じ込める</h5>
@@ -2801,6 +2828,16 @@ NG: 81文字は 1〜80 文字の範囲外です
 <div class="codehilite"><div class="code-wrap" id="code-128"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>100 を超えた最初の 2 の累乗: 128
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>*=</code></strong>（数）: <code>n *= 2;</code> は <code>n = n * 2;</code> を短く書いた形です。同じように <code>/=</code>（割る）・<code>%=</code>（余りにする）もあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_26">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-break">解説1: <code>break 値</code></h5>
 <ul>
@@ -2830,6 +2867,16 @@ NG: 81文字は 1〜80 文字の範囲外です
 残り 1
 発射！
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>-=</code></strong>（数）: <code>remaining -= 1;</code> は <code>remaining = remaining - 1;</code> を短く書いた形です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>毎回、中身を実行する<strong>前に</strong>条件 <code>remaining &gt; 0</code> を調べます。最初から条件が <code>false</code> なら一度も実行されません。</li>
@@ -2942,6 +2989,16 @@ i = 2
 999: 不明なコード
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>A | B =&gt;</code></strong>（場合分け）: <code>match</code> の腕の <code>A | B =&gt;</code> は、「A か B のどちらかの形なら」という意味で、同じ処理をまとめて書けます。<code>1 | 2 | 3 =&gt; "小さい"</code> のように使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_28">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_29">解説1: 腕（アーム）の書き方</h5>
 <div class="codehilite"><div class="code-wrap" id="code-135"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kd">let</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="p">{</span>
@@ -3003,6 +3060,16 @@ i = 2
 2 × 1 = 2
 2 × 2 = 4 を見つけたので終了
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>'名前: loop</code></strong>（くり返し）: <code>'outer: for …</code> のように、くり返しの前に <code>'名前:</code> を付けると、くり返しに名前（ラベル）が付きます。内側のくり返しから <code>break 'outer;</code> と書くと、外側のくり返しまで一気に抜けられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_30">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-t-if">解説1: マッチガード <code>t if 条件</code></h5>
@@ -3288,6 +3355,16 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <p><strong>▼ 実行結果</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>_</code></strong>（場合分け）: <code>(0, _)</code> や <code>Err(_)</code> の <code>_</code> は、「ここの値は何でもよい・使わない」という印です。名前を付けないので、「使っていない」という警告も出ません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>(0, 0)</code> を<strong>いちばん上</strong>に書くのがポイントです。<code>(0, _)</code> を先に書くと、15 も <code>Fizz</code> になってしまいます。<code>_</code> は「何でもよい」なので、<code>(0, _)</code> は「3 で割り切れれば、5 の余りは何でもよい」です。</li>
@@ -3596,6 +3673,7 @@ bytes: [61, E3, 81, 82, F0, 9F, A6, 80]
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.len_utf8()</code></strong>（文字）: その 1 文字が、UTF-8 で何バイトかを返すメソッド。英数字は 1、日本語の多くは 3 です。</li>
+<li><strong><code>{:x?}</code></strong>（画面に出す）: <code>{:x?}</code>・<code>{:02X?}</code> は、Debug の表示（<code>{:?}</code>）の中の数を、16 進数で出す指定です。<code>b"Hi"</code> を <code>{:x?}</code> で出すと <code>[48, 69]</code> のようになり、バイトの並びを調べる時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4320,6 +4398,16 @@ Hello: 5 バイト, 5 文字
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.0</code></strong>（型とメソッド）: <code>pair.0</code>・<code>pair.1</code> のように、タプル（<code>(1, "a")</code> のような、いくつかの値の組）は、<code>.</code> と番号（0 から数える）で中の値を取り出します。<code>struct Meters(f64);</code> のような、項目に名前の無い構造体でも <code>.0</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-198"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span>
 </code></pre></div></div>
 
@@ -4389,6 +4477,16 @@ Hello: 5 バイト, 5 文字
 [0, 0, 0, 0]
 [&quot;月&quot;, &quot;木&quot;, &quot;水&quot;]
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[値; 個数]</code></strong>（Vec（並び））: <code>[0; 5]</code> は「0 を 5 個並べた配列」（<code>[0, 0, 0, 0, 0]</code>）を作る書き方です。型の所に書く <code>[u8; 32]</code> は、「<code>u8</code> が 32 個の配列」という型です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_43">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_44">解説1: 配列の型は「要素の型と個数」</h5>
@@ -4680,6 +4778,16 @@ with_capacity(100): len = 0, capacity = 100
 1: 275 円
 2: 1078 円
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>*</code></strong>（所有権と借用）: <code>*price</code> のように、借りた値（参照）の前の <code>*</code> は「借りている先の、値そのもの」を表します。<code>*count += 1</code> は、借りた先の数を 1 増やします。かけ算の <code>*</code> とは別物です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>for price in &amp;mut prices</code> は、要素を<strong>書き換えられる形で借りて</strong>回します。<code>*price</code> の <code>*</code> は「借りている先の値そのもの」を表す記号です（参照外し。第3巻で詳しく）。</li>
@@ -5116,6 +5224,7 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 <ul>
 <li><strong><code>#[derive]</code></strong>（型とメソッド）: 型に、よく使う機能を自動で付ける印（属性）。<code>#[derive(Debug, Clone, PartialEq)]</code> のように、付けたい機能の名前を並べます（例: <code>Debug</code> → <code>{:?}</code> で表示できる、<code>Clone</code> → <code>.clone()</code> できる）。</li>
 <li><strong><code>Debug</code></strong>（型とメソッド）: <code>{:?}</code> で中身を表示できる機能（トレイト）。<code>#[derive(Debug)]</code> を付けた型は、<code>println!("{:?}", 値)</code> で中身を確かめられます。</li>
+<li><strong><code>{:#?}</code></strong>（画面に出す）: <code>{:#?}</code> は、Debug の表示（<code>{:?}</code>）を、項目ごとに改行して字下げした、読みやすい形で出す指定です。項目の多い構造体の中身を見る時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5212,6 +5321,16 @@ Note {
 <div class="codehilite"><div class="code-wrap" id="code-241"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Note { id: 1, title: &quot;牛乳を買う&quot;, done: true }
 #2 卵を買う（完了: true）
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>..値</code></strong>（型とメソッド）: <code>Note { title: …, ..note }</code> の <code>..note</code> は、「書かなかった残りの項目は、<code>note</code> と同じ値にする」という書き方です（構造体の更新）。<code>..Default::default()</code> なら、残りを初期値にします。<code>..</code> の後ろの物は、いつも最後に書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_50">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1_51">解説1: フィールド初期化の省略記法</h5>
@@ -6017,6 +6136,7 @@ Note {
 <ul>
 <li><strong><code>enum</code></strong>（型とメソッド）: 「いくつかの種類のうち、どれか 1 つ」を表す型（列挙型）。<code>enum Filter { All, Active, Done }</code> のように種類を並べ、<code>match</code> で種類ごとに処理を分けます。種類ごとに違うデータを持たせることもできます（第2巻）。</li>
 <li><strong><code>static</code></strong>（変数）: プログラムが動いている間、ずっとある値。<code>&amp;'static str</code> は「プログラムの中に書いた、ずっと消えない文字列」を借りている型です（<code>"回覧中"</code> のような文字列はこの型）。</li>
+<li><strong><code>'static</code></strong>（所有権と借用）: <code>&amp;'static str</code> の <code>'static</code> は、「プログラムが動いている間ずっと有効」という意味のライフタイムの印です。<code>"文字"</code> のように、コードに直接書いた文字列は <code>&amp;'static str</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6295,6 +6415,16 @@ Note {
 None
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>_名前</code></strong>（変数）: <code>_name</code> のように名前の頭に <code>_</code> を付けると、「使わないかもしれない変数」という意味になり、使っていなくても警告が出ません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>let パターン = 値 else { ... };</code> は、<strong>パターンに合えば変数を作って先へ進み、合わなければ <code>else</code> の中で関数を抜ける</strong>書き方です（<code>else</code> の中は必ず <code>return</code> などで抜ける必要があります）。</li>
 <li>UNIT 03 の早期リターンと同じく、「だめな場合を先に片付ける」形になり、正常な処理の字下げが深くなりません。</li>
@@ -6364,6 +6494,8 @@ x 軸より下
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>matches!</code></strong>（場合分け）: 値が、ある形（パターン）に合うかを <code>true</code>・<code>false</code> で返すマクロ。<code>matches!(filter, Filter::Active | Filter::Done)</code> のように、<code>match</code> を 1 行で書けます。</li>
+<li><strong><code>名前 @ パターン</code></strong>（場合分け）: <code>n @ 1..=9 =&gt;</code> のように、<code>match</code> の形の前に <code>名前 @</code> を付けると、「この形に合った値を、<code>n</code> という名前で受け取る」ことができます。範囲で調べつつ、その値も使いたい時に書きます。</li>
+<li><strong><code>..</code></strong>（場合分け）: <code>Point { x, .. }</code> や <code>(first, ..)</code> の <code>..</code> は、「残りの項目は何でもよい（見ない）」という印です。項目の多い構造体から、使う物だけを取り出す時に書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -8368,6 +8500,16 @@ error: could not compile `basics` (bin &quot;basics&quot;) due to 1 previous err
 
 <span class="k">[dependencies]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rust-version =</code></strong>（設定ファイル（TOML））: <code>rust-version = "1.99"</code> は、「このパッケージを作るのに要る、いちばん古い Rust の版」です。古い Rust で作ろうとすると、分かりやすいエラーで止まります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>src/note.rs</code> は、ノート1件の型と「1〜80文字のタイトルしか作れない」<code>NoteTitle</code> をまとめたモジュールです。中身は UNIT 07・09 で作ったものに <code>pub</code> を付けて整理したものです。</p>

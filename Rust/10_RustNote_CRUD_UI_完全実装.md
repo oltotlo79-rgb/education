@@ -542,6 +542,14 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`DISTINCT`**（SQL）: SQL の `SELECT DISTINCT` は、同じ値の行を 1 つにまとめて（重なりを消して）返します。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run -q --example u01_order
 ```
@@ -4593,6 +4601,14 @@ async fn search_special_characters() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`r"…"`**（文字列）: `r"…"` は「生の文字列」で、中の `\` を特別な意味にしません。`r"C:\Users\you"` や、正規表現の `r"\d+"` のように `\` の多い文字を、そのまま書けます。中に `"` を入れたい時は `r#"…"#` を使います。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u07_search -- --nocapture
 ```
@@ -5955,6 +5971,7 @@ pub async fn flash_banner(flash: Option<Flash>) -> Result<impl View> {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.message()`**（RustNote で作る物）: `Flash` の値から、画面に出す文（「ノートを作りました」など）を返すメソッド。全体のコードは第13巻に載っています。
+> - **`role=`**（HTML）: `role="status"` は、その部分の役わりを、読み上げソフトに伝える印です。`status` は「お知らせ」で、変わった時に読み上げられます。`role="alert"` は、すぐ知らせる大事なお知らせです。
 
 <!-- /first-use -->
 
@@ -6832,6 +6849,11 @@ lines.join('\n')
 > - **`.pop()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。
 > - **`.remove()`**（JavaScript・TypeScript）: 画面の要素（タグ）を、ページから取り除くメソッド。`f.remove()`。
 > - **`.padEnd()`**（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。
+> - **`\n`**（文字列の中の特別な書き方）: 文字列の中の `\n` は「改行」を表す書き方です。`\`（バックスラッシュ。日本語のキーボードやフォントでは `¥` に見えることがあります）と `n` の 2 文字で、改行 1 つを表します。`"1行目\n2行目"` を表示すると 2 行になります。
+> - **`&&`**（JavaScript・TypeScript）: `a && b` は、「a と b の両方が当てはまる」（かつ）です。左が当てはまらなければ、右は調べません。
+> - **`async () =>`**（JavaScript・TypeScript）: `async () => { … }` は、中で `await`（終わるまで待つ）を使える、名前の無い関数（アロー関数）です。
+> - **`Promise`**（JavaScript・TypeScript）: `Promise` は、「あとで終わる処理」（サーバーの答えを待つ、時間を待つ）を表す物です。`await` を付けると、終わるまで待って、結果を受け取れます。`new Promise((resolve) => …)` で、自分で作ることもできます。
+> - **`.documentElement`**（JavaScript・TypeScript）: `document.documentElement` は、ページのいちばん外側の `<html>` のタグです。
 
 <!-- /first-use -->
 
@@ -6878,6 +6900,9 @@ focusLog.map((t, i) => `${i + 1}. ${t}`).join('\n')
 > - **`.addEventListener()`**（JavaScript・TypeScript）: クリック・入力などの出来事（イベント）が起きた時に動く関数を登録するメソッド。`document.addEventListener('focusin', (e) => { … })`。
 > - **`.trim()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列の前後の空白を取り除いたものを返すメソッド。
 > - **`?.`**（JavaScript・TypeScript）: `a?.b` は、`a` が `null` や `undefined` なら、そこで止めて `undefined` にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。
+> - **`getComputedStyle()`**（JavaScript・TypeScript）: `getComputedStyle(el)` は、タグに最終的に付いている見た目（CSS の値）を読みます。
+> - **`.target`**（JavaScript・TypeScript）: イベント（`e`）の `.target` は、イベントが起きたタグ（入力欄など）です。`e.target.value` で、入力欄に今入っている文字を読めます。
+> - **`.textContent`**（JavaScript・TypeScript）: `.textContent` は、タグの中の文字です。入れた文字は、HTML としてではなく、ただの文字として表示されるので、安全です（`innerHTML` に入れると、タグとして動いてしまいます）。
 
 <!-- /first-use -->
 
@@ -6933,6 +6958,7 @@ Tab で「完了にする」へ移って Enter を、続けて「未完了に戻
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.querySelector()`**（JavaScript・TypeScript）: CSS と同じ書き方で、ページの中の合うタグを 1 つ（最初の物）だけ探すメソッド。見つからなければ `null` です。
+> - **`.href`**（JavaScript・TypeScript）: `location.href` は、今のページの URL の全部です。
 
 <!-- /first-use -->
 

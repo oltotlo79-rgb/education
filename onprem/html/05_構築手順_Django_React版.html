@@ -710,6 +710,26 @@ whitenoise==6.12.0
 <li><strong><code>.match()</code></strong>（Python）: <code>re.match(パターン, 文字列)</code> は、文字列の<strong>先頭から</strong>正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ <code>None</code>）。</li>
 <li><strong><code>str()</code></strong>（Python）: 値を文字列に変える関数。<code>str(8080)</code> は <code>"8080"</code>。数と文字列は <code>==</code> で比べても等しくならないので、そろえる時に使います。</li>
 <li><strong><code>int()</code></strong>（Python）: 文字列などを整数にする関数。<code>int("25")</code> は 25。数でない文字だと <code>ValueError</code> です。</li>
+<li><strong><code>#</code></strong>（Python）: Python では、<code>#</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>"""…"""</code></strong>（Python）: <code>"""…"""</code>（<code>"</code> を 3 つ）で囲んだ文字は、何行にもまたがって書けます。関数・クラス・ファイルのいちばん最初に書いた物は、その説明書（docstring）になり、<code>help()</code> やエディターで読めます。</li>
+<li><strong><code>f"…{値}…"</code></strong>（Python）: <code>f"…"</code>（頭に <code>f</code> を付けた文字）の中の <code>{ }</code> には、変数や式を書けて、その値が入ります（f 文字列）。<code>f"環境変数 {name} がありません"</code>。<code>{ }</code> の中の <code>:</code> の後ろには、<code>{amount:,}</code> のように書式も書けます。</li>
+<li><strong><code>r"…"</code></strong>（Python）: <code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。正規表現の <code>r"\d{6}"</code> のように、<code>\</code> の多い文字をそのまま書けます。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>\.</code></strong>（正規表現）: 正規表現の <code>\.</code> のように、記号の前に <code>\</code> を付けると、その記号を特別な意味にせず、文字そのものとして表します。<code>\.</code> は <code>.</code>、<code>\/</code> は <code>/</code> です。</li>
+<li><strong><code>[…]</code></strong>（正規表現）: 正規表現の <code>[ ]</code> は、「中に書いた文字の、どれか 1 つ」を表します。<code>[0-9a-zA-Z_-]</code> は「数字・英字・<code>_</code>・<code>-</code> のどれか」、<code>[.-]</code> は「<code>.</code> か <code>-</code>」。<code>-</code> で範囲を書けます。</li>
+<li><strong><code>{n,m}</code></strong>（正規表現）: 正規表現の <code>{6}</code> は「すぐ前の物が、ちょうど 6 回」、<code>{8,12}</code> は「8 回から 12 回」を表します。<code>\d{6}</code> は「数字 6 けた」。</li>
+<li><strong><code>+</code></strong>（正規表現）: 正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</li>
+<li><strong><code>.</code></strong>（正規表現）: 正規表現の <code>.</code> は、「どんな 1 文字でも」を表します。<code>.</code> という文字そのものを表したい時は、<code>\.</code> と書きます。</li>
+<li><strong><code>^</code></strong>（正規表現）: 正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</li>
+<li><strong><code>$</code></strong>（正規表現）: 正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</li>
+<li><strong><code>[式 for 名前 in 並び]</code></strong>（Python）: <code>[f"http://{host}" for host in ALLOWED_HOSTS]</code> は、「並びの 1 つずつから、新しい値を作って、並び（リスト）にする」書き方です（リスト内包表記）。後ろに <code>if 条件</code> を付けると、条件に合う物だけになります。</li>
+<li><strong><code>==</code></strong>（Python）: <code>a == b</code> は、「a と b が等しいか」です。<code>=</code>（1 つ）は「値を入れる」です。</li>
+<li><strong><code>名前=値</code></strong>（Python）: <code>open(path, encoding="utf-8")</code> の <code>encoding="utf-8"</code> のように、<code>名前=値</code> で渡す引数は「キーワード引数」です。順番に関係なく、名前で渡せます。</li>
+<li><strong><code>__file__</code></strong>（Python）: <code>__file__</code> は、今のファイルの場所が入った、特別な変数です。<code>Path(__file__).resolve().parent</code> で、このファイルが置いてあるフォルダが分かります。</li>
+<li><strong><code>Path</code></strong>（Python）: <code>Path</code>（<code>pathlib</code>）は、ファイルやフォルダの場所を表す型です。<code>Path("memo.txt").exists()</code>・<code>.read_text()</code>・<code>/</code> でのつなぎ（<code>BASE_DIR / "media"</code>）ができます。</li>
+<li><strong><code>RuntimeError</code></strong>（Python）: <code>RuntimeError</code> は、ほかの種類に当てはまらない、動いている時のエラーです。<code>raise RuntimeError("…")</code> で、説明を付けて止めます。</li>
+<li><strong><code>.parent</code></strong>（Python）: <code>Path</code> の <code>.parent</code> は、1 つ上のフォルダです。<code>.parent.parent</code> で 2 つ上です。</li>
+<li><strong><code>.environ</code></strong>（Python）: <code>os.environ</code> は、環境変数の入れ物（辞書のような物）です。<code>os.environ.get("名前", 無い時の値)</code> で読みます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -859,6 +879,13 @@ whitenoise==6.12.0
 <li><strong><code>@method_decorator</code></strong>（Django）: <code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</li>
 <li><strong><code>@require_POST</code></strong>（Django）: 「この画面は POST だけを受け付ける」という印（デコレーター）。GET などで来たら <code>405</code> を返します。ログアウトのように、状態を変える物に付けます。</li>
 <li><strong><code>@api_view</code></strong>（Django REST framework）: <code>@api_view(["GET", "POST"])</code> を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。</li>
+<li><strong><code>b"…"</code></strong>（Python）: <code>b"…"</code> は、文字ではなく「バイトの並び」（<code>bytes</code>）を作る書き方です。<code>b"\xff\xd8\xff"</code> は、JPEG の画像のファイルの、最初の 3 バイトです。</li>
+<li><strong><code>JsonResponse</code></strong>（Django）: Django の <code>JsonResponse({"status": "ok"})</code> は、辞書を JSON にして返す答えです。</li>
+<li><strong><code>TemplateView</code></strong>（Django）: Django の <code>TemplateView</code> は、決まったテンプレート（HTML）を表示するだけのビューです。<code>template_name = "index.html"</code> を書くだけで使えます。</li>
+<li><strong><code>Response</code></strong>（Django REST framework）: DRF の <code>Response(data)</code> は、API の答えです。辞書や並びを、JSON にして返します。</li>
+<li><strong><code>.body</code></strong>（Django）: Django の <code>request.body</code> は、届いた要求の中身（バイトのまま）です。JSON なら <code>json.loads(request.body)</code> で読みます。</li>
+<li><strong><code>.user</code></strong>（Django）: Django の <code>request.user</code> は、今ログインしている人（していなければ「だれでもない人」）です。<code>request.user.is_authenticated</code> で、ログインしているかが分かります。</li>
+<li><strong><code>.META</code></strong>（Django）: Django の <code>request.META</code> は、要求の見出しやサーバーの情報が入った辞書です。<code>request.META.get("REMOTE_ADDR")</code> で、送ってきた所のアドレスが分かります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -888,6 +915,11 @@ whitenoise==6.12.0
 <li><strong><code>.as_view()</code></strong>（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。</li>
 <li><strong><code>path()</code></strong>（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。<code>path("requests/&lt;int:pk&gt;/", views.detail)</code> の <code>&lt;int:pk&gt;</code> は、URL の中の数を <code>pk</code> という名前で受け取ります。</li>
 <li><strong><code>re_path()</code></strong>（Django）: 正規表現で URL の決まりを書く関数。<code>re_path(r"^(?!api/|admin/).*$", …)</code> は「<code>api/</code>・<code>admin/</code> で始まらない URL は全部」（React の画面を返す）。</li>
+<li><strong><code>(?=…)</code></strong>（正規表現）: 正規表現の <code>(?= )</code> は「この後ろに、こういう形が続く時だけ」、<code>(?! )</code> は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。<code>^(?!api/|admin/).*$</code> は「<code>api/</code> や <code>admin/</code> で始まらない物、全部」。中の文字は、合わせた文字には入りません。</li>
+<li><strong><code>*</code></strong>（正規表現）: 正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</li>
+<li><strong><code>|</code></strong>（正規表現）: 正規表現の <code>|</code> は、「左か右のどちらか」を表します。<code>api/|admin/</code> は「<code>api/</code> か <code>admin/</code>」。</li>
+<li><strong><code>.urls</code></strong>（Django）: <code>admin.site.urls</code> は、Django の管理画面の URL の一覧です。<code>path("admin/", admin.site.urls)</code> で、<code>/admin/</code> に管理画面を出します。</li>
+<li><strong><code>.site</code></strong>（Django）: <code>admin.site</code> は、Django の管理画面そのものです。<code>admin.site.register(モデル)</code> で、モデルを管理画面に出します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -925,6 +957,9 @@ whitenoise==6.12.0
 <li><strong><code>from</code></strong>（JavaScript・TypeScript）: <code>import { 名前 } from "場所";</code> の一部で、「どこから読み込むか」を書きます。</li>
 <li><strong><code>export</code></strong>（TypeScript）: 「このファイルの外から使ってよい」という印。<code>export type RequestStatus = …</code> と書くと、ほかのファイルで <code>import</code> して使えます。</li>
 <li><strong><code>default</code></strong>（JavaScript・TypeScript）: <code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</li>
+<li><strong><code>//</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript では、<code>//</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>defineConfig()</code></strong>（JavaScript・TypeScript）: <code>defineConfig({ … })</code> は、設定ファイル（Vite の <code>vite.config</code> や Playwright の <code>playwright.config</code>）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。</li>
+<li><strong><code>react()</code></strong>（React）: <code>react()</code> は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -971,8 +1006,27 @@ whitenoise==6.12.0
 <li><strong><code>.stringify()</code></strong>（TypeScript）: <code>JSON.stringify(値)</code> は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。</li>
 <li><strong><code>.json()</code></strong>（JavaScript・TypeScript）: <code>fetch</code> の答え（<code>Response</code>）の本文を、JSON として読んで、オブジェクトにするメソッド。<code>await res.json()</code>。</li>
 <li><strong><code>.catch()</code></strong>（TypeScript）: <code>Promise</code> が失敗した時の代わりの処理を登録するメソッド。<code>res.json().catch(() =&gt; ({}))</code> は「JSON として読めなければ空のオブジェクト」。</li>
-<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</li>
+<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; `…${path}`</code> は「<code>path</code> を受け取って文字列を返す関数」。</li>
 <li><strong><code>...</code></strong>（TypeScript）: スプレッド構文。<code>[...requests]</code> は配列の中身を広げて、新しい配列（写し）を作ります。<code>{ ...user, isAdmin: true }</code> は、オブジェクトを写して一部だけ変えます。</li>
+<li><strong><code>/…/</code></strong>（JavaScript・TypeScript）: JavaScript の <code>/…/</code> は、正規表現（文字の形を表す書き方）をそのまま書く形です。<code>/\d+/</code> は「数字が 1 つ以上」。<code>.match(/…/)</code>・<code>.test(…)</code>・<code>.split(/…/)</code> などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>(?:…)</code></strong>（正規表現）: 正規表現の <code>(?: )</code> は、取り出さないまとまりです。<code>(?:^|; )</code> は「行の頭か、<code>;</code> のどちらか」をまとめるだけで、取り出す番号には数えません。</li>
+<li><strong><code>[^…]</code></strong>（正規表現）: 正規表現の <code>[^ ]</code> は、「中に書いた文字<strong>以外</strong>の 1 文字」を表します。<code>[^;]+</code> は「<code>;</code> 以外の文字が 1 つ以上」、<code>[^\x21-\x7E]</code> は「英数字と記号（ASCII の見える文字）以外」。</li>
+<li><strong><code>+</code></strong>（正規表現）: 正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</li>
+<li><strong><code>^</code></strong>（正規表現）: 正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</li>
+<li><strong><code>|</code></strong>（正規表現）: 正規表現の <code>|</code> は、「左か右のどちらか」を表します。<code>api/|admin/</code> は「<code>api/</code> か <code>admin/</code>」。</li>
+<li><strong><code>(…)</code></strong>（正規表現）: 正規表現の <code>( )</code> は、まとまり（グループ）を作ります。合った文字のうち、<code>( )</code> の中の部分だけを、あとから取り出せます（<code>m[1]</code>・<code>m.group(1)</code>・<code>$1</code> など）。<code>(…)?</code> のように、まとまりごとくり返しや省略もできます。</li>
+<li><strong><code>`${…}`</code></strong>（JavaScript・TypeScript）: <code>`…`</code>（バッククォートで囲んだ文字。テンプレート文字列）の中の <code>${ }</code> には、値や式を入れられます。<code>`エラー ${res.status}`</code> は、<code>res.status</code> が 404 なら <code>エラー 404</code> になります。改行も、そのまま書けます。</li>
+<li><strong><code>!==</code></strong>（JavaScript・TypeScript）: <code>a !== b</code> は、「a と b が同じではない」（型も含めて比べる）です。<code>===</code>（同じ）の反対です。</li>
+<li><strong><code>||</code></strong>（JavaScript・TypeScript）: <code>a || b</code> は、「a か b のどちらか」（または）です。<code>el.innerText || el.getAttribute("name") || ""</code> のように、「左が空なら右を使う」という使い方もします（<code>0</code> や <code>""</code> も「空」とみなされるので、<code>null</code>・<code>undefined</code> だけを見たい時は <code>??</code> を使います）。</li>
+<li><strong><code>!</code></strong>（JavaScript・TypeScript）: <code>!res.ok</code> のように前に付けた <code>!</code> は、「〜ではない」です。<code>if (!res.ok)</code> は「うまくいかなかったら」。</li>
+<li><strong><code>条件 ? A : B</code></strong>（JavaScript・TypeScript）: <code>条件 ? A : B</code> は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。<code>user.isAdmin ? "管理者" : "一般"</code>。<code>if</code> とちがい、値を返すので、そのまま変数や表示に使えます。</li>
+<li><strong><code>() =&gt;</code></strong>（JavaScript・TypeScript）: <code>() =&gt; { … }</code> は、名前の無い関数（アロー関数）の書き方です。<code>( )</code> の中が引数、<code>=&gt;</code> の右が中身です。<code>(e) =&gt; setKeyword(e.target.value)</code> のように、1 つの式なら <code>{ }</code> を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。</li>
+<li><strong><code>Error</code></strong>（JavaScript・TypeScript）: <code>new Error("説明")</code> は、エラーを作ります。<code>throw new Error(…)</code> でエラーを起こし、<code>try { … } catch (err) { … }</code> で受け止めます。<code>err.message</code> で説明の文を読めます。</li>
+<li><strong><code>decodeURIComponent()</code></strong>（JavaScript・TypeScript）: <code>decodeURIComponent("%E5%B1%B1")</code> は、URL やクッキーの中で <code>%XX</code> の形にした文字を、元の文字（山）に戻します。反対は <code>encodeURIComponent()</code> です。</li>
+<li><strong><code>fetch()</code></strong>（JavaScript・TypeScript）: <code>fetch(URL)</code> は、サーバーに HTTP の要求を送る関数です。<code>await fetch(…)</code> で答えを待ち、<code>res.ok</code>（うまくいったか）・<code>res.status</code>（状態コード）・<code>await res.json()</code>（JSON の中身）を読みます。</li>
+<li><strong><code>.cookie</code></strong>（JavaScript・TypeScript）: <code>document.cookie</code> は、そのページのクッキーを、<code>名前=値; 名前=値</code> の形の文字で読みます（<code>HttpOnly</code> のクッキーは読めません）。</li>
+<li><strong><code>.ok</code></strong>（JavaScript・TypeScript）: <code>fetch</code> の答えの <code>.ok</code> は、状態コードが 200〜299（うまくいった）なら <code>true</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1069,6 +1123,18 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="nb">Compress-Archive</span> <span class="n">-Path</span> <span class="s2">&quot;out\webapp-$ver\*&quot;</span> <span class="n">-DestinationPath</span> <span class="s2">&quot;out\webapp-$ver.zip&quot;</span> <span class="n">-Force</span>
 <span class="nb">Get-FileHash</span> <span class="s2">&quot;out\webapp-$ver.zip&quot;</span> <span class="n">-Algorithm</span> <span class="n">SHA256</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>robocopy /E</code></strong>（コマンド）: <code>/E</code> は、中のフォルダも（空のフォルダも）全部コピーする指定です。</li>
+<li><strong><code>robocopy /XD</code></strong>（コマンド）: <code>/XD .venv __pycache__</code> は、コピーしないフォルダの名前を並べる指定です。</li>
+<li><strong><code>robocopy /XF</code></strong>（コマンド）: <code>/XF *.pyc</code> は、コピーしないファイルの名前（<code>*</code> で「何でも」）を並べる指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> zip の中に、<code>app\manage.py</code>・<code>app\frontend_dist\index.html</code>・<code>app\staticfiles\</code>・<code>app\requirements.txt</code>・<code>wheelhouse\*.whl</code> があること。</p>
 <h2 id="8-http">8. HTTP で動かすための設定（なぜ要るか）</h2>
@@ -1284,6 +1350,16 @@ whitenoise-6.12.0-py3-none-any.whl
 <span class="nt">&lt;/service&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;arguments&gt;</code></strong>（設定ファイル（XML））: <code>&lt;arguments&gt;</code> は、プログラムに渡す引数です（コマンドで打つ時の、プログラム名の後ろの部分）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -1401,6 +1477,13 @@ whitenoise-6.12.0-py3-none-any.whl
 <li><strong><code>Remove-Item -Path</code></strong>（PowerShell）: <code>Remove-Item</code> で、消す物の場所を決めるオプション。<code>Remove-Item -Path "Env:NAME"</code> は、環境変数 <code>NAME</code> を消します（<code>Env:</code> は環境変数の場所）。</li>
 <li><strong><code>Remove-Item -ErrorAction</code></strong>（PowerShell）: <code>Remove-Item</code> で、エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は「無くてもエラーを出さずに次へ進む」。</li>
 <li><strong><code>Pop-Location</code></strong>（PowerShell）: <code>Push-Location</code> で覚えたフォルダへ戻るコマンド。</li>
+<li><strong><code>$true</code></strong>（PowerShell）: <code>$true</code> は「はい（真）」を表す値です。<code>-Recurse:$true</code> のように、スイッチに値を渡す時にも使います。反対は <code>$false</code> です。</li>
+<li><strong><code>$PSScriptRoot</code></strong>（PowerShell）: <code>$PSScriptRoot</code> は、「今動いているスクリプト（<code>.ps1</code>）が置いてあるフォルダ」の場所が入った、特別な変数です。今いるフォルダがどこでも、スクリプトの隣のファイルを <code>Join-Path $PSScriptRoot "dev.env"</code> で見つけられます。</li>
+<li><strong><code>[Parameter()]</code></strong>（PowerShell）: <code>param( )</code> の中の <code>[Parameter(ValueFromRemainingArguments = $true)]</code> は、引数の受け取り方を決める印です。この指定なら、名前を付けずに渡した残りの引数を、全部その変数に受け取ります。<code>[Parameter(Mandatory)]</code> なら「必ず渡す」です。</li>
+<li><strong><code>[string[]]</code></strong>（PowerShell）: <code>[string[]]</code> は「文字列の並び（配列）」という型です。</li>
+<li><strong><code>[xml]</code></strong>（PowerShell）: <code>[xml](Get-Content x.xml)</code> は、XML のファイルの中身を読んで、<code>$svc.service.executable</code> のように、タグの名前でたどれる形にします。</li>
+<li><strong><code>@名前</code></strong>（PowerShell）: <code>コマンド @CurlArgs</code> のように、<code>$</code> の代わりに <code>@</code> を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。</li>
+<li><strong><code>param( … )</code></strong>（PowerShell）: スクリプトの最初に書く <code>param([string]$Base = "http://…")</code> は、「このスクリプトが受け取る引数」の決まりです。<code>.\smoke.ps1 -Base http://…</code> のように、名前を付けて渡せます。<code>=</code> の右は、渡さなかった時の値です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

@@ -104,6 +104,8 @@ Get-ChildItem Cert:\LocalMachine\My |
 > - **`Import-PfxCertificate -FilePath`**（PowerShell）: 入れる `.pfx` のファイルの場所を決めるオプション。
 > - **`Import-PfxCertificate -CertStoreLocation`**（PowerShell）: 入れる先の証明書の置き場を決めるオプション。`Cert:\LocalMachine\My` は、このパソコン全体の「個人」の置き場（IIS はここから使う）。
 > - **`Import-PfxCertificate -Password`**（PowerShell）: `.pfx` のパスワード（`Read-Host -AsSecureString` で受け取った物）を渡すオプション。
+> - **`.DnsNameList`**（PowerShell）: 証明書の `.DnsNameList` は、その証明書が使える名前（ドメイン名）の一覧です。`.Unicode` で、名前を文字として取り出します。
+> - **`.Unicode`**（PowerShell）: `.DnsNameList` の 1 つずつの `.Unicode` は、名前を読める文字にした物です。
 
 <!-- /first-use -->
 
@@ -144,6 +146,7 @@ Get-IISSiteBinding -Name "webapp-prod"
 > - **`New-IISSiteBinding -SslFlag`**（PowerShell）: HTTPS の細かい決まりを決めるオプション。`Sni` は「名前を見て、使う証明書を選ぶ」（同じ 443 番で、いくつもの名前を受け取れる）。
 > - **`Get-IISSiteBinding`**（PowerShell）: IIS のサイトのバインド（受け取る住所・ポート・名前）の一覧を表示するコマンド。
 > - **`Get-IISSiteBinding -Name`**（PowerShell）: 調べるサイトの名前を決めるオプション。
+> - **`.Thumbprint`**（PowerShell）: 証明書の `.Thumbprint` は、証明書を見分けるための、長い 16 進数の文字（指紋）です。IIS に証明書を結び付ける時に使います。
 
 <!-- /first-use -->
 
@@ -268,6 +271,20 @@ cd D:\webapp\stg\service
 </configuration>
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<conditions>`**（設定ファイル（XML））: `<conditions>` は、決まりを使うための、追加の条件（`<add>`）を並べる所です。
+> - **`<add>`**（設定ファイル（XML））: `<conditions>` の中の `<add input="{HTTPS}" pattern="off" />` は、「HTTPS ではない（`off`）時だけ」という条件です。
+> - **`input=`**（設定ファイル（XML））: `input="{HTTPS}"` は、調べる値です。`{HTTPS}` は、HTTPS で来たら `on`、そうでなければ `off` になる、IIS が用意した値です。
+> - **`pattern=`**（設定ファイル（XML））: `pattern="off"` は、`input` の値がこの形（正規表現）に合う時だけ、という条件です。
+> - **`redirectType=`**（設定ファイル（XML））: `redirectType="Found"` は、行き直させる時の状態コードの種類です。`Found` は 302（一時的に移った）、`Permanent` は 301（ずっと移った）です。
+> - **`<serverVariables>`**（設定ファイル（XML））: `<serverVariables>` は、取り次ぐ時に、要求の見出しなどの値を書き足す所です。
+> - **`<set>`**（設定ファイル（XML））: `<set name="HTTP_X_FORWARDED_PROTO" value="https" />` は、取り次ぐ要求に、`X-Forwarded-Proto: https`（元は HTTPS で来た）という見出しを付けます。アプリは、これを見て、HTTPS で来たと分かります。
+
+<!-- /first-use -->
+
 `HTTP_X_FORWARDED_PROTO` を、ルールの中で使ってよい名前として、IIS に登録します（1 回だけ）。
 
 ```powershell
@@ -306,6 +323,14 @@ Get-ChildItem Cert:\LocalMachine\My |
     Where-Object { $_.NotAfter -lt (Get-Date).AddDays(30) } |
     Select-Object Subject, NotAfter, Thumbprint
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.NotAfter`**（PowerShell）: 証明書の `.NotAfter` は、使える期限（この日時まで）です。
+
+<!-- /first-use -->
 
 新しい証明書をもらったら、4 章のとおり入れ、5 章のバインドの証明書を入れかえます（`Remove-IISSiteBinding` で外して、`New-IISSiteBinding` で付け直す）。**入れかえは、社員が使わない時間に、検証から**行います。
 

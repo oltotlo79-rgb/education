@@ -387,6 +387,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Import-PfxCertificate -FilePath</code></strong>（PowerShell）: 入れる <code>.pfx</code> のファイルの場所を決めるオプション。</li>
 <li><strong><code>Import-PfxCertificate -CertStoreLocation</code></strong>（PowerShell）: 入れる先の証明書の置き場を決めるオプション。<code>Cert:\LocalMachine\My</code> は、このパソコン全体の「個人」の置き場（IIS はここから使う）。</li>
 <li><strong><code>Import-PfxCertificate -Password</code></strong>（PowerShell）: <code>.pfx</code> のパスワード（<code>Read-Host -AsSecureString</code> で受け取った物）を渡すオプション。</li>
+<li><strong><code>.DnsNameList</code></strong>（PowerShell）: 証明書の <code>.DnsNameList</code> は、その証明書が使える名前（ドメイン名）の一覧です。<code>.Unicode</code> で、名前を文字として取り出します。</li>
+<li><strong><code>.Unicode</code></strong>（PowerShell）: <code>.DnsNameList</code> の 1 つずつの <code>.Unicode</code> は、名前を読める文字にした物です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -428,6 +430,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>New-IISSiteBinding -SslFlag</code></strong>（PowerShell）: HTTPS の細かい決まりを決めるオプション。<code>Sni</code> は「名前を見て、使う証明書を選ぶ」（同じ 443 番で、いくつもの名前を受け取れる）。</li>
 <li><strong><code>Get-IISSiteBinding</code></strong>（PowerShell）: IIS のサイトのバインド（受け取る住所・ポート・名前）の一覧を表示するコマンド。</li>
 <li><strong><code>Get-IISSiteBinding -Name</code></strong>（PowerShell）: 調べるサイトの名前を決めるオプション。</li>
+<li><strong><code>.Thumbprint</code></strong>（PowerShell）: 証明書の <code>.Thumbprint</code> は、証明書を見分けるための、長い 16 進数の文字（指紋）です。IIS に証明書を結び付ける時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -552,6 +555,22 @@ li, tr { page-break-inside: avoid; }
 <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;conditions&gt;</code></strong>（設定ファイル（XML））: <code>&lt;conditions&gt;</code> は、決まりを使うための、追加の条件（<code>&lt;add&gt;</code>）を並べる所です。</li>
+<li><strong><code>&lt;add&gt;</code></strong>（設定ファイル（XML））: <code>&lt;conditions&gt;</code> の中の <code>&lt;add input="{HTTPS}" pattern="off" /&gt;</code> は、「HTTPS ではない（<code>off</code>）時だけ」という条件です。</li>
+<li><strong><code>input=</code></strong>（設定ファイル（XML））: <code>input="{HTTPS}"</code> は、調べる値です。<code>{HTTPS}</code> は、HTTPS で来たら <code>on</code>、そうでなければ <code>off</code> になる、IIS が用意した値です。</li>
+<li><strong><code>pattern=</code></strong>（設定ファイル（XML））: <code>pattern="off"</code> は、<code>input</code> の値がこの形（正規表現）に合う時だけ、という条件です。</li>
+<li><strong><code>redirectType=</code></strong>（設定ファイル（XML））: <code>redirectType="Found"</code> は、行き直させる時の状態コードの種類です。<code>Found</code> は 302（一時的に移った）、<code>Permanent</code> は 301（ずっと移った）です。</li>
+<li><strong><code>&lt;serverVariables&gt;</code></strong>（設定ファイル（XML））: <code>&lt;serverVariables&gt;</code> は、取り次ぐ時に、要求の見出しなどの値を書き足す所です。</li>
+<li><strong><code>&lt;set&gt;</code></strong>（設定ファイル（XML））: <code>&lt;set name="HTTP_X_FORWARDED_PROTO" value="https" /&gt;</code> は、取り次ぐ要求に、<code>X-Forwarded-Proto: https</code>（元は HTTPS で来た）という見出しを付けます。アプリは、これを見て、HTTPS で来たと分かります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>HTTP_X_FORWARDED_PROTO</code> を、ルールの中で使ってよい名前として、IIS に登録します（1 回だけ）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&amp;</span> <span class="s2">&quot;$env:windir\system32\inetsrv\appcmd.exe&quot;</span> <span class="nb">set </span><span class="n">config</span> <span class="p">`</span>
   <span class="n">-section</span><span class="p">:</span><span class="n">system</span><span class="p">.</span><span class="n">webServer</span><span class="p">/</span><span class="n">rewrite</span><span class="p">/</span><span class="n">allowedServerVariables</span> <span class="p">/+</span><span class="s2">&quot;[name=&#39;HTTP_X_FORWARDED_PROTO&#39;]&quot;</span> <span class="p">/</span><span class="n">commit</span><span class="p">:</span><span class="n">apphost</span>
@@ -601,6 +620,16 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span><span class="p">.</span><span class="n">NotAfter</span> <span class="o">-lt</span> <span class="p">(</span><span class="nb">Get-Date</span><span class="p">).</span><span class="n">AddDays</span><span class="p">(</span><span class="n">30</span><span class="p">)</span> <span class="p">}</span> <span class="p">|</span>
     <span class="nb">Select-Object</span> <span class="n">Subject</span><span class="p">,</span> <span class="n">NotAfter</span><span class="p">,</span> <span class="n">Thumbprint</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.NotAfter</code></strong>（PowerShell）: 証明書の <code>.NotAfter</code> は、使える期限（この日時まで）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>新しい証明書をもらったら、4 章のとおり入れ、5 章のバインドの証明書を入れかえます（<code>Remove-IISSiteBinding</code> で外して、<code>New-IISSiteBinding</code> で付け直す）。<strong>入れかえは、社員が使わない時間に、検証から</strong>行います。</p>
 <h2 id="12">12. 困ったとき</h2>

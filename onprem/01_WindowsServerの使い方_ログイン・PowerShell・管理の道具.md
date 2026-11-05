@@ -208,6 +208,16 @@ Windows Server には、たくさんの管理の道具が入っています。�
     [Security.Principal.WindowsBuiltInRole]::Administrator)
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[Security.Principal.WindowsPrincipal]`**（PowerShell）: `[Security.Principal.WindowsPrincipal]` は、「今の利用者が、どのグループにいるか」を調べるための .NET の型です。`.IsInRole(…)` で、管理者として動いているかを確かめられます。
+> - **`[Security.Principal.WindowsBuiltInRole]`**（PowerShell）: `[Security.Principal.WindowsBuiltInRole]::Administrator` は、「Windows の管理者のグループ」を表す値です。
+> - **`[型]::名前`**（PowerShell）: `[System.IO.File]::ReadAllBytes($path)` のように、`[型の名前]::名前` と書くと、.NET（PowerShell の土台）の型に付いている関数や値を、直接使えます。
+
+<!-- /first-use -->
+
 **確かめること:** `True` と出ること。`False` なら、一度閉じて、「管理者」の方で開き直します。インストール・サービス・ファイアウォール・アクセス許可の変更は、管理者でないと「**アクセスが拒否されました**」になります。
 
 > **PowerShell の版:** Windows Server に最初から入っているのは **Windows PowerShell 5.1** です。別に入れる「PowerShell 7」もありますが、この資料と手順書は、すべて 5.1 で動くように書いています。
@@ -301,6 +311,7 @@ Get-Service |
 >
 > - **`-eq`**（PowerShell）: PowerShell の「等しい」の比べ方（equal）。`$LASTEXITCODE -eq 0` は「終わった時の番号が 0（成功）か」。PowerShell では `==` ではなく `-eq` と書きます。大文字・小文字は区別しません（`"ABC" -eq "abc"` も `True`）。
 > - **`Where-Object`**（PowerShell）: `|` で流れてきた物のうち、条件に合う物だけを残すコマンド。`{ }` の中の `$_` が「今の 1 つ」です。`Where-Object { $_.Length -gt 1000 }` のように使います。
+> - **`'…'`**（PowerShell）: `'…'`（シングルクォート）で囲んだ文字は、書いたとおりの文字で、中の `$` や `` ` `` は特別な意味になりません。正規表現（`'^\s*#'`）や、そのまま渡したい文字に使います。中に `'` を入れる時は `''` と 2 つ書きます。
 
 <!-- /first-use -->
 
@@ -337,6 +348,16 @@ $port = 8080
 # 環境変数は $env: を付けて読む
 $env:COMPUTERNAME
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`"…$変数…"`**（PowerShell）: `"…"`（ダブルクォート）で囲んだ文字の中の `$名前` は、変数の中身に置きかわります。`"こんにちは、$name さん"` → `こんにちは、太郎 さん`。そのまま `$` を出したい時は、`'…'`（シングルクォート）で囲みます。
+> - **`$名前`**（PowerShell）: `$os = …` のように `$` で始まる名前は「変数」（値に付けた名前）です。`=` の右の結果を覚えておき、あとで `$os` と書けば使えます。名前の大文字・小文字は区別しません。
+> - **`$env:名前`**（PowerShell）: `$env:GREETING` のように `$env:` を付けた名前は「環境変数」（プログラムに外から渡す設定）です。`$env:GREETING = "おはよう"` で設定すると、その PowerShell の窓から動かすプログラム（`cargo run` など）が読めます。窓を閉じると消えます。
+
+<!-- /first-use -->
 
 **確かめること:** `"..."` と `'...'` で結果が変わること。パスワードなど `$` を含む文字を書くときは、`'...'` で囲まないと、`$` の後ろが変数として消えてしまいます。
 
@@ -388,6 +409,12 @@ Get-ChildItem D:\ -Recurse -File -ErrorAction SilentlyContinue |
 > - **`Get-ChildItem -ErrorAction`**（PowerShell）: エラーが起きた時の動きを決めるオプション。`-ErrorAction SilentlyContinue` は、読めないフォルダ（権限が無い所）があっても、エラーを出さずに続けます。
 > - **`Sort-Object -Descending`**（PowerShell）: 大きい順（新しい順）に並べるオプション。`Sort-Object Length -Descending` は、大きいファイルから順に並べます。
 > - **`Select-Object -First`**（PowerShell）: `-First 1` で、結果の最初の 1 つだけを取り出します。`-Last 3` なら最後の 3 つです。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`$_`**（PowerShell）: `$_` は、`|`（パイプ）で流れてきた物の「今の 1 つ」を表す、特別な変数です。`Where-Object { $_.Name -like 'a*' }` は、「流れてきた 1 つずつの `Name` が a で始まる物だけ」。`catch { … }` の中では、起きたエラーを表します。
+> - **`[int]`**（PowerShell）: `[int]` は「整数」という型です。`[int]($_.Length / 1MB)` のように値の前に書くと、整数に変えます（小数は四捨五入に近い形で丸めます）。
+> - **`;`**（PowerShell）: `;` は、1 行にコマンドを 2 つ以上書く時の区切りです。`cargo fmt --check; $LASTEXITCODE` は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。
+> - **`@{ … }`**（PowerShell）: `@{ キー = 値; … }` は「表（ハッシュテーブル）」を作る書き方です。`$h = @{ Name = "web"; Port = 8080 }` なら `$h.Port` で `8080`。`Select-Object` の中の `@{ Name = 'MB'; Expression = { … } }` は、「計算して作る列」の決まった形です。
+> - **`.Length`**（PowerShell）: `$_.Length` は、ファイルなら大きさ（バイト）、文字なら文字数です。`/ 1MB` で MB に直せます（`1MB` は PowerShell が知っている 1048576 のことです）。
 
 <!-- /first-use -->
 
@@ -410,6 +437,7 @@ Get-ChildItem D:\ -Recurse -File -ErrorAction SilentlyContinue |
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.\backup.ps1`**（PowerShell）: 今いるフォルダの `backup.ps1`（この資料で作る、データベースとファイルの控えを取るスクリプト）を動かす書き方。PowerShell では、今いるフォルダのスクリプトも `.\` を付けないと動きません（うっかり同じ名前の物を動かさないための決まり）。
+> - **`.\`**（PowerShell）: `.\target\debug\practice.exe` の `.\` は、「今いるフォルダの中の」という意味です。PowerShell は、安全のため、今いるフォルダのプログラムでも `.\` を付けないと動かしません。
 
 <!-- /first-use -->
 
@@ -581,6 +609,9 @@ icacls D:\webapp\secrets /remove "BUILTIN\Users"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`icacls`**（コマンド）: ファイルやフォルダの権限（だれが読める・書けるか）を表示する・変えるコマンド。`(R)` は読む、`(M)` は変える、`(F)` は全部できる、`(OI)(CI)` は中のファイルとフォルダにも引き継ぐ、という意味です。
+> - **`icacls /grant`**（コマンド）: `icacls フォルダ /grant "名前:(OI)(CI)M"` は、利用者やグループに権限を与えます。`M` は変更（読む・書く・消す）、`RX` は読んで実行、`F` は全部。`(OI)(CI)` は、中のファイルとフォルダにも同じ権限を引き継ぐ印です。
+> - **`icacls /inheritance`**（コマンド）: `/inheritance:r` は、上のフォルダから引き継いだ権限を外す指定です。`/inheritance:e` なら引き継ぎを戻します。権限を、自分で決めた物だけにする時に使います。
+> - **`icacls /remove`**（コマンド）: `/remove 名前` は、その利用者やグループの権限を外します。
 
 <!-- /first-use -->
 
@@ -787,6 +818,13 @@ Get-NetTCPConnection -LocalPort 80 -State Listen | Select-Object LocalAddress, O
 > - **`-f`**（PowerShell）: 書式（形）を決めて文字列を作る演算子。`"{0,-10} {1}" -f $name, $hash` は、`{0}` に 1 つ目、`{1}` に 2 つ目を入れます（`,-10` は「10 文字分の幅で左に寄せる」）。
 > - **`Get-Volume`**（PowerShell）: ディスク（ボリューム）の一覧と、大きさ・空いている量を表示するコマンド。
 > - **`Get-NetTCPConnection -LocalPort`**（PowerShell）: `-LocalPort 8080` で、このパソコン側のポート番号が 8080 の物だけに絞ります。
+> - **`"{0}" -f 値`**（PowerShell）: `"{0} と {1}" -f $a, $b` の `-f` は、左の文字の `{0}`・`{1}` に、右に並べた値を、0 番目から順に入れる書き方です（書式の演算子）。`"全体 {0:N1} GB" -f 15.6` → `全体 15.6 GB`。
+> - **`{0:N桁}`**（PowerShell）: `{0:N1}` の `N1` は、「3 けたごとに `,` を入れ、小数点以下を 1 けた」で表示する指定です。`N0` なら小数なし（`1,234`）。
+> - **`.WorkingSet64`**（PowerShell）: `Get-Process` の結果の `.WorkingSet64` は、そのプログラムが今使っているメモリの量（バイト）です。
+> - **`.TotalVisibleMemorySize`**（PowerShell）: `Win32_OperatingSystem` の `.TotalVisibleMemorySize` は、パソコンのメモリの全体の大きさです（単位は KB なので、`/ 1MB` で GB になります）。
+> - **`.FreePhysicalMemory`**（PowerShell）: `Win32_OperatingSystem` の `.FreePhysicalMemory` は、今空いているメモリの大きさです（単位は KB）。
+> - **`.SizeRemaining`**（PowerShell）: `Get-Volume` の結果の `.SizeRemaining` は、ドライブの空き容量（バイト）です。`.Size` は全体の大きさです。
+> - **`.Size`**（PowerShell）: `Get-Volume` の結果の `.Size` は、ドライブ全体の大きさ（バイト）です。
 
 <!-- /first-use -->
 
@@ -906,6 +944,7 @@ New-NetFirewallRule -DisplayName "webapp HTTP 80 (社内から)" `
 > - **`New-NetFirewallRule -RemoteAddress`**（PowerShell）: どこから来た通信を通すかを決めるオプション。`-RemoteAddress 10.0.0.0/8` のように、社内の住所の範囲だけに絞ります。
 > - **`New-NetFirewallRule -Profile`**（PowerShell）: 決まりを効かせるネットワークの種類を決めるオプション。`-Profile Domain` は、会社のドメインのネットワークの時だけ。
 > - **`New-NetFirewallRule -Action`**（PowerShell）: 合った通信をどうするかを決めるオプション。`Allow` は通す、`Block` は止める。
+> - **`` ` ``**（PowerShell）: 行の最後の `` ` ``（バッククォート。`Shift` ＋ `@` で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。`` ` `` の後ろに空白があると続かないので、注意します。
 
 <!-- /first-use -->
 
@@ -930,6 +969,7 @@ Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10 HotFi
 > **▶ ここで初めて出てくるコード**
 >
 > - **`Get-HotFix`**（PowerShell）: 入っている Windows の更新プログラム（番号 `HotFixID` と、入れた日 `InstalledOn`）の一覧を表示するコマンド。
+> - **`.LastBootUpTime`**（PowerShell）: `Win32_OperatingSystem` の `.LastBootUpTime` は、パソコンを最後に起動した日時です。
 
 <!-- /first-use -->
 
@@ -964,6 +1004,8 @@ robocopy \\fileserver\share\webapp\installers D:\webapp\installers /R:2 /W:5
 > - **`Get-FileHash`**（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。
 > - **`Get-FileHash -Algorithm`**（PowerShell）: ハッシュの計算のしかたを決めるオプション。`-Algorithm SHA256` は、配っている所が公開している SHA256 の値と比べて、ファイルが壊れていない・すりかえられていないかを確かめる時に使います。
 > - **`robocopy`**（コマンド）: フォルダを丸ごとコピーする、Windows のコマンド（途中で切れても続きからやり直せる）。`/E` は中のフォルダも全部（空のフォルダも）、`/R:2` はしくじった時に 2 回までやり直す、`/W:5` はやり直す前に 5 秒待つ、`/NP` `/NFL` `/NDL` は、進み具合やファイルの名前を 1 つずつ表示しない、という意味です。終わった時の番号は、`0`〜`7` なら成功（`8` 以上が失敗）です。
+> - **`robocopy /R`**（コマンド）: `/R:2` は、コピーに失敗した時に、やり直す回数です（決めないと 100 万回）。
+> - **`robocopy /W`**（コマンド）: `/W:5` は、やり直すまでに待つ秒数です（決めないと 30 秒）。
 
 <!-- /first-use -->
 

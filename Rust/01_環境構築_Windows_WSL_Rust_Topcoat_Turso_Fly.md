@@ -419,6 +419,15 @@ Path
 C:\Users\...
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`$PSVersionTable`**（PowerShell）: `$PSVersionTable` は、PowerShell の版などが入った、特別な変数です。`$PSVersionTable.PSVersion` で版（5.1 や 7.6 など）が分かります。
+> - **`.PSVersion`**（PowerShell）: `$PSVersionTable.PSVersion` は、PowerShell の版です。`.Major` で一番上の数（5 や 7）だけを取り出せます。
+
+<!-- /first-use -->
+
 #### ▼ 1つずつ分解して解説
 
 ##### 解説1: `$PSVersionTable.PSVersion` は PowerShell の版
@@ -583,6 +592,7 @@ if ($env:OneDrive -and $here.StartsWith($env:OneDrive)) {
 > - **`-match`**（PowerShell）: 正規表現（文字の形の決まり）に合うかの比べ方。`$line -match '^\s*#'` は「空白のあと `#` で始まる行（コメント）か」。合った部分は `$Matches` で取り出せます。
 > - **`else`**（PowerShell）: `if (条件) { … } else { … }` の、条件に合わなかった時の所。`elseif (条件)` で、条件をつなげられます。
 > - **`-and`**（PowerShell）: 「かつ」（両方とも `True` の時だけ `True`）。`$a -gt 0 -and $b -gt 0` のように、条件をつなぎます。
+> - **`@' … '@`**（PowerShell）: `@'` の次の行から、行の頭の `'@` までは、何行にもまたがる文字（ヒアストリング）です。中の文字は書いたとおりに扱われ、`$` も置きかわりません。スクリプトやファイルの中身を、そのまま書き込む時に使います。`'@` は、必ず行の頭に書きます。
 
 <!-- /first-use -->
 
@@ -709,6 +719,14 @@ $os = Get-CimInstance Win32_OperatingSystem
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`$名前`**（PowerShell）: `$os = …` のように `$` で始まる名前は「変数」（値に付けた名前）です。`=` の右の結果を覚えておき、あとで `$os` と書けば使えます。名前の大文字・小文字は区別しません。
+
+<!-- /first-use -->
+
 - `Get-CimInstance` は、Windows に PC の情報を問い合わせるコマンドです。`Win32_OperatingSystem` は OS の情報、`Win32_Processor` は CPU の情報です。結果を変数 `$os` と `$cpu` に入れています。
 - `$os.Caption` は OS の名前、`$os.BuildNumber` は**ビルド番号**（Windows の更新の段階を表す番号）です。
 - `$cpu.Architecture` は、**PC の CPU そのもの**の種類を表す番号です。`switch` で、9 なら `x64`、12 なら `ARM64` という名前に直しています。シェルがエミュレーションで動いていても、こちらは本物の CPU を表します。
@@ -716,6 +734,16 @@ $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
 ```powershell
 if ($here -match '[^\x21-\x7E]') {
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`'…'`**（PowerShell）: `'…'`（シングルクォート）で囲んだ文字は、書いたとおりの文字で、中の `$` や `` ` `` は特別な意味になりません。正規表現（`'^\s*#'`）や、そのまま渡したい文字に使います。中に `'` を入れる時は `''` と 2 つ書きます。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`[^…]`**（正規表現）: 正規表現の `[^ ]` は、「中に書いた文字**以外**の 1 文字」を表します。`[^;]+` は「`;` 以外の文字が 1 つ以上」、`[^\x21-\x7E]` は「英数字と記号（ASCII の見える文字）以外」。
+
+<!-- /first-use -->
 
 - `-match` は「左の文字列が、右の**パターン**に当てはまるか」を調べる書き方です。`[^\x21-\x7E]` は「半角の英数字と記号（文字の番号 0x21〜0x7E）**以外**の文字」というパターンで、空白（0x20）や日本語が1文字でも入っていると当てはまります。
 - `$env:OneDrive` は、OneDrive を使っている PC で、同期フォルダの場所が入っている環境変数です。今いるフォルダのパスが、その場所から始まっていれば（`StartsWith`）、同期フォルダの中です。
@@ -939,6 +967,18 @@ error: could not compile `hello-rust` (bin "hello-rust") due to 1 previous error
 channel = "1.99.1"
 components = ["rustfmt", "clippy"]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#`**（設定ファイル（TOML））: TOML（`Cargo.toml` などの設定ファイルの書き方）では、`#` から行の終わりまでがコメントです。
+> - **`[toolchain]`**（設定ファイル（TOML））: `rust-toolchain.toml` の `[toolchain]` は、「このフォルダの中で使う Rust の版」を決める見出しです。このファイルがあるフォルダで `cargo` を打つと、書いた版が自動で使われます。
+> - **`channel =`**（設定ファイル（TOML））: `channel = "1.99.1"` は、使う Rust の版です。`"stable"`（いちばん新しい安定版）とも書けますが、版を書いておくと、だれのパソコンでも同じ版になります。
+> - **`components =`**（設定ファイル（TOML））: `components = ["rustfmt", "clippy"]` は、その版と一緒に入れる部品です。
+> - **`[ … ]`**（設定ファイル（TOML））: `["rustfmt", "clippy"]` のように `[ ]` の中に `,` で区切って並べると、いくつもの値の並び（配列）になります。
+
+<!-- /first-use -->
 
 このファイルがあると、**RustNote のフォルダの中で実行したときだけ**、Rust 1.99.1 が使われます。この本の PC で、RustNote のフォルダとホームフォルダで、それぞれ「今使われる Rust の版」を表示すると、次のようになりました（Rust を入れるのは UNIT 04 です。ここでは結果だけ見てください）。
 
@@ -1268,8 +1308,11 @@ init.defaultbranch=master
 > **▶ ここで初めて出てくるコード**
 >
 > - **`git`**（Git）: ファイルの変更の記録を残す道具（Git）の本体のコマンド。`git --version` で版を確かめられます。`git status`・`git add`・`git commit` のように、後ろに「何をするか」を付けて使います（この巻の UNIT 04）。
+> - **`git --version`**（Git）: `git --version` は、入っている Git の版を表示します。
 > - **`where.exe`**（コマンド）: コマンドの本体（`.exe`）が、パソコンのどこにあるかを探すコマンド。`where.exe git` で、`git.exe` の場所が分かります。PowerShell では `where` だけだと別の命令になるので、`.exe` まで付けて打ちます。
 > - **`git config`**（Git）: Git の設定を見る・変えるコマンド。`git config --global user.name "名前"` で、記録に残す名前を決めます。`--list` で、今の設定を一覧で見られます。
+> - **`git config --system`**（Git）: `--system` は、パソコン全体（Git を入れたフォルダの設定ファイル）の設定を対象にする指定です。
+> - **`git config --list`**（Git）: `--list` は、今効いている設定を全部一覧にします。
 
 <!-- /first-use -->
 
@@ -1311,6 +1354,15 @@ git config --show-origin --get core.autocrlf
 file:C:/Program Files/Git/etc/gitconfig	true
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git config --show-origin`**（Git）: `--show-origin` は、それぞれの設定が、どのファイルに書かれているかも一緒に表示します。同じ設定がいくつもの場所にある時、どれが効いているかを調べられます。
+> - **`git config --get`**（Git）: `git config --get core.autocrlf` は、1 つの設定の値だけを表示します。
+
+<!-- /first-use -->
+
 #### 例2-2: 名前・メールアドレス・最初のブランチ名を設定する
 
 > **▼ この手順がやること（先に日本語で）:** コミットに記録される「作った人の名前とメールアドレス」を設定します。さらに、新しいリポジトリの最初のブランチの名前を `main` にします。どれも、あなたのユーザーだけに効く設定（global）です。
@@ -1323,6 +1375,14 @@ git config --global user.email "taro@example.com"
 # 新しいリポジトリの最初のブランチの名前を main にする
 git config --global init.defaultBranch main
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`git config --global`**（Git）: `--global` は、自分（このユーザー）の、全部のリポジトリに効く設定を対象にする指定です。`git config --global user.name "名前"` のように、最初に 1 回だけ設定します。
+
+<!-- /first-use -->
 
 `Taro Yamada` と `taro@example.com` は、あなたの名前とメールアドレスに置き換えてください。3行とも、成功すると何も表示されません。設定した内容は、次のコマンドで確かめます。
 
@@ -1407,6 +1467,8 @@ function New-LfFile($Path, [string[]]$Lines) {
 > - **`New-Item -Value`**（PowerShell）: `-Value 中身` で、作るファイルに最初から書いておく中身を指定します。
 > - **`New-Item -Force`**（PowerShell）: `-Force` で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。
 > - **`Out-Null`**（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。`… | Out-Null` のように後ろに付けると、表示が出なくなります。
+> - **`` `n ``**（PowerShell）: `"…"` の中の `` `n `` は改行です。PowerShell では、`\n` ではなく `` ` ``（バッククォート）を使います。
+> - **`[string[]]`**（PowerShell）: `[string[]]` は「文字列の並び（配列）」という型です。
 
 <!-- /first-use -->
 
@@ -1516,6 +1578,14 @@ New-LfFile .gitignore @(
 git status
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`@( … )`**（PowerShell）: `@( … )` は「並び（配列）」を作る書き方です。`@("a", "b")` で 2 つの並び、`@()` で空の並び。中のコマンドの結果が 1 つでも、必ず並びとして扱えます。
+
+<!-- /first-use -->
+
 `@(` の後で Enter キーを押すと、行の先頭に `>>` が出て、続きを入力できます。最後の `)` の行で Enter キーを押すと、ファイルが作られます。
 
 **▼ 実行結果**
@@ -1555,6 +1625,7 @@ git check-ignore -v .env rustnote.db target/debug/hello-git.exe
 > **▶ ここで初めて出てくるコード**
 >
 > - **`git check-ignore`**（Git）: そのファイルが `.gitignore`（記録しないファイルの一覧）で外されているかを調べるコマンド。`-v` を付けると、`.gitignore` の何行目の決まりで外されたかも表示します。
+> - **`git check-ignore -v`**（Git）: `git check-ignore -v .env` は、そのファイルが Git に無視されるかを調べ、`-v` で「`.gitignore` の何行目のどの決まりで無視されるか」まで表示します。
 
 <!-- /first-use -->
 
@@ -1647,6 +1718,7 @@ i/lf    w/lf    attr/                 	src/main.rs
 > **▶ ここで初めて出てくるコード**
 >
 > - **`git ls-files`**（Git）: Git が記録しているファイルの一覧を出すコマンド。`--eol` を付けると、各ファイルの改行の形（LF か CRLF か）も表示します。
+> - **`git ls-files --eol`**（Git）: `--eol` は、Git に入っているファイルの改行（LF か CRLF か）を、リポジトリの中（`i/`）と作業フォルダ（`w/`）の両方について表示します。
 
 <!-- /first-use -->
 
@@ -1720,6 +1792,7 @@ git commit -m "最初のコミット"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`git commit`**（Git）: 選んだ変更を、1 つの記録（コミット）として残すコマンド。`git commit -m "何をしたか"` の `-m` の後ろに、変更の説明を書きます。
+> - **`git commit -m`**（Git）: `git commit -m "説明"` の `-m` は、コミットの説明文を、その場で書く指定です。付けないと、説明を書くための画面（エディター）が開きます。
 
 <!-- /first-use -->
 
@@ -1772,6 +1845,7 @@ d779d78 Taro Yamada <taro@example.com> 最初のコミット
 > **▶ ここで初めて出てくるコード**
 >
 > - **`git log`**（Git）: これまでの記録（コミット）の一覧を、新しい順に出すコマンド。`--oneline` で 1 行ずつ短く、`--format="…"` で表示の形を自分で決められます。
+> - **`git log --format`**（Git）: `--format="%h %an <%ae> %s"` は、1 件ずつの表示の形を決めます。`%h` は短い番号、`%an` は作った人の名前、`%ae` はメール、`%s` は説明の 1 行目です。
 
 <!-- /first-use -->
 
@@ -1823,6 +1897,7 @@ pwd
 > **▶ ここで初めて出てくるコード**
 >
 > - **`set`**（WSL・bash）: bash の設定を変える命令。`set -e` は「途中のコマンドが失敗したら、そこでスクリプトを止める」。
+> - **`set -e`**（WSL・bash）: スクリプトの最初に書く `set -e` は、「どれかのコマンドが失敗したら、そこでスクリプトを止める」という指定です。失敗に気づかずに先へ進むのを防ぎます。
 > - **`echo`**（コマンド）: 後ろに書いた文字を、そのまま画面に出すコマンド。`echo "hello"`。bash（WSL）でも PowerShell でも使えます。
 > - **`pwd`**（コマンド）: 今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では `/home/you` のような Linux の形で、PowerShell では `C:\Users\you` のような形で出ます。
 
@@ -1850,6 +1925,9 @@ crlf.sh: line 5: $'pwd\r': command not found
 > **▶ ここで初めて出てくるコード**
 >
 > - **`bash`**（WSL・bash）: Linux でよく使われるシェル（文字で命令する画面）。`bash ファイル.sh` で、bash のスクリプトを動かします。WSL の中や、Git for Windows に付いています。
+> - **`cat -v`**（WSL・bash）: `cat -v` は、ファイルの中の目に見えない文字（CR など）を、`^M` のような印にして表示します。改行が CRLF かどうかを調べる時に使います。
+> - **`|`**（WSL・bash）: bash の `|`（パイプ）は、左のコマンドの出力（文字）を、右のコマンドの入力に渡す記号です。`bash crlf.sh 2>&1 | cat -v`。
+> - **`2>&1`**（WSL・bash）: `2>&1` は、エラーの出力（2 番）を、ふつうの出力（1 番）と同じ所へ流す指定です。エラーの文も、パイプやファイルに一緒に渡せます。
 
 <!-- /first-use -->
 
@@ -1870,6 +1948,8 @@ sed -i 's/\r$//' crlf.sh
 > **▶ ここで初めて出てくるコード**
 >
 > - **`sed`**（WSL・bash）: 文字を置きかえるコマンド（Linux）。`sed -i 's/\r$//' ファイル` は、各行の最後の `\r`（Windows の改行の印）を消して、ファイルを書きかえます（`-i` は「そのファイルを直接書きかえる」）。
+> - **`sed -i`**（WSL・bash）: `sed -i 's/\r$//' crlf.sh` の `-i` は、ファイルを直接書きかえる指定です。`s/前/後/` は「前を後に置きかえる」で、ここでは各行の最後の `\r`（CR）を消します。
+> - **`'…'`**（WSL・bash）: bash の `'…'`（シングルクォート）で囲んだ文字は、そのままの文字で、`$` や `\` も特別な意味になりません。`sed` の命令などを、そのまま渡す時に使います。
 
 <!-- /first-use -->
 
@@ -1905,6 +1985,8 @@ D  .env
 > **▶ ここで初めて出てくるコード**
 >
 > - **`git rm`**（Git）: ファイルを、Git の記録から外すコマンド。`git rm --cached .env` は、ファイルそのものは残したまま、記録からだけ外します（間違えて記録した秘密のファイルを外す時に使います）。
+> - **`git rm --cached`**（Git）: `git rm --cached .env` は、ファイルは消さずに、Git の管理からだけ外します。うっかり入れてしまった秘密のファイルを、次のコミットから外す時に使います。
+> - **`git status --short`**（Git）: `--short` は、変わったファイルを短い形で表示します。`M` は変更、`??` はまだ Git が知らないファイル、`A` は追加です。
 
 <!-- /first-use -->
 
@@ -1943,6 +2025,7 @@ DATABASE_AUTH_TOKEN=eyJhbGciOi...secret
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`git log --oneline`**（Git）: `--oneline` は、1 件のコミットを 1 行（短い番号と、説明の 1 行目）で表示します。
 > - **`git show`**（Git）: 記録の中身を見るコマンド。`git show HEAD~1:.env` は「1 つ前の記録の時の `.env` の中身」を表示します。一度記録した物は、こうして後からでも見えてしまう、という例です。
 
 <!-- /first-use -->
@@ -2253,6 +2336,7 @@ C:\Users\...\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd
 > **▶ ここで初めて出てくるコード**
 >
 > - **`code`**（コマンド）: VS Code を動かすコマンド。`code .` で今のフォルダを開き、`code --version` で版を確かめます。
+> - **`code --version`**（コマンド）: `code --version` は、VS Code の版を表示します。
 
 <!-- /first-use -->
 
@@ -2289,6 +2373,14 @@ Installing extension 'rust-lang.rust-analyzer'...
 Extension 'rust-lang.rust-analyzer' v0.3.3097 was successfully installed.
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`code --install-extension`**（コマンド）: `code --install-extension rust-lang.rust-analyzer` は、VS Code に拡張機能を入れます。
+
+<!-- /first-use -->
+
 ```powershell
 # 入っている拡張機能の名前と版を一覧で表示する
 code --list-extensions --show-versions
@@ -2299,6 +2391,15 @@ code --list-extensions --show-versions
 ```text
 rust-lang.rust-analyzer@0.3.3097
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`code --list-extensions`**（コマンド）: `--list-extensions` は、VS Code に入っている拡張機能の一覧を表示します。
+> - **`code --show-versions`**（コマンド）: `--show-versions` を `--list-extensions` と一緒に付けると、拡張機能の版も表示します。
+
+<!-- /first-use -->
 
 ほかの拡張機能（日本語化など）を入れている人は、それも一緒に表示されます。
 
@@ -2398,6 +2499,22 @@ VS Code が開き、次の順に進みます。
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`"files.eol":`**（設定ファイル（JSON））: VS Code の設定（`settings.json`）の `"files.eol": "\n"` は、新しく作るファイルの改行を、LF（`\n`）にする設定です。
+> - **`"files.insertFinalNewline":`**（設定ファイル（JSON））: `"files.insertFinalNewline": true` は、保存する時に、ファイルの最後に改行を 1 つ入れる設定です。
+> - **`"files.trimTrailingWhitespace":`**（設定ファイル（JSON））: `"files.trimTrailingWhitespace": true` は、保存する時に、行の終わりの余分な空白を消す設定です。
+> - **`"editor.formatOnSave":`**（設定ファイル（JSON））: `"editor.formatOnSave": true` は、保存するたびに、コードを自動で整える（字下げなどをそろえる）設定です。
+> - **`"[rust]":`**（設定ファイル（JSON））: `"[rust]": { … }` は、「Rust のファイルの時だけ」の設定を、`{ }` の中にまとめる書き方です。
+> - **`"editor.defaultFormatter":`**（設定ファイル（JSON））: `"editor.defaultFormatter": "rust-lang.rust-analyzer"` は、コードを整える係に、どの拡張機能を使うかです。
+> - **`"rust-analyzer.check.command":`**（設定ファイル（JSON））: `"rust-analyzer.check.command": "clippy"` は、保存した時の確かめに、`cargo check` ではなく `cargo clippy`（もっと細かく教える係）を使う設定です。
+> - **`"[powershell]":`**（設定ファイル（JSON））: `"[powershell]": { … }` は、「PowerShell のファイル（`.ps1`）の時だけ」の設定をまとめる書き方です。
+> - **`"files.encoding":`**（設定ファイル（JSON））: `"files.encoding": "utf8bom"` は、ファイルを保存する時の文字の符号です。ここでは、Windows PowerShell 5.1 が日本語を正しく読めるように、PowerShell のファイルだけを BOM 付きの UTF-8 にします。
+
+<!-- /first-use -->
+
 **手順3: 保存して、確かめる。** `Ctrl + S` で保存します。確かめ方は次のとおりです。
 
 - 「ファイル」→「新しいテキスト ファイル」で新しいファイルを作り、画面の右下のステータスバーに **`LF`** と表示されることを確かめます。
@@ -2450,6 +2567,14 @@ VS Code の左のエクスプローラーで、`HELLO-GIT` の右に出るアイ
     ]
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`"recommendations":`**（設定ファイル（JSON））: `.vscode/extensions.json` の `"recommendations"` は、このフォルダを開いた人に、入れるのをすすめる拡張機能の一覧です。
+
+<!-- /first-use -->
 
 同じようにして、`.vscode/settings.json` を作ります。
 
@@ -2642,6 +2767,20 @@ RustNote を VS Code で開くときは、`Cargo.toml` がある RustNote のフ
       - name: Clippy（警告もエラーとして扱う）
         run: cargo clippy --all-targets --locked -- -D warnings
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`- `**（GitHub Actions）: YAML の行の頭の `- ` は、「並びの 1 つ」を表します。`steps:` の下の `- name: …` は、手順の 1 つ目・2 つ目…です。字下げ（空白の数）で、どこに入るかが決まるので、そろえて書きます。
+> - **`name:`**（GitHub Actions）: `name:` は、名前です。いちばん上の `name: CI` は、自動の確かめ（ワークフロー）の名前、`- name: Clippy…` は、手順 1 つの名前で、GitHub の画面に表示されます。
+> - **`run:`**（GitHub Actions）: `run: cargo clippy …` は、その手順で動かすコマンドです。`run: |` と書くと、次の行から何行も書けます。
+> - **`cargo clippy --all-targets`**（cargo のコマンド）: `--all-targets` は、本体だけでなく、テスト・例（`examples`）・ベンチマークのコードも全部調べる指定です。
+> - **`cargo clippy --locked`**（cargo のコマンド）: `--locked` は、`Cargo.lock` の版のまま調べ、`Cargo.lock` を書きかえない指定です。
+> - **`cargo clippy --`**（cargo のコマンド）: `cargo clippy -- -D warnings` の `--` は、「ここから後ろは、Cargo ではなく、調べる係（clippy）に渡す」という区切りです。
+> - **`cargo clippy -- -D`**（cargo のコマンド）: `-D warnings` は、「警告（warning）を、エラーとして扱う」という指定です。警告が 1 つでもあると失敗するので、CI で「警告ゼロ」を守らせる時に使います。
+
+<!-- /first-use -->
 
   例3-4で `rust-analyzer.check.command` を `"clippy"` にしておくと、自動チェックで指摘されるのと同じ種類の注意を、保存するたびに VS Code の中で先に見られます。
 - RustNote のフォルダには `rustfmt.toml`（整形の決まり）があり、`edition = "2024"` と書かれています。保存のたびの整形（`editor.formatOnSave`）でも、この決まりが使われます。
@@ -2945,6 +3084,7 @@ C:\Users\...\rust-try\cargo\bin\rustup.exe
 > **▶ ここで初めて出てくるコード**
 >
 > - **`rustup`**（Rust の道具）: Rust そのもの（`rustc`・`cargo`）を入れる・新しくする・版を切りかえる道具。`rustup --version` で版を確かめられます。
+> - **`rustup --version`**（Rust の道具）: `rustup --version` は、Rust を入れる道具 `rustup` の版を表示します。
 
 <!-- /first-use -->
 
@@ -2981,10 +3121,18 @@ installed targets:
 > **▶ ここで初めて出てくるコード**
 >
 > - **`rustup component`**（Rust の道具）: Rust の部品（`rustfmt`・`clippy` など）を見る・足すコマンド。`rustup component list --installed` で、入っている部品の一覧を出します。
+> - **`rustup component list --installed`**（Rust の道具）: `--installed` を付けると、入っている部品（`rustfmt`・`clippy` など）だけを一覧にします。付けないと、入れられる部品が全部出ます。
 > - **`Get-ChildItem`**（PowerShell）: フォルダの中の一覧を出すコマンド（短い呼び名は `ls`・`dir`）。`Get-ChildItem フォルダ` でそのフォルダの中身、`-Recurse` で中のフォルダまで全部を出します。
 > - **`ForEach-Object`**（PowerShell）: `|` で流れてきた物を、1 つずつ処理するコマンド。`{ }` の中の `$_` が「今の 1 つ」を表します。`… | ForEach-Object { $_.Name }` は、1 つずつ名前を取り出します。
 > - **`-f`**（PowerShell）: 書式（形）を決めて文字列を作る演算子。`"{0,-10} {1}" -f $name, $hash` は、`{0}` に 1 つ目、`{1}` に 2 つ目を入れます（`,-10` は「10 文字分の幅で左に寄せる」）。
 > - **`Get-FileHash`**（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。
+> - **`"{0}" -f 値`**（PowerShell）: `"{0} と {1}" -f $a, $b` の `-f` は、左の文字の `{0}`・`{1}` に、右に並べた値を、0 番目から順に入れる書き方です（書式の演算子）。`"全体 {0:N1} GB" -f 15.6` → `全体 15.6 GB`。
+> - **`{0,幅}`**（PowerShell）: `"{0,-10} {1}" -f …` の `,-10` は、幅の指定です。`-10` は「10 文字分の場所に左寄せ」、`10` なら右寄せです。名前の長さがちがっても、次の列の位置がそろいます。
+> - **`$_`**（PowerShell）: `$_` は、`|`（パイプ）で流れてきた物の「今の 1 つ」を表す、特別な変数です。`Where-Object { $_.Name -like 'a*' }` は、「流れてきた 1 つずつの `Name` が a で始まる物だけ」。`catch { … }` の中では、起きたエラーを表します。
+> - **`{ … }`**（PowerShell）: `Where-Object { … }` や `ForEach-Object { … }` の `{ }` は「スクリプトブロック」（あとで動かす、命令のかたまり）です。流れてきた 1 つずつに対して、中の命令が動き、`$_` がその 1 つを表します。
+> - **`.Name`**（PowerShell）: `$_.Name` は、流れてきた物の名前です（ファイルならファイル名、サービスならサービスの名前）。
+> - **`.FullName`**（PowerShell）: `Get-ChildItem` の結果の `.FullName` は、ファイルやフォルダの、`C:\` から始まる場所の全部です（`.Name` は名前だけ）。
+> - **`.Hash`**（PowerShell）: `Get-FileHash` の結果の `.Hash` は、ファイルの中身から計算した、指紋のような長い文字です。中身が 1 文字でもちがえば変わります。
 
 <!-- /first-use -->
 
@@ -3156,6 +3304,14 @@ warn: see <https://github.com/rust-lang/rustup/issues/4836> for more info
 rustc 1.98.0 (88d9e12ae 2026-08-18)
 （かかった時間: 65 秒）
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`` `" ``**（PowerShell）: `"…"` の中に `"` そのものを入れる時は、`` `" `` と書きます（`""` と 2 つ重ねても同じです）。
+
+<!-- /first-use -->
 
 `hello` と `old` で、選ばれる版を比べました。
 
@@ -3451,6 +3607,8 @@ True
 >
 > - **`Get-ChildItem -Name`**（PowerShell）: `-Name` で、日付や大きさを出さずに、名前だけを一覧にします。
 > - **`Test-Path`**（PowerShell）: ファイルやフォルダがあるかを調べるコマンド。あれば `True`、無ければ `False` を返します。
+> - **`"…$変数…"`**（PowerShell）: `"…"`（ダブルクォート）で囲んだ文字の中の `$名前` は、変数の中身に置きかわります。`"こんにちは、$name さん"` → `こんにちは、太郎 さん`。そのまま `$` を出したい時は、`'…'`（シングルクォート）で囲みます。
+> - **`&`**（PowerShell）: `& "C:\Program Files\…\vswhere.exe"` の先頭の `&` は、「この文字（や変数）が指すプログラムを動かす」という印です。場所に空白が入っていて `"` で囲んだ時や、変数に入れた場所を動かす時に必要です。
 
 <!-- /first-use -->
 
@@ -3500,6 +3658,12 @@ foreach ($path in $args) {
 >
 > - **`foreach`**（PowerShell）: PowerShell のくり返し。`foreach ($path in $args) { … }` は、`$args`（スクリプトに渡された値の並び）から 1 つずつ `$path` に入れて、中を動かします。
 > - **`Resolve-Path`**（PowerShell）: 相対の場所（`..\a.txt` など）を、`C:\` から始まる絶対の場所に変えるコマンド。`(Resolve-Path 場所).Path` で文字列として取り出せます。
+> - **`{0:X桁}`**（PowerShell）: `{1:X4}` の `X4` は、「16 進数の大文字で、4 けたになるまで前を 0 で埋める」指定です（`332` → `014C`）。
+> - **`$args`**（PowerShell）: `$args` は、スクリプトや関数に、名前を付けずに渡された引数が全部入った並びです。`.\x.ps1 a b` なら `$args[0]` が `a`、`$args[1]` が `b` です。
+> - **`[System.IO.File]`**（PowerShell）: `[System.IO.File]` は、ファイルを読み書きする関数が集まった .NET の型です。`[System.IO.File]::ReadAllBytes($path)` は、ファイルの中身を、バイトの並びのまま全部読みます。
+> - **`[BitConverter]`**（PowerShell）: `[BitConverter]::ToInt32($bytes, 0x3C)` は、バイトの並びの、指定した位置から 4 バイトを、整数に変えます。実行ファイルの中身を調べる時に使っています。
+> - **`[型]::名前`**（PowerShell）: `[System.IO.File]::ReadAllBytes($path)` のように、`[型の名前]::名前` と書くと、.NET（PowerShell の土台）の型に付いている関数や値を、直接使えます。
+> - **`.Path`**（PowerShell）: `(Resolve-Path $path).Path` は、相対の場所を、`C:\` から始まる場所の文字にした物です。
 
 <!-- /first-use -->
 
@@ -3521,6 +3685,14 @@ host: aarch64-pc-windows-msvc
 release: 1.99.1
 LLVM version: 23.1.1
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustc -vV`**（Rust の道具）: `rustc -vV` は、版をくわしく表示します。`host:` の行は、このパソコンがどの種類（`x86_64-pc-windows-msvc` など）かを表します。
+
+<!-- /first-use -->
 
 ```text
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
@@ -3564,6 +3736,7 @@ info: downloading component rust-std
 > **▶ ここで初めて出てくるコード**
 >
 > - **`rustup target`**（Rust の道具）: ほかの種類のパソコン（CPU・OS）向けに翻訳するための部品を足すコマンド。`rustup target add x86_64-pc-windows-msvc` で、x64 の Windows 用の実行ファイルを作れるようになります。
+> - **`cargo build --target`**（cargo のコマンド）: `cargo build --target x86_64-pc-windows-msvc` は、どの種類のパソコン（CPU と OS）向けに翻訳するかを指定します。できた物は `target\x86_64-pc-windows-msvc\…` に置かれます。
 > - **`.\target\x86_64-pc-windows-msvc\debug\hello.exe`**（PowerShell）: `--target x86_64-pc-windows-msvc` を付けて翻訳した時の実行ファイルを、直接動かす書き方。ほかの種類向けに翻訳した物は、`target\（種類の名前）\` の下にできます。
 
 <!-- /first-use -->
@@ -3593,6 +3766,7 @@ x86_64-pc-windows-msvc
 > **▶ ここで初めて出てくるコード**
 >
 > - **`Get-ChildItem -Directory`**（PowerShell）: `-Directory` で、フォルダだけを一覧にします（ファイルだけなら `-File`）。
+> - **`rustup target list --installed`**（Rust の道具）: `--installed` を付けると、入っている「ほかの種類のパソコン向けの部品」だけを一覧にします。
 
 <!-- /first-use -->
 
@@ -3632,6 +3806,8 @@ x64    0x8664  C:\Users\...\.fly\bin\fly.exe
 > **▶ ここで初めて出てくるコード**
 >
 > - **`Get-Command`**（PowerShell）: コマンドがどこにあるか・何なのかを調べるコマンド。`(Get-Command rustc).Source` は、`rustc.exe` の場所を返します。入っているかを確かめる時に使います。
+> - **`` ` ``**（PowerShell）: 行の最後の `` ` ``（バッククォート。`Shift` ＋ `@` で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。`` ` `` の後ろに空白があると続かないので、注意します。
+> - **`.Source`**（PowerShell）: `(Get-Command rustc).Source` は、そのコマンドの実行ファイルが置いてある場所です。どこの `rustc` が動くのかを調べられます。
 
 <!-- /first-use -->
 
@@ -3808,6 +3984,14 @@ cargo new --lib quality
 cd quality
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo new --lib`**（cargo のコマンド）: `cargo new --lib quality` は、実行するプログラムではなく、ほかから使う部品（ライブラリ）のプロジェクトを作ります。`src\main.rs` の代わりに `src\lib.rs` ができます。
+
+<!-- /first-use -->
+
 ```text
     Creating library `quality` package
 note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -3848,6 +4032,7 @@ mod tests {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`pub`**（モジュール）: 「外から使ってよい」（公開）という印。`pub fn title_length(…)` は、ほかのファイル（モジュール）からも呼べる関数になります。付けないと、同じモジュールの中からしか使えません。
+> - **`///`**（コメント）: `///` で始まるコメントは、すぐ下の関数や型の「説明書」（ドキュメントコメント）です。`cargo doc` で説明のページになり、VS Code では、名前にマウスを乗せると表示されます。ふつうのコメント（`//`）とちがい、何の説明かが決まっています。
 
 <!-- /first-use -->
 
@@ -3899,6 +4084,7 @@ Diff in \\?\C:\Users\...\rust-study\quality\src\lib.rs:1:
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo fmt`**（cargo のコマンド）: コードの書き方（字下げ・空白・改行）を、決まった形に自動で整えるコマンド。`cargo fmt --check` は、整っているかを調べるだけで、ファイルは書きかえません。
+> - **`cargo fmt --check`**（cargo のコマンド）: `cargo fmt --check` は、ファイルを書きかえずに、「整っていない所があるか」だけを調べます。あれば違いを表示して失敗（終了コード 1）するので、CI（自動の確かめ）で使います。
 
 <!-- /first-use -->
 
@@ -4114,6 +4300,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 test: 0
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo clippy -q`**（cargo のコマンド）: `-q` を付けると、clippy の表示を少なくして、警告と結果だけを見せます。
+> - **`cargo test -q`**（cargo のコマンド）: `-q` を付けると、テスト 1 つずつの名前を出さず、`.` の並びと結果だけを短く表示します。
+> - **`;`**（PowerShell）: `;` は、1 行にコマンドを 2 つ以上書く時の区切りです。`cargo fmt --check; $LASTEXITCODE` は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。
+
+<!-- /first-use -->
+
 - 3つとも終了コード 0 になりました。`-q`（quiet＝静かに）を付けると、`Compiling` などの途中の行が出ず、結果だけが表示されます。テストは2つとも通り（`..` の1つの点が1つのテスト）、2つ目の `running 0 tests` は、説明の中の例（ドキュメントテスト）の分です。
 - **順番:** 速くて安い物から先に通します。体裁（fmt）は一瞬で、clippy は check の分の時間、test は作って動かす分の時間がかかります。
 
@@ -4170,7 +4366,9 @@ info: checking for self-update (current version: 1.29.2)
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`rustup toolchain install --profile`**（Rust の道具）: `--profile minimal` は、Rust の版を入れる時に、いちばん少ない部品（`rustc`・`cargo` など）だけを入れる指定です。説明書などを入れないので、速く入ります。
 > - **`cargo +1.99.0`**（cargo のコマンド）: `+版` を付けると、その版の Rust で cargo を動かします。`cargo +1.99.0 fmt --check` は、Rust 1.99.0 の `rustfmt` で調べます（その版が `rustup` で入っている必要があります）。
+> - **`cargo +版`**（cargo のコマンド）: `cargo +1.99.0 fmt --check` のように、`cargo` のすぐ後ろに `+版` を書くと、その 1 回だけ、指定した版の Rust で動かします（`rustup` で入れてある版に限ります）。
 
 <!-- /first-use -->
 
@@ -4197,6 +4395,14 @@ cargo +1.99.0 fmt --check
 ```text
 info: downloading 2 components
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`rustup component add --toolchain`**（Rust の道具）: `--toolchain 1.99.0` は、どの版の Rust に部品を足すかを指定します。付けないと、今使っている版に足します。
+
+<!-- /first-use -->
 
 ```text
 
@@ -4321,6 +4527,7 @@ wsl --install
 > **▶ ここで初めて出てくるコード**
 >
 > - **`wsl`**（WSL・bash）: WSL（Windows の中で Linux を動かす仕組み）を操作するコマンド。`wsl --install` で入れ、`wsl` だけで Linux の画面（bash）に入ります。
+> - **`wsl --install`**（WSL・bash）: `wsl --install` は、WSL（Windows の中で Linux を動かす仕組み）と、Ubuntu を入れます。管理者の PowerShell で打ち、終わったらパソコンを再起動します。
 
 <!-- /first-use -->
 
@@ -4346,6 +4553,17 @@ Direct3D バージョン: 1.611.1-81528511
 DXCore バージョン: 10.0.26100.1-240331-1435.ge-release
 Windows バージョン: 10.0.26200.9711
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`wsl --version`**（WSL・bash）: `wsl --version` は、WSL の版を表示します。
+> - **`wsl -l`**（WSL・bash）: `wsl -l -v` は、入っている Linux（ディストリビューション）の一覧を、WSL の版（1 か 2）と、動いているか（Running / Stopped）つきで表示します。
+> - **`wsl -v`**（WSL・bash）: `-v`（verbose）は、`wsl -l` と一緒に使い、一覧をくわしく（状態と版つきで）表示する指定です。
+> - **`wsl -d`**（WSL・bash）: `wsl -d Ubuntu -- uname -m` の `-d Ubuntu` は、どの Linux で動かすかを指定します。`--` の後ろが、その Linux で動かすコマンドです。
+
+<!-- /first-use -->
 
 ```text
   NAME                   STATE           VERSION
@@ -4431,6 +4649,8 @@ count "$HOME" "Linux 側（$HOME）"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`rm`**（WSL・bash）: ファイルやフォルダを消すコマンド（Linux）。`rm -rf フォルダ` は、中身ごと、確かめずに消します（`-r` は中まで、`-f` は聞かずに）。とても強いので、名前をよく確かめて使います。
+> - **`rm -rf`**（WSL・bash）: `rm -rf フォルダ` は、フォルダを中身ごと（`-r`）、確かめずに（`-f`）消します。消した物は、ごみ箱にも入らず戻せないので、場所をよく確かめてから打ちます。
+> - **`mkdir -p`**（WSL・bash）: `mkdir -p a/b/c` は、途中のフォルダもまとめて作ります。もうあってもエラーにしません。
 > - **`return`**（PowerShell）: 関数やスクリプトを、そこで終える命令。`return $null` のように、返す値を書けます。
 > - **`s=$`**（WSL・bash）: bash で変数に値を入れる書き方。`s=$(date +%s%N)` は、`$( )` の中のコマンド（今の時刻）を動かした結果を、変数 `s` に入れます。`=` の前後に空白を入れてはいけません。
 > - **`date`**（WSL・bash）: 今の日時を表示するコマンド（Linux）。`date +%s%N` は「1970 年からの秒数＋ナノ秒」の形で出します（時間を測るのに使います）。
@@ -4439,6 +4659,14 @@ count "$HOME" "Linux 側（$HOME）"
 > - **`do`**（WSL・bash）: bash のくり返し `for 変数 in 並び; do … ; done` の一部。`do` から `done` までが、くり返す中身です。
 > - **`done`**（WSL・bash）: bash のくり返し（`for … do … done`）の終わりの印。
 > - **`e=$`**（WSL・bash）: `s=$(…)` と同じく、bash で変数に値を入れる書き方。ここでは終わりの時刻を `e` に入れ、`s` との差で、かかった時間を計算します。
+> - **`$( … )`**（WSL・bash）: `$(seq 1 2000)` の `$( )` は、「中のコマンドを動かして、その出力をここに入れる」書き方です。
+> - **`$名前`**（WSL・bash）: bash の `$名前` は、変数の中身です。`name=web` で入れて、`echo $name` で使います（入れる時は `$` を付けず、`=` の前後に空白を入れません）。
+> - **`$1`**（WSL・bash）: スクリプトの中の `$1` は、スクリプトに渡した 1 つ目の引数です（`$2` は 2 つ目、`$@` は全部）。
+> - **`>`**（WSL・bash）: `echo x > f1` の `>` は、出力を、画面ではなくファイルに書き込む指定です（前の中身は消えます）。
+> - **`&&`**（WSL・bash）: `a && b` は、「a が成功したら、b を動かす」です。失敗したら、そこで止まります。
+> - **`||`**（WSL・bash）: `a || b` は、「a が失敗したら、b を動かす」です。`cd "$1/many" || return` は、「移れなければ抜ける」。
+> - **`;`**（WSL・bash）: `;` は、1 行にコマンドを並べる区切りです。左が終わったら、成功しても失敗しても、右を動かします。
+> - **`"…$変数…"`**（WSL・bash）: bash の `"…"`（ダブルクォート）の中の `$名前` は、変数の中身に置きかわります。空白の入った値でも 1 つとして渡せるように、変数は `"$1"` のように `"` で囲んで使います。
 
 <!-- /first-use -->
 
@@ -4487,7 +4715,9 @@ Server: 29.3.1 linux/arm64
 > **▶ ここで初めて出てくるコード**
 >
 > - **`docker version`**（Docker）: Docker（アプリを、決まった環境ごと箱に入れて動かす道具）の版を表示します。表示されれば、Docker が動いています。
+> - **`docker version --format`**（Docker）: `--format 'Client: {{.Client.Version}}'` は、表示の形を、`{{ }}` で値を入れる型紙（テンプレート）で決めます。必要な値だけを取り出せます。
 > - **`docker run`**（Docker）: イメージ（箱の設計図）から、コンテナ（動いている箱）を作って動かすコマンド。`docker run --rm hello-world` は、試しの箱を動かして、終わったら消します（`--rm`）。
+> - **`docker run --rm`**（Docker）: `--rm` は、コンテナが止まったら、自動でコンテナを消す指定です。試しに 1 回動かすだけの時に付けると、止まったコンテナが残りません。
 
 <!-- /first-use -->
 
@@ -4539,7 +4769,9 @@ aarch64
 
 > **▶ ここで初めて出てくるコード**
 >
+> - **`docker run --platform`**（Docker）: `--platform linux/amd64` は、どの種類の CPU 向けのイメージで動かすかを指定します。
 > - **`docker image`**（Docker）: 手元にあるイメージ（箱の設計図）を見る・消すコマンド。`docker image ls` で一覧を出します。
+> - **`docker image ls --format`**（Docker）: `--format` は、イメージの一覧の表示の形を、`{{.Repository}}` のような型紙で決めます。
 
 <!-- /first-use -->
 
@@ -4608,6 +4840,15 @@ wsl -d Ubunt -- uname -m
 docker run -d --name u07a -p 18099:80 debian:trixie-slim sleep 60 | Out-Null
 docker run -d --name u07b -p 18099:80 debian:trixie-slim sleep 60
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker run -d`**（Docker）: `-d`（detach）は、コンテナを裏で動かし、すぐに PowerShell に戻る指定です。サーバーのように、ずっと動かす物に付けます。
+> - **`docker run --name`**（Docker）: `--name u07a` は、コンテナに名前を付けます。あとで `docker stop u07a`・`docker logs u07a` のように、名前で操作できます。
+
+<!-- /first-use -->
 
 ```text
 692e8b85753e5f7295404607e0bc8af0f2c9fbb5783cbbc5d95f43d5f9f8d074
@@ -4739,7 +4980,11 @@ topcoat --help
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo install`**（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。`cargo install topcoat-cli --version 0.11.0 --locked` は、Topcoat の道具 `topcoat` を、決まった版で入れます。
+> - **`cargo install --version`**（cargo のコマンド）: `cargo install topcoat-cli --version 0.11.0` の `--version` は、入れる道具の版を指定します。付けないと、いちばん新しい版を入れます。
+> - **`cargo install --locked`**（cargo のコマンド）: `--locked` は、道具を作る時に、道具に付いている `Cargo.lock` の版のまま作る指定です。部品の新しい版のせいで作れない、ということを防げます。
 > - **`topcoat`**（Topcoat）: Topcoat の道具のコマンド（`cargo install topcoat-cli` で入る）。`topcoat dev`（コードを直すと自動で作り直して読み直す開発用の起動）・`topcoat asset bundle`（CSS などの束を作る）などがあります（第6巻）。
+> - **`topcoat --version`**（Topcoat）: `topcoat --version` は、topcoat CLI（Topcoat の道具）の版を表示します。アプリで使う Topcoat の版と同じかを確かめます。
+> - **`topcoat --help`**（Topcoat）: `topcoat --help` は、topcoat CLI のコマンドとオプションの一覧を表示します。
 
 <!-- /first-use -->
 
@@ -4815,6 +5060,15 @@ o  Initialized a Git repository
 —--------------------+
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`topcoat new --minimal`**（Topcoat）: `topcoat new 名前 --minimal` の `--minimal` は、いちばん小さなひな形（1 ページだけ）でプロジェクトを作る指定です。
+> - **`topcoat new --no-interactive`**（Topcoat）: `--no-interactive` は、質問をせずに、決まりの答えで作る指定です。
+
+<!-- /first-use -->
+
 できたファイルです（`.git` の中は除いています）。
 
 ```text
@@ -4847,6 +5101,23 @@ debug = "line-tables-only"
 [profile.dev.package."*"]
 debug = false
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`tokio`**（Rust の部品（クレート））: `tokio` は、Rust で非同期（待ち時間の間に、ほかの仕事を進める）のプログラムを動かすための部品です。たくさんの人の要求を、同時にさばく Web のサーバーの土台になります。
+> - **`"1.0"`**（設定ファイル（TOML））: 部品の版の `"1.0.229"` は、「1.0.229 以上で、2.0.0 より前」を表します（新しい直しは自動で使われてよい）。`"=1.0.229"` のように `=` を付けると、「ぴったりこの版だけ」になります。実際に使う版は、`Cargo.lock` に記録されます。
+> - **`{ キー = 値 }`**（設定ファイル（TOML））: `{ version = "1.0", features = ["derive"] }` のように `{ }` で囲むと、1 行の中に、いくつもの設定をまとめて書けます（インラインテーブル）。
+> - **`version =`**（設定ファイル（TOML））: 部品の `{ version = "1.51.1", … }` の `version` は、使う部品の版です。
+> - **`features =`**（設定ファイル（TOML））: 部品の `features = ["macros", "rt-multi-thread"]` は、その部品の、どの機能（feature）を ON にして使うかです。部品は、使わない機能を OFF にして小さくできるようになっています。
+> - **`topcoat`**（Rust の部品（クレート））: `topcoat` は、Rust の Web アプリを作るための部品（フレームワーク）です。画面（`view!`）・URL ごとの処理（`#[page]`）・セッションなどを用意しています。
+> - **`default-features =`**（設定ファイル（TOML））: `default-features = false` は、部品の「既定で ON の機能」を全部 OFF にする指定です。そのうえで、要る機能だけを `features = […]` で選びます。
+> - **`[profile.dev]`**（設定ファイル（TOML））: `[profile.dev]` は、ふだんの `cargo build`・`cargo run`（debug）の時の、作り方の設定です。
+> - **`debug =`**（設定ファイル（TOML））: `debug = "line-tables-only"` は、実行ファイルに入れる「調べるための情報」を、エラーの行番号が分かる分だけにする設定です。翻訳が速くなり、`target` フォルダも小さくなります。
+> - **`[profile.dev.package."*"]`**（設定ファイル（TOML））: `[profile.dev.package."*"]` は、「自分のコード以外の、全部の部品」の作り方の設定です。部品だけ最適化（`opt-level = 2` など）すると、自分のコードの翻訳は速いまま、動きを速くできます。
+
+<!-- /first-use -->
 
 `src\app.rs`:
 
@@ -4920,6 +5191,25 @@ async fn home() -> Result<impl View> {
 > - **`Slot`**（Topcoat）: 外枠（`#[layout]`）の関数が受け取る、「中に入るページの場所」を表す型。外枠の `view!` の中で `(slot)` と書いた所に、各ページの中身が入ります（第6巻）。
 > - **`View`**（Topcoat）: Topcoat の「画面（HTML になる物）」の型（トレイト）。ページの関数は `Result<impl View>`（HTML になる何かを返す。失敗することもある）を返します。
 > - **`DOCTYPE`**（HTML）: `<!DOCTYPE html>` は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。
+> - **`<!DOCTYPE html>`**（HTML）: `<!DOCTYPE html>` は、「これは今の HTML（HTML5）で書いたページです」という、ページのいちばん最初に書く宣言です。大文字でも小文字（`<!doctype html>`）でもかまいません。
+> - **`<html>`**（HTML）: HTML の文書全体を包むタグ。中に `<head>`（ページの情報）と `<body>`（画面に出す中身）を入れます。
+> - **`lang=`**（HTML）: `<html lang="ja">` の `lang` は、ページの言葉（`ja` は日本語、`en` は英語）です。読み上げソフトの読み方や、ブラウザーの翻訳の判断に使われます。
+> - **`<head>`**（HTML）: `<head>` は、ページの「見えない設定」（文字の符号・題名・CSS の読み込みなど）を書く所です。画面に出る中身は `<body>` に書きます。
+> - **`<meta>`**（HTML）: HTML の `<head>` の中に書く、ページの情報のタグ。`<meta charset="utf-8">`（文字コード）・`<meta name="viewport" …>`（スマホでの表示の幅）などがあります。
+> - **`charset=`**（HTML）: `<meta charset="utf-8">` の `charset` は、ページの文字の符号（エンコーディング）です。いつも `utf-8` にしておくと、日本語が文字化けしません。
+> - **`name=`**（HTML）: `name` は、入力欄（`<input>`・`<textarea>`・`<select>`）の名前です。フォームを送ると、`title=牛乳` のように、この名前と入れた値の組がサーバーに届きます。`<meta name="viewport" …>` の `name` は、設定の種類の名前です。
+> - **`content=`**（HTML）: `<meta name="viewport" content="width=device-width, initial-scale=1">` の `content` は、その設定の値です。この `viewport` の設定は、「スマホでも、画面の幅に合わせて表示する」という意味で、いつも書いておきます。
+> - **`<title>`**（HTML）: ブラウザーのタブに出る、ページの題名のタグ。`<head>` の中に書きます。
+> - **`<link>`**（HTML）: `<link rel="stylesheet" href="style.css">` は、ページに CSS のファイルをつなぐタグです。閉じるタグ（`</link>`）は要りません。
+> - **`rel=`**（HTML）: `<link rel="stylesheet" …>` の `rel` は、つなぐファイルが「何か」です。`stylesheet` は CSS のファイル、`icon` はタブの小さな絵です。
+> - **`href=`**（HTML）: `href` は、リンク先や、読み込むファイルの場所（URL）です。`<a href="/notes">一覧</a>` は、押すと `/notes` へ移るリンクです。
+> - **`<body>`**（HTML）: `<body>` は、画面に出る中身（見出し・文・ボタンなど）を書く所です。
+> - **`<main>`**（HTML）: `<main>` は、ページの「主な中身」を囲むタグです。メニューや足元（フッター）以外の、そのページの本題を入れます。読み上げソフトが、本題に飛べるようになります。
+> - **`<h1>`**（HTML）: いちばん大きな見出しのタグ。
+> - **`<p>`**（HTML）: 段落のタグ。
+> - **`<code>`**（HTML）: `<code>` は、中の文字が「プログラムのコード」だと示すタグです。ふつう、等幅の文字で表示されます。
+> - **`impl トレイト`**（型とメソッド）: `-> Result<impl View>` の `impl View` は、「`View` という決まり（トレイト）を満たす、何かの型」という意味です。本当の型の名前は長くて書けないので、「`View` として使える物を返す」とだけ書きます。引数の `x: impl Display` なら、「表示できる物なら何でも受け取る」です。
+> - **`'_`**（所有権と借用）: `Slot<'_>` の `'_` は、「何かを借りているが、その期間（ライフタイム）は Rust に任せる」という印です。名前（`'a`）を付けずに済みます。
 
 <!-- /first-use -->
 
@@ -5218,6 +5508,7 @@ curl -sSfL https://get.tur.so/install.sh | bash
 > **▶ ここで初めて出てくるコード**
 >
 > - **`curl`**（WSL・bash）: URL にアクセスするコマンド（Linux・WSL 版）。`curl -sSfL URL | bash` は、URL から取ってきたスクリプトを、そのまま bash で動かします（`-s` 静かに・`-S` エラーは出す・`-f` 失敗を見逃さない・`-L` 移動先を追う）。中身を確かめずに動かすことになるので、信頼できる所の物だけに使います。
+> - **`curl -sSfL`**（WSL・bash）: `-sSfL` は 4 つの指定を合わせた物です。`-s` は進み具合を出さない、`-S` はそれでもエラーは表示する、`-f` はサーバーがエラー（404 など）を返したら失敗にする、`-L` は移動先（リダイレクト）についていく、です。`curl -sSfL URL | bash` は、URL のスクリプトを取ってきて、すぐ動かします（信用できる所の物だけにします）。
 
 <!-- /first-use -->
 
@@ -5254,6 +5545,9 @@ curl.exe -s http://127.0.0.1:8080/version
 > **▶ ここで初めて出てくるコード**
 >
 > - **`docker ps`**（Docker）: 動いているコンテナ（箱）の一覧を出すコマンド。`--filter name=…` で名前で絞り、`--format` で表示する項目を選べます。
+> - **`docker ps --filter`**（Docker）: `--filter name=u09sqld` は、動いているコンテナの一覧を、条件でしぼります。
+> - **`docker ps --format`**（Docker）: `--format "{{.Names}} {{.Status}}"` は、コンテナの一覧の表示の形を決めます。
+> - **`curl.exe -w`**（HTTP クライアント）: `-w '%{http_code}'` は、終わった後に表示する物を決めます。`%{http_code}` は状態コード（`200` など）です。`-o NUL` と組み合わせて、状態コードだけを見る時に使います。
 
 <!-- /first-use -->
 
@@ -5286,6 +5580,14 @@ RustNote を起動しました: http://127.0.0.1:3000
 POST /signup -> 303 See Other (45.1347ms)
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`topcoat asset bundle --release`**（Topcoat）: `topcoat asset bundle --release` は、CSS などのアセットの束を、本番用（`target\release\assets`）に作ります。`cargo build --release` と組にして使います。
+
+<!-- /first-use -->
+
 ```powershell
 # 2つ目の窓
 curl.exe -s -i http://127.0.0.1:3000/health
@@ -5305,6 +5607,14 @@ date: Sat, 31 Oct 2026 02:03:54 GMT
 {"status":"ok"}
 303 http://127.0.0.1:3000/notes
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`curl.exe -d`**（HTTP クライアント）: `-d "title=牛乳"` は、送る中身（本文）を指定します。付けると、要求は POST になり、`Content-Type` は `application/x-www-form-urlencoded`（フォームの形）になります。
+
+<!-- /first-use -->
 
 ```powershell
 # libSQL のサーバーに、HTTP で SQL を2つ送る
@@ -5462,6 +5772,7 @@ Get-Item .\127.0.0.1 -Stream * | Select-Object Stream, Length | Format-Table -Au
 > - **`Get-Item -Stream`**（PowerShell）: `-Stream *` で、ファイルに付いている「隠れた別の中身」（代替データストリーム。ダウンロードした印などが入る）の一覧を出します。
 > - **`Format-Table`**（PowerShell）: 結果を表の形に整えて表示するコマンド。
 > - **`Format-Table -AutoSize`**（PowerShell）: `-AutoSize` で、列の幅を中身に合わせて自動で決めます（長い値が `...` で切られにくくなります）。
+> - **`*`**（PowerShell）: `'127*'` や `*.log` の `*` は、「何文字でも、何でも合う」という印（ワイルドカード）です。`-like '127*'` は「127 で始まる」、`-Filter *.log` は「名前が .log で終わる物」。1 文字だけなら `?` です。
 
 <!-- /first-use -->
 
@@ -5621,6 +5932,7 @@ pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`pwsh`**（PowerShell）: PowerShell 7（新しい PowerShell）を動かすコマンド。Windows に最初から入っているのは Windows PowerShell 5.1（`powershell`）です。`pwsh -Command "…"` で、1 つの命令を PowerShell 7 で動かします。
+> - **`pwsh -Command`**（PowerShell）: `pwsh -Command "…"` は、新しい PowerShell（7）を起動して、後ろの文字を命令として動かします。
 
 <!-- /first-use -->
 
@@ -5774,8 +6086,24 @@ Write-Host "全部 OK"
 > - **`catch`**（PowerShell）: `try { … } catch { … }` の `catch` の所は、`try` の中でエラーが起きた時だけ動きます。起きたエラーは `$_` で受け取れます（`$_.Exception.Message` で説明の文）。
 > - **`-ge`**（PowerShell）: PowerShell の「以上」の比べ方（greater or equal）。`$code.Count -ge 3` は「3 つ以上あるか」。
 > - **`-split`**（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。`"a=b" -split '=', 2` は `"a"` と `"b"`（`2` は「多くても 2 つに分ける」）。
+> - **`cargo fmt --version`**（cargo のコマンド）: `cargo fmt --version` は、コードを整える道具（rustfmt）の版を表示します。入っていない時はエラーになるので、入っているかの確かめにも使えます。
+> - **`cargo clippy --version`**（cargo のコマンド）: `cargo clippy --version` は、コードの気になる所を教える道具（clippy）の版を表示します。
 > - **`-gt`**（PowerShell）: PowerShell の「より大きい」の比べ方（greater than）。`$failed -gt 0` は「失敗が 1 つ以上あるか」。
 > - **`exit`**（PowerShell）: スクリプトを終えるコマンド。`exit 1` は、終了コード 1（失敗）でスクリプトを終えます。
+> - **`$( … )`**（PowerShell）: `"…$($t.Port)…"` の `$( )` は、「中の式やコマンドの結果を、文字の中に入れる」書き方です。`"$x.Name"` のように書くと `$x` だけが置きかわってしまうので、`.` の付いた物や計算は `$( )` で囲みます。
+> - **`$script:名前`**（PowerShell）: `$script:failed` の `script:` は、「関数の中からでも、このスクリプト全体の変数を使う（変える）」という印です。付けないと、関数の中で変えても、外の変数は変わりません。
+> - **`$null`**（PowerShell）: `$null` は「何も無い」を表す値です。`if ($x -eq $null)` で「何も入っていないか」を調べられます。`$null = コマンド` や `コマンド | Out-Null` と書くと、コマンドの出力を捨てられます。
+> - **`$true`**（PowerShell）: `$true` は「はい（真）」を表す値です。`-Recurse:$true` のように、スイッチに値を渡す時にも使います。反対は `$false` です。
+> - **`[Console]`**（PowerShell）: `[Console]` は、PowerShell の窓（コンソール）を表す .NET の型です。`[Console]::OutputEncoding = [Text.Encoding]::UTF8` は、ほかのプログラムが出す文字を UTF-8 として読む設定で、文字化けを防ぎます。
+> - **`[Text.Encoding]`**（PowerShell）: `[Text.Encoding]::UTF8` は、文字の符号（エンコーディング）の UTF-8 を表す値です。
+> - **`[string]`**（PowerShell）: `[string]$Name` の `[string]` は、「この変数（引数）は文字列」という型の指定です。`[string]123` のように値の前に書くと、文字列に変えます。
+> - **`[bool]`**（PowerShell）: `[bool]` は「はい・いいえ」（`$true`・`$false`）の型です。`[bool]$x` は、`$x` に何か入っていれば `$true`、空や `$null` なら `$false` にします。
+> - **`[scriptblock]`**（PowerShell）: `[scriptblock]` は「あとで動かす命令のかたまり（`{ … }`）」の型です。`& $Command` で、受け取ったかたまりを動かします。
+> - **`2>$null`**（PowerShell）: `2>$null` は、エラーの出力を捨てる指定です。「無くてもかまわない」物を調べる時に、エラーの文で画面がうまらないようにします。
+> - **`1..10`**（PowerShell）: `1..10` は、1 から 10 までの数の並び（10 も入る）を作ります。`foreach ($i in 1..3) { … }` で 3 回くり返せます。
+> - **`$並び[0]`**（PowerShell）: `$list[0]` は、並びの 0 番目（最初の 1 つ）を取り出します。`$list[-1]` は最後の 1 つです。
+> - **`.Count`**（PowerShell）: `$list.Count` は、並びの中の数です。`0` なら空です。
+> - **`.Major`**（PowerShell）: 版（`[version]`）の `.Major` は、一番上の数です。`5.1` なら `5`。
 
 <!-- /first-use -->
 
@@ -5812,6 +6140,9 @@ OK  flyctl                 fly.exe v0.5.1 windows/amd64
 > **▶ ここで初めて出てくるコード**
 >
 > - **`powershell`**（PowerShell）: Windows PowerShell 5.1 を動かすコマンド。`powershell -ExecutionPolicy Bypass -File スクリプト.ps1` は、実行ポリシーをその 1 回だけ気にせずに、スクリプトを動かします。
+> - **`powershell -ExecutionPolicy`**（PowerShell）: `powershell -ExecutionPolicy Bypass -File x.ps1` の `-ExecutionPolicy Bypass` は、この 1 回だけ、スクリプトを動かす制限を外す指定です。パソコンの設定は変えません。
+> - **`powershell -File`**（PowerShell）: `-File x.ps1` は、指定したスクリプトのファイルを動かします。後ろに書いた物は、スクリプトへの引数になります。
+> - **`$HOME`**（PowerShell）: `$HOME` は、自分のホームフォルダ（`C:\Users\you`）の場所が入った、特別な変数です。`~` と同じ場所です。
 
 <!-- /first-use -->
 
@@ -5907,6 +6238,14 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 $ver = [version](($rustc -split " ")[1])
 Show "Rust の版" ($ver -ge [version]"1.99") $ver.ToString()
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[version]`**（PowerShell）: `[version]"1.99.1"` は、文字を「版」の値に変えます。版どうしは `-ge`（以上）などで、正しく大きさを比べられます（文字のままだと `"1.10"` が `"1.9"` より小さいことになります）。
+
+<!-- /first-use -->
 
 - Topcoat 0.11 は Rust 1.99 以上を求めるので（UNIT 08）、この行があると、古い Rust に早く気づけます。
 

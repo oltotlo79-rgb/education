@@ -1,0 +1,5252 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>16_付録_逆引き_やりたいことからコードを探す</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/16_%E4%BB%98%E9%8C%B2_%E9%80%86%E5%BC%95%E3%81%8D_%E3%82%84%E3%82%8A%E3%81%9F%E3%81%84%E3%81%93%E3%81%A8%E3%81%8B%E3%82%89%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E6%8E%A2%E3%81%99.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="page-break-after: always; text-align: center; margin: 0; padding: 0;">
+<img src="../assets/cover.jpg" alt="表紙" style="width: 100%; max-height: 175mm; object-fit: cover; border-radius: 10px;">
+<div style="margin-top: 14px; font-size: 11px; letter-spacing: 0.18em; color: #c2410c; font-weight: 700;">APPENDIX 3 / RUST BACKEND MASTERY</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — 逆引き: やりたいことからコードを探す</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">「ファイルを読みたい」「幅をそろえて表示したい」から、書き方を 732 個引く。本文に出てくる所と、合わせて覚えるコードつき</div>
+</div>
+
+<style>
+/* 逆引きの表: 書き方の列を広めにして、コードが途中で折れにくくする */
+table th:nth-child(1), table td:nth-child(1) { width: 22%; }
+table th:nth-child(2), table td:nth-child(2) { width: 38%; }
+table td:nth-child(2) code { word-break: normal; overflow-wrap: anywhere; }
+table th:nth-child(4), table td:nth-child(4) { width: 14%; }
+/* 長い表は、ページの途中から始めて、次のページへ続ける（表全体を 1 ページに収めようとして、見出しの下を空けない） */
+table { page-break-inside: auto; }
+</style>
+
+<h1 id="_1">付録: 逆引き — やりたいことからコードを探す</h1>
+<h2 id="_2">この逆引きについて</h2>
+<p>付録 2「出てくるコードとコマンドの一覧」は、「この <code>.collect()</code> は何だっけ？」のように、<strong>コードから意味を引く</strong>ための物です。この付録 3 は、その反対です。「<strong>ファイルを読みたい</strong>」「<strong>表の形に幅をそろえて表示したい</strong>」のような、<strong>やりたいことから、書き方を引く</strong>ための物です。</p>
+<ul>
+<li><strong>全部で 732 個</strong>の「やりたいこと」を、<strong>32 の分類</strong>に分けています。下の「分類の一覧」から分類を選ぶか、HTML 版（<code>Rust\html</code>）で <code>Ctrl</code> ＋ <code>F</code> を押して、やりたいことの言葉（「読む」「並べかえる」「消す」など）で探してください。</li>
+<li><strong>「書き方」の列:</strong> そのまま使える形の、短いコードです。<code>…</code> の所は、自分の場面に合わせて書きます。<code>／</code> で区切って、いくつかの書き方を並べた行もあります。</li>
+<li><strong>「ひとこと」の列:</strong> 気をつけることや、結果の例です。くわしい意味は、付録 2 の一覧と、本文の「▶ ここで初めて出てくるコード」の箱にあります。</li>
+<li><strong>「出てくる所」の列:</strong> その書き方が、この本で初めて出てくる巻と UNIT です（656 個）。実際にどう使われているかを、そこで見られます。</li>
+<li><strong>「＋ 合わせて覚える」:</strong> 本文で使った書き方と一緒に覚えておくと、すぐ役に立つ書き方です（76 個）。本文のコードとは別に、この付録で足しました。使う前に、付録 2 や Rust の説明書（<code>rustup doc</code>）で、くわしい使い方を確かめてください。</li>
+</ul>
+<blockquote>
+<p><strong>ヒント:</strong> 1 つの分類の表を、上から下まで一度ながめておくと、「こういうこともできるんだ」と分かり、あとで探す時に思い出しやすくなります。特に「文字列」「Vec と配列」「イテレーター」「エラー処理」は、どのプログラムでもよく使います。</p>
+</blockquote>
+<h2 id="_3">分類の一覧</h2>
+<table>
+<thead>
+<tr>
+<th>分類</th>
+<th>数</th>
+<th>分類</th>
+<th>数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#rev-1">Rust の道具を入れる・確かめる</a></td>
+<td>15</td>
+<td><a href="#rev-17">所有権・借用・スマートポインタ</a></td>
+<td>15</td>
+</tr>
+<tr>
+<td><a href="#rev-2">プロジェクトを作る・動かす（cargo）</a></td>
+<td>44</td>
+<td><a href="#rev-18">イテレーター（1 つずつ取り出して処理する）</a></td>
+<td>28</td>
+</tr>
+<tr>
+<td><a href="#rev-3">PowerShell の基本の操作</a></td>
+<td>62</td>
+<td><a href="#rev-19">ファイルとフォルダ</a></td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="#rev-4">Git（変更の記録）</a></td>
+<td>23</td>
+<td><a href="#rev-20">入力・引数・環境変数・ほかのプログラム</a></td>
+<td>12</td>
+</tr>
+<tr>
+<td><a href="#rev-5">Docker と Fly.io</a></td>
+<td>23</td>
+<td><a href="#rev-21">時間</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#rev-6">WSL と bash（Linux のコマンド）</a></td>
+<td>18</td>
+<td><a href="#rev-22">スレッドと async（同時に動かす）</a></td>
+<td>17</td>
+</tr>
+<tr>
+<td><a href="#rev-7">画面に出す</a></td>
+<td>33</td>
+<td><a href="#rev-23">Web の画面と URL（Topcoat）</a></td>
+<td>26</td>
+</tr>
+<tr>
+<td><a href="#rev-8">変数と数</a></td>
+<td>29</td>
+<td><a href="#rev-24">データベースと SQL</a></td>
+<td>41</td>
+</tr>
+<tr>
+<td><a href="#rev-9">文字列</a></td>
+<td>32</td>
+<td><a href="#rev-25">JSON（serde）</a></td>
+<td>13</td>
+</tr>
+<tr>
+<td><a href="#rev-10">Vec と配列（並び）</a></td>
+<td>32</td>
+<td><a href="#rev-26">ログ（tracing）</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#rev-11">HashMap と HashSet（表と集まり）</a></td>
+<td>14</td>
+<td><a href="#rev-27">テスト</a></td>
+<td>14</td>
+</tr>
+<tr>
+<td><a href="#rev-12">条件・くり返し・場合分け</a></td>
+<td>29</td>
+<td><a href="#rev-28">安全（パスワード・合言葉・HTML）</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#rev-13">Option（あるかもしれない値）</a></td>
+<td>16</td>
+<td><a href="#rev-29">HTML と CSS</a></td>
+<td>27</td>
+</tr>
+<tr>
+<td><a href="#rev-14">エラー処理（Result）</a></td>
+<td>19</td>
+<td><a href="#rev-30">正規表現（文字の形で探す）</a></td>
+<td>14</td>
+</tr>
+<tr>
+<td><a href="#rev-15">関数・構造体・enum・トレイト</a></td>
+<td>27</td>
+<td><a href="#rev-31">設定ファイル（Cargo.toml・fly.toml・Dockerfile・GitHub Actions）</a></td>
+<td>25</td>
+</tr>
+<tr>
+<td><a href="#rev-16">モジュールと公開</a></td>
+<td>16</td>
+<td><a href="#rev-32">ブラウザーで確かめる（Playwright・JavaScript）</a></td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-1">Rust の道具を入れる・確かめる</h2>
+<p>Rust そのもの（<code>rustc</code>・<code>cargo</code>）と、その部品の入れ方・版の確かめ方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rust が入っているか、版を確かめる</td>
+<td><code>rustc --version</code><br><code>cargo --version</code></td>
+<td>版が表示されれば入っている</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>くわしい版（どのパソコン向けか）を見る</td>
+<td><code>rustc -vV</code></td>
+<td>host: の行が、このパソコンの種類</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>入っている版と、今使う版を見る</td>
+<td><code>rustup show</code></td>
+<td>版がいくつも入っている時に便利</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td>Rust を新しい版にする</td>
+<td><code>rustup update</code></td>
+<td>安定版（stable）を最新にする</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>決まった版を入れる</td>
+<td><code>rustup toolchain install 1.99.1 --profile minimal</code></td>
+<td>最小限の部品だけ入れる</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>入っている版の一覧を見る</td>
+<td><code>rustup toolchain list</code></td>
+<td>今使う版に (default) が付く</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>いつも使う版を切りかえる</td>
+<td><code>rustup default 1.99.1</code></td>
+<td>パソコン全体の既定を変える</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>このフォルダだけ版を決める（rust-toolchain.toml）</td>
+<td><code>[toolchain]</code><br><code>channel = "1.99.1"</code></td>
+<td>フォルダに置くと自動で切りかわる</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td>1 回だけ別の版で動かす</td>
+<td><code>cargo +1.99.0 build</code></td>
+<td>入れてある版に限る</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>部品（rustfmt・clippy）を足す</td>
+<td><code>rustup component add rustfmt clippy</code></td>
+<td>コードを整える係と、気になる所を教える係</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>入っている部品を見る</td>
+<td><code>rustup component list --installed</code></td>
+<td></td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>ほかのパソコン向けの部品を足す</td>
+<td><code>rustup target add x86_64-pc-windows-msvc</code></td>
+<td>cargo build --target と組で使う</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>エラーの番号のくわしい説明を読む</td>
+<td><code>rustc --explain E0384</code></td>
+<td>エラーの文の [E0384] の部分</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>Rust の説明書を手元で開く</td>
+<td><code>rustup doc</code></td>
+<td>標準ライブラリの説明が、ネットが無くても読める</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>Rust を消す</td>
+<td><code>rustup self uninstall</code></td>
+<td>rustup で入れた物を全部消す</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-2">プロジェクトを作る・動かす（cargo）</h2>
+<p>Cargo は、Rust のプロジェクトの作成・翻訳・実行・テスト・部品の管理をまとめて行う道具です。<code>Cargo.toml</code> があるフォルダで打ちます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>新しいプロジェクトを作る</td>
+<td><code>cargo new practice</code></td>
+<td><code>practice\Cargo.toml</code> と <code>src\main.rs</code> ができる</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>部品（ライブラリ）のプロジェクトを作る</td>
+<td><code>cargo new --lib quality</code></td>
+<td><code>src\lib.rs</code> ができる</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>今いるフォルダをプロジェクトにする</td>
+<td><code>cargo init</code></td>
+<td>中身のあるフォルダで使う</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>翻訳して動かす</td>
+<td><code>cargo run</code></td>
+<td>変わっていなければ翻訳を省く</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>Cargo の表示を出さずに動かす</td>
+<td><code>cargo run -q</code></td>
+<td>プログラムの出力だけ見る</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>プログラムに引数を渡す</td>
+<td><code>cargo run -- Rust "Web アプリ"</code></td>
+<td>-- の後ろがプログラムへ</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>速い本番用で動かす</td>
+<td><code>cargo run --release</code></td>
+<td>速さを測る時は必ずこれ</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td><code>src\bin</code> の中の 1 つを動かす</td>
+<td><code>cargo run --bin u01_stack_heap</code></td>
+<td>ファイル名から .rs を除いた名前</td>
+<td>第3巻 UNIT 01</td>
+</tr>
+<tr>
+<td>examples の中の 1 つを動かす</td>
+<td><code>cargo run --example u01_idor</code></td>
+<td></td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>ワークスペースの 1 つを動かす</td>
+<td><code>cargo run -p app</code></td>
+<td>-p はパッケージの名前</td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td>機能（feature）を ON にして動かす</td>
+<td><code>cargo run --features json</code></td>
+<td></td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>既定の機能を OFF にして動かす</td>
+<td><code>cargo run --no-default-features</code></td>
+<td></td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>翻訳だけする</td>
+<td><code>cargo build</code></td>
+<td><code>target\debug</code> にできる</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>本番用に翻訳する</td>
+<td><code>cargo build --release</code></td>
+<td><code>target\release</code> にできる</td>
+<td>第11巻 UNIT 09</td>
+</tr>
+<tr>
+<td>Cargo.lock のまま翻訳する</td>
+<td><code>cargo build --locked</code></td>
+<td>版がずれていたら止まる</td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>ほかのパソコン向けに翻訳する</td>
+<td><code>cargo build --target x86_64-pc-windows-msvc</code></td>
+<td></td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>エラーが無いかだけ速く調べる</td>
+<td><code>cargo check</code></td>
+<td>実行ファイルを作らない</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>コードを整える</td>
+<td><code>cargo fmt</code></td>
+<td>字下げ・空白をそろえる</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>整っているかだけ調べる</td>
+<td><code>cargo fmt --check</code></td>
+<td>CI で使う</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>気になる所を教えてもらう</td>
+<td><code>cargo clippy</code></td>
+<td>直し方も教えてくれる</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>警告をエラーとして扱う</td>
+<td><code>cargo clippy --all-targets -- -D warnings</code></td>
+<td>警告ゼロを守らせる</td>
+<td>第1巻 UNIT 03</td>
+</tr>
+<tr>
+<td>部品を足す</td>
+<td><code>cargo add serde --features derive</code></td>
+<td>Cargo.toml に書き足される</td>
+<td>第4巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td>テストの時だけの部品を足す</td>
+<td><code>cargo add --dev tempfile</code></td>
+<td>[dev-dependencies] に入る</td>
+<td>第11巻 UNIT 03</td>
+</tr>
+<tr>
+<td>部品を外す</td>
+<td><code>cargo remove serde</code></td>
+<td>Cargo.toml から消える</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td>部品を新しい版にする</td>
+<td><code>cargo update</code></td>
+<td>Cargo.lock を書きかえる</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td>1 つの部品だけ新しくする</td>
+<td><code>cargo update -p tokio</code></td>
+<td></td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td>新しくすると何が変わるか見る</td>
+<td><code>cargo update --dry-run</code></td>
+<td>本当には変えない</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td>使っている部品の木を見る</td>
+<td><code>cargo tree --depth 1</code></td>
+<td>直接使っている物だけ</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td>その部品をだれが使っているか調べる</td>
+<td><code>cargo tree -i rustls-webpki</code></td>
+<td>古い版の出どころ探し</td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td>crates.io で部品を探す</td>
+<td><code>cargo search topcoat --limit 1</code></td>
+<td>最新の版も分かる</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td>説明書（ドキュメント）を作って開く</td>
+<td><code>cargo doc --open</code></td>
+<td>ブラウザーで開く</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>自分のクレートだけ説明書を作る</td>
+<td><code>cargo doc --no-deps</code></td>
+<td></td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td>翻訳した物を消す</td>
+<td><code>cargo clean</code></td>
+<td>target フォルダを消す。容量を空けたい時に</td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>道具（コマンド）を入れる</td>
+<td><code>cargo install topcoat-cli --version 0.11.0 --locked</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>入れた道具の一覧を見る</td>
+<td><code>cargo install --list</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>テストを全部動かす</td>
+<td><code>cargo test</code></td>
+<td>#[test] の付いた関数を探して動かす</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>名前の一部でテストをしぼる</td>
+<td><code>cargo test title</code></td>
+<td>名前に title を含む物だけ</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>テストの中の println! を見る</td>
+<td><code>cargo test -- --nocapture</code></td>
+<td></td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>テストを 1 つずつ順に動かす</td>
+<td><code>cargo test -- --test-threads=1</code></td>
+<td>ファイルやポートがぶつかる時</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>tests フォルダの 1 ファイルだけ動かす</td>
+<td><code>cargo test --test http</code></td>
+<td></td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>説明の中の例だけテストする</td>
+<td><code>cargo test --doc</code></td>
+<td></td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td>飛ばすテスト（#[ignore]）を動かす</td>
+<td><code>cargo test -- --ignored</code></td>
+<td></td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>テストの名前の一覧を見る</td>
+<td><code>cargo test -- --list</code></td>
+<td></td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>速さを測る</td>
+<td><code>cargo bench</code></td>
+<td>benches フォルダのコード</td>
+<td>第11巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-3">PowerShell の基本の操作</h2>
+<p>Windows で、コマンドを打つ画面の使い方です。<code>#</code> から後ろはコメントです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>今いるフォルダを知る</td>
+<td><code>pwd</code><br><code>Get-Location</code></td>
+<td>行の頭の PS <code>C:\…&gt;</code> にも出ている</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>フォルダを移る</td>
+<td><code>cd rust-study</code></td>
+<td>cd .. で 1 つ上、cd ~ でホームへ</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>フォルダの中を見る</td>
+<td><code>ls</code><br><code>Get-ChildItem</code></td>
+<td>dir でも同じ</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>中のフォルダまで全部見る</td>
+<td><code>Get-ChildItem -Recurse -Filter *.rs</code></td>
+<td>.rs のファイルを全部探す</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td>隠れたファイルも見る</td>
+<td><code>Get-ChildItem -Force</code></td>
+<td>.git などが見える</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>フォルダを作る</td>
+<td><code>mkdir rust-study</code><br><code>New-Item -ItemType Directory -Force logs</code></td>
+<td>-Force はもうあってもエラーにしない</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>ファイルを作る・中身を書く</td>
+<td><code>Set-Content -Path memo.txt -Value "こんにちは" -Encoding utf8</code></td>
+<td>前の中身は消える</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>ファイルに書き足す</td>
+<td><code>Add-Content -Path log.txt -Value "1 行"</code></td>
+<td>後ろに足す</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルの中身を見る</td>
+<td><code>Get-Content memo.txt</code><br><code>cat memo.txt</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>ファイルの最後の数行を見る</td>
+<td><code>Get-Content app.log -Tail 20</code></td>
+<td>-Wait を付けると増えるのを待ち続ける</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルをコピーする</td>
+<td><code>Copy-Item a.txt b.txt</code></td>
+<td>フォルダごとは -Recurse</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>ファイルを動かす・名前を変える</td>
+<td><code>Move-Item a.txt old\a.txt</code><br><code>Rename-Item a.txt b.txt</code></td>
+<td></td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td>ファイルを消す</td>
+<td><code>Remove-Item memo.txt</code></td>
+<td>ごみ箱に入らないので注意</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>フォルダを中身ごと消す</td>
+<td><code>Remove-Item -Recurse -Force target</code></td>
+<td>場所をよく確かめる</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td>ファイルやフォルダがあるか調べる</td>
+<td><code>Test-Path .env</code></td>
+<td>True か False</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>コマンドがどこにあるか調べる</td>
+<td><code>Get-Command cargo</code><br><code>(Get-Command cargo).Source</code></td>
+<td>どの cargo が動くか</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ファイルの中から文字を探す</td>
+<td><code>Select-String -Path *.rs -Pattern "unwrap"</code></td>
+<td>grep の代わり</td>
+<td>第14巻 A. 道具の早見表</td>
+</tr>
+<tr>
+<td>画面を消す</td>
+<td><code>cls</code><br><code>Clear-Host</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>前に打ったコマンドを出す</td>
+<td><code>↑ キー</code><br><code>Get-History</code></td>
+<td>Ctrl＋R で探せる</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>動いているコマンドを止める</td>
+<td><code>Ctrl ＋ C</code></td>
+<td>cargo run のサーバーを止める時も</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>変数に入れる</td>
+<td><code>$name = "Rust"</code></td>
+<td>$ で始める</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td>環境変数を入れる（この窓だけ）</td>
+<td><code>$env:RUST_LOG = "debug"</code></td>
+<td>窓を閉じると消える</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>環境変数を消す</td>
+<td><code>Remove-Item Env:RUST_LOG</code></td>
+<td></td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>ずっと残る環境変数を入れる</td>
+<td><code>[Environment]::SetEnvironmentVariable("名前", "値", "User")</code></td>
+<td>新しい窓から効く</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>最後のプログラムが成功したか見る</td>
+<td><code>$LASTEXITCODE</code></td>
+<td>0 なら成功</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>出力をファイルに書く</td>
+<td><code>cargo run &gt; out.txt</code></td>
+<td>&gt;&gt; なら書き足す</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>エラーの出力も一緒に書く</td>
+<td><code>cargo build 2&gt;&amp;1 &#124; Tee-Object build.log</code></td>
+<td>画面とファイルの両方へ</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>エラーの出力を捨てる</td>
+<td><code>git --version 2&gt;$null</code></td>
+<td></td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td>結果を次のコマンドに渡す</td>
+<td><code>Get-Service &#124; Where-Object Status -eq Running</code></td>
+<td>&#124; はパイプ</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>条件でしぼる</td>
+<td><code>Where-Object { $_.Length -gt 1MB }</code></td>
+<td>$_ は流れてきた 1 つ</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td>1 つずつ処理する</td>
+<td><code>ForEach-Object { $_.Name }</code></td>
+<td></td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>Sort-Object Length -Descending</code></td>
+<td>大きい順</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>列を選ぶ・最初の数件だけ</td>
+<td><code>Select-Object Name, Length -First 5</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>数える・合計する</td>
+<td><code>Measure-Object -Sum Length</code></td>
+<td>.Count と .Sum</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>表の形で見る</td>
+<td><code>Format-Table -AutoSize</code></td>
+<td>列が切れる時</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td>幅をそろえて文字を作る</td>
+<td><code>"{0,-10} {1}" -f $name, $size</code></td>
+<td>-10 は 10 文字分の左寄せ</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>数を 3 けた区切りにする</td>
+<td><code>"{0:N0}" -f 1234567</code></td>
+<td>1,234,567</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>日時を文字にする</td>
+<td><code>Get-Date -Format "yyyyMMdd_HHmm"</code></td>
+<td>MM は月、mm は分</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td>文字の中に変数を入れる</td>
+<td><code>"こんにちは、$name さん"</code></td>
+<td>"…" の中だけ</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>文字の中に式の結果を入れる</td>
+<td><code>"大きさ: $($file.Length) バイト"</code></td>
+<td>$( ) で囲む</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td>そのままの文字にする</td>
+<td><code>'これは $name のまま'</code></td>
+<td>'…' の中は置きかわらない</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td>何行もの文字を書く</td>
+<td><code>@' ～ '@</code></td>
+<td>'@ は行の頭に書く</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td>長いコマンドを次の行へ続ける（行の最後に書く）</td>
+<td><code>&#96;</code></td>
+<td>バッククォート（Shift＋@）の後ろに空白を入れない</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>空白の入った場所のプログラムを動かす</td>
+<td><code>&amp; "C:\Program Files\Git\bin\git.exe" --version</code></td>
+<td>先頭の &amp;</td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>今いるフォルダのプログラムを動かす</td>
+<td><code>.\target\debug\practice.exe</code></td>
+<td><code>.\</code> が要る</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>スクリプトを動かす</td>
+<td><code>powershell -ExecutionPolicy Bypass -File .\doctor.ps1</code></td>
+<td>この 1 回だけ制限を外す</td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td>エラーが起きたら止める</td>
+<td><code>$ErrorActionPreference = "Stop"</code></td>
+<td>スクリプトの最初に</td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td>エラーを受け止める</td>
+<td><code>try { … } catch { $_.Exception.Message }</code></td>
+<td></td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td>並び・表を作る</td>
+<td><code>@("a", "b")</code><br><code>@{ Name = "web"; Port = 8080 }</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>くり返す</td>
+<td><code>foreach ($f in Get-ChildItem) { $f.Name }</code><br><code>1..3 &#124; ForEach-Object { $_ }</code></td>
+<td></td>
+<td>第1巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ポートを使っているプログラムを探す</td>
+<td><code>Get-NetTCPConnection -LocalPort 8080 -State Listen</code></td>
+<td>.OwningProcess が番号</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>番号でプログラムを止める</td>
+<td><code>Stop-Process -Id 1234</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>名前でプログラムを探す</td>
+<td><code>Get-Process cargo</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>Web のページを取ってくる</td>
+<td><code>Invoke-WebRequest http://127.0.0.1:3000/ -UseBasicParsing</code></td>
+<td>.StatusCode・.Content</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>curl で要求を送る</td>
+<td><code>curl.exe -s -i http://127.0.0.1:3000/</code></td>
+<td>.exe を付ける（PowerShell の curl は別物）</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>POST で送る</td>
+<td><code>curl.exe -i -d "title=牛乳" http://127.0.0.1:3000/notes</code></td>
+<td></td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ヘッダーを付けて送る</td>
+<td><code>curl.exe -H "Content-Type: application/json" --data-binary "@note.json" URL</code></td>
+<td></td>
+<td>第6巻 UNIT 06</td>
+</tr>
+<tr>
+<td>状態コードだけ見る</td>
+<td><code>curl.exe -s -o NUL -w '%{http_code}' URL</code></td>
+<td></td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ファイルの指紋（ハッシュ）を出す</td>
+<td><code>Get-FileHash file.zip -Algorithm SHA256</code></td>
+<td>同じ物かの確かめ</td>
+<td>第1巻 UNIT 04</td>
+</tr>
+<tr>
+<td>ZIP にまとめる・ほどく</td>
+<td><code>Compress-Archive -Path dist\* -DestinationPath app.zip</code><br><code>Expand-Archive app.zip out</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>かかった時間を測る</td>
+<td><code>Measure-Command { cargo build }</code></td>
+<td>.TotalSeconds</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>PowerShell の版を見る</td>
+<td><code>$PSVersionTable.PSVersion</code></td>
+<td>5.1 か 7.x</td>
+<td>第1巻 UNIT 01</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-4">Git（変更の記録）</h2>
+<p>ファイルの変更を記録して、いつでも戻れるようにする道具です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Git の版を見る</td>
+<td><code>git --version</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>名前とメールを設定する（最初に 1 回）</td>
+<td><code>git config --global user.name "名前"</code></td>
+<td>user.email も</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>設定を一覧で見る</td>
+<td><code>git config --list --show-origin</code></td>
+<td>どのファイルの設定か分かる</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>フォルダを Git の管理にする</td>
+<td><code>git init</code></td>
+<td>.git フォルダができる</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>今の状態を見る</td>
+<td><code>git status</code><br><code>git status --short</code></td>
+<td>変わったファイルの一覧</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>記録に入れるファイルを選ぶ</td>
+<td><code>git add src/main.rs</code><br><code>git add .</code></td>
+<td>. は全部</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>記録する（コミット）</td>
+<td><code>git commit -m "説明"</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>記録の一覧を見る</td>
+<td><code>git log --oneline</code></td>
+<td>1 件 1 行</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>何を変えたか見る</td>
+<td><code>git diff</code><br><code>git diff --staged</code></td>
+<td>add した後は --staged</td>
+<td>第1巻 UNIT 03</td>
+</tr>
+<tr>
+<td>変更を取り消して元に戻す</td>
+<td><code>git restore src/main.rs</code></td>
+<td>保存前の変更は消える</td>
+<td>第1巻 UNIT 03</td>
+</tr>
+<tr>
+<td>add を取り消す</td>
+<td><code>git restore --staged src/main.rs</code></td>
+<td>ファイルの中身は残る</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルを管理から外す（消さない）</td>
+<td><code>git rm --cached .env</code></td>
+<td>秘密を入れてしまった時</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>無視するファイルを決める（.gitignore に書く）</td>
+<td><code>target/</code><br><code>.env</code></td>
+<td>1 行に 1 つ</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>なぜ無視されるか調べる</td>
+<td><code>git check-ignore -v .env</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>改行の種類を調べる</td>
+<td><code>git ls-files --eol</code></td>
+<td>LF か CRLF か</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>ある記録の中身を見る</td>
+<td><code>git show HEAD</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>枝（ブランチ）を作って移る</td>
+<td><code>git switch -c feature</code></td>
+<td>試しの変更を分ける</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>枝の一覧を見る</td>
+<td><code>git branch</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>枝を取り込む</td>
+<td><code>git merge feature</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>GitHub に送る</td>
+<td><code>git push</code></td>
+<td>最初は git push -u origin main</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>GitHub から受け取る</td>
+<td><code>git pull</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>リポジトリを丸ごと写す</td>
+<td><code>git clone https://github.com/…</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>変更を一時的にしまう</td>
+<td><code>git stash</code><br><code>git stash pop</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-5">Docker と Fly.io</h2>
+<p>アプリを「コンテナ」に入れて、どこでも同じように動かす道具（Docker）と、それをインターネットに公開する所（Fly.io）です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Docker が動くか確かめる</td>
+<td><code>docker version</code></td>
+<td>Server の欄が出れば動いている</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>イメージを作る</td>
+<td><code>docker build -t rustnote:v1 .</code></td>
+<td>. は Dockerfile のあるフォルダ</td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td>作る途中を全部表示する</td>
+<td><code>docker build --progress=plain -t rustnote .</code></td>
+<td></td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td>イメージの一覧を見る</td>
+<td><code>docker image ls</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>コンテナを動かして、止まったら消す</td>
+<td><code>docker run --rm rustnote:v1</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>裏で動かして、ポートをつなぐ</td>
+<td><code>docker run -d --name app -p 8080:8080 rustnote:v1</code></td>
+<td>左がパソコン、右がコンテナ</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>環境変数を渡す</td>
+<td><code>docker run -e DATABASE_URL=… rustnote:v1</code></td>
+<td></td>
+<td>第12巻 UNIT 05</td>
+</tr>
+<tr>
+<td>フォルダをつなぐ</td>
+<td><code>docker run -v ${PWD}/data:/data rustnote:v1</code></td>
+<td>コンテナを消しても data は残る</td>
+<td>第12巻 UNIT 10</td>
+</tr>
+<tr>
+<td>動いているコンテナを見る</td>
+<td><code>docker ps</code><br><code>docker ps -a</code></td>
+<td>-a は止まった物も</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+<tr>
+<td>コンテナのログを見る</td>
+<td><code>docker logs app</code><br><code>docker logs -f app</code></td>
+<td>-f は増えるのを待ち続ける</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>コンテナを止める・消す</td>
+<td><code>docker stop app</code><br><code>docker rm app</code></td>
+<td></td>
+<td>第12巻 UNIT 10</td>
+</tr>
+<tr>
+<td>コンテナの中でコマンドを打つ</td>
+<td><code>docker exec -it app sh</code></td>
+<td>中を調べる時に</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>イメージの層の大きさを見る</td>
+<td><code>docker history rustnote:v1</code></td>
+<td></td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td>イメージに名前を付け直す</td>
+<td><code>docker tag rustnote:v1 registry.fly.io/app:v1</code></td>
+<td></td>
+<td>第12巻 UNIT 10</td>
+</tr>
+<tr>
+<td>コンテナどうしをつなぐ網を作る</td>
+<td><code>docker network create rn-net</code></td>
+<td></td>
+<td>第12巻 UNIT 06</td>
+</tr>
+<tr>
+<td>Fly.io の道具の版を見る</td>
+<td><code>fly version</code></td>
+<td></td>
+<td>第1巻 UNIT 10</td>
+</tr>
+<tr>
+<td>アプリを登録する（公開はまだ）</td>
+<td><code>fly launch --no-deploy --name 自分のアプリ名</code></td>
+<td>fly.toml ができる</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td>公開する</td>
+<td><code>fly deploy</code></td>
+<td></td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td>秘密の値を渡す</td>
+<td><code>fly secrets set DATABASE_AUTH_TOKEN=…</code></td>
+<td>fly.toml には書かない</td>
+<td>第12巻 UNIT 05</td>
+</tr>
+<tr>
+<td>状態を見る</td>
+<td><code>fly status</code></td>
+<td></td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td>ログを見る</td>
+<td><code>fly logs</code></td>
+<td></td>
+<td>第12巻 UNIT 08</td>
+</tr>
+<tr>
+<td>公開した版の一覧を見る</td>
+<td><code>fly releases --image</code></td>
+<td>前の版に戻す時に</td>
+<td>第12巻 UNIT 10</td>
+</tr>
+<tr>
+<td>前の版に戻す</td>
+<td><code>fly deploy --image registry.fly.io/…:前の札</code></td>
+<td></td>
+<td>第12巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-6">WSL と bash（Linux のコマンド）</h2>
+<p>Windows の中で Linux を動かす WSL と、Linux のコマンドを打つ bash の使い方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WSL を入れる</td>
+<td><code>wsl --install</code></td>
+<td>管理者の PowerShell で。終わったら再起動</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>入っている Linux を見る</td>
+<td><code>wsl -l -v</code></td>
+<td>WSL の版（2）と状態</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>Linux でコマンドを 1 つ動かす</td>
+<td><code>wsl -d Ubuntu -- uname -m</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>今いるフォルダを知る</td>
+<td><code>pwd</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>フォルダを作る（途中もまとめて）</td>
+<td><code>mkdir -p a/b/c</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>中身ごと消す</td>
+<td><code>rm -rf フォルダ</code></td>
+<td>戻せないので場所をよく確かめる</td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>ファイルの中を見る</td>
+<td><code>cat file</code><br><code>less file</code></td>
+<td>less は q で終わる</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>見えない文字も見る</td>
+<td><code>cat -v crlf.sh</code></td>
+<td>CR が ^M に見える</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>CRLF を LF に直す</td>
+<td><code>sed -i 's/\r$//' crlf.sh</code></td>
+<td></td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>ファイルの中から探す</td>
+<td><code>grep -n "unwrap" src/*.rs</code></td>
+<td>-n は行番号</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>権限を変える</td>
+<td><code>chmod +x run.sh</code></td>
+<td>+x で実行できるようにする</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>持ち主を変える</td>
+<td><code>chown app:app /data</code></td>
+<td></td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td>部品（パッケージ）を入れる</td>
+<td><code>sudo apt-get update &amp;&amp; sudo apt-get install -y build-essential</code></td>
+<td></td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td>失敗したら止めるスクリプトにする</td>
+<td><code>set -e</code></td>
+<td>スクリプトの最初に</td>
+<td>第1巻 UNIT 02</td>
+</tr>
+<tr>
+<td>前が成功したら次を動かす</td>
+<td><code>cargo build &amp;&amp; cargo test</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>前が失敗したら次を動かす</td>
+<td><code>cd dir &#124;&#124; exit 1</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>コマンドの結果を使う</td>
+<td><code>echo "今日は $(date +%F)"</code></td>
+<td></td>
+<td>第1巻 UNIT 07</td>
+</tr>
+<tr>
+<td>URL のスクリプトを取ってきて動かす</td>
+<td><code>curl -sSfL https://… &#124; bash</code></td>
+<td>信用できる所の物だけ</td>
+<td>第1巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-7">画面に出す</h2>
+<p><code>println!</code> などの「文字の中の書式」（<code>{ }</code> の中の <code>:</code> の後ろ）で、幅・寄せ方・けたを決められます。<code>format!</code> で同じ書き方の文字を作れます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 行出す（最後に改行）</td>
+<td><code>println!("こんにちは");</code></td>
+<td></td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>改行せずに出す</td>
+<td><code>print!("入力: ");</code></td>
+<td>すぐ出したい時は io::stdout().flush()</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>エラーの文として出す</td>
+<td><code>eprintln!("失敗: {e}");</code></td>
+<td>画面には出るが、&gt; out.txt には入らない</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>値を入れて出す</td>
+<td><code>println!("{} 点", score);</code></td>
+<td>{} に後ろの値が入る</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>変数の名前を中に書いて出す</td>
+<td><code>println!("{name} さん");</code></td>
+<td>{} の中は名前だけ</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>同じ値を番号で何度も使う</td>
+<td><code>println!("{0} と {1} と {0}", a, b);</code></td>
+<td></td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>プログラマー向けの形で出す</td>
+<td><code>println!("{:?}", v);</code></td>
+<td>Vec や Option も出せる</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>項目ごとに改行して見やすく出す</td>
+<td><code>println!("{:#?}", note);</code></td>
+<td></td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td>幅をそろえて左寄せで出す</td>
+<td><code>println!("{name:&lt;22}&#124;");</code></td>
+<td>22 文字分。足りない分は右に空白</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>右寄せで出す</td>
+<td><code>println!("{:&gt;8}", price);</code></td>
+<td>数の表のけたがそろう</td>
+<td>第3巻 UNIT 03</td>
+</tr>
+<tr>
+<td>真ん中に出す</td>
+<td><code>println!("{:^20}", "見出し");</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>空白でなく決めた字で埋める</td>
+<td><code>println!("{:-&lt;20}", "");</code></td>
+<td>- を 20 個（区切り線）</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>幅を変数で決める</td>
+<td><code>println!("{:&gt;w$}", n, w = 6);</code></td>
+<td>w$ が「幅は w」</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>前を 0 で埋めて、けたをそろえる</td>
+<td><code>println!("{:02}:{:02}", h, m);</code></td>
+<td>9:5 → 09:05</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>小数点の下を何けた出すか決める</td>
+<td><code>println!("{:.1}", 3.14159);</code></td>
+<td>3.1</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>幅と小数のけたを両方決める</td>
+<td><code>println!("{:8.2}", x);</code></td>
+<td>8 文字分の幅に、小数 2 けた</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>+ の印も付ける</td>
+<td><code>println!("{:+}", 5);</code></td>
+<td>+5</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>16 進数で出す</td>
+<td><code>println!("{:x} {:X} {:#x}", 255, 255, 255);</code></td>
+<td>ff FF 0xff</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>2 進数で出す</td>
+<td><code>println!("{:b}", 10);</code></td>
+<td>1010</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>8 進数で出す</td>
+<td><code>println!("{:o}", 8);</code></td>
+<td>10</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>指数の形で出す</td>
+<td><code>println!("{:e}", 1234.5);</code></td>
+<td>1.2345e3</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>メモリの場所を出す</td>
+<td><code>println!("{:p}", &amp;x);</code></td>
+<td></td>
+<td>第3巻 UNIT 02</td>
+</tr>
+<tr>
+<td>{ と } そのものを出す</td>
+<td><code>println!("{{ }}");</code></td>
+<td>2 つ重ねる</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>エラーを原因までつないで出す</td>
+<td><code>println!("{:#}", err);</code></td>
+<td>anyhow のエラーで</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>画面に出さずに文字を作る</td>
+<td><code>let s = format!("{} 件", n);</code></td>
+<td>String ができる</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>文字に書き足す</td>
+<td><code>write!(s, "{n}")?;</code></td>
+<td>use std::fmt::Write; が要る</td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ファイルに 1 行書く</td>
+<td><code>writeln!(file, "{}", text)?;</code></td>
+<td>use std::io::Write; が要る</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>調べ物で、式と値を一緒に出す</td>
+<td><code>dbg!(&amp;v);</code></td>
+<td>[src/main.rs:5] &amp;v = [1, 2] のように出る</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>空の行を出す</td>
+<td><code>println!();</code></td>
+<td></td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>自分の型を {} で出せるようにする</td>
+<td><code>impl fmt::Display for Note { fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result { write!(f, "{}", self.title) } }</code></td>
+<td></td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td>文字列の中で改行する</td>
+<td><code>"1行目\n2行目"</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>タブで区切る</td>
+<td><code>"名前\t点数"</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>" や <code>\</code> そのものを入れる</td>
+<td><code>"\"Rust\""</code><br><code>"C:\\Users"</code></td>
+<td><code>\</code> を前に付ける</td>
+<td>第4巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-8">変数と数</h2>
+<p>値に名前を付けて覚える方法と、整数・小数の扱い方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>値に名前を付ける</td>
+<td><code>let age = 20;</code></td>
+<td>最初は変えられない</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>あとで変えられる変数にする</td>
+<td><code>let mut count = 0;</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>型を書いて決める</td>
+<td><code>let total: u64 = 0;</code></td>
+<td></td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>決まった値（定数）を作る</td>
+<td><code>const MAX_TITLE: usize = 80;</code></td>
+<td>名前は大文字</td>
+<td>第2巻 UNIT 01</td>
+</tr>
+<tr>
+<td>同じ名前で作り直す</td>
+<td><code>let s = s.trim();</code></td>
+<td>前の値は使えなくなる（シャドーイング）</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>使わない値を捨てる</td>
+<td><code>let _ = fs::remove_file("tmp.txt");</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>整数（マイナスあり）</td>
+<td><code>i32</code><br><code>i64</code></td>
+<td>型を書かない整数は i32</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>整数（0 以上）</td>
+<td><code>u8</code><br><code>u32</code><br><code>u64</code><br><code>usize</code></td>
+<td>長さや何番目かは usize</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>小数</td>
+<td><code>f64</code></td>
+<td></td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>はい・いいえ</td>
+<td><code>bool</code></td>
+<td>true か false</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>1 文字</td>
+<td><code>char</code></td>
+<td>'あ' のように ' で囲む</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>足す・引く・掛ける・割る</td>
+<td><code>a + b</code><br><code>a - b</code><br><code>a * b</code><br><code>a / b</code></td>
+<td>整数の割り算は小数を切り捨てる</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>割った余り</td>
+<td><code>a % b</code></td>
+<td>偶数は n % 2 == 0</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>足して入れる</td>
+<td><code>total += n;</code></td>
+<td>-= *= /= もある</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>型を変える</td>
+<td><code>n as f64</code><br><code>x as u8</code></td>
+<td>大きい型から小さい型は、はみ出すと切れる</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>読みやすい数の書き方</td>
+<td><code>1_000_000</code></td>
+<td>_ は区切り</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>型を付けた数</td>
+<td><code>10u8</code><br><code>0u64</code></td>
+<td></td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>16 進数・2 進数で書く</td>
+<td><code>0xff</code><br><code>0b1010</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>とても大きい・小さい小数</td>
+<td><code>1e6</code><br><code>2.5e-3</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>文字を数にする</td>
+<td><code>let n: i32 = "42".parse()?;</code></td>
+<td>数でない時はエラー</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>あふれたら None にする</td>
+<td><code>a.checked_add(b)</code></td>
+<td>Option で返る</td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>あふれたら上限で止める</td>
+<td><code>a.saturating_sub(b)</code></td>
+<td>u32 で 0 より下にならない</td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td>大きい方・小さい方</td>
+<td><code>a.max(b)</code><br><code>a.min(b)</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>範囲に収める</td>
+<td><code>x.clamp(0, 100)</code></td>
+<td></td>
+<td>第11巻 UNIT 07</td>
+</tr>
+<tr>
+<td>絶対値</td>
+<td><code>x.abs()</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>べき乗</td>
+<td><code>2_i32.pow(10)</code><br><code>x.powi(2)</code></td>
+<td>整数は pow、小数は powi</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>四捨五入・切り捨て・切り上げ</td>
+<td><code>x.round()</code><br><code>x.floor()</code><br><code>x.ceil()</code></td>
+<td></td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td>平方根</td>
+<td><code>x.sqrt()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>型の一番大きい値</td>
+<td><code>u32::MAX</code><br><code>i64::MIN</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-9">文字列</h2>
+<p>文字列には、借りて見るだけの <code>&amp;str</code> と、自分で持って書き足せる <code>String</code> の 2 つがあります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文字列を作る</td>
+<td><code>let s = String::from("Rust");</code><br><code>"Rust".to_string()</code></td>
+<td></td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>空の文字列を作る</td>
+<td><code>let mut s = String::new();</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>後ろに書き足す</td>
+<td><code>s.push_str("の本");</code><br><code>s.push('!');</code></td>
+<td>push は 1 文字</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>つなげた文字を作る</td>
+<td><code>format!("{a}{b}")</code><br><code>a + &amp;b</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>バイトの長さ</td>
+<td><code>s.len()</code></td>
+<td>日本語は 1 文字 3 バイト</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>文字の数</td>
+<td><code>s.chars().count()</code></td>
+<td>見た目の文字数に近い</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>空か調べる</td>
+<td><code>s.is_empty()</code></td>
+<td></td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>前後の空白を取る</td>
+<td><code>s.trim()</code></td>
+<td>trim_start・trim_end もある</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>区切りで分ける</td>
+<td><code>s.split(',')</code></td>
+<td>イテレーターが返る</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>最初の区切りで 2 つに分ける</td>
+<td><code>s.split_once('=')</code></td>
+<td>Option&lt;(&amp;str, &amp;str)&gt;</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>空白で分ける</td>
+<td><code>s.split_whitespace()</code></td>
+<td>空白がいくつ続いてもよい</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>1 行ずつ分ける</td>
+<td><code>text.lines()</code></td>
+<td><code>\r\n</code> も <code>\n</code> も分かる</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>含むか調べる</td>
+<td><code>s.contains("rust")</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>始まり・終わりを調べる</td>
+<td><code>s.starts_with("http")</code><br><code>s.ends_with(".rs")</code></td>
+<td></td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>頭や後ろの決まった部分を外す</td>
+<td><code>s.strip_prefix("Bearer ")</code></td>
+<td>無ければ None</td>
+<td>第3巻 UNIT 05</td>
+</tr>
+<tr>
+<td>置きかえる</td>
+<td><code>s.replace("\r\n", "\n")</code></td>
+<td>新しい String ができる</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>大文字・小文字にする</td>
+<td><code>s.to_uppercase()</code><br><code>s.to_lowercase()</code></td>
+<td></td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>大文字小文字を気にせず比べる</td>
+<td><code>a.eq_ignore_ascii_case(b)</code></td>
+<td>英字だけ</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>どこにあるか探す</td>
+<td><code>s.find("@")</code></td>
+<td>バイトの位置が Option で</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>一部を取り出す</td>
+<td><code>&amp;s[0..3]</code></td>
+<td>バイトの位置。日本語の途中で切ると止まる</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>先頭から何文字か取る（安全に）</td>
+<td><code>s.chars().take(10).collect::&lt;String&gt;()</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>1 文字ずつ見る</td>
+<td><code>for c in s.chars() { … }</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>同じ文字をくり返す</td>
+<td><code>"-".repeat(20)</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>並びを区切りでつなぐ</td>
+<td><code>v.join(", ")</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>&amp;str から String にする</td>
+<td><code>s.to_string()</code><br><code>s.to_owned()</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>String から &amp;str にする</td>
+<td><code>&amp;s</code><br><code>s.as_str()</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>文字の種類を調べる</td>
+<td><code>c.is_ascii_digit()</code><br><code>c.is_alphabetic()</code><br><code>c.is_whitespace()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td><code>\</code> をそのまま書く</td>
+<td><code>r"C:\Users\you"</code></td>
+<td>生の文字列</td>
+<td>第10巻 UNIT 07</td>
+</tr>
+<tr>
+<td>" もそのまま書く</td>
+<td><code>r#"{"title": "牛乳"}"#</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>長い文字を次の行へ続ける</td>
+<td><code>"長い文字\</code></td>
+<td>行の終わりの <code>\</code></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>バイトの並びにする</td>
+<td><code>s.as_bytes()</code><br><code>b"abc"</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>バイトの並びから文字にする</td>
+<td><code>String::from_utf8(bytes)?</code><br><code>String::from_utf8_lossy(&amp;bytes)</code></td>
+<td>読めない所は � に</td>
+<td>第6巻 UNIT 07</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-10">Vec と配列（並び）</h2>
+<p>同じ型の値の並びです。数が決まっていれば配列 <code>[T; N]</code>、増やしたり減らしたりするなら <code>Vec&lt;T&gt;</code> を使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>値を並べて作る</td>
+<td><code>let v = vec![1, 2, 3];</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>空の Vec を作る</td>
+<td><code>let mut v: Vec&lt;String&gt; = Vec::new();</code></td>
+<td></td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>大きさを先に取って作る</td>
+<td><code>Vec::with_capacity(100)</code></td>
+<td>増やす時の作り直しが減る</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>同じ値を n 個並べる</td>
+<td><code>vec![0; 5]</code><br><code>[0; 5]</code></td>
+<td></td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>配列を作る</td>
+<td><code>let a = ["Cargo.toml", "src/main.rs"];</code></td>
+<td>数は変えられない</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>後ろに足す</td>
+<td><code>v.push(4);</code></td>
+<td></td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>後ろから取り出す</td>
+<td><code>v.pop()</code></td>
+<td>空なら None</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>途中に入れる・途中を消す</td>
+<td><code>v.insert(0, x)</code><br><code>v.remove(0)</code></td>
+<td></td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>数を数える</td>
+<td><code>v.len()</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>空か調べる</td>
+<td><code>v.is_empty()</code></td>
+<td></td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>何番目かを取り出す</td>
+<td><code>v[0]</code></td>
+<td>無い番号だと止まる（パニック）</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>何番目かを安全に取り出す</td>
+<td><code>v.get(10)</code></td>
+<td>無ければ None</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>最初・最後</td>
+<td><code>v.first()</code><br><code>v.last()</code></td>
+<td>Option で返る</td>
+<td>第10巻 UNIT 08</td>
+</tr>
+<tr>
+<td>含むか調べる</td>
+<td><code>v.contains(&amp;3)</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>v.sort();</code></td>
+<td>小さい順</td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>決めた順に並べかえる</td>
+<td><code>v.sort_by(&#124;a, b&#124; b.cmp(a));</code></td>
+<td>大きい順</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>項目で並べかえる</td>
+<td><code>notes.sort_by_key(&#124;n&#124; n.id);</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>小数を並べかえる</td>
+<td><code>v.sort_by(&#124;a, b&#124; a.total_cmp(b));</code></td>
+<td>f64 は sort が使えない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>逆さにする</td>
+<td><code>v.reverse();</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>隣どうしの重なりを消す</td>
+<td><code>v.dedup();</code></td>
+<td>先に sort しておく</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>条件に合う物だけ残す</td>
+<td><code>v.retain(&#124;n&#124; !n.done);</code></td>
+<td></td>
+<td>第3巻 UNIT 07</td>
+</tr>
+<tr>
+<td>後ろに並びをつなぐ</td>
+<td><code>v.extend(other);</code></td>
+<td></td>
+<td>第3巻 UNIT 07</td>
+</tr>
+<tr>
+<td>全部消す</td>
+<td><code>v.clear();</code></td>
+<td></td>
+<td>第3巻 UNIT 04</td>
+</tr>
+<tr>
+<td>決めた長さにする</td>
+<td><code>v.truncate(10);</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>2 つを入れかえる</td>
+<td><code>v.swap(0, 1);</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>一部を借りて見る</td>
+<td><code>&amp;v[1..3]</code></td>
+<td>スライス</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>引数で並びを受け取る</td>
+<td><code>fn total(xs: &amp;[i32]) -&gt; i32</code></td>
+<td>Vec も配列も渡せる</td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>n 個ずつに分ける</td>
+<td><code>v.chunks(3)</code></td>
+<td>最後は 3 個より少ないことも</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>隣り合う組を順に見る</td>
+<td><code>v.windows(2)</code></td>
+<td>[a, b], [b, c], …</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>並んだ物から探す（速く）</td>
+<td><code>v.binary_search(&amp;x)</code></td>
+<td>先に sort しておく</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>文字の並びをつなぐ</td>
+<td><code>v.join("、")</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>大きさの決まった配列の型</td>
+<td><code>[u8; 32]</code></td>
+<td></td>
+<td>第2巻 UNIT 06</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-11">HashMap と HashSet（表と集まり）</h2>
+<p>キーで値を引ける表（<code>HashMap</code>）と、重なりの無い集まり（<code>HashSet</code>）です。<code>use std::collections::HashMap;</code> が要ります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表を作る</td>
+<td><code>let mut m = HashMap::new();</code></td>
+<td></td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>入れる・上書きする</td>
+<td><code>m.insert("alice", 80);</code></td>
+<td>前の値は Some で返る</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>キーで取り出す</td>
+<td><code>m.get("alice")</code></td>
+<td>無ければ None</td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>キーで取り出して変える</td>
+<td><code>if let Some(v) = m.get_mut("alice") { *v += 1; }</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>無ければ入れて、あれば足す</td>
+<td><code>*m.entry(word).or_insert(0) += 1;</code></td>
+<td>数えるのに便利</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>キーがあるか調べる</td>
+<td><code>m.contains_key("alice")</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>消す</td>
+<td><code>m.remove("alice")</code></td>
+<td></td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>全部を順に見る</td>
+<td><code>for (k, v) in &amp;m { … }</code></td>
+<td>順番は決まっていない</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>キーだけ・値だけ</td>
+<td><code>m.keys()</code><br><code>m.values()</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>キーの順に並んだ表</td>
+<td><code>BTreeMap::new()</code></td>
+<td>表示の順をそろえたい時</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>並びから表を作る</td>
+<td><code>let m: HashMap&lt;_, _&gt; = pairs.into_iter().collect();</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>重なりの無い集まりを作る</td>
+<td><code>let mut s = HashSet::new();</code><br><code>s.insert(x)</code></td>
+<td>insert は初めてなら true</td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td>集まりに含むか</td>
+<td><code>s.contains(&amp;x)</code></td>
+<td>Vec より速い</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>並びの重なりを消す</td>
+<td><code>v.into_iter().collect::&lt;HashSet&lt;_&gt;&gt;()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-12">条件・くり返し・場合分け</h2>
+<p>条件で処理を分ける <code>if</code>、くり返す <code>for</code>・<code>while</code>・<code>loop</code>、形で分ける <code>match</code> です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>条件で分ける</td>
+<td><code>if n &gt; 0 { … } else if n == 0 { … } else { … }</code></td>
+<td>( ) は要らない</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>条件で値を選ぶ</td>
+<td><code>let kind = if is_dir { "フォルダ" } else { "ファイル" };</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>等しい・等しくない</td>
+<td><code>a == b</code><br><code>a != b</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>大きい・小さい</td>
+<td><code>a &lt; b</code><br><code>a &lt;= b</code><br><code>a &gt;= b</code></td>
+<td></td>
+<td>第2巻 UNIT 03</td>
+</tr>
+<tr>
+<td>かつ・または・ではない</td>
+<td><code>a &amp;&amp; b</code><br><code>a &#124;&#124; b</code><br><code>!a</code></td>
+<td></td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>範囲の中か</td>
+<td><code>(1..=9).contains(&amp;n)</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>決まった回数くり返す</td>
+<td><code>for i in 0..5 { … }</code></td>
+<td>0〜4</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>終わりの数も含めてくり返す</td>
+<td><code>for i in 1..=10 { … }</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>逆の順にくり返す</td>
+<td><code>for i in (0..5).rev() { … }</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>とびとびにくり返す</td>
+<td><code>for i in (0..10).step_by(2) { … }</code></td>
+<td>0, 2, 4, …</td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>並びを順に見る</td>
+<td><code>for x in &amp;v { … }</code></td>
+<td>&amp; を付けると v は残る</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>何番目かも一緒に見る</td>
+<td><code>for (i, x) in v.iter().enumerate() { … }</code></td>
+<td>i は 0 から</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>条件の間くり返す</td>
+<td><code>while n &gt; 0 { … }</code></td>
+<td></td>
+<td>第2巻 UNIT 01</td>
+</tr>
+<tr>
+<td>ずっとくり返す</td>
+<td><code>loop { … }</code></td>
+<td>break で抜ける</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>くり返しを抜ける</td>
+<td><code>break;</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>次の回へ進む</td>
+<td><code>continue;</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>抜ける時に値を返す</td>
+<td><code>let found = loop { break 42; };</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>外側のくり返しまで抜ける</td>
+<td><code>'outer: for … { break 'outer; }</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>形で分ける</td>
+<td><code>match n { 0 =&gt; "ゼロ", _ =&gt; "ほか" }</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>その他すべて</td>
+<td><code>_ =&gt; …</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>いくつかの形をまとめる</td>
+<td><code>1 &#124; 2 &#124; 3 =&gt; "小さい",</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>範囲で分ける</td>
+<td><code>0..=59 =&gt; "不合格",</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>形が合って条件も合う時</td>
+<td><code>Some(n) if n &gt; 0 =&gt; …</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>合った値に名前を付ける</td>
+<td><code>n @ 1..=9 =&gt; …</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>1 つの形の時だけ処理する</td>
+<td><code>if let Some(x) = opt { … }</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>形である間くり返す</td>
+<td><code>while let Some(x) = stack.pop() { … }</code></td>
+<td></td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>形に合うか true/false で知る</td>
+<td><code>matches!(c, 'a'..='z')</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>使わない値を無視する</td>
+<td><code>(x, _)</code><br><code>Err(_)</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>残りの項目を無視する</td>
+<td><code>Point { x, .. }</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-13">Option（あるかもしれない値）</h2>
+<p>値が「ある（<code>Some</code>）」か「無い（<code>None</code>）」かを表す型です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>あるかもしれない値の型</td>
+<td><code>Option&lt;String&gt;</code></td>
+<td></td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>値がある・無い</td>
+<td><code>Some(x)</code><br><code>None</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>あるか調べる</td>
+<td><code>opt.is_some()</code><br><code>opt.is_none()</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>無ければ決めた値にする</td>
+<td><code>opt.unwrap_or(0)</code></td>
+<td></td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>無ければ型の初期値にする</td>
+<td><code>opt.unwrap_or_default()</code></td>
+<td>文字なら空、数なら 0</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>無ければ計算して決める</td>
+<td><code>opt.unwrap_or_else(&#124;&#124; load())</code></td>
+<td></td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>必ずあると言い切って取り出す</td>
+<td><code>opt.expect("設定が要ります")</code></td>
+<td>無いと止まる。理由を書く</td>
+<td>第2巻 UNIT 01</td>
+</tr>
+<tr>
+<td>中身を変える</td>
+<td><code>opt.map(&#124;s&#124; s.len())</code></td>
+<td>None はそのまま</td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>中身から、また Option を作る</td>
+<td><code>opt.and_then(&#124;s&#124; s.parse().ok())</code></td>
+<td></td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>条件に合わなければ None にする</td>
+<td><code>opt.filter(&#124;s&#124; !s.is_empty())</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>None ならエラーにする</td>
+<td><code>opt.ok_or("見つかりません")?</code></td>
+<td></td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td>None ならそこで返す</td>
+<td><code>let x = opt?;</code></td>
+<td>Option を返す関数の中で</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>無ければ早めに抜ける</td>
+<td><code>let Some(user) = user else { return; };</code></td>
+<td></td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>借りた形にする</td>
+<td><code>opt.as_ref()</code><br><code>opt.as_deref()</code></td>
+<td>Option<String> → Option&lt;&amp;str&gt; は as_deref</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>取り出して None にする</td>
+<td><code>opt.take()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>借りた値を複製した Option にする</td>
+<td><code>opt.cloned()</code><br><code>opt.copied()</code></td>
+<td></td>
+<td>第4巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-14">エラー処理（Result）</h2>
+<p>失敗するかもしれない処理は、成功（<code>Ok</code>）か失敗（<code>Err</code>）かの <code>Result</code> を返します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>成功か失敗かの型</td>
+<td><code>Result&lt;i32, String&gt;</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>成功・失敗の値</td>
+<td><code>Ok(42)</code><br><code>Err("だめ".to_string())</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>失敗ならそこで返す</td>
+<td><code>let text = fs::read_to_string(path)?;</code></td>
+<td>呼んだ所へエラーを渡す</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>成功と失敗で分ける</td>
+<td><code>match r { Ok(v) =&gt; …, Err(e) =&gt; … }</code></td>
+<td></td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>失敗なら止まる（試し書き）</td>
+<td><code>r.unwrap()</code><br><code>r.expect("理由")</code></td>
+<td>本番では使わない</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>失敗なら決めた値にする</td>
+<td><code>r.unwrap_or(0)</code></td>
+<td></td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>エラーを別の形にする</td>
+<td><code>r.map_err(&#124;e&#124; e.to_string())</code></td>
+<td></td>
+<td>第2巻 UNIT 09</td>
+</tr>
+<tr>
+<td>成功だけ Option にする</td>
+<td><code>r.ok()</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>成功か調べる</td>
+<td><code>r.is_ok()</code><br><code>r.is_err()</code></td>
+<td></td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td>main からエラーを返す</td>
+<td><code>fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;</code></td>
+<td></td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td>どんなエラーもまとめて返す</td>
+<td><code>fn main() -&gt; anyhow::Result&lt;()&gt;</code></td>
+<td>anyhow を使う</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>エラーに説明を足す</td>
+<td><code>.context("設定を読めません")?</code></td>
+<td>anyhow</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>エラーを作ってすぐ返す</td>
+<td><code>bail!("題が空です");</code></td>
+<td>anyhow</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>自分のエラーの型を作る</td>
+<td><code>#[derive(Debug, thiserror::Error)] enum AppError { #[error("…")] Empty }</code></td>
+<td>thiserror</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ほかのエラーから自動で変える</td>
+<td><code>#[error(transparent)] Io(#[from] std::io::Error)</code></td>
+<td>? で自動変換</td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>そこで止める（直せない間違い）</td>
+<td><code>panic!("ここには来ないはず");</code></td>
+<td></td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td>終了コードを付けて終わる</td>
+<td><code>std::process::exit(1);</code></td>
+<td></td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td>条件が合わなければ止める</td>
+<td><code>assert!(n &gt; 0, "n は正の数");</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>まだ書いていない所の印</td>
+<td><code>todo!()</code></td>
+<td>翻訳は通り、動くと止まる</td>
+<td>第7巻 UNIT 07</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-15">関数・構造体・enum・トレイト</h2>
+<p>処理をまとめる関数、項目をまとめる構造体、種類を表す enum、共通の決まりを表すトレイトです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>関数を作る</td>
+<td><code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code></td>
+<td>最後の式が返る</td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>戻り値の型を書く</td>
+<td><code>-&gt; i32</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>途中で返す</td>
+<td><code>return Err(…);</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>項目をまとめた型を作る</td>
+<td><code>struct Note { id: i64, title: String }</code></td>
+<td></td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>型に関数（メソッド）を付ける</td>
+<td><code>impl Note { fn new(title: &amp;str) -&gt; Self { … } }</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>自分を借りるメソッド</td>
+<td><code>fn len(&amp;self) -&gt; usize</code></td>
+<td>&amp;mut self なら変えられる</td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>残りの項目を、ほかの値と同じにする</td>
+<td><code>Note { title, ..old }</code></td>
+<td></td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td>種類を表す型を作る</td>
+<td><code>enum Status { Draft, Done }</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>種類に値を持たせる</td>
+<td><code>enum Shape { Line { x1: f64, … }, Text(String) }</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>よく使う機能を自動で付ける</td>
+<td><code>#[derive(Debug, Clone, PartialEq)]</code></td>
+<td></td>
+<td>第2巻 UNIT 07</td>
+</tr>
+<tr>
+<td>初期値を作れるようにする</td>
+<td><code>#[derive(Default)]</code><br><code>Note::default()</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>並べられるようにする</td>
+<td><code>#[derive(PartialOrd, Ord, PartialEq, Eq)]</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>表のキーにできるようにする</td>
+<td><code>#[derive(Hash, Eq, PartialEq)]</code></td>
+<td></td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>共通の決まりを作る</td>
+<td><code>trait Summary { fn summary(&amp;self) -&gt; String; }</code></td>
+<td></td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td>型に決まりを付ける</td>
+<td><code>impl Summary for Note { … }</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>型を変えられるようにする</td>
+<td><code>impl From&lt;&amp;str&gt; for Title</code><br><code>let t: Title = "a".into();</code></td>
+<td></td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>確かめつつ型を変える</td>
+<td><code>impl TryFrom&lt;String&gt; for Title</code></td>
+<td>失敗はエラー</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>文字から作れるようにする</td>
+<td><code>impl FromStr for Status</code><br><code>"done".parse::&lt;Status&gt;()</code></td>
+<td></td>
+<td>第4巻 UNIT 01</td>
+</tr>
+<tr>
+<td>どんな型でも受け取る（決まり付き）</td>
+<td><code>fn show&lt;T: Display&gt;(x: T)</code></td>
+<td></td>
+<td>第4巻 UNIT 03</td>
+</tr>
+<tr>
+<td>型を後で決める</td>
+<td><code>struct Wrapper&lt;T&gt; { value: T }</code></td>
+<td></td>
+<td>第3巻 UNIT 05</td>
+</tr>
+<tr>
+<td>決まりを満たす何かを返す</td>
+<td><code>fn items() -&gt; impl Iterator&lt;Item = i32&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>中身の型を後で決めて入れる</td>
+<td><code>Box&lt;dyn Error&gt;</code><br><code>Vec&lt;Box&lt;dyn Shape&gt;&gt;</code></td>
+<td></td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td>名前の無い関数（クロージャ）</td>
+<td><code>let double = &#124;x&#124; x * 2;</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>外の値を持っていくクロージャ</td>
+<td><code>move &#124;&#124; println!("{name}")</code></td>
+<td>スレッドに渡す時</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>関数を引数で受け取る</td>
+<td><code>fn apply(f: impl Fn(i32) -&gt; i32)</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>型に別名を付ける</td>
+<td><code>type Db = Arc&lt;Mutex&lt;Conn&gt;&gt;;</code></td>
+<td></td>
+<td>第4巻 UNIT 01</td>
+</tr>
+<tr>
+<td>その型の決まった値</td>
+<td><code>impl Note { const MAX: usize = 80; }</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-16">モジュールと公開</h2>
+<p>コードをファイルやまとまりに分ける方法と、外から使えるかどうか（公開）の決め方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ほかの場所の物を短い名前で使う</td>
+<td><code>use std::collections::HashMap;</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>いくつかまとめて use する</td>
+<td><code>use std::{fs, io};</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>全部まとめて use する</td>
+<td><code>use super::*;</code></td>
+<td>テストでよく使う</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>まとまり（モジュール）を作る</td>
+<td><code>mod auth;</code></td>
+<td><code>src\auth.rs</code> を読む</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>外から使えるようにする</td>
+<td><code>pub fn</code><br><code>pub struct</code></td>
+<td></td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>このクレートの中だけ公開</td>
+<td><code>pub(crate) fn</code></td>
+<td></td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td>クレートのいちばん上から指す</td>
+<td><code>crate::auth::login</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>1 つ上のモジュールを指す</td>
+<td><code>super::Note</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>〜の中の</td>
+<td><code>std::env::args</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>テストの時だけ翻訳する</td>
+<td><code>#[cfg(test)] mod tests { … }</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>機能が ON の時だけ翻訳する</td>
+<td><code>#[cfg(feature = "json")]</code></td>
+<td></td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>OS ごとに書き分ける</td>
+<td><code>#[cfg(windows)]</code><br><code>#[cfg(unix)]</code></td>
+<td></td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td>使っていない警告を止める</td>
+<td><code>#[allow(dead_code)]</code></td>
+<td>本当に要らない時だけ</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>ファイル全体の説明を書く</td>
+<td><code>//! このファイルは…</code></td>
+<td></td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td>関数の説明を書く</td>
+<td><code>/// 題の文字数を数える</code></td>
+<td>cargo doc で読める</td>
+<td>第1巻 UNIT 06</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code>// メモ</code><br><code>/* メモ */</code></td>
+<td></td>
+<td>第0巻 UNIT 01</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-17">所有権・借用・スマートポインタ</h2>
+<p>Rust の値には持ち主が 1 人だけいます。貸す（借用）・複製する・みんなで持つ、の書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>見せるだけ貸す</td>
+<td><code>&amp;x</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>変えてよい形で貸す</td>
+<td><code>&amp;mut x</code></td>
+<td>同時には 1 つだけ</td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>借りた先の値を使う・変える</td>
+<td><code>*count += 1;</code></td>
+<td></td>
+<td>第2巻 UNIT 06</td>
+</tr>
+<tr>
+<td>複製する</td>
+<td><code>x.clone()</code></td>
+<td>元も残る</td>
+<td>第0巻 UNIT 09</td>
+</tr>
+<tr>
+<td>借りた値から持ち物を作る</td>
+<td><code>s.to_owned()</code></td>
+<td></td>
+<td>第2巻 UNIT 05</td>
+</tr>
+<tr>
+<td>借りている期間に名前を付ける</td>
+<td><code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code></td>
+<td></td>
+<td>第3巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ずっと有効な参照</td>
+<td><code>&amp;'static str</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>値をヒープに置く</td>
+<td><code>Box::new(x)</code></td>
+<td>大きい値や、中身の型を後で決める時</td>
+<td>第3巻 UNIT 08</td>
+</tr>
+<tr>
+<td>みんなで持つ（1 つのスレッド）</td>
+<td><code>Rc::new(x)</code><br><code>Rc::clone(&amp;a)</code></td>
+<td></td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td>みんなで持つ（スレッドをまたぐ）</td>
+<td><code>Arc::new(x)</code></td>
+<td></td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>借りたまま中を変える</td>
+<td><code>RefCell::new(x)</code><br><code>c.borrow_mut()</code></td>
+<td></td>
+<td>第3巻 UNIT 09</td>
+</tr>
+<tr>
+<td>スレッドをまたいで中を変える</td>
+<td><code>Arc::new(Mutex::new(0))</code><br><code>*m.lock().unwrap() += 1</code></td>
+<td></td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>読む人が多い時の鍵</td>
+<td><code>RwLock::new(x)</code><br><code>.read()</code><br><code>.write()</code></td>
+<td></td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>値を取り出して空にする</td>
+<td><code>std::mem::take(&amp;mut v)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>2 つの値を入れかえる</td>
+<td><code>std::mem::swap(&amp;mut a, &amp;mut b)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-18">イテレーター（1 つずつ取り出して処理する）</h2>
+<p>並びの中身を 1 つずつ流して、変える・しぼる・集める道具です。<code>.collect()</code> などで最後に結果を作ります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>借りて 1 つずつ</td>
+<td><code>v.iter()</code></td>
+<td></td>
+<td>第0巻 UNIT 08</td>
+</tr>
+<tr>
+<td>変えられる形で 1 つずつ</td>
+<td><code>v.iter_mut()</code></td>
+<td></td>
+<td>第3巻 UNIT 03</td>
+</tr>
+<tr>
+<td>持ち物として 1 つずつ（v は使えなくなる）</td>
+<td><code>v.into_iter()</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>1 つずつ変える</td>
+<td><code>.map(&#124;x&#124; x * 2)</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>条件に合う物だけ</td>
+<td><code>.filter(&#124;n&#124; !n.done)</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>変えて、None を捨てる</td>
+<td><code>.filter_map(&#124;s&#124; s.parse().ok())</code></td>
+<td></td>
+<td>第4巻 UNIT 09</td>
+</tr>
+<tr>
+<td>Vec などに集める</td>
+<td><code>.collect::&lt;Vec&lt;_&gt;&gt;()</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>合計</td>
+<td><code>.sum::&lt;i32&gt;()</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>.count()</code></td>
+<td></td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>1 つにまとめる</td>
+<td><code>.fold(0, &#124;acc, x&#124; acc + x)</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>どれか 1 つでも合うか</td>
+<td><code>.any(&#124;x&#124; x &gt; 10)</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>全部が合うか</td>
+<td><code>.all(&#124;x&#124; x &gt; 0)</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>最初に合う物</td>
+<td><code>.find(&#124;n&#124; n.id == id)</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>何番目に合うか</td>
+<td><code>.position(&#124;x&#124; x == 3)</code></td>
+<td></td>
+<td>第3巻 UNIT 07</td>
+</tr>
+<tr>
+<td>いちばん大きい・小さい</td>
+<td><code>.max()</code><br><code>.min()</code></td>
+<td></td>
+<td>第2巻 UNIT 02</td>
+</tr>
+<tr>
+<td>項目でいちばんを選ぶ</td>
+<td><code>.max_by_key(&#124;n&#124; n.updated_at)</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>何番目かを付ける</td>
+<td><code>.enumerate()</code></td>
+<td></td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>2 つを組にする</td>
+<td><code>a.iter().zip(b.iter())</code></td>
+<td></td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td>最初の n 個</td>
+<td><code>.take(5)</code></td>
+<td></td>
+<td>第0巻 UNIT 05</td>
+</tr>
+<tr>
+<td>最初の n 個を飛ばす</td>
+<td><code>.skip(5)</code></td>
+<td>ページ送りに</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>後ろにつなぐ</td>
+<td><code>a.iter().chain(b.iter())</code></td>
+<td></td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>逆の順</td>
+<td><code>.rev()</code></td>
+<td></td>
+<td>第2巻 UNIT 04</td>
+</tr>
+<tr>
+<td>中の並びを平らにする</td>
+<td><code>.flat_map(&#124;s&#124; s.chars())</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>借りた値を複製して流す</td>
+<td><code>.copied()</code><br><code>.cloned()</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>次を先に見る</td>
+<td><code>let mut it = v.iter().peekable(); it.peek()</code></td>
+<td></td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td>条件の間だけ取る</td>
+<td><code>.take_while(&#124;x&#124; x &lt; 10)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>最後の 1 つ</td>
+<td><code>.last()</code></td>
+<td></td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td>1 つずつ処理するだけ</td>
+<td><code>.for_each(&#124;x&#124; println!("{x}"))</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-19">ファイルとフォルダ</h2>
+<p><code>use std::fs;</code>・<code>use std::path::Path;</code> を使います。失敗するかもしれないので、多くは <code>Result</code> を返します（<code>?</code> で受けます）。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ファイルを全部、文字として読む</td>
+<td><code>let text = fs::read_to_string("memo.txt")?;</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>ファイルを全部、バイトで読む</td>
+<td><code>let bytes = fs::read("photo.png")?;</code></td>
+<td></td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>ファイルに書く（上書き）</td>
+<td><code>fs::write("memo.txt", "中身")?;</code></td>
+<td>前の中身は消える</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>ファイルに書き足す</td>
+<td><code>OpenOptions::new().append(true).create(true).open("log.txt")?</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>新しいファイルを作って書く</td>
+<td><code>let mut f = File::create("out.txt")?; writeln!(f, "1 行")?;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルを開いて読む</td>
+<td><code>let f = File::open("in.txt")?;</code></td>
+<td></td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td>1 行ずつ読む</td>
+<td><code>for line in BufReader::new(f).lines() { let line = line?; }</code></td>
+<td>大きなファイルでも少しずつ</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>まとめて速く書く</td>
+<td><code>let mut w = BufWriter::new(f);</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>フォルダを作る（途中も）</td>
+<td><code>fs::create_dir_all("data/notes")?;</code></td>
+<td>もうあってもよい</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>フォルダの中を一覧する</td>
+<td><code>for e in fs::read_dir(".")? { let e = e?; e.path(); }</code></td>
+<td>順番は決まっていない</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>ファイルを消す</td>
+<td><code>fs::remove_file("tmp.txt")?;</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>フォルダを中身ごと消す</td>
+<td><code>fs::remove_dir_all("tmp")?;</code></td>
+<td>戻せない</td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>名前を変える・動かす</td>
+<td><code>fs::rename("a.txt", "b.txt")?;</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>コピーする</td>
+<td><code>fs::copy("a.txt", "b.txt")?;</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>あるか調べる</td>
+<td><code>Path::new("memo.txt").exists()</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>フォルダか・ファイルか</td>
+<td><code>p.is_dir()</code><br><code>p.is_file()</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>大きさ・日時を調べる</td>
+<td><code>fs::metadata(p)?.len()</code><br><code>.modified()?</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>場所をつなぐ</td>
+<td><code>Path::new("memo").join("today.txt")</code></td>
+<td>OS に合った区切り</td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>場所の部品を取り出す</td>
+<td><code>p.file_name()</code><br><code>p.extension()</code><br><code>p.parent()</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>拡張子を除いた名前</td>
+<td><code>p.file_stem()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>拡張子を変える</td>
+<td><code>p.with_extension("bak")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>場所を表示する</td>
+<td><code>println!("{}", p.display());</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td><code>C:\</code> から始まる場所にする</td>
+<td><code>fs::canonicalize(p)?</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>今いるフォルダ</td>
+<td><code>env::current_dir()?</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>今いるフォルダを変える</td>
+<td><code>env::set_current_dir("work")?;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>持てる場所の型</td>
+<td><code>PathBuf::from("data")</code></td>
+<td>変えたり足したりできる</td>
+<td>第9巻 UNIT 04</td>
+</tr>
+<tr>
+<td>一時フォルダ</td>
+<td><code>env::temp_dir()</code></td>
+<td></td>
+<td>第11巻 UNIT 02</td>
+</tr>
+<tr>
+<td>無いファイルの時だけ分ける</td>
+<td><code>Err(e) if e.kind() == io::ErrorKind::NotFound =&gt; …</code></td>
+<td></td>
+<td>第4巻 UNIT 04</td>
+</tr>
+<tr>
+<td>テスト用の一時フォルダ</td>
+<td><code>let dir = tempfile::tempdir()?;</code></td>
+<td>終わると消える</td>
+<td>第9巻 UNIT 05</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-20">入力・引数・環境変数・ほかのプログラム</h2>
+<p>プログラムの外から値を受け取る方法と、ほかのプログラムを動かす方法です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>キーボードから 1 行読む</td>
+<td><code>io::stdin().read_line(&amp;mut line)?;</code></td>
+<td>最後に改行が付く</td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>キーボードから全部読む</td>
+<td><code>io::stdin().lines()</code></td>
+<td>1 行ずつ</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>引数を受け取る</td>
+<td><code>let args: Vec&lt;String&gt; = env::args().collect();</code></td>
+<td>0 番目はプログラムの名前</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>引数を 1 つずつ見る</td>
+<td><code>let mut args = env::args().skip(1); args.next()</code></td>
+<td></td>
+<td>第0巻 UNIT 06</td>
+</tr>
+<tr>
+<td>環境変数を読む</td>
+<td><code>env::var("DATABASE_URL")?</code></td>
+<td>無いとエラー</td>
+<td>第0巻 UNIT 03</td>
+</tr>
+<tr>
+<td>環境変数が無ければ決めた値</td>
+<td><code>env::var("PORT").unwrap_or_else(&#124;_&#124; "3000".into())</code></td>
+<td></td>
+<td>第4巻 UNIT 05</td>
+</tr>
+<tr>
+<td>.env のファイルを読む</td>
+<td><code>dotenvy::dotenv().ok();</code></td>
+<td>開発の時の設定</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>OS の種類を知る</td>
+<td><code>env::consts::OS</code></td>
+<td>"windows" など</td>
+<td>第0巻 UNIT 01</td>
+</tr>
+<tr>
+<td>ほかのプログラムを動かす</td>
+<td><code>Command::new("git").arg("--version").output()?</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>動かして終わりを待つ</td>
+<td><code>Command::new("cargo").args(["fmt", "--check"]).status()?</code></td>
+<td>.success() で成功か</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>出力を文字にする</td>
+<td><code>String::from_utf8_lossy(&amp;out.stdout)</code></td>
+<td></td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>すぐ画面に出す</td>
+<td><code>io::stdout().flush()?;</code></td>
+<td>print! の後に</td>
+<td>第2巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-21">時間</h2>
+<p>時間を測る・待つ・日時を扱う方法です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>処理の時間を測る</td>
+<td><code>let t = Instant::now(); … t.elapsed()</code></td>
+<td>{:?} で 1.2ms のように出る</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+<tr>
+<td>時間の長さを作る</td>
+<td><code>Duration::from_secs(5)</code><br><code>Duration::from_millis(200)</code></td>
+<td></td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td>待つ（スレッド）</td>
+<td><code>thread::sleep(Duration::from_millis(100));</code></td>
+<td></td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>待つ（async の中）</td>
+<td><code>tokio::time::sleep(Duration::from_secs(1)).await;</code></td>
+<td>スレッドを止めない</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>決めた時間で打ち切る</td>
+<td><code>tokio::time::timeout(Duration::from_secs(5), fut).await</code></td>
+<td></td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td>決まった間かくでくり返す</td>
+<td><code>let mut tick = tokio::time::interval(Duration::from_secs(60)); tick.tick().await;</code></td>
+<td></td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td>今の日時（1970 年からの秒）</td>
+<td><code>SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs()</code></td>
+<td></td>
+<td>第4巻 UNIT 02</td>
+</tr>
+<tr>
+<td>秒・ミリ秒にする</td>
+<td><code>d.as_secs()</code><br><code>d.as_millis()</code></td>
+<td></td>
+<td>第4巻 UNIT 02</td>
+</tr>
+<tr>
+<td>今の日時（time）</td>
+<td><code>OffsetDateTime::now_utc()</code></td>
+<td>time を使う</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>日時を文字にする（chrono）</td>
+<td><code>now.format("%Y-%m-%d %H:%M").to_string()</code></td>
+<td>%Y 年 %m 月 %d 日</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-22">スレッドと async（同時に動かす）</h2>
+<p>いくつもの仕事を同時に進める方法です。Web のサーバーは <code>tokio</code> の async で動きます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>スレッドを作る</td>
+<td><code>let h = thread::spawn(move &#124;&#124; { … });</code></td>
+<td></td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>スレッドの終わりを待つ</td>
+<td><code>h.join().unwrap()</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>スレッドどうしで値を送る</td>
+<td><code>let (tx, rx) = mpsc::channel(); tx.send(x)?; rx.recv()?</code></td>
+<td></td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td>みんなで数を変える</td>
+<td><code>let n = Arc::new(Mutex::new(0));</code></td>
+<td></td>
+<td>第3巻 UNIT 10</td>
+</tr>
+<tr>
+<td>止まらずに数える</td>
+<td><code>AtomicUsize::new(0)</code><br><code>.fetch_add(1, Ordering::Relaxed)</code></td>
+<td></td>
+<td>第11巻 UNIT 08</td>
+</tr>
+<tr>
+<td>async の関数を作る</td>
+<td><code>async fn load(id: i64) -&gt; Result&lt;Note&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>終わるまで待つ</td>
+<td><code>let note = load(1).await?;</code></td>
+<td></td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>main を async にする</td>
+<td><code>#[tokio::main] async fn main()</code></td>
+<td></td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>1 本のスレッドで動かす</td>
+<td><code>#[tokio::main(flavor = "current_thread")]</code></td>
+<td></td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td>裏で仕事を走らせる</td>
+<td><code>let h = tokio::spawn(async move { … });</code></td>
+<td></td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td>いくつかを同時に待つ</td>
+<td><code>let (a, b) = tokio::join!(f1, f2);</code></td>
+<td></td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>先に終わった方を使う</td>
+<td><code>tokio::select! { r = f1 =&gt; …, _ = f2 =&gt; … }</code></td>
+<td></td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td>重い計算を別のスレッドで</td>
+<td><code>tokio::task::spawn_blocking(move &#124;&#124; hash(&amp;pw)).await?</code></td>
+<td>パスワードのハッシュなど</td>
+<td>第5巻 UNIT 02</td>
+</tr>
+<tr>
+<td>たくさんの仕事をまとめて待つ</td>
+<td><code>let mut set = JoinSet::new(); set.spawn(…); set.join_next().await</code></td>
+<td></td>
+<td>第5巻 UNIT 03</td>
+</tr>
+<tr>
+<td>止める合図</td>
+<td><code>CancellationToken::new()</code><br><code>.cancel()</code></td>
+<td>tokio-util</td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td>async で値を送る</td>
+<td><code>let (tx, mut rx) = tokio::sync::mpsc::channel(100);</code></td>
+<td></td>
+<td>第5巻 UNIT 04</td>
+</tr>
+<tr>
+<td>async の鍵</td>
+<td><code>tokio::sync::Mutex::new(x)</code><br><code>.lock().await</code></td>
+<td>.await の間も持つ時</td>
+<td>第3巻 UNIT 10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-23">Web の画面と URL（Topcoat）</h2>
+<p>この本で使う Topcoat（Rust の Web アプリの部品）の、よく使う書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL に答えるページを作る</td>
+<td><code>#[page] async fn home(cx: &amp;Cx) -&gt; Result&lt;impl View&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>フォームの送信（POST）に答える</td>
+<td><code>#[page(POST)]</code></td>
+<td></td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>JSON や文字を返す</td>
+<td><code>#[route(GET)]</code></td>
+<td></td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td>全部のページの外枠を作る</td>
+<td><code>#[layout]</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>HTML を書く</td>
+<td><code>view! { &lt;h1&gt;"こんにちは"&lt;/h1&gt; }</code></td>
+<td>文字は " で囲む</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>値を HTML の中に入れる</td>
+<td><code>view! { &lt;p&gt;(note.title)&lt;/p&gt; }</code></td>
+<td>( ) の中は式</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>くり返して表示する</td>
+<td><code>for note in notes { &lt;li&gt;(note.title)&lt;/li&gt; }</code></td>
+<td>#[key(…)] を付ける</td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>条件で表示を変える</td>
+<td><code>if done { "済" } else { "未" }</code></td>
+<td></td>
+<td>第0巻 UNIT 02</td>
+</tr>
+<tr>
+<td>クラスを条件で付ける</td>
+<td><code>class=(class!("note", "done" if note.done))</code></td>
+<td></td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td>URL を作る</td>
+<td><code>href!(show, Id(note.id))</code></td>
+<td></td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>部品（コンポーネント）を作る</td>
+<td><code>#[component] fn panel(title: &amp;str, #[default] child: Child&lt;'_&gt;)</code></td>
+<td></td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>CSS などのファイルを使う</td>
+<td><code>asset!("styles.css")</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>クエリ（?q=…）を読む</td>
+<td><code>#[query_params(error = bad_request)] struct Q { q: Option&lt;String&gt; }</code></td>
+<td></td>
+<td>第6巻 UNIT 04</td>
+</tr>
+<tr>
+<td>1 回の要求の中で結果を覚える</td>
+<td><code>#[memoize(as_ref)] async fn load_user(cx: &amp;Cx, id: u32)</code></td>
+<td></td>
+<td>第6巻 UNIT 07</td>
+</tr>
+<tr>
+<td>ブラウザーの中で動く状態</td>
+<td><code>let count = signal(cx, &#124;&#124; 1usize);</code></td>
+<td></td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ブラウザーでも動く式</td>
+<td><code>$(count.get())</code></td>
+<td></td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td>押した時の処理（ブラウザーの中）</td>
+<td><code>@click=$(&#124;_e&#124; count.increment())</code></td>
+<td></td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td>サーバーの関数をブラウザーから呼ぶ</td>
+<td><code>#[procedure("/api/double")]</code></td>
+<td></td>
+<td>第6巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ルーターを作って起動する</td>
+<td><code>let router = Router::builder().discover().build(); topcoat::start(router).await</code></td>
+<td></td>
+<td>第6巻 UNIT 02</td>
+</tr>
+<tr>
+<td>入力欄のある送信フォーム</td>
+<td><code>&lt;form method="post"&gt;&lt;input name="title"&gt;&lt;button&gt;"保存"&lt;/button&gt;&lt;/form&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 06</td>
+</tr>
+<tr>
+<td>送ったあと別のページへ移す</td>
+<td><code>Err(see_other(href!(show, Id(note.id)).resolve(cx)).into())</code></td>
+<td>303 で移す。PRG（二重送信を防ぐ）</td>
+<td>第5巻 UNIT 08</td>
+</tr>
+<tr>
+<td>状態コードを返す</td>
+<td><code>StatusCode::NOT_FOUND</code></td>
+<td>404</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ログインしている人を調べる</td>
+<td><code>current_user(cx).await?</code></td>
+<td>RustNote で作る関数</td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td>クッキーを読む・付ける</td>
+<td><code>cookies(cx)</code><br><code>Cookie::new("名前", "値")</code></td>
+<td></td>
+<td>第6巻 UNIT 10</td>
+</tr>
+<tr>
+<td>ほかのサーバーに HTTP で送る</td>
+<td><code>reqwest::get(url).await?.text().await?</code></td>
+<td>reqwest を使う</td>
+<td>第3巻 UNIT 06</td>
+</tr>
+<tr>
+<td>JSON を送って受け取る</td>
+<td><code>client.post(url).json(&amp;body).send().await?.json::&lt;T&gt;().await?</code></td>
+<td></td>
+<td>第5巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-24">データベースと SQL</h2>
+<p>データベース（Turso・SQLite）に、Rust からつないで SQL を送る方法と、よく使う SQL です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQLite のファイルにつなぐ</td>
+<td><code>let db = Builder::new_local("app.db").build().await?; let conn = db.connect()?;</code></td>
+<td></td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>メモリの中のデータベース</td>
+<td><code>Builder::new_local(":memory:")</code></td>
+<td>終わると消える</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>変える SQL を送る</td>
+<td><code>conn.execute("DELETE FROM notes WHERE id = ?1", [id]).await?</code></td>
+<td>変わった行の数が返る</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>読む SQL を送る</td>
+<td><code>let mut rows = conn.query("SELECT id, title FROM notes", ()).await?;</code></td>
+<td></td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>行を 1 つずつ読む</td>
+<td><code>while let Some(row) = rows.next().await? { let id: i64 = row.get(0)?; }</code></td>
+<td></td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>値を安全に渡す</td>
+<td><code>WHERE id = ?1 AND user_id = ?2</code></td>
+<td>文字をつながない</td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>名前で値を渡す</td>
+<td><code>named_params! { ":owner": 1 }</code></td>
+<td></td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td>まとめて成功・失敗にする</td>
+<td><code>let tx = conn.transaction().await?; … tx.commit().await?;</code></td>
+<td></td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td>最後に入れた行の番号</td>
+<td><code>conn.last_insert_rowid()</code></td>
+<td></td>
+<td>第7巻 UNIT 07</td>
+</tr>
+<tr>
+<td>表を作る</td>
+<td><code>CREATE TABLE notes (id INTEGER PRIMARY KEY, title TEXT NOT NULL)</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>無ければ作る</td>
+<td><code>CREATE TABLE IF NOT EXISTS …</code></td>
+<td></td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>値の決まりを付ける</td>
+<td><code>CHECK (length(title) BETWEEN 1 AND 80)</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>重なりを禁止する</td>
+<td><code>email TEXT NOT NULL UNIQUE</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>ほかの表の行を指す</td>
+<td><code>user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>初めの値を決める</td>
+<td><code>created_at TEXT NOT NULL DEFAULT (datetime('now'))</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>行を入れる</td>
+<td><code>INSERT INTO notes (title) VALUES (?1)</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>あれば何もしない</td>
+<td><code>INSERT OR IGNORE INTO …</code><br><code>ON CONFLICT DO NOTHING</code></td>
+<td></td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>あれば書きかえる</td>
+<td><code>ON CONFLICT(email) DO UPDATE SET name = excluded.name</code></td>
+<td></td>
+<td>第8巻 UNIT 03</td>
+</tr>
+<tr>
+<td>読む</td>
+<td><code>SELECT id, title FROM notes WHERE done = 0</code></td>
+<td></td>
+<td>第0巻 UNIT 07</td>
+</tr>
+<tr>
+<td>全部の列</td>
+<td><code>SELECT * FROM notes</code></td>
+<td>試しに見る時だけ</td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td>並べる</td>
+<td><code>ORDER BY updated_at DESC</code></td>
+<td>DESC は大きい順</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>数をしぼる・飛ばす</td>
+<td><code>LIMIT 20 OFFSET 40</code></td>
+<td>ページ送り</td>
+<td>第5巻 UNIT 03</td>
+</tr>
+<tr>
+<td>文字の一部で探す</td>
+<td><code>WHERE title LIKE '%買い物%'</code></td>
+<td>% は何でも</td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td>% や _ そのものを探す</td>
+<td><code>LIKE ?1 ESCAPE '\'</code></td>
+<td></td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>SELECT COUNT(*) FROM notes</code></td>
+<td></td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>グループごとに数える</td>
+<td><code>SELECT status, COUNT(*) FROM jobs GROUP BY status</code></td>
+<td></td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>重なりを消す</td>
+<td><code>SELECT DISTINCT user_id FROM notes</code></td>
+<td></td>
+<td>第10巻 UNIT 01</td>
+</tr>
+<tr>
+<td>2 つの表をつなぐ</td>
+<td><code>SELECT n.title, u.email FROM notes n JOIN users u ON u.id = n.user_id</code></td>
+<td></td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td>相手が無くても残してつなぐ</td>
+<td><code>LEFT JOIN</code></td>
+<td></td>
+<td>第7巻 UNIT 02</td>
+</tr>
+<tr>
+<td>書きかえる</td>
+<td><code>UPDATE notes SET done = 1 WHERE id = ?1</code></td>
+<td>WHERE を忘れると全部変わる</td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>消す</td>
+<td><code>DELETE FROM notes WHERE id = ?1</code></td>
+<td></td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td>変えた行を返す</td>
+<td><code>… RETURNING id</code></td>
+<td></td>
+<td>第5巻 UNIT 10</td>
+</tr>
+<tr>
+<td>空なら別の値</td>
+<td><code>COALESCE(body, '')</code></td>
+<td></td>
+<td>第7巻 UNIT 09</td>
+</tr>
+<tr>
+<td>文字をつなぐ</td>
+<td><code>'user' &#124;&#124; n &#124;&#124; '@example.com'</code></td>
+<td></td>
+<td>第7巻 UNIT 04</td>
+</tr>
+<tr>
+<td>今の日時</td>
+<td><code>datetime('now')</code><br><code>unixepoch()</code></td>
+<td></td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td>速く探すための索引</td>
+<td><code>CREATE INDEX idx_notes_user ON notes(user_id)</code></td>
+<td></td>
+<td>第7巻 UNIT 01</td>
+</tr>
+<tr>
+<td>索引が使われるか見る</td>
+<td><code>EXPLAIN QUERY PLAN SELECT …</code></td>
+<td></td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td>表の形を変える</td>
+<td><code>ALTER TABLE notes ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0</code></td>
+<td></td>
+<td>第7巻 UNIT 06</td>
+</tr>
+<tr>
+<td>SQLite の設定</td>
+<td><code>PRAGMA foreign_keys = ON</code><br><code>PRAGMA journal_mode = WAL</code></td>
+<td></td>
+<td>第5巻 UNIT 06</td>
+</tr>
+<tr>
+<td>写しを書き出す</td>
+<td><code>VACUUM INTO 'backup.db'</code></td>
+<td></td>
+<td>第7巻 UNIT 10</td>
+</tr>
+<tr>
+<td>SQL のコメント</td>
+<td><code>-- メモ</code></td>
+<td></td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-25">JSON（serde）</h2>
+<p>Rust の値と JSON を行き来させる方法です。<code>serde</code>（<code>features = ["derive"]</code>）と <code>serde_json</code> を使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>型を JSON にできるようにする</td>
+<td><code>#[derive(Serialize, Deserialize)]</code></td>
+<td></td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>JSON の文字にする</td>
+<td><code>serde_json::to_string(&amp;note)?</code></td>
+<td></td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>見やすい JSON の文字にする</td>
+<td><code>serde_json::to_string_pretty(&amp;note)?</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>JSON の文字から読む</td>
+<td><code>let n: Note = serde_json::from_str(&amp;text)?;</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>その場で JSON を作る</td>
+<td><code>json!({ "ok": true, "id": id })</code></td>
+<td></td>
+<td>第14巻 B. サンプル集</td>
+</tr>
+<tr>
+<td>形の決まっていない JSON</td>
+<td><code>serde_json::Value</code></td>
+<td>v["title"] で読む</td>
+<td>第7巻 この巻で身に付けること</td>
+</tr>
+<tr>
+<td>名前の書き方を変える</td>
+<td><code>#[serde(rename_all = "camelCase")]</code></td>
+<td>width_mm → widthMm</td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>1 つの項目の名前を変える</td>
+<td><code>#[serde(rename = "type")]</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>無い項目は初期値にする</td>
+<td><code>#[serde(default)]</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>空なら書かない</td>
+<td><code>#[serde(skip_serializing_if = "Option::is_none")]</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>知らない項目をエラーにする</td>
+<td><code>#[serde(deny_unknown_fields)]</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>読む時に確かめて変える</td>
+<td><code>#[serde(try_from = "String")]</code></td>
+<td></td>
+<td>第4巻 UNIT 08</td>
+</tr>
+<tr>
+<td>enum の種類を項目で表す</td>
+<td><code>#[serde(tag = "kind")]</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-26">ログ（tracing）</h2>
+<p>動いている様子を記録する方法です。<code>tracing</code> と <code>tracing-subscriber</code> を使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ログを出す準備をする</td>
+<td><code>tracing_subscriber::fmt().init();</code></td>
+<td>main の最初に</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>ふつうのお知らせ</td>
+<td><code>info!("起動しました");</code></td>
+<td></td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>気になること</td>
+<td><code>warn!("遅い: {ms}ms");</code></td>
+<td></td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>エラー</td>
+<td><code>error!(error = ?e, "保存できません");</code></td>
+<td></td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>くわしい調べ物用</td>
+<td><code>debug!("…")</code><br><code>trace!("…")</code></td>
+<td></td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>欄を付けて記録する</td>
+<td><code>info!(user_id = %id, "ログイン");</code></td>
+<td>% は {} の形</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>Debug の形で記録する</td>
+<td><code>warn!(err = ?e);</code></td>
+<td>? は {:?} の形</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>関数の呼び出しを記録する</td>
+<td><code>#[instrument(skip(db))]</code></td>
+<td>秘密は skip</td>
+<td>第5巻 UNIT 09</td>
+</tr>
+<tr>
+<td>どこまで細かく出すか決める</td>
+<td><code>$env:RUST_LOG = "info,rustnote=debug"</code></td>
+<td></td>
+<td>第5巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-27">テスト</h2>
+<p>書いたコードが正しく動くかを、自動で確かめる方法です。<code>cargo test</code> で動きます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>テストを書く</td>
+<td><code>#[test] fn title_is_trimmed() { … }</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>テストをまとめる</td>
+<td><code>#[cfg(test)] mod tests { use super::*; … }</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>等しいか確かめる</td>
+<td><code>assert_eq!(add(2, 3), 5);</code></td>
+<td>ちがうと両方の値を表示</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>ちがうか確かめる</td>
+<td><code>assert_ne!(a, b);</code></td>
+<td></td>
+<td>第8巻 UNIT 10</td>
+</tr>
+<tr>
+<td>true か確かめる</td>
+<td><code>assert!(v.is_empty(), "空のはず");</code></td>
+<td></td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>形が合うか確かめる</td>
+<td><code>assert!(matches!(r, Err(AppError::Empty)));</code></td>
+<td></td>
+<td>第2巻 UNIT 08</td>
+</tr>
+<tr>
+<td>止まるのが正しいと確かめる</td>
+<td><code>#[should_panic(expected = "Empty")]</code></td>
+<td></td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td>ふだんは飛ばす</td>
+<td><code>#[ignore]</code></td>
+<td>cargo test -- --ignored で動く</td>
+<td>第11巻 UNIT 06</td>
+</tr>
+<tr>
+<td>async のテスト</td>
+<td><code>#[tokio::test] async fn …</code></td>
+<td></td>
+<td>第5巻 UNIT 01</td>
+</tr>
+<tr>
+<td>テストで Result を返す</td>
+<td><code>#[test] fn t() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { …; Ok(()) }</code></td>
+<td>? が使える</td>
+<td>第0巻 UNIT 10</td>
+</tr>
+<tr>
+<td>外から使うテスト（tests フォルダに置く）</td>
+<td><code>tests\http.rs</code></td>
+<td>cargo test --test http で動かす</td>
+<td>第8巻 UNIT 01</td>
+</tr>
+<tr>
+<td>説明の中の例をテストにする</td>
+<td><code>/// &#96;&#96;&#96;  /// assert_eq!(…);</code></td>
+<td>cargo test --doc</td>
+<td>第4巻 UNIT 10</td>
+</tr>
+<tr>
+<td>失敗した場所を呼んだ所にする</td>
+<td><code>#[track_caller]</code></td>
+<td></td>
+<td>第11巻 UNIT 03</td>
+</tr>
+<tr>
+<td>速さを比べるための値</td>
+<td><code>std::hint::black_box(x)</code></td>
+<td>最適化で消されない</td>
+<td>第0巻 UNIT 04</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-28">安全（パスワード・合言葉・HTML）</h2>
+<p>ログインの仕組みで使う、パスワードと合言葉（トークン）の扱い方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>パスワードをハッシュにする</td>
+<td><code>Argon2::default().hash_password(pw.as_bytes(), &amp;salt)?.to_string()</code></td>
+<td>元に戻せない形</td>
+<td>第5巻 UNIT 05</td>
+</tr>
+<tr>
+<td>パスワードを確かめる</td>
+<td><code>Argon2::default().verify_password(pw.as_bytes(), &amp;parsed).is_ok()</code></td>
+<td></td>
+<td>第5巻 UNIT 07</td>
+</tr>
+<tr>
+<td>塩（salt）を作る</td>
+<td><code>SaltString::generate(&amp;mut OsRng)</code></td>
+<td></td>
+<td>第8巻 UNIT 02</td>
+</tr>
+<tr>
+<td>予想できない合言葉を作る</td>
+<td><code>let mut b = [0u8; 32]; getrandom::fill(&amp;mut b)?;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>16 進数の文字にする</td>
+<td><code>hex::encode(b)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>指紋（SHA-256）を作る</td>
+<td><code>Sha256::digest(token.as_bytes())</code></td>
+<td></td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td>同じかを、時間の差を出さずに比べる</td>
+<td><code>a.ct_eq(&amp;b)</code></td>
+<td>subtle を使う</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>Base64 にする</td>
+<td><code>STANDARD.encode(bytes)</code></td>
+<td></td>
+<td>第8巻 UNIT 09</td>
+</tr>
+<tr>
+<td>HTML の特別な文字を変える</td>
+<td><code>&lt; → &amp;lt;</code><br><code>&gt; → &amp;gt;</code><br><code>&amp; → &amp;amp;</code></td>
+<td>view! は自動で変える</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>クッキーを安全にする</td>
+<td><code>HttpOnly; Secure; SameSite=Lax</code></td>
+<td>JavaScript から読めない・HTTPS だけ</td>
+<td>第10巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-29">HTML と CSS</h2>
+<p>画面の中身（HTML）と見た目（CSS）の、よく使う書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ページの最初の宣言</td>
+<td><code>&lt;!DOCTYPE html&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>言葉と文字の符号</td>
+<td><code>&lt;html lang="ja"&gt;</code><br><code>&lt;meta charset="utf-8"&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>スマホの幅に合わせる</td>
+<td><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>CSS のファイルをつなぐ</td>
+<td><code>&lt;link rel="stylesheet" href="../style.css"&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>リンク</td>
+<td><code>&lt;a href="/notes"&gt;一覧&lt;/a&gt;</code></td>
+<td></td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>見出し</td>
+<td><code>&lt;h1&gt;…&lt;/h1&gt;</code><br><code>&lt;h2&gt;…&lt;/h2&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>送信フォーム</td>
+<td><code>&lt;form method="post" action="/notes"&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 06</td>
+</tr>
+<tr>
+<td>入力欄</td>
+<td><code>&lt;input name="title" type="text" required maxlength="80"&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>入力欄の名前の説明</td>
+<td><code>&lt;label for="title"&gt;題&lt;/label&gt;</code></td>
+<td></td>
+<td>第9巻 UNIT 02</td>
+</tr>
+<tr>
+<td>何行も書ける欄</td>
+<td><code>&lt;textarea name="body" rows="6"&gt;&lt;/textarea&gt;</code></td>
+<td></td>
+<td>第13巻 UNIT 07</td>
+</tr>
+<tr>
+<td>選ぶ欄</td>
+<td><code>&lt;select name="kind"&gt;&lt;option value="a"&gt;A&lt;/option&gt;&lt;/select&gt;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>チェック</td>
+<td><code>&lt;input type="checkbox" checked&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ボタン</td>
+<td><code>&lt;button type="submit"&gt;保存&lt;/button&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 06</td>
+</tr>
+<tr>
+<td>箇条書き</td>
+<td><code>&lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;</code></td>
+<td></td>
+<td>第6巻 UNIT 05</td>
+</tr>
+<tr>
+<td>開いたり閉じたりする部分</td>
+<td><code>&lt;details&gt;&lt;summary&gt;見出し&lt;/summary&gt;…&lt;/details&gt;</code></td>
+<td></td>
+<td>第13巻 UNIT 08</td>
+</tr>
+<tr>
+<td>お知らせを読み上げてもらう</td>
+<td><code>role="status"</code><br><code>aria-live="polite"</code></td>
+<td></td>
+<td>第10巻 UNIT 09</td>
+</tr>
+<tr>
+<td>読み上げ用の名前</td>
+<td><code>aria-label="閉じる"</code></td>
+<td></td>
+<td>第6巻 UNIT 03</td>
+</tr>
+<tr>
+<td>クラスで見た目を付ける</td>
+<td><code>.note { color: #334155; }</code></td>
+<td></td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td>マウスを乗せた時</td>
+<td><code>button:hover { … }</code></td>
+<td></td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td>色を変数にする</td>
+<td><code>:root { --main: #2563eb; }</code><br><code>color: var(--main);</code></td>
+<td></td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td>横に並べる</td>
+<td><code>display: flex; gap: 8px;</code></td>
+<td></td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td>格子に並べる</td>
+<td><code>display: grid; grid-template-columns: 1fr 2fr;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>画面が狭い時だけ</td>
+<td><code>@media (max-width: 640px) { … }</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>文字の大きさ</td>
+<td><code>font-size: 1rem;</code></td>
+<td>rem はページの基本の何倍か</td>
+<td>第6巻 UNIT 08</td>
+</tr>
+<tr>
+<td>余白</td>
+<td><code>margin: 0 auto; padding: 8px 12px;</code></td>
+<td></td>
+<td>第6巻 UNIT 08</td>
+</tr>
+<tr>
+<td>枠線と角の丸み</td>
+<td><code>border: 1px solid #cbd5e1; border-radius: 6px;</code></td>
+<td></td>
+<td>第13巻 UNIT 09</td>
+</tr>
+<tr>
+<td>幅の数え方をそろえる</td>
+<td><code>* { box-sizing: border-box; }</code></td>
+<td></td>
+<td>第13巻 UNIT 09</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-30">正規表現（文字の形で探す）</h2>
+<p>「数字 6 けた」のような文字の形を、記号で表す書き方です。Rust では <code>regex</code> を使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>形に合うか調べる</td>
+<td><code>Regex::new(r"^\d{6}$")?.is_match(s)</code></td>
+<td></td>
+<td>第1巻 UNIT 01</td>
+</tr>
+<tr>
+<td>数字 1 つ</td>
+<td><code>\d</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>英数字か _ の 1 文字</td>
+<td><code>\w</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>空白 1 つ</td>
+<td><code>\s</code></td>
+<td></td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td>何でも 1 文字</td>
+<td><code>.</code></td>
+<td></td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td>0 回以上・1 回以上・あってもなくても</td>
+<td><code>*</code><br><code>+</code><br><code>?</code></td>
+<td></td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td>ちょうど n 回・n〜m 回</td>
+<td><code>{6}</code><br><code>{8,12}</code></td>
+<td></td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td>頭・終わり</td>
+<td><code>^</code><br><code>$</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>どれか 1 文字・それ以外の 1 文字</td>
+<td><code>[0-9a-z]</code><br><code>[^;]</code></td>
+<td></td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td>まとまりと取り出し</td>
+<td><code>(\d+)</code></td>
+<td>caps[1] で取り出す</td>
+<td>第9巻 UNIT 09</td>
+</tr>
+<tr>
+<td>どちらか</td>
+<td><code>api/&#124;admin/</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>記号そのもの</td>
+<td><code>\.</code><br><code>\/</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>合う所を取り出す</td>
+<td><code>re.captures(s)</code><br><code>re.find_iter(s)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>合う所を置きかえる</td>
+<td><code>re.replace_all(s, "-")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-31">設定ファイル（Cargo.toml・fly.toml・Dockerfile・GitHub Actions）</h2>
+<p>プロジェクトや公開の設定ファイルの、よく使う書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>パッケージの名前と版</td>
+<td><code>[package]</code><br><code>name = "practice"</code><br><code>edition = "2024"</code></td>
+<td></td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>使う部品</td>
+<td><code>[dependencies]</code><br><code>serde = { version = "1", features = ["derive"] }</code></td>
+<td></td>
+<td>第0巻 はじめに: 手を動かす準備</td>
+</tr>
+<tr>
+<td>版をぴったり決める</td>
+<td><code>tokio = "=1.54.1"</code></td>
+<td>= を付ける</td>
+<td>第1巻 UNIT 08</td>
+</tr>
+<tr>
+<td>テストの時だけの部品</td>
+<td><code>[dev-dependencies]</code></td>
+<td></td>
+<td>第9巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ON・OFF できる機能</td>
+<td><code>[features]</code><br><code>default = ["markdown"]</code></td>
+<td></td>
+<td>第4巻 UNIT 07</td>
+</tr>
+<tr>
+<td>本番用の作り方</td>
+<td><code>[profile.release]</code><br><code>overflow-checks = true</code></td>
+<td></td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>いくつかのパッケージをまとめる</td>
+<td><code>[workspace]</code><br><code>members = ["app", "domain"]</code></td>
+<td></td>
+<td>第4巻 UNIT 06</td>
+</tr>
+<tr>
+<td>いちばん古く使える Rust の版</td>
+<td><code>rust-version = "1.99"</code></td>
+<td></td>
+<td>第2巻 UNIT 10</td>
+</tr>
+<tr>
+<td>Fly.io のアプリの名前と場所</td>
+<td><code>app = "…"</code><br><code>primary_region = "nrt"</code></td>
+<td></td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td>Fly.io に渡す環境変数</td>
+<td><code>[env]</code><br><code>PORT = "8080"</code></td>
+<td>秘密は fly secrets</td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td>Fly.io の待ち受けの設定</td>
+<td><code>[http_service]</code><br><code>internal_port = 8080</code></td>
+<td></td>
+<td>第12巻 UNIT 04</td>
+</tr>
+<tr>
+<td>元気さの確かめ</td>
+<td><code>[[http_service.checks]]</code><br><code>path = "/health"</code></td>
+<td></td>
+<td>第9巻 UNIT 10</td>
+</tr>
+<tr>
+<td>公開の前に動かすコマンド</td>
+<td><code>[deploy]</code><br><code>release_command = "…"</code></td>
+<td></td>
+<td>第12巻 UNIT 07</td>
+</tr>
+<tr>
+<td>Dockerfile の始まり</td>
+<td><code>FROM rust:1.99.1-trixie AS builder</code></td>
+<td></td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>作業するフォルダ</td>
+<td><code>WORKDIR /app</code></td>
+<td></td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>コピーする</td>
+<td><code>COPY . .</code><br><code>COPY --from=builder /app/target/release/app /app/app</code></td>
+<td></td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>組み立てる途中のコマンド</td>
+<td><code>RUN cargo build --release --locked</code></td>
+<td></td>
+<td>第12巻 UNIT 01</td>
+</tr>
+<tr>
+<td>動かす利用者</td>
+<td><code>USER app</code></td>
+<td>root で動かさない</td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td>動かすプログラム</td>
+<td><code>CMD ["/app/app"]</code></td>
+<td></td>
+<td>第12巻 UNIT 02</td>
+</tr>
+<tr>
+<td>GitHub Actions の動く時</td>
+<td><code>on:</code><br><code>push:</code><br><code>branches: [main]</code></td>
+<td></td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td>GitHub Actions の仕事と手順</td>
+<td><code>jobs:</code><br><code>runs-on: ubuntu-26.04</code><br><code>steps:</code></td>
+<td></td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td>手順でコマンドを動かす</td>
+<td><code>- run: cargo test --locked</code></td>
+<td></td>
+<td>第1巻 UNIT 03</td>
+</tr>
+<tr>
+<td>決まった手順を使う</td>
+<td><code>- uses: actions/checkout@v7</code></td>
+<td></td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td>毎日決まった時刻に動かす</td>
+<td><code>schedule:</code><br><code>- cron: "0 0 * * *"</code></td>
+<td>UTC の 0 時</td>
+<td>第11巻 UNIT 10</td>
+</tr>
+<tr>
+<td>VS Code の保存の時に整える</td>
+<td><code>"editor.formatOnSave": true</code></td>
+<td></td>
+<td>第1巻 UNIT 03</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-32">ブラウザーで確かめる（Playwright・JavaScript）</h2>
+<p>本物のブラウザーを動かして、画面を確かめるテストの書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>テストを 1 つ書く</td>
+<td><code>test("ログインできる", async ({ page }) =&gt; { … });</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ページを開く</td>
+<td><code>await page.goto("/login");</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ラベルで入力欄を探して入れる</td>
+<td><code>await page.getByLabel("メールアドレス").fill("a@example.com");</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>ボタンを押す</td>
+<td><code>await page.getByRole("button", { name: "ログイン" }).click();</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>URL を確かめる</td>
+<td><code>await expect(page).toHaveURL(/\/notes$/);</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>文字が出ているか確かめる</td>
+<td><code>await expect(page.getByText("保存しました")).toBeVisible();</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>画面の写しを撮る</td>
+<td><code>await page.screenshot({ path: "a.png" });</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>テストを動かす</td>
+<td><code>npx playwright test</code></td>
+<td></td>
+<td>第11巻 UNIT 05</td>
+</tr>
+<tr>
+<td>文字の中に値を入れる（JS）</td>
+<td><code>&#96;${name} さん&#96;</code></td>
+<td></td>
+<td>第8巻 UNIT 08</td>
+</tr>
+<tr>
+<td>JSON にする・読む（JS）</td>
+<td><code>JSON.stringify(obj)</code><br><code>JSON.parse(text)</code></td>
+<td></td>
+<td>第8巻 UNIT 08</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

@@ -856,9 +856,12 @@ tzdata==2026.6
 <li><strong><code>&lt;style&gt;</code></strong>（HTML）: HTML の中に、直接 CSS を書くタグ。ふつうは <code>&lt;head&gt;</code> の中に書きます（大きくなったら、別の CSS のファイルに分けます）。</li>
 <li><strong><code>&lt;em&gt;</code></strong>（HTML）: 「強めたい」という意味のタグ。ふつうは斜めの字で表示されます。</li>
 <li><strong><code>&lt;br&gt;</code></strong>（HTML）: 改行のタグ。閉じタグはありません。段落を分けたい時は、<code>&lt;br&gt;</code> を並べるより <code>&lt;p&gt;</code> を分けます。</li>
-<li><strong><code>&lt;ul&gt;</code></strong>（HTML）: 順番の無い並び（点の付いた並び）のタグ。中に <code>&lt;li&gt;</code> を並べます。</li>
-<li><strong><code>&lt;li&gt;</code></strong>（HTML）: 並び（<code>&lt;ul&gt;</code>・<code>&lt;ol&gt;</code>）の 1 つのタグ。</li>
-<li><strong><code>&lt;ol&gt;</code></strong>（React）: 番号の付いた並びのタグ。中に <code>&lt;li&gt;</code> を並べます（回覧の順番など）。</li>
+<li><strong><code>&lt;!-- --&gt;</code></strong>（HTML）: HTML では、<code>&lt;!--</code> から <code>--&gt;</code> までがコメントで、画面には出ません。</li>
+<li><strong><code>min=</code></strong>（HTML）: <code>&lt;input type="number" min="1" max="99"&gt;</code> の <code>min</code> は、入れられる一番小さな数です。</li>
+<li><strong><code>max=</code></strong>（HTML）: <code>max</code> は、入れられる一番大きな数です。</li>
+<li><strong><code>selected</code></strong>（HTML）: <code>selected</code> は、その選び肢（<code>&lt;option&gt;</code>）を、最初から選んだ状態にする印です。</li>
+<li><strong><code>cols=</code></strong>（HTML）: <code>&lt;textarea cols="40"&gt;</code> の <code>cols</code> は、見える幅（だいたいの文字数）です。</li>
+<li><strong><code>checked</code></strong>（HTML）: <code>checked</code> は、チェックボックスが最初からチェックされた状態にする印です。値は書かず、名前だけで ON になります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1113,6 +1116,9 @@ tzdata==2026.6
 <li><strong><code>cursor:</code></strong>（CSS）: CSS で、マウスを乗せた時の矢印の形を決める項目。<code>pointer</code> は、押せる物の「指の形」です。</li>
 <li><strong><code>btn:</code></strong>（CSS）: <code>.btn:hover</code> は、この資料で決めたボタンの class（<code>btn</code>）の、マウスを乗せている時の見た目です（<code>:hover</code> は乗せている時の状態）。</li>
 <li><strong><code>opacity:</code></strong>（CSS）: 透明さを決める項目。<code>1</code> で不透明、<code>0</code> で見えない。<code>0.85</code> は少しだけ透ける（ボタンにマウスを乗せた時の合図など）。</li>
+<li><strong><code>*</code></strong>（CSS）: CSS の <code>*</code> は、「全部のタグ」を選ぶ書き方です。<code>* { box-sizing: border-box; }</code> は、全部のタグの幅の数え方をそろえます。</li>
+<li><strong><code>A B</code></strong>（CSS）: CSS の <code>.note-list li</code> のように、空白で区切って並べると、「<code>.note-list</code> の<strong>中にある</strong> <code>li</code>」を選びます（子孫セレクター）。</li>
+<li><strong><code>:hover</code></strong>（CSS）: CSS の <code>button:hover</code> の <code>:hover</code> は、「マウスが乗っている間だけ」の見た目です。<code>:focus</code> は「キーボードで選ばれている間」、<code>:disabled</code> は「使えない時」です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1502,6 +1508,8 @@ isAdmin = false
 <ul>
 <li><strong><code>interface</code></strong>（TypeScript）: オブジェクトの形に名前を付ける書き方（<code>type</code> とほぼ同じ）。<code>interface Approval { order: number; approver: string; }</code>。</li>
 <li><strong><code>.keys()</code></strong>（TypeScript）: <code>Object.keys(オブジェクト)</code> は、オブジェクトの項目の名前を、配列で返す関数です（<code>Object.entries</code> は名前と値の組）。</li>
+<li><strong><code>as const</code></strong>（TypeScript）: <code>as const</code> は、「この値は、中身も含めて変えない、決まった値」にする印です。<code>["下書き", "回覧中"] as const</code> の型は、ただの <code>string[]</code> ではなく、2 つの決まった文字の並びになります。</li>
+<li><strong><code>const { … } =</code></strong>（JavaScript・TypeScript）: <code>const { name, email } = user;</code> は、オブジェクトの中の <code>name</code> と <code>email</code> を、同じ名前の変数に取り出す書き方です（分割代入）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1613,6 +1621,8 @@ isAdmin = false
 <ul>
 <li><strong><code>.now()</code></strong>（JavaScript・TypeScript）: <code>performance.now()</code> は、ページ（プログラム）が始まってからの時間をミリ秒で返します。<code>Date.now()</code> は、1970 年 1 月 1 日からのミリ秒です。どちらも、かかった時間を計るのに使えます。</li>
 <li><strong><code>.all()</code></strong>（TypeScript）: <code>Promise.all([…])</code> は、いくつかの <code>Promise</code>（時間のかかる処理）を同時に待って、全部の結果を配列で返す関数です。1 つでも失敗すると、全体が失敗します。</li>
+<li><strong><code>SyntaxError</code></strong>（JavaScript・TypeScript）: <code>SyntaxError</code> は、書き方が正しくない時のエラーの種類です。<code>JSON.parse("壊れた文字")</code> は、<code>SyntaxError</code> を起こします。</li>
+<li><strong><code>sleep()</code></strong>（Node.js）: <code>import { setTimeout as sleep } from "node:timers/promises";</code> で、<code>setTimeout</code> を <code>sleep</code> という名前で読み込んでいます。<code>await sleep(1000)</code> で、1 秒待ちます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1704,13 +1714,15 @@ isAdmin = false
 <ul>
 <li><strong><code>.set()</code></strong>（TypeScript）: <code>Map</code> に「キー → 値」を入れる（上書きする）メソッド。</li>
 <li><strong><code>.get()</code></strong>（TypeScript）: <code>Map</code> から、キーで値を取り出すメソッド。無ければ <code>undefined</code> です。</li>
-<li><strong><code>.add()</code></strong>（JavaScript・TypeScript）: <code>Set</code>（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。</li>
 <li><strong><code>.UTC()</code></strong>（TypeScript）: <code>Date.UTC(年, 月, 日, …)</code> は、世界標準時の日時を、1970 年からのミリ秒の数で返す関数です（月は 0 から数える）。<code>new Date(Date.UTC(…))</code> で日時を作ります。</li>
 <li><strong><code>.toISOString()</code></strong>（TypeScript）: 日時を、<code>2026-11-10T00:00:00.000Z</code> の形（世界標準時）の文字列にするメソッド。サーバーとのやり取りに使います。</li>
 <li><strong><code>.toLocaleDateString()</code></strong>（TypeScript）: 日付を、その国の書き方の文字列にするメソッド。<code>{ timeZone: "Asia/Tokyo" }</code> を付けて、日本時間で表示します。</li>
 <li><strong><code>.getTime()</code></strong>（TypeScript）: 日時を、1970 年からのミリ秒の数にするメソッド。2 つの日時の差を計算する時に使います。</li>
 <li><strong><code>.NumberFormat()</code></strong>（TypeScript）: <code>new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" })</code> は、数を「￥30,000」のような形にする係を作ります。</li>
 <li><strong><code>.format()</code></strong>（TypeScript）: <code>Intl.NumberFormat</code> などの係で、数や日時を決めた形の文字列にするメソッド。</li>
+<li><strong><code>+=</code></strong>（JavaScript・TypeScript）: <code>sum += n</code> は <code>sum = sum + n</code> の短い形です。</li>
+<li><strong><code>Map</code></strong>（JavaScript・TypeScript）: <code>new Map()</code> は、キーと値の組を覚えておく入れ物です。<code>.set(キー, 値)</code>・<code>.get(キー)</code>・<code>.has(キー)</code> で使います。</li>
+<li><strong><code>Intl</code></strong>（JavaScript・TypeScript）: <code>Intl</code> は、国や言葉に合わせた表示（数の区切り・通貨・日付）の道具が集まった物です。<code>new Intl.NumberFormat("ja-JP").format(1234567)</code> → <code>1,234,567</code>。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1758,7 +1770,7 @@ isAdmin = false
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>&lt;b&gt;</code></strong>（React）: 文字を太くするタグ（JSX の中でも HTML と同じ）。</li>
+<li><strong><code>{/* */}</code></strong>（React）: JSX の中のコメントは、<code>{/* … */}</code> と書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1816,6 +1828,16 @@ isAdmin = false
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>checked=</code></strong>（React）: <code>checked={onlyOpen}</code> は、チェックボックスの ON・OFF を、変数と結び付けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>▼ 画面</strong>（検索の欄に「治具」と入れたところ ／ 「ねじ」と入れたところ）</p>
 <p><img src="../images/L11-s5_list_filter.webp" alt="検索の欄に治具、2件、治具の製作と治具の改造が並ぶ" style="width: 70%; border: 1px solid #cbd5e1;"></p>
@@ -2088,6 +2110,18 @@ True True
 <li><strong><code>min()</code></strong>（Python）: Python で、いちばん小さい値を返す関数。<code>min(1, 5, 3)</code> は 1。</li>
 <li><strong><code>sum()</code></strong>（Python）: リストなどの中身を全部足した合計を返す関数。<code>sum([1, 2, 3])</code> は 6。</li>
 <li><strong><code>abs()</code></strong>（Python）: 絶対値（マイナスを取った値）を返す関数。</li>
+<li><strong><code>{値:,}</code></strong>（Python）: f 文字列の <code>{amount:,}</code> の <code>,</code> は、3 けたごとに <code>,</code> を入れる指定です（<code>1234567</code> → <code>1,234,567</code>）。<code>{amount:,.2f}</code> なら、区切りと小数点以下 2 けたの両方です。</li>
+<li><strong><code>{値:.桁f}</code></strong>（Python）: f 文字列の <code>{ratio:.2f}</code> の <code>.2f</code> は、「小数点の下を 2 けたにした小数」で表示する指定です（<code>3.14159</code> → <code>3.14</code>）。</li>
+<li><strong><code>{値:0幅}</code></strong>（Python）: f 文字列の <code>{42:05d}</code> の <code>05</code> は、「5 けたになるまで、前を 0 で埋める」指定です（<code>00042</code>）。</li>
+<li><strong><code>{値:d}</code></strong>（Python）: f 文字列の <code>{n:d}</code> の <code>d</code> は、整数として表示する指定です。</li>
+<li><strong><code>{値:&gt;幅}</code></strong>（Python）: f 文字列の <code>{'右':&gt;6}</code> の <code>&gt;</code> と数は、「6 文字分の場所に、右寄せで入れる」指定です。</li>
+<li><strong><code>{値:&lt;幅}</code></strong>（Python）: f 文字列の <code>{where:&lt;16}</code> の <code>&lt;</code> と数は、「16 文字分の場所に、左寄せで入れる」指定です。足りない分は右に空白が入り、後ろの列がそろいます。<code>&gt;</code> なら右寄せ、<code>^</code> なら中央です。</li>
+<li><strong><code>{値:^幅}</code></strong>（Python）: f 文字列の <code>{'中':^6}</code> の <code>^</code> と数は、「6 文字分の場所の、真ん中に入れる」指定です。</li>
+<li><strong><code>{値:.桁%}</code></strong>（Python）: f 文字列の <code>{0.256:.1%}</code> の <code>%</code> は、100 倍して <code>%</code> を付ける指定です（<code>25.6%</code>）。<code>.1</code> は小数点の下のけたの数です。</li>
+<li><strong><code>//</code></strong>（Python）: Python の <code>7 // 2</code> は、割り算の答えの小数を切り捨てた整数（<code>3</code>）です。<code>7 / 2</code> は <code>3.5</code> です。</li>
+<li><strong><code>**</code></strong>（Python）: Python の <code>2 ** 10</code> は、2 の 10 乗（<code>1024</code>）です。</li>
+<li><strong><code>%</code></strong>（Python）: Python の <code>7 % 2</code> は、割った余り（<code>1</code>）です。</li>
+<li><strong><code>ValueError</code></strong>（Python）: <code>ValueError</code> は、「型は合っているが、値がおかしい」時のエラーです。<code>int("abc")</code> で起きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2254,6 +2288,8 @@ Counter({&#39;回覧中&#39;: 2, &#39;承認済み&#39;: 1, &#39;差し戻し&#3
 <li><strong><code>zip()</code></strong>（Python）: 2 つ以上の並びを、同じ番号どうしの組にして取り出す関数。<code>for a, b in zip(順番, 名前):</code>。</li>
 <li><strong><code>list()</code></strong>（Python）: 並び（<code>keys()</code> の結果や文字列など）から、新しいリストを作る関数。<code>list("abc")</code> は <code>["a", "b", "c"]</code>。</li>
 <li><strong><code>defaultdict()</code></strong>（Python）: 無いキーを初めて使った時に、自動で初期値（<code>list</code> なら空のリスト）を作る辞書。グループ分けに便利です。</li>
+<li><strong><code>(式 for … in …)</code></strong>（Python）: <code>sum(x * 2 for x in nums)</code> のように <code>( )</code> の中に書く内包表記は、値を 1 つずつ作って渡す物（ジェネレーター）です。並びを作らないので、メモリを使いません。</li>
+<li><strong><code>Counter</code></strong>（Python）: <code>Counter(並び)</code>（<code>collections</code>）は、同じ物がいくつずつあるかを数えます。<code>Counter(["a", "b", "a"])</code> → <code>{'a': 2, 'b': 1}</code>。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2371,6 +2407,10 @@ False Approval(order=2, approver=&#39;鈴木&#39;, comments=[], done=True)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>@property</code></strong>（Python）: クラスのメソッドの上に付けると、<code>()</code> 無しで値のように読めるようにする印。</li>
+<li><strong><code>*args</code></strong>（Python）: <code>def f(*args):</code> の <code>*args</code> は、「いくつでも引数を受け取り、タプル（並び）にまとめる」書き方です。</li>
+<li><strong><code>*並び</code></strong>（Python）: <code>f(*items)</code> のように、呼ぶ時に並びの前に <code>*</code> を付けると、中身を、1 つずつの引数としてばらして渡します。</li>
+<li><strong><code>__init__</code></strong>（Python）: <code>def __init__(self, …):</code> は、クラスから物を作る時（<code>Item("題", 100)</code>）に、自動で呼ばれる関数です。受け取った値を <code>self.title = title</code> のように覚えます。</li>
+<li><strong><code>__repr__</code></strong>（Python）: <code>def __repr__(self):</code> は、プログラマー向けの表示（<code>repr(物)</code>）の文字を決める関数です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2491,6 +2531,8 @@ work は残っている？ False
 <li><strong><code>.writerows()</code></strong>（Python）: 辞書のリストを、まとめて CSV の行として書くメソッド。</li>
 <li><strong><code>.iterdir()</code></strong>（Python）: <code>Path</code> のフォルダの中身を、1 つずつ取り出すメソッド（順番は決まっていないので、<code>sorted</code> で並べる）。</li>
 <li><strong><code>.rmtree()</code></strong>（Python）: <code>shutil.rmtree(フォルダ)</code> は、フォルダを中身ごと消す関数です。ごみ箱には入らないので、よく確かめて使います。</li>
+<li><strong><code>FileNotFoundError</code></strong>（Python）: <code>FileNotFoundError</code> は、無いファイルを開こうとした時のエラーです。</li>
+<li><strong><code>.suffix</code></strong>（Python）: <code>Path</code> の <code>.suffix</code> は、拡張子（<code>.txt</code>）です。<code>.name</code> はファイル名、<code>.stem</code> は拡張子を除いた名前です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2565,6 +2607,9 @@ Asia/Tokyo True
 <li><strong><code>.fromisoformat()</code></strong>（Python）: <code>date.fromisoformat("2026-12-01")</code> は、<code>2026-12-01</code> の形の文字列から日付を作る関数です。</li>
 <li><strong><code>.weekday()</code></strong>（Python）: 曜日を数で返すメソッド（月曜が 0、日曜が 6）。</li>
 <li><strong><code>.astimezone()</code></strong>（Python）: 日時を、別の時間帯（世界標準時・日本時間など）で表したものに変えるメソッド。</li>
+<li><strong><code>.days</code></strong>（Python）: 日時の差（<code>timedelta</code>）の <code>.days</code> は、日数です。</li>
+<li><strong><code>.tzinfo</code></strong>（Python）: 日時の <code>.tzinfo</code> は、時間帯（タイムゾーン）の情報です。<code>None</code> なら、時間帯が付いていない日時です。</li>
+<li><strong><code>.year</code></strong>（Python）: 日時の <code>.year</code> は年です（<code>.month</code> は月、<code>.day</code> は日）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2765,6 +2810,9 @@ Asia/Tokyo True
 <li><strong><code>.values_list()</code></strong>（Django）: 問い合わせの結果を、タプル（値の組）の並びで返すメソッド。<code>flat=True</code> を付けると、1 つの列の値だけの並びになります。</li>
 <li><strong><code>.aggregate()</code></strong>（Django）: 問い合わせの全体を、1 つの値（最小・最大・合計など）にまとめるメソッド。<code>aggregate(last=Max("due_date"))</code>。</li>
 <li><strong><code>.get_or_create()</code></strong>（Django）: 条件に合う行があれば取り出し、無ければ作るメソッド。<code>(物, 作ったか)</code> の組が返ります。</li>
+<li><strong><code>F</code></strong>（Django）: Django の <code>F("amount")</code> は、ORM の中で「その行の、その列の値」を表します。<code>update(round=F("round") + 1)</code> は、データベースの中で 1 足すので、同時に 2 人が直してもずれません。</li>
+<li><strong><code>Max</code></strong>（Django）: Django の <code>Max("amount")</code> は、ORM の集計で、いちばん大きい値を求めます。</li>
+<li><strong><code>Min</code></strong>（Django）: Django の <code>Min("amount")</code> は、いちばん小さい値を求めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

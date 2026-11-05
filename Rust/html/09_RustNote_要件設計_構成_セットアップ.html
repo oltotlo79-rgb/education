@@ -541,6 +541,16 @@ li, tr { page-break-inside: avoid; }
 <div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">rustup</span> <span class="n">toolchain</span> <span class="n">install</span> <span class="n">1</span><span class="p">.</span><span class="n">99</span><span class="p">.</span><span class="n">1</span> <span class="p">-</span><span class="n">-profile</span> <span class="n">minimal</span> <span class="p">-</span><span class="n">-component</span> <span class="n">rustfmt</span><span class="p">,</span><span class="n">clippy</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rustup toolchain install --component</code></strong>（Rust の道具）: <code>--component rustfmt,clippy</code> は、版を入れる時に、一緒に入れる部品を指定します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>注意:</strong> ARM64 版の Windows では、RustNote をビルドするのに <strong>LLVM（clang）</strong> が必要です。libsql が使う暗号のライブラリ（<code>ring</code>）を、clang でコンパイルするためです。入っていないと、ビルドの途中で次のように止まります（長い出力から、大事な行だけを抜き出しています）。</p>
 </blockquote>
@@ -1037,6 +1047,16 @@ top_page_shows_links_when_logged_out: test
 
 14 tests, 0 benchmarks
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test -- --list</code></strong>（cargo のコマンド）: <code>--list</code> は、テストを動かさずに、テストの名前の一覧だけを表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-list">解説1: --list で、テストを実行せずに名前だけを出す</h5>
@@ -2607,6 +2627,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; fini
 <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>placeholder=</code></strong>（HTML）: <code>placeholder</code> は、入力欄が空の時に、うすく見せる例の文字です。入力の説明の代わりにはならないので、<code>&lt;label&gt;</code> も付けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>登録やログインの画面の入力欄と比べて、足りないものがあります。それは何で、なぜ必要でしょうか。直すなら、どう書きますか。</p>
 <h3 id="_25">解答と解説</h3>
 <p><strong>問1の解答（例）:</strong></p>
@@ -2699,6 +2729,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; fini
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>&lt;label&gt;</code></strong>（HTML）: 入力欄の名前を表すタグ。<code>&lt;label for="title"&gt;件名&lt;/label&gt;</code> の <code>for</code> と、入力欄の <code>id</code> を同じにすると、名前を押しても入力欄が選ばれ、読み上げソフトにも伝わります。</li>
+<li><strong><code>for=</code></strong>（HTML）: <code>&lt;label for="q"&gt;</code> の <code>for</code> は、この説明の文字が、どの入力欄（<code>id="q"</code>）のための物かを結び付けます。文字を押しても、その欄に入力できるようになり、読み上げソフトも欄の名前を読めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3390,6 +3421,16 @@ OK  alice を削除（1 行）
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>\u{…}</code></strong>（文字列の中の特別な書き方）: <code>\u{3000}</code> のように <code>\u{ }</code> の中に 16 進数を書くと、その番号（Unicode という、世界中の文字の通し番号）の文字を表します。<code>\u{3000}</code> は全角の空白、<code>\u{1F600}</code> は 😀 です。見えにくい文字を、はっきり書きたい時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>examples/u03_layers.rs</code> として保存して実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-83"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u03_layers</span>
@@ -5468,9 +5509,36 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="n">tempfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;=3.27.0&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>description =</code></strong>（設定ファイル（TOML））: <code>description = "…"</code> は、パッケージの短い説明です。</li>
+<li><strong><code>publish =</code></strong>（設定ファイル（TOML））: <code>publish = false</code> は、「このパッケージは crates.io（みんなで部品を共有する所）に公開しない」という印です。間違って公開するのを防ぎます。</li>
+<li><strong><code>default-run =</code></strong>（設定ファイル（TOML））: <code>default-run = "rustnote"</code> は、実行ファイルがいくつもある時に、<code>cargo run</code> だけで動かす物を決めます。</li>
+<li><strong><code>async-trait</code></strong>（Rust の部品（クレート））: <code>async-trait</code> は、トレイトの中に <code>async fn</code> を書き、それを <code>dyn</code>（中身の型を後で決める）で使えるようにする部品です。</li>
+<li><strong><code>dotenvy</code></strong>（Rust の部品（クレート））: <code>dotenvy</code> は、<code>.env</code> のファイルに書いた <code>名前=値</code> を読み、環境変数にする部品です。開発の時の設定に使います。</li>
+<li><strong><code>[dev-dependencies]</code></strong>（設定ファイル（TOML））: <code>[dev-dependencies]</code> の下には、テストの時だけ使う部品を書きます。本番の実行ファイルには入りません。</li>
+<li><strong><code>tempfile</code></strong>（Rust の部品（クレート））: <code>tempfile</code> は、テスト用の一時的なファイルやフォルダを作り、使い終わったら自動で消す部品です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>直接使っているクレートだけを、木の形で見ます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">tree</span> <span class="p">-</span><span class="n">-depth</span> <span class="n">1</span> <span class="p">-</span><span class="n">-charset</span> <span class="n">ascii</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree --depth</code></strong>（cargo のコマンド）: <code>--depth 1</code> は、部品の木を何段目まで表示するかの指定です。<code>1</code> なら、自分が直接使っている部品だけです。</li>
+<li><strong><code>cargo tree --charset</code></strong>（cargo のコマンド）: <code>--charset ascii</code> は、木の線を、<code>|--</code> のような英数字の記号で書く指定です。文字化けしやすい画面でも読めます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-148"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### cargo tree --depth 1
 rustnote v0.1.0 (...\rustnote)
@@ -5518,6 +5586,7 @@ rustnote v0.1.0 (...\rustnote)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo search</code></strong>（cargo のコマンド）: 公開されている部品（クレート）を、名前で探すコマンド。<code>cargo search topcoat --limit 1</code> で、<code>topcoat</code> のいちばん新しい版が分かります。</li>
+<li><strong><code>cargo search --limit</code></strong>（cargo のコマンド）: <code>cargo search topcoat --limit 1</code> の <code>--limit</code> は、crates.io を探した結果を何件表示するかの指定です。いちばん新しい版を確かめる時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5543,6 +5612,7 @@ note: to learn more about a package, run `cargo info &lt;name&gt;`
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo update</code></strong>（cargo のコマンド）: 使っている部品を、<code>Cargo.toml</code> で許す範囲の新しい版にして、<code>Cargo.lock</code> を書きかえるコマンド。<code>-p 名前</code> で、その部品だけにできます。</li>
+<li><strong><code>cargo update -p</code></strong>（cargo のコマンド）: <code>cargo update -p topcoat</code> の <code>-p</code> は、<code>Cargo.lock</code> の中の、指定した部品の版だけを新しくする指定です。付けないと、全部の部品を新しくします。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5589,6 +5659,16 @@ note: pass `--verbose` to see 31 unchanged dependencies behind latest
 <p><strong>④ ほかの間接のクレートも上げるかを決める。</strong> <code>--dry-run</code> で、何が変わるかを先に見ます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-153"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">update</span> <span class="p">-</span><span class="n">-dry-run</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo update --dry-run</code></strong>（cargo のコマンド）: <code>--dry-run</code> は、本当には書きかえずに、「新しくすると、どの部品がどの版になるか」だけを表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-154"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### cargo update --dry-run
     Updating crates.io index
@@ -7293,6 +7373,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>color-warning-bg:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-warning-bg</code>：注意のお知らせの背景）。</li>
 <li><strong><code>color-warning-text:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-warning-text</code>：注意のお知らせの文字）。</li>
 <li><strong><code>color-danger:</code></strong>（CSS）: この本の CSS の色の変数（<code>--color-danger</code>：消すボタン・エラーの色）。</li>
+<li><strong><code>:root</code></strong>（CSS）: CSS の <code>:root</code> は、ページ全体（いちばん外側の <code>&lt;html&gt;</code>）を選ぶ書き方です。ページのどこからでも使う色などの変数（<code>--color-text</code>）を、ここに書きます。</li>
+<li><strong><code>--名前</code></strong>（CSS）: CSS の <code>--color-text: #0f172a;</code> のように <code>--</code> で始まる名前は、自分で決める変数（カスタムプロパティ）です。<code>color: var(--color-text);</code> で使います。色を 1 か所で決めておけば、変える時も 1 か所で済みます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7363,6 +7445,26 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>max()</code></strong>（Python）: いちばん大きい物を返す関数。<code>max(3, 9, 4)</code> は 9、<code>max([5, 1, 8])</code> は 8。いちばん小さい物は <code>min()</code> です。</li>
 <li><strong><code>min()</code></strong>（Python）: Python で、いちばん小さい値を返す関数。<code>min(1, 5, 3)</code> は 1。</li>
 <li><strong><code>print()</code></strong>（Python）: 渡した値を画面に表示する関数。<code>print("a", 1)</code> のように、いくつも渡すと空白でつないで表示し、最後に改行します。</li>
+<li><strong><code>#</code></strong>（Python）: Python では、<code>#</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>"""…"""</code></strong>（Python）: <code>"""…"""</code>（<code>"</code> を 3 つ）で囲んだ文字は、何行にもまたがって書けます。関数・クラス・ファイルのいちばん最初に書いた物は、その説明書（docstring）になり、<code>help()</code> やエディターで読めます。</li>
+<li><strong><code>r"…"</code></strong>（Python）: <code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。正規表現の <code>r"\d{6}"</code> のように、<code>\</code> の多い文字をそのまま書けます。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>\s</code></strong>（正規表現）: 正規表現の <code>\s</code> は、「空白 1 つ」（スペース・タブ・改行など）を表します。<code>\s*</code> は「空白が 0 個以上」。</li>
+<li><strong><code>[…]</code></strong>（正規表現）: 正規表現の <code>[ ]</code> は、「中に書いた文字の、どれか 1 つ」を表します。<code>[0-9a-zA-Z_-]</code> は「数字・英字・<code>_</code>・<code>-</code> のどれか」、<code>[.-]</code> は「<code>.</code> か <code>-</code>」。<code>-</code> で範囲を書けます。</li>
+<li><strong><code>{n,m}</code></strong>（正規表現）: 正規表現の <code>{6}</code> は「すぐ前の物が、ちょうど 6 回」、<code>{8,12}</code> は「8 回から 12 回」を表します。<code>\d{6}</code> は「数字 6 けた」。</li>
+<li><strong><code>*</code></strong>（正規表現）: 正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</li>
+<li><strong><code>+</code></strong>（正規表現）: 正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</li>
+<li><strong><code>(…)</code></strong>（正規表現）: 正規表現の <code>( )</code> は、まとまり（グループ）を作ります。合った文字のうち、<code>( )</code> の中の部分だけを、あとから取り出せます（<code>m[1]</code>・<code>m.group(1)</code>・<code>$1</code> など）。<code>(…)?</code> のように、まとまりごとくり返しや省略もできます。</li>
+<li><strong><code>f"…{値}…"</code></strong>（Python）: <code>f"…"</code>（頭に <code>f</code> を付けた文字）の中の <code>{ }</code> には、変数や式を書けて、その値が入ります（f 文字列）。<code>f"環境変数 {name} がありません"</code>。<code>{ }</code> の中の <code>:</code> の後ろには、<code>{amount:,}</code> のように書式も書けます。</li>
+<li><strong><code>{値:&lt;幅}</code></strong>（Python）: f 文字列の <code>{where:&lt;16}</code> の <code>&lt;</code> と数は、「16 文字分の場所に、左寄せで入れる」指定です。足りない分は右に空白が入り、後ろの列がそろいます。<code>&gt;</code> なら右寄せ、<code>^</code> なら中央です。</li>
+<li><strong><code>{値:幅}</code></strong>（Python）: f 文字列の <code>{r:5.2f}</code> の <code>5</code> のように、<code>:</code> の後ろの数は幅（何文字分の場所を取るか）です。数は右寄せ、文字は左寄せになります。</li>
+<li><strong><code>{値:.桁f}</code></strong>（Python）: f 文字列の <code>{ratio:.2f}</code> の <code>.2f</code> は、「小数点の下を 2 けたにした小数」で表示する指定です（<code>3.14159</code> → <code>3.14</code>）。</li>
+<li><strong><code>[式 for 名前 in 並び]</code></strong>（Python）: <code>[f"http://{host}" for host in ALLOWED_HOSTS]</code> は、「並びの 1 つずつから、新しい値を作って、並び（リスト）にする」書き方です（リスト内包表記）。後ろに <code>if 条件</code> を付けると、条件に合う物だけになります。</li>
+<li><strong><code>名前: 型 =</code></strong>（Python）: <code>app_name: str = "依頼・承認アプリ"</code> は、変数に型の説明を付けて、値を入れる書き方です。</li>
+<li><strong><code>**</code></strong>（Python）: Python の <code>2 ** 10</code> は、2 の 10 乗（<code>1024</code>）です。</li>
+<li><strong><code>A if 条件 else B</code></strong>（Python）: <code>a if 条件 else b</code> は、「条件が合えば a、合わなければ b」になる式です。<code>ext = name.rsplit(".", 1)[-1] if "." in name else ""</code>。</li>
+<li><strong><code>名前=値</code></strong>（Python）: <code>open(path, encoding="utf-8")</code> の <code>encoding="utf-8"</code> のように、<code>名前=値</code> で渡す引数は「キーワード引数」です。順番に関係なく、名前で渡せます。</li>
+<li><strong><code>.argv</code></strong>（Node.js）: <code>process.argv</code> は、プログラムを動かした時の引数の並びです。0 番目は <code>node</code> の場所、1 番目はスクリプトの場所、2 番目からが渡した引数です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -8170,6 +8272,21 @@ error: test failed, to rerun pass `--test u10_health`
 <span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/healthz&quot;</span><span class="w">   </span><span class="c1"># 間違い。RustNote の URL は /health</span>
 <span class="w">    </span><span class="n">timeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;5s&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[[http_service.checks]]</code></strong>（設定ファイル（TOML））: <code>[[http_service.checks]]</code> は、Fly.io がアプリの元気さを確かめる方法（ヘルスチェック）を 1 つ登録する見出しです。</li>
+<li><strong><code>grace_period =</code></strong>（設定ファイル（TOML））: <code>grace_period = "10s"</code> は、アプリが起動してから、確かめを始めるまで待つ時間です。</li>
+<li><strong><code>interval =</code></strong>（設定ファイル（TOML））: <code>interval = "30s"</code> は、確かめる間かくです（30 秒ごと）。</li>
+<li><strong><code>method =</code></strong>（設定ファイル（TOML））: <code>method = "GET"</code> は、確かめに送る要求の種類です。</li>
+<li><strong><code>path =</code></strong>（設定ファイル（TOML））: <code>path = "/health"</code> は、確かめに開く URL の場所です。アプリに、その URL が無いと、ずっと「元気でない」と判定されます。</li>
+<li><strong><code>timeout =</code></strong>（設定ファイル（TOML））: <code>timeout = "5s"</code> は、答えを待つ時間です。それより遅いと、失敗と数えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-237"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### curl.exe -s -o NUL -w &quot;%{http_code}\n&quot; http://127.0.0.1:3000/healthz
 404

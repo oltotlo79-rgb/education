@@ -287,6 +287,23 @@ li, tr { page-break-inside: avoid; }
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>"name":</code></strong>（設定ファイル（JSON））: <code>package.json</code> の <code>"name"</code> は、このプロジェクト（パッケージ）の名前です。</li>
+<li><strong><code>"private":</code></strong>（設定ファイル（JSON））: <code>"private": true</code> は、「このパッケージは npm に公開しない」という印です。間違って公開するのを防ぎます。</li>
+<li><strong><code>"type":</code></strong>（設定ファイル（JSON））: <code>"type": "module"</code> は、「<code>.js</code> のファイルを、新しい書き方（ES モジュール。<code>import</code>・<code>export</code>）として読む」という設定です。</li>
+<li><strong><code>"scripts":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> には、<code>npm run 名前</code> で動かすコマンドを書きます。<code>"check": "tsc"</code> なら、<code>npm run check</code> で <code>tsc</code>（型の確かめ）が動きます。</li>
+<li><strong><code>"check":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"check": "tsc"</code> は、<code>npm run check</code> という名前で、<code>tsc</code>（TypeScript の型の確かめ）を動かす登録です。名前は自分で決めます。</li>
+<li><strong><code>"devDependencies":</code></strong>（設定ファイル（JSON））: <code>"devDependencies"</code> には、開発の時だけ使う部品と、その版を書きます。<code>npm install</code> で入ります。</li>
+<li><strong><code>"@types/node":</code></strong>（設定ファイル（JSON））: <code>"@types/node"</code> は、Node.js の機能（<code>node:http</code> など）の型の説明の部品です。これが無いと、TypeScript が Node.js の関数の型を知りません。</li>
+<li><strong><code>"typescript":</code></strong>（設定ファイル（JSON））: <code>"typescript": "7.0.2"</code> は、TypeScript（型を確かめる道具 <code>tsc</code>）の部品と、その版です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;compilerOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;strict&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -300,6 +317,24 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="nt">&quot;include&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;src/*.ts&quot;</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>"compilerOptions":</code></strong>（設定ファイル（JSON））: <code>tsconfig.json</code> の <code>"compilerOptions"</code> には、TypeScript の確かめ方の設定を書きます。</li>
+<li><strong><code>"strict":</code></strong>（設定ファイル（JSON））: <code>"strict": true</code> は、TypeScript の確かめを、いちばんきびしくする設定です。<code>null</code> の取り違えなど、間違いを多く見つけてくれます。</li>
+<li><strong><code>"target":</code></strong>（設定ファイル（JSON））: <code>"target": "es2023"</code> は、どの版の JavaScript の書き方を前提にするかです。</li>
+<li><strong><code>"module":</code></strong>（設定ファイル（JSON））: <code>"module": "nodenext"</code> は、<code>import</code> の読み方を、今の Node.js と同じにする設定です。</li>
+<li><strong><code>"noEmit":</code></strong>（設定ファイル（JSON））: <code>"noEmit": true</code> は、<code>tsc</code> に、型の確かめだけをさせ、JavaScript のファイルは書き出させない設定です（動かす時は Node.js が直接 <code>.ts</code> を読みます）。</li>
+<li><strong><code>"allowImportingTsExtensions":</code></strong>（設定ファイル（JSON））: <code>"allowImportingTsExtensions": true</code> は、<code>import … from "./types.ts"</code> のように、<code>.ts</code> を付けて読み込むことを許す設定です。</li>
+<li><strong><code>"erasableSyntaxOnly":</code></strong>（設定ファイル（JSON））: <code>"erasableSyntaxOnly": true</code> は、「型を消すだけで JavaScript になる書き方」だけを許す設定です。Node.js が <code>.ts</code> をそのまま動かせる書き方に、そろえられます。</li>
+<li><strong><code>"types":</code></strong>（設定ファイル（JSON））: <code>"types": ["node"]</code> は、使う型の説明の部品（ここでは <code>@types/node</code>）を選ぶ設定です。</li>
+<li><strong><code>"include":</code></strong>（設定ファイル（JSON））: <code>"include": ["src/*.ts"]</code> は、確かめるファイルの範囲です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -363,7 +398,13 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>return</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。</li>
 <li><strong><code>.log()</code></strong>（JavaScript・TypeScript）: <code>console.log(…)</code> は、渡した値を画面（ターミナルやブラウザーの開発者ツール）に表示します。</li>
 <li><strong><code>.join()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。<code>["a", "b"].join(";")</code> は <code>"a;b"</code>。</li>
-<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</li>
+<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; `…${path}`</code> は「<code>path</code> を受け取って文字列を返す関数」。</li>
+<li><strong><code>//</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript では、<code>//</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>`${…}`</code></strong>（JavaScript・TypeScript）: <code>`…`</code>（バッククォートで囲んだ文字。テンプレート文字列）の中の <code>${ }</code> には、値や式を入れられます。<code>`エラー ${res.status}`</code> は、<code>res.status</code> が 404 なら <code>エラー 404</code> になります。改行も、そのまま書けます。</li>
+<li><strong><code>条件 ? A : B</code></strong>（JavaScript・TypeScript）: <code>条件 ? A : B</code> は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。<code>user.isAdmin ? "管理者" : "一般"</code>。<code>if</code> とちがい、値を返すので、そのまま変数や表示に使えます。</li>
+<li><strong><code>型[]</code></strong>（TypeScript）: <code>string[]</code> のように型の後ろに <code>[]</code> を付けると、「その型の並び（配列）」という型になります。<code>Array&lt;string&gt;</code> と書いても同じです。</li>
+<li><strong><code>boolean</code></strong>（TypeScript）: <code>boolean</code> は、<code>true</code>（はい）か <code>false</code>（いいえ）の型です。</li>
+<li><strong><code>.length</code></strong>（JavaScript・TypeScript）: <code>.length</code> は、並びの数や、文字の数です。文字の場合は、UTF-16 という数え方なので、絵文字などは 2 と数えることがあります（<code>[...文字].length</code> なら、見た目の文字の数に近くなります）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -512,6 +553,9 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>default</code></strong>（JavaScript・TypeScript）: <code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</li>
 <li><strong><code>never</code></strong>（TypeScript）: 「ここには絶対に来ない」ことを表す型。<code>switch</code> の最後に <code>const unreachable: never = current;</code> と書いておくと、状態を足したのに <code>case</code> を書き忘れた時、<code>npx tsc</code> がエラーで教えてくれます。</li>
 <li><strong><code>===</code></strong>（TypeScript）: 「型も値も同じか」を比べる書き方。<code>==</code> は型を勝手にそろえてから比べて思わぬ結果になるので、ふつうは <code>===</code> を使います（違うかは <code>!==</code>）。</li>
+<li><strong><code>/* */</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript では、<code>/*</code> から <code>*/</code> までがコメントです。何行にもまたがって書けます。</li>
+<li><strong><code>A | B</code></strong>（TypeScript）: <code>type RequestStatus = "下書き" | "回覧中" | "承認済み";</code> の <code>|</code> は、「このどれか」を表す型です（ユニオン型）。決めた値以外を入れると、TypeScript がエラーで教えてくれます。<code>string | null</code> は「文字か、null」です。</li>
+<li><strong><code>import type</code></strong>（TypeScript）: <code>import type { RequestStatus } from "./types.ts";</code> は、「型だけ」を読み込む書き方です。型は動く時には消えるので、動くプログラムには何も残りません。<code>import { useState, type FormEvent }</code> のように、1 つずつ <code>type</code> を付けることもできます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -573,6 +617,16 @@ li, tr { page-break-inside: avoid; }
 <span class="w">  </span><span class="nx">note?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">        </span><span class="c1">// ? が付いた項目は、無くてもよい</span>
 <span class="p">};</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>名前?:</code></strong>（TypeScript）: <code>note?: string;</code> のように名前の後ろに <code>?</code> を付けると、「この項目は、無くてもよい」という意味になります。無い時の値は <code>undefined</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>status</code> に <code>RequestStatus</code> を使うと、依頼のデータにも、決まった状態しか入らなくなります。</li>
@@ -649,6 +703,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.localeCompare()</code></strong>（TypeScript）: 2 つの文字列を、辞書の順で比べるメソッド。<code>a.localeCompare(b)</code> は、<code>a</code> が先ならマイナス、同じなら 0、後ならプラス。<code>sort</code> の中で、文字（日付の文字など）で並べる時に使います。</li>
 <li><strong><code>??</code></strong>（TypeScript）: <code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code> なら <code>b</code> を使う書き方。<code>(acc[key] ?? 0) + 1</code> は「まだ無ければ 0 から数える」。</li>
 <li><strong><code>...</code></strong>（TypeScript）: スプレッド構文。<code>[...requests]</code> は配列の中身を広げて、新しい配列（写し）を作ります。<code>{ ...user, isAdmin: true }</code> は、オブジェクトを写して一部だけ変えます。</li>
+<li><strong><code>\n</code></strong>（文字列の中の特別な書き方）: 文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</li>
+<li><strong><code>!==</code></strong>（JavaScript・TypeScript）: <code>a !== b</code> は、「a と b が同じではない」（型も含めて比べる）です。<code>===</code>（同じ）の反対です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -787,6 +843,11 @@ null
 <li><strong><code>.stringify()</code></strong>（TypeScript）: <code>JSON.stringify(値)</code> は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。</li>
 <li><strong><code>.encode()</code></strong>（TypeScript）: <code>new TextEncoder().encode(文字列)</code> は、文字列を UTF-8 のバイトの並びにするメソッド。<code>.length</code> で、何バイトになるかが分かります（日本語は 1 文字 3 バイト）。</li>
 <li><strong><code>.parse()</code></strong>（JavaScript・TypeScript）: <code>JSON.parse(文字列)</code> は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は <code>JSON.stringify(値)</code> です。</li>
+<li><strong><code>&amp;&amp;</code></strong>（JavaScript・TypeScript）: <code>a &amp;&amp; b</code> は、「a と b の両方が当てはまる」（かつ）です。左が当てはまらなければ、右は調べません。</li>
+<li><strong><code>||</code></strong>（JavaScript・TypeScript）: <code>a || b</code> は、「a か b のどちらか」（または）です。<code>el.innerText || el.getAttribute("name") || ""</code> のように、「左が空なら右を使う」という使い方もします（<code>0</code> や <code>""</code> も「空」とみなされるので、<code>null</code>・<code>undefined</code> だけを見たい時は <code>??</code> を使います）。</li>
+<li><strong><code>Record</code></strong>（TypeScript）: <code>Record&lt;RequestStatus, string&gt;</code> は、「キーが <code>RequestStatus</code> の全部で、値が文字」のオブジェクトの型です。キーの書き忘れを、TypeScript が見つけてくれます。</li>
+<li><strong><code>Array</code></strong>（JavaScript・TypeScript）: <code>Array</code> は、並び（配列）の型です。<code>Array.isArray(値)</code> で、値が並びかどうかを調べられます。</li>
+<li><strong><code>TextEncoder</code></strong>（JavaScript・TypeScript）: <code>new TextEncoder().encode(文字)</code> は、文字を UTF-8 のバイトの並びにします。<code>.length</code> で、バイトの数（大きさ）が分かります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -971,6 +1032,15 @@ mistakes/mistakes.ts(18,1): error TS2554: Expected 1 arguments, but got 0.
 <li><strong><code>.then()</code></strong>（TypeScript）: <code>Promise</code>（あとで届く約束）の結果が届いた時に動く関数を登録するメソッド。<code>await</code> を使えば、多くの場合は書かずに済みます。</li>
 <li><strong><code>.error()</code></strong>（TypeScript）: <code>console.error(…)</code> は、エラーの知らせを出す関数です（<code>console.log</code> のエラー版）。</li>
 <li><strong><code>.close()</code></strong>（JavaScript・TypeScript）: Playwright で、ブラウザーを閉じるメソッド（<code>await browser.close()</code>）。</li>
+<li><strong><code>!</code></strong>（JavaScript・TypeScript）: <code>!res.ok</code> のように前に付けた <code>!</code> は、「〜ではない」です。<code>if (!res.ok)</code> は「うまくいかなかったら」。</li>
+<li><strong><code>名前&lt;型&gt;()</code></strong>（TypeScript）: <code>useState&lt;RequestItem[] | null&gt;(null)</code> や <code>res.json&lt;T&gt;()</code> のように、関数の名前の後ろの <code>&lt; &gt;</code> は、「どの型で扱うか」を指定する書き方です（ジェネリクス）。</li>
+<li><strong><code>型&lt;型&gt;</code></strong>（TypeScript）: <code>Promise&lt;void&gt;</code>・<code>Record&lt;string, unknown&gt;</code> のように、型の後ろの <code>&lt; &gt;</code> には、中に入る型を書きます。<code>Promise&lt;void&gt;</code> は「終わると何も返さない、あとで終わる処理」です。</li>
+<li><strong><code>AddressInfo</code></strong>（TypeScript）: <code>AddressInfo</code> は、Node.js のサーバーが待ち受けている場所（アドレスとポート番号）の型です。</li>
+<li><strong><code>Promise</code></strong>（JavaScript・TypeScript）: <code>Promise</code> は、「あとで終わる処理」（サーバーの答えを待つ、時間を待つ）を表す物です。<code>await</code> を付けると、終わるまで待って、結果を受け取れます。<code>new Promise((resolve) =&gt; …)</code> で、自分で作ることもできます。</li>
+<li><strong><code>Error</code></strong>（JavaScript・TypeScript）: <code>new Error("説明")</code> は、エラーを作ります。<code>throw new Error(…)</code> でエラーを起こし、<code>try { … } catch (err) { … }</code> で受け止めます。<code>err.message</code> で説明の文を読めます。</li>
+<li><strong><code>createServer()</code></strong>（Node.js）: <code>createServer((req, res) =&gt; { … })</code> は、Node.js（<code>node:http</code>）で、HTTP のサーバーを作る関数です。</li>
+<li><strong><code>fetch()</code></strong>（JavaScript・TypeScript）: <code>fetch(URL)</code> は、サーバーに HTTP の要求を送る関数です。<code>await fetch(…)</code> で答えを待ち、<code>res.ok</code>（うまくいったか）・<code>res.status</code>（状態コード）・<code>await res.json()</code>（JSON の中身）を読みます。</li>
+<li><strong><code>.ok</code></strong>（JavaScript・TypeScript）: <code>fetch</code> の答えの <code>.ok</code> は、状態コードが 200〜299（うまくいった）なら <code>true</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

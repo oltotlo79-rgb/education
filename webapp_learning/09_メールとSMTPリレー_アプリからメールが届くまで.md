@@ -220,6 +220,11 @@ if __name__ == "__main__":
 > - **`.start_server()`**（Python）: `asyncio.start_server(関数, ホスト, ポート)` は、接続を待ち受けるサーバーを始める関数です。接続が来るたびに、渡した関数が動きます。
 > - **`.serve_forever()`**（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。
 > - **`.run()`**（Python）: `asyncio.run(main())` は、非同期の関数（`async def`）を動かして、終わるまで待ちます。非同期のプログラムは、ここから始まります。
+> - **`%S`**（日時の書式）: 日時の書式の `%S`（大文字）は、2 けたの秒（`00`〜`59`）です。
+> - **`%f`**（日時の書式）: 日時の書式の `%f` は、秒より細かい部分（Python では 6 けたのマイクロ秒）です。同じ秒に作ったファイルの名前が、重ならないようにする時に使います。
+> - **`:=`**（Python）: `while (line := await recv()) is not None:` の `:=` は、「値を変数に入れて、その値をその場で使う」書き方です（セイウチ演算子）。
+> - **`is not`**（Python）: `x is not None` は、「x が None ではない」です。`None` かどうかは、`==` ではなく `is` で調べます。
+> - **`KeyboardInterrupt`**（Python）: `KeyboardInterrupt` は、`Ctrl` ＋ `C` で止めた時に起きる、エラーの種類です。`except KeyboardInterrupt:` で受け止めると、止める時の後片づけができます。
 
 <!-- /first-use -->
 
@@ -292,6 +297,7 @@ if __name__ == "__main__":
 > - **`.ehlo()`**（Python）: SMTP のサーバーに、最初のあいさつ（EHLO）を送るメソッド。
 > - **`.starttls()`**（Python）: `smtplib` で、メールサーバーとの接続を、途中から暗号化（TLS）に切りかえるメソッド。`smtp.starttls()` のあとに送る中身は、暗号化されます。
 > - **`.send_message()`**（Python）: 用意したメールを、SMTP のサーバーへ渡して送るメソッド。
+> - **`EmailMessage`**（Python）: `EmailMessage`（`email.message`）は、メール 1 通（宛先・件名・本文）を組み立てる型です。
 
 <!-- /first-use -->
 
@@ -759,6 +765,15 @@ $env:SMTP_HOST = "127.0.0.1"; $env:SMTP_PORT = "1025"; $env:SMTP_USE_TLS = "fals
 cargo run -- send-test-mail --to sato@example.com
 Remove-Item Env:SMTP_HOST, Env:SMTP_PORT, Env:SMTP_USE_TLS   # 終わったら消す
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run -- --to`**（cargo のコマンド）: `cargo run -- send-test-mail --to 自分のアドレス` の `--to` は、練習アプリのコマンドに、テストのメールを送る宛先を渡すオプションです。
+> - **`;`**（PowerShell）: `;` は、1 行にコマンドを 2 つ以上書く時の区切りです。`cargo fmt --check; $LASTEXITCODE` は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。
+
+<!-- /first-use -->
 
 実際の出力:
 

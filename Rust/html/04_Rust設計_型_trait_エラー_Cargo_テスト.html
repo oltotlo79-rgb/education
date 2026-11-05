@@ -458,6 +458,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo add</code></strong>（cargo のコマンド）: 部品（クレート）を、プロジェクトに足すコマンド。<code>cargo add thiserror anyhow serde_json</code> で、3 つの部品を <code>Cargo.toml</code> の <code>[dependencies]</code> に書き足します。<code>--features 機能</code> で、部品の追加の機能も選べます。部品は、世界中の人が公開している場所（crates.io）から自動で取ってきます。</li>
+<li><strong><code>cargo add --features</code></strong>（cargo のコマンド）: <code>cargo add serde --features derive</code> の <code>--features</code> は、部品を足す時に、その部品の機能（ここでは <code>derive</code>）も ON にして、<code>Cargo.toml</code> に書き込みます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -507,6 +508,19 @@ li, tr { page-break-inside: avoid; }
 <span class="n">serde_json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0.154&quot;</span>
 <span class="n">thiserror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2.0.21&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>anyhow</code></strong>（Rust の部品（クレート））: <code>anyhow</code> は、いろいろな種類のエラーを、1 つの型（<code>anyhow::Error</code>）でまとめて扱い、説明を書き足せる（<code>.context(…)</code>）部品です。アプリの一番上の、エラーを表示する所で使います。</li>
+<li><strong><code>serde</code></strong>（Rust の部品（クレート））: <code>serde</code> は、Rust の値を、JSON などの形に変えたり（シリアライズ）、JSON から Rust の値を作ったり（デシリアライズ）するための部品です。<code>features = ["derive"]</code> で、<code>#[derive(Serialize, Deserialize)]</code> が使えるようになります。</li>
+<li><strong><code>serde_json</code></strong>（Rust の部品（クレート））: <code>serde_json</code> は、<code>serde</code> と組み合わせて、JSON を読み書きする部品です。</li>
+<li><strong><code>thiserror</code></strong>（Rust の部品（クレート））: <code>thiserror</code> は、自分のエラーの型を、<code>#[derive(Error)]</code> と <code>#[error("…")]</code> だけで作れるようにする部品です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>src/bin/u01_ids.rs</code> のようにファイルを置くと、<code>cargo run --bin u01_ids</code> でそのファイルの <code>main</code> だけを実行できます。1つのプロジェクトで、たくさんの小さなプログラムを試せて便利です。</li>
@@ -930,6 +944,7 @@ NG: TooLong { len: 81 }
 <ul>
 <li><strong><code>type</code></strong>（型とメソッド）: 型に別の名前を付ける書き方（型の別名）。<code>type DynRepo = Arc&lt;dyn NoteRepository + Send + Sync&gt;;</code> のように、長い型を短く呼べます。トレイトの中の <code>type Err = IdError;</code> は「このトレイトで使うエラーの型は <code>IdError</code>」と決める書き方です。</li>
 <li><strong><code>FromStr</code></strong>（型とメソッド）: 「文字列から作れる」機能（トレイト）。<code>impl FromStr for 型 { … }</code> を書くと、<code>"42".parse::&lt;型&gt;()</code> で、文字列から自分の型を作れるようになります。</li>
+<li><strong><code>&lt;_&gt;</code></strong>（型とメソッド）: <code>Vec&lt;_&gt;</code> の <code>_</code> は、「中の型は、Rust が使い方から決めて」という印です。<code>.collect::&lt;Vec&lt;_&gt;&gt;()</code> は「<code>Vec</code> に集めて。中身の型は任せる」という意味です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1974,6 +1989,17 @@ error: could not compile `design_lab` (bin &quot;u02_err_e0117&quot;) due to 1 p
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>T: トレイト</code></strong>（型とメソッド）: <code>&lt;T: Display&gt;</code> の <code>: Display</code> は、「<code>T</code> は、<code>Display</code>（表示できる）という決まりを満たす型だけ」という条件です（トレイト境界）。<code>where T: Display</code> と後ろに書いても同じです。</li>
+<li><strong><code>A + B</code></strong>（型とメソッド）: <code>T: Clone + Debug</code> の <code>+</code> は、「<code>Clone</code> と <code>Debug</code> の両方を満たす」という意味です。条件をいくつも並べられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_generic</span>
 </code></pre></div></div>
 
@@ -2673,6 +2699,16 @@ Some(9)
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>\"</code></strong>（文字列の中の特別な書き方）: 文字列の中に <code>"</code> そのものを入れたい時は、<code>\"</code> と書きます。<code>"\"Rust\""</code> は、<code>"Rust"</code> という <code>"</code> 付きの文字になります。<code>\</code> を付けないと、そこで文字列が終わったと思われます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u04_dyn</span>
 </code></pre></div></div>
@@ -3698,6 +3734,9 @@ Box&lt;dyn Error&gt;: タイトルを入力してください
 <li><strong><code>From</code></strong>（型とメソッド）: 「ある型から作れる」機能（トレイト）。<code>impl From&lt;RepoError&gt; for AppError</code> を書くと、<code>RepoError</code> を <code>AppError</code> に変えられます。<code>?</code> は、エラーを返す時にこの変換を自動で使います。</li>
 <li><strong><code>ErrorKind</code></strong>（エラー処理）: 入出力のエラーの「種類」。<code>std::io::ErrorKind::NotFound</code>（無い）・<code>ConnectionRefused</code>（つなぐのを断られた）などがあり、<code>e.kind()</code> で調べて、種類ごとに処理を分けられます。</li>
 <li><strong><code>ConnectionRefused</code></strong>（エラー処理）: <code>ErrorKind::ConnectionRefused</code> は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。</li>
+<li><strong><code>{0}</code></strong>（画面に出す）: <code>{0}</code>・<code>{1}</code> のように <code>{ }</code> の中に番号を書くと、「後ろに並べた値の、何番目（0 から数える）を入れるか」を指定できます。<code>format!("{0} と {1} と {0}", "a", "b")</code> → <code>a と b と a</code> のように、同じ値を何度も使えます。<code>thiserror</code> の <code>#[error("…{0}…")]</code> では、名前の無い項目の 0 番目（<code>.0</code>）を入れます。</li>
+<li><strong><code>#[error(transparent)]</code></strong>（エラー処理）: <code>thiserror</code> の <code>#[error(transparent)]</code> は、「自分では文を作らず、中に入れた元のエラーの文を、そのまま見せる」という印です。<code>#[from]</code> と組み合わせて、ほかのエラーを包むだけの種類に使います。</li>
+<li><strong><code>while let</code></strong>（くり返し）: <code>while let Some(c) = cause { … }</code> は、「<code>Some</code> の形である間、中身を <code>c</code> に入れてくり返す」書き方です。<code>None</code> になったら止まります。<code>while let Some(x) = stack.pop()</code> のように、並びから 1 つずつ取り出す時によく使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4378,6 +4417,16 @@ error: could not compile `design_lab` (bin &quot;u05_err_e0004&quot;) due to 1 p
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pub(crate)</code></strong>（モジュール）: <code>pub(crate)</code> は、「このクレート（このプロジェクト）の中からは使えるが、外からは使えない」という公開の範囲です。<code>pub</code> だけなら、どこからでも使えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-140"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u06_mod</span>
 </code></pre></div></div>
 
@@ -4634,6 +4683,18 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[workspace]</code></strong>（設定ファイル（TOML））: <code>[workspace]</code> は、いくつものパッケージ（<code>app</code>・<code>domain</code> など）を、1 つのまとまり（ワークスペース）にする見出しです。<code>Cargo.lock</code> と <code>target</code> フォルダを共有します。</li>
+<li><strong><code>resolver =</code></strong>（設定ファイル（TOML））: <code>resolver = "3"</code> は、部品の版の選び方の決まりの版です。ワークスペースでは、edition 2024 に合う <code>"3"</code> を書きます。</li>
+<li><strong><code>members =</code></strong>（設定ファイル（TOML））: <code>members = ["app", "domain"]</code> は、ワークスペースに入れるパッケージ（フォルダ）の一覧です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>続けて、<code>ws_lab</code> の中で2つの package を作ります。</p>
 <div class="codehilite"><div class="code-wrap" id="code-162"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">new</span> <span class="p">-</span><span class="n">-lib</span> <span class="n">crates</span><span class="p">/</span><span class="n">domain</span>
 <span class="n">cargo</span> <span class="n">new</span> <span class="n">crates</span><span class="p">/</span><span class="n">app</span>
@@ -4663,6 +4724,17 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="n">thiserror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2.0.21&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[workspace.package]</code></strong>（設定ファイル（TOML））: <code>[workspace.package]</code> には、ワークスペースの全部のパッケージで共通の設定（<code>edition</code> など）を書きます。各パッケージは <code>edition.workspace = true</code> で受け取ります。</li>
+<li><strong><code>[workspace.dependencies]</code></strong>（設定ファイル（TOML））: <code>[workspace.dependencies]</code> には、ワークスペースで使う部品と版をまとめて書きます。各パッケージは <code>serde = { workspace = true }</code> で受け取ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ws_lab/crates/domain/Cargo.toml</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-165"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">[package]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;domain&quot;</span>
@@ -4673,6 +4745,18 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="k">[dependencies]</span>
 <span class="n">thiserror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">workspace</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>edition.workspace =</code></strong>（設定ファイル（TOML））: <code>edition.workspace = true</code> は、「edition は、ワークスペースの <code>[workspace.package]</code> に書いた物を使う」という指定です。</li>
+<li><strong><code>rust-version.workspace =</code></strong>（設定ファイル（TOML））: <code>rust-version.workspace = true</code> は、「rust-version は、ワークスペースに書いた物を使う」という指定です。</li>
+<li><strong><code>workspace =</code></strong>（設定ファイル（TOML））: <code>serde = { workspace = true }</code> は、「部品の版は、ワークスペースの <code>[workspace.dependencies]</code> に書いた物を使う」という指定です。いくつものパッケージで、版をそろえられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ws_lab/crates/app/Cargo.toml</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-166"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">[package]</span>
@@ -4685,6 +4769,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="c1"># 同じ workspace の domain を、フォルダの場所で指定して使う</span>
 <span class="n">domain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;../domain&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>path =</code></strong>（設定ファイル（TOML））: <code>domain = { path = "../domain" }</code> の <code>path</code> は、部品を crates.io からではなく、このパソコンのフォルダから使う指定です。ワークスペースの中の、自分で作った部品を使う時に書きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ws_lab/crates/domain/src/lib.rs</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-167"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">use</span><span class="w"> </span><span class="n">thiserror</span><span class="p">::</span><span class="n">Error</span><span class="p">;</span>
@@ -4755,6 +4849,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 OK: 牛乳を買う
 NG: タイトルを入力してください
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run -p</code></strong>（cargo のコマンド）: <code>cargo run -p app</code> の <code>-p</code>（package）は、ワークスペース（いくつものパッケージをまとめた物）の中の、どのパッケージを動かすかを選びます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h5 id="8-workspace-cargotoml">解説8: workspace の Cargo.toml</h5>
 <div class="codehilite"><div class="code-wrap" id="code-171"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">[workspace]</span>
@@ -5188,6 +5292,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="n">cargo</span> <span class="n">add</span> <span class="n">serde_json</span> <span class="p">-</span><span class="n">-optional</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo add --optional</code></strong>（cargo のコマンド）: <code>--optional</code> は、「いつもは使わず、機能（feature）を ON にした時だけ使う」部品として足す指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>--optional</code>（任意の依存）を付けると、「features で ON にしたときだけ使う依存」として追加されます。そのあと <code>Cargo.toml</code> を次のように整えます（<code>cargo add</code> が自動で作った <code>serde = ["dep:serde"]</code> などの行は、<code>json</code> の1つにまとめ直しています）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-191"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">[package]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;feat_lab&quot;</span>
@@ -5207,6 +5321,19 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="c1"># ON にすると serde と serde_json が依存に加わる</span>
 <span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;dep:serde&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;dep:serde_json&quot;</span><span class="p">]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>optional =</code></strong>（設定ファイル（TOML））: <code>optional = true</code> は、「この部品は、いつもは使わず、自分の機能（feature）を ON にした時だけ使う」という指定です。</li>
+<li><strong><code>[features]</code></strong>（設定ファイル（TOML））: <code>[features]</code> には、このパッケージの「ON・OFF できる機能」を、<code>機能の名前 = [ON にした時に一緒に使う物]</code> の形で書きます。コードでは <code>#[cfg(feature = "名前")]</code> で、その機能の時だけの部分を書き分けます。</li>
+<li><strong><code>default =</code></strong>（設定ファイル（TOML））: <code>[features]</code> の <code>default = ["markdown"]</code> は、「何も指定しない時に ON になる機能」の一覧です。<code>--no-default-features</code> で OFF にできます。</li>
+<li><strong><code>機能の名前 =</code></strong>（設定ファイル（TOML））: <code>[features]</code> の <code>json = ["dep:serde_json"]</code> のような行は、<code>json</code> という機能を作り、ON にした時に一緒に使う部品（<code>dep:</code> を付けた名前）を並べます。<code>csv = []</code> のように空なら、部品は増えず、コードの書き分けだけに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>src/main.rs</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-192"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// json 機能が ON のときだけ、Serialize を derive する</span>
@@ -5264,6 +5391,7 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <li><strong><code>#[cfg_attr]</code></strong>（テスト）: 「条件が合う時だけ、この印（属性）を付ける」という印。<code>#[cfg_attr(feature = "json", derive(Serialize))]</code> は、<code>json</code> の機能が ON の時だけ <code>Serialize</code> を付けます。</li>
 <li><strong><code>serde_json::to_string()</code></strong>（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に <code>Serialize</code> が付いている必要があります。失敗することもあるので <code>Result</code> が返ります。</li>
 <li><strong><code>Serialize</code></strong>（JSON）: 「JSON などにできる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Serialize)]</code> を付けた型は、<code>serde_json::to_string</code> で JSON にできます。</li>
+<li><strong><code>#[cfg(feature)]</code></strong>（モジュール）: <code>#[cfg(feature = "markdown")]</code> は、「<code>markdown</code> という機能（feature）が ON の時だけ、この部分を翻訳する」という印です。機能は <code>Cargo.toml</code> の <code>[features]</code> で決め、<code>cargo run --features markdown</code> などで ON にします。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5284,6 +5412,16 @@ markdown=true json=false
 <p>JSON の機能を ON にします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-195"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-features</span> <span class="n">json</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run --features</code></strong>（cargo のコマンド）: <code>cargo run --features json</code> は、<code>Cargo.toml</code> の <code>[features]</code> で決めた <code>json</code> という機能を ON にして動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-196"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling proc-macro2 v1.0.107
    Compiling quote v1.0.47
@@ -5309,6 +5447,16 @@ markdown=true json=true
 <p>既定の機能（markdown）も OFF にします。</p>
 <div class="codehilite"><div class="code-wrap" id="code-197"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-no-default-features</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run --no-default-features</code></strong>（cargo のコマンド）: <code>--no-default-features</code> は、<code>[features]</code> の <code>default</code> で ON にしてある機能を、全部 OFF にして動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-198"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling feat_lab v0.1.0 (...\feat_lab)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
@@ -5368,6 +5516,16 @@ markdown=false json=false
 <div class="codehilite"><div class="code-wrap" id="code-203"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">tree</span> <span class="p">-</span><span class="n">-features</span> <span class="n">json</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree --features</code></strong>（cargo のコマンド）: <code>cargo tree --features json</code> は、<code>json</code> の機能を ON にした時に使われる部品の木を表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-204"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>feat_lab v0.1.0 (...\feat_lab)
 ├── serde v1.0.229
 │   ├── serde_core v1.0.229
@@ -5423,6 +5581,16 @@ dependencies = [
 <div class="codehilite"><div class="code-wrap" id="code-206"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-locked</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build --locked</code></strong>（cargo のコマンド）: <code>--locked</code> は、<code>Cargo.lock</code> に書いてある部品の版のまま作り、<code>Cargo.lock</code> を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-207"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error: cannot update the lock file ...\Cargo.lock because --locked was passed to prevent this
 help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.
 </code></pre></div></div>
@@ -5444,6 +5612,16 @@ help: to generate the lock file without accessing the network, remove the --lock
 <p>多くのクレートは、よく使われる機能を <code>default</code> で ON にしています。小さな道具だけ欲しいときは、<code>--no-default-features</code> で既定の機能を外し、必要なものだけを <code>--features</code> で選べます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-208"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">add</span> <span class="n">serde_json</span> <span class="p">-</span><span class="n">-no-default-features</span> <span class="p">-</span><span class="n">-features</span> <span class="n">alloc</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo add --no-default-features</code></strong>（cargo のコマンド）: <code>--no-default-features</code> は、部品の「既定で ON の機能」を OFF にして足す指定です。必要な機能だけを <code>--features</code> で選ぶ時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-209"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Updating crates.io index
       Adding serde_json v1.0.154 to dependencies
@@ -5599,6 +5777,16 @@ error: could not compile `nodrv` (bin &quot;nodrv&quot;) due to 1 previous error
 <div class="codehilite"><div class="code-wrap" id="code-216"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSV で書き出す機能（依存は増えない）</span>
 <span class="n">csv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>csv =</code></strong>（設定ファイル（TOML））: <code>[features]</code> に書く <code>csv = []</code> は、<code>csv</code> という機能を足す書き方です。<code>[]</code> が空なので、ON にしても部品は増えません。コードの <code>#[cfg(feature = "csv")]</code> の部分だけが ON になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>src/main.rs</code> には、関数と呼び出しを足します（抜粋）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-217"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">// csv 機能が ON のときだけコンパイルされる</span>
@@ -5772,6 +5960,7 @@ markdown=false json=false
 <ul>
 <li><strong><code>serde_json::to_string_pretty()</code></strong>（JSON）: Rust の値を、人が読みやすい字下げ付きの JSON の文字列に変える関数。</li>
 <li><strong><code>Deserialize</code></strong>（JSON）: 「JSON などから作れる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Deserialize)]</code> を付けた型は、<code>serde_json::from_str</code> で JSON から作れます。逆向き（値 → JSON）は <code>Serialize</code> です。</li>
+<li><strong><code>r#"…"#</code></strong>（文字列）: <code>r#"…"#</code> も「生の文字列」で、<code>"#</code> が来るまでを、<code>\</code> も <code>"</code> もそのまま文字にします。<code>r#"{"title": "牛乳"}"#</code> のように、<code>"</code> の多い JSON や、何行もの SQL を書く時に便利です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5984,6 +6173,9 @@ markdown=false json=false
 <ul>
 <li><strong><code>#[serde]</code></strong>（JSON）: <code>serde</code> の印（属性）。JSON にする時の細かい決まりを付けます。<code>#[serde(rename_all = "camelCase")]</code>（名前の書き方を変える）・<code>#[serde(default)]</code>（無い時は初期値）・<code>#[serde(skip_serializing_if = "Option::is_none")]</code>（空なら書かない）などがあります。</li>
 <li><strong><code>TryFrom</code></strong>（型とメソッド）: 「ある型から作れるが、失敗することもある」変換の機能（トレイト）。<code>impl TryFrom&lt;CreateNoteInput&gt; for NewNote</code> を書くと、<code>NewNote::try_from(input)</code> で、入力を確かめながら変換でき、だめなら <code>Err</code> を返します。</li>
+<li><strong><code>#[serde(deny_unknown_fields)]</code></strong>（JSON）: <code>serde</code> の印。JSON に、構造体に無い名前の項目が入っていたら、読み込みをエラーにします。項目の名前の書き間違い（<code>titel</code> など）を見逃さないために付けます。</li>
+<li><strong><code>#[serde(default)]</code></strong>（JSON）: <code>serde</code> の印。JSON にその項目が無い時、エラーにせず、型の初期値（<code>Default</code>。数なら 0、文字列なら空）を入れます。</li>
+<li><strong><code>#[serde(rename_all)]</code></strong>（JSON）: <code>#[serde(rename_all = "camelCase")]</code> は、項目の名前を、JSON では別の書き方にする印です。<code>camelCase</code> なら、Rust の <code>width_mm</code> が JSON では <code>widthMm</code> になります。<code>snake_case</code>・<code>kebab-case</code>・<code>UPPERCASE</code> などもあります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6336,6 +6528,16 @@ error: could not compile `design_lab` (bin &quot;u08_err_serialize&quot;) due to
 <div class="codehilite"><div class="code-wrap" id="code-241"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>OK [牛乳]
 NG タイトルを入力してください at line 1 column 15
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#[serde(try_from)]</code></strong>（JSON）: <code>#[serde(try_from = "String")]</code> は、「JSON の値を、いったん <code>String</code> として読み、それから <code>TryFrom</code> でこの型に変える」という印です。変える時の確かめ（空でないか、など）が失敗したら、読み込みのエラーになります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>#[serde(try_from = "String")]</code> は、「いったん <code>String</code> として読み、<code>NoteTitle::try_from</code> を通してから入れる」という指定です。検証に失敗すると、その文章がそのまま serde_json のエラーになります（<code>タイトルを入力してください at line 1 column 15</code>）。</li>
@@ -7214,6 +7416,7 @@ error: test failed, to rerun pass `--lib`
 <li><strong><code>Action</code></strong>（RustNote で作る物）: RustNote のノートに対する操作（公開する・アーカイブするなど）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。</li>
 <li><strong><code>NoteStatus</code></strong>（RustNote で作る物）: RustNote のノートの状態（下書き・公開・アーカイブ）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。</li>
 <li><strong><code>TransitionError</code></strong>（RustNote で作る物）: RustNote で、ノートの状態を、決まりにない形で変えようとした時のエラーを表す型。この巻の後の方で作ります。</li>
+<li><strong><code>//!</code></strong>（コメント）: <code>//!</code> で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。<code>///</code>（すぐ下の関数や型の説明）と使い分けます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7550,6 +7753,7 @@ all doctests ran in 0.57s; merged doctests compilation took 0.39s
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo doc</code></strong>（cargo のコマンド）: コードに書いた説明（<code>///</code> のコメント）から、説明書（ドキュメント）の Web ページを作るコマンド。<code>--no-deps</code> で自分のコードだけ、<code>--open</code> でできたページをブラウザーで開きます。</li>
+<li><strong><code>cargo doc --no-deps</code></strong>（cargo のコマンド）: <code>--no-deps</code> は、自分のクレートの説明書だけを作り、使っている部品の説明書は作らない指定です。速く作れます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7772,6 +7976,16 @@ Open
 <p><code>NoteTitle::parse</code> の例で、期待する値を <code>"  牛乳を買う "</code>（前後の空白つき）と書き間違えた場合です。</p>
 <div class="codehilite"><div class="code-wrap" id="code-296"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-doc</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test --doc</code></strong>（cargo のコマンド）: <code>cargo test --doc</code> は、ドキュメントコメント（<code>///</code>）の中に書いた、例のコードだけをテストとして動かします。説明の例が、本当に動くかを確かめられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-297"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
    Doc-tests note_domain

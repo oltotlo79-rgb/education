@@ -436,6 +436,9 @@ tzdata==2026.6
 <li><strong><code>.DateTimeField()</code></strong>（Django）: 日時の列を表すモデルの項目。<code>auto_now_add=True</code> で、作った時の日時を自動で入れます。</li>
 <li><strong><code>.PositiveSmallIntegerField()</code></strong>（Django）: 0 以上の小さな整数の列を表すモデルの項目（順番などに使う）。</li>
 <li><strong><code>.UniqueConstraint()</code></strong>（Django）: 「この組み合わせの値は、表の中で重ならない」という決まりを表す物。<code>fields=["request", "order"]</code> は「同じ依頼の中で、同じ順番は 2 つ作れない」。</li>
+<li><strong><code>"-列の名前"</code></strong>（Django）: Django の <code>ordering = ["-created_at"]</code> や <code>.order_by("-created_at")</code> の、名前の頭の <code>-</code> は、「大きい順（新しい順）に並べる」という意味です。<code>-</code> が無ければ、小さい順（古い順）です。</li>
+<li><strong><code>__str__</code></strong>（Python）: <code>def __str__(self):</code> は、<code>str(物)</code> や <code>print(物)</code>、管理画面の一覧で表示する時の文字を決める関数です。</li>
+<li><strong><code>.choices</code></strong>（Django）: Django の <code>Status.choices</code> は、選び肢の一覧（値と表示名の組）です。<code>CharField(choices=Status.choices)</code> で、管理画面に選ぶ欄ができます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -689,6 +692,14 @@ Running migrations:
 <li><strong><code>.select_related()</code></strong>（Django）: つながった表（外部キーの先）を、1 回の問い合わせでまとめて読むメソッド。<code>select_related("approver")</code> で、ループの中で承認者を 1 人ずつ読みに行く無駄（N+1）を防げます。</li>
 <li><strong><code>get_user_model()</code></strong>（Django）: 今のプロジェクトで使っている「ユーザー」のモデルを返す関数。自分でユーザーのモデルを作った時も、これで正しく取れます。</li>
 <li><strong><code>date()</code></strong>（Python）: 日付を表す型。<code>date(2026, 11, 10)</code> のように作ります。</li>
+<li><strong><code>\\</code></strong>（文字列の中の特別な書き方）: 文字列の中に <code>\</code> そのもの（1 つ）を入れたい時は、<code>\\</code> と 2 つ書きます。<code>\</code> は、<code>\n</code> のような特別な書き方の始まりの印だからです。Windows の場所を <code>"C:\\Users"</code> と書くのも、この理由です（生の文字列 <code>r"C:\Users"</code> なら 1 つで済みます）。</li>
+<li><strong><code>{キー: 値 for …}</code></strong>（Python）: <code>{u.pk: u for u in users}</code> は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です（辞書内包表記）。</li>
+<li><strong><code>列__条件=</code></strong>（Django）: Django の ORM の <code>filter(created_at__gte=日時)</code> のように、列の名前の後ろに <code>__</code> と条件を付けると、いろいろな比べ方ができます。<code>__gte</code>（以上）・<code>__lte</code>（以下）・<code>__gt</code>（より大きい）・<code>__in</code>（並びのどれか）・<code>__icontains</code>（大文字・小文字を区別せず、含む）・<code>__isnull</code>（空か）など。</li>
+<li><strong><code>外の表__列=</code></strong>（Django）: Django の ORM の <code>filter(requester__dept="製造")</code> のように、<code>__</code> でつなぐと、つながった別の表（外部キーの先）の列で、しぼり込めます。</li>
+<li><strong><code>Count</code></strong>（Django）: Django の <code>Count("id")</code> は、ORM の集計で、数を数えます。<code>.annotate(n=Count("id"))</code> で、グループごとの件数が付きます。</li>
+<li><strong><code>.objects</code></strong>（Django）: Django の <code>Request.objects</code> は、その表の行を取り出す係（マネージャー）です。<code>.all()</code>（全部）・<code>.filter(…)</code>（しぼる）・<code>.get(…)</code>（1 つだけ）・<code>.create(…)</code>（作る）などを付けて使います。</li>
+<li><strong><code>.pk</code></strong>（Django）: Django の <code>.pk</code> は、その行の主キー（ふつうは <code>id</code>）です。</li>
+<li><strong><code>.DoesNotExist</code></strong>（Django）: <code>Request.DoesNotExist</code> は、<code>.get(…)</code> で、合う行が 1 つも無かった時のエラーです。<code>except Request.DoesNotExist:</code> で受け止めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -807,6 +818,7 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
 <ul>
 <li><strong><code>render()</code></strong>（Django）: Django で、テンプレート（HTML のひな形）に値を入れて、答え（HTML）を作る関数。<code>render(request, "テンプレート名", {"名前": 値})</code>。</li>
 <li><strong><code>@login_required</code></strong>（Django）: 関数の画面（ビュー）の上に付けると、ログインしていない人をログインの画面へ移す印（デコレーター）です。</li>
+<li><strong><code>.user</code></strong>（Django）: Django の <code>request.user</code> は、今ログインしている人（していなければ「だれでもない人」）です。<code>request.user.is_authenticated</code> で、ログインしているかが分かります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -833,6 +845,8 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
 <ul>
 <li><strong><code>path()</code></strong>（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。<code>path("requests/&lt;int:pk&gt;/", views.detail)</code> の <code>&lt;int:pk&gt;</code> は、URL の中の数を <code>pk</code> という名前で受け取ります。</li>
 <li><strong><code>include()</code></strong>（Django）: URL の決まりの中で、ほかのファイル（アプリ）の URL の決まりを、まとめて取り込む関数。<code>path("api/", include("requests_app.urls"))</code> のように使います。</li>
+<li><strong><code>DefaultRouter</code></strong>（Django REST framework）: DRF の <code>DefaultRouter</code> は、ViewSet（一覧・詳細・作成・変更・削除をまとめた物）から、URL を自動で作る係です。</li>
+<li><strong><code>.urls</code></strong>（Django）: <code>admin.site.urls</code> は、Django の管理画面の URL の一覧です。<code>path("admin/", admin.site.urls)</code> で、<code>/admin/</code> に管理画面を出します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -844,6 +858,16 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
     <span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;requests_app.urls&#39;</span><span class="p">)),</span>
 <span class="p">]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.site</code></strong>（Django）: <code>admin.site</code> は、Django の管理画面そのものです。<code>admin.site.register(モデル)</code> で、モデルを管理画面に出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>requests_app/templates/requests_app/request_list.html</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>{% load static %}
@@ -882,6 +906,24 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
   <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>colspan=</code></strong>（HTML）: <code>&lt;td colspan="4"&gt;</code> の <code>colspan</code> は、表の 1 つのマスを、横に何列分つなげるかです。</li>
+<li><strong><code>{% load %}</code></strong>（Django）: Django のテンプレートの <code>{% load static %}</code> は、<code>{% static %}</code> などの道具を使えるようにする命令です。テンプレートの最初に書きます。</li>
+<li><strong><code>{% static %}</code></strong>（Django）: <code>{% static 'style.css' %}</code> は、静的なファイル（CSS・画像）の URL（<code>/static/style.css</code>）を作る命令です。</li>
+<li><strong><code>{% for %}</code></strong>（Django）: Django のテンプレートの <code>{% for r in items %} … {% endfor %}</code> は、並びの 1 つずつについて、間の HTML をくり返します。</li>
+<li><strong><code>{% empty %}</code></strong>（Django）: <code>{% for %}</code> の中の <code>{% empty %}</code> の下は、並びが空の時だけ表示されます。「依頼はまだありません」のような文に使います。</li>
+<li><strong><code>{% endfor %}</code></strong>（Django）: <code>{% endfor %}</code> は、<code>{% for %}</code> のくり返しの終わりの印です。</li>
+<li><strong><code>{{ 値 }}</code></strong>（Django）: Django のテンプレートの <code>{{ r.title }}</code> は、値をそこに表示します。中の <code>&lt;</code> などは自動で <code>&amp;lt;</code> に変わる（エスケープされる）ので、入力された文字がタグとして動くことはありません。</li>
+<li><strong><code>{{ 値|default }}</code></strong>（Django）: <code>{{ r.note|default:"なし" }}</code> の <code>|default:"なし"</code> は、値が空の時に、代わりに表示する文字です（<code>|</code> の後ろは「フィルター」という、値の変え方です）。</li>
+<li><strong><code>{{ 値|date }}</code></strong>（Django）: <code>{{ r.created_at|date:"Y-m-d H:i" }}</code> の <code>|date</code> は、日時を、その形の文字にするフィルターです。<code>Y</code>（年）・<code>m</code>（月）・<code>d</code>（日）・<code>H</code>（時）・<code>i</code>（分）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -1097,6 +1139,8 @@ SQL: SELECT &quot;requests_app_request&quot;.&quot;id&quot;, &quot;requests_app_
 <li><strong><code>.json()</code></strong>（Django）: テストで受け取った答え（レスポンス）の本文を、JSON として読んで、Python のリストや辞書にするメソッド。<code>self.assertEqual(res.json(), [])</code>。</li>
 <li><strong><code>.post()</code></strong>（Django）: テストの係（<code>self.client</code>）で、POST のリクエストを送るメソッド。<code>self.client.post("/api/requests/", {…})</code> で、サーバーを動かさずに、API を試せます。</li>
 <li><strong><code>.assertIn()</code></strong>（Django）: テストで、値が入れ物の中にあるかを確かめるメソッド。<code>self.assertIn("title", res.json())</code>。</li>
+<li><strong><code>APITestCase</code></strong>（Django REST framework）: DRF の <code>APITestCase</code> は、API のテストを書くための元の型です。<code>self.client.get(…)</code> で要求を送り、答えを確かめます。</li>
+<li><strong><code>.status_code</code></strong>（Django）: テストの答えの <code>res.status_code</code> は、HTTP の状態コード（<code>200</code>・<code>403</code> など）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

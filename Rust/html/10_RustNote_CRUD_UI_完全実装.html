@@ -823,6 +823,16 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>DISTINCT</code></strong>（SQL）: SQL の <code>SELECT DISTINCT</code> は、同じ値の行を 1 つにまとめて（重なりを消して）返します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u01_order</span>
 </code></pre></div></div>
 
@@ -4771,6 +4781,16 @@ src\repository\notes.rs:193:                &quot;DELETE FROM notes WHERE id = ?
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>r"…"</code></strong>（文字列）: <code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。<code>r"C:\Users\you"</code> や、正規表現の <code>r"\d+"</code> のように <code>\</code> の多い文字を、そのまま書けます。中に <code>"</code> を入れたい時は <code>r#"…"#</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-115"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u07_search</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -6101,6 +6121,7 @@ GET /notes?q=ノート&amp;page=2: 20 件（ノート25 〜 ノート06）
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.message()</code></strong>（RustNote で作る物）: <code>Flash</code> の値から、画面に出す文（「ノートを作りました」など）を返すメソッド。全体のコードは第13巻に載っています。</li>
+<li><strong><code>role=</code></strong>（HTML）: <code>role="status"</code> は、その部分の役わりを、読み上げソフトに伝える印です。<code>status</code> は「お知らせ」で、変わった時に読み上げられます。<code>role="alert"</code> は、すぐ知らせる大事なお知らせです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -6955,6 +6976,11 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>.pop()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。</li>
 <li><strong><code>.remove()</code></strong>（JavaScript・TypeScript）: 画面の要素（タグ）を、ページから取り除くメソッド。<code>f.remove()</code>。</li>
 <li><strong><code>.padEnd()</code></strong>（JavaScript・TypeScript）: 文字列の後ろを空白で埋めて、決めた長さにするメソッド。表のように並べて表示する時に使います。</li>
+<li><strong><code>\n</code></strong>（文字列の中の特別な書き方）: 文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</li>
+<li><strong><code>&amp;&amp;</code></strong>（JavaScript・TypeScript）: <code>a &amp;&amp; b</code> は、「a と b の両方が当てはまる」（かつ）です。左が当てはまらなければ、右は調べません。</li>
+<li><strong><code>async () =&gt;</code></strong>（JavaScript・TypeScript）: <code>async () =&gt; { … }</code> は、中で <code>await</code>（終わるまで待つ）を使える、名前の無い関数（アロー関数）です。</li>
+<li><strong><code>Promise</code></strong>（JavaScript・TypeScript）: <code>Promise</code> は、「あとで終わる処理」（サーバーの答えを待つ、時間を待つ）を表す物です。<code>await</code> を付けると、終わるまで待って、結果を受け取れます。<code>new Promise((resolve) =&gt; …)</code> で、自分で作ることもできます。</li>
+<li><strong><code>.documentElement</code></strong>（JavaScript・TypeScript）: <code>document.documentElement</code> は、ページのいちばん外側の <code>&lt;html&gt;</code> のタグです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7002,6 +7028,9 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>.addEventListener()</code></strong>（JavaScript・TypeScript）: クリック・入力などの出来事（イベント）が起きた時に動く関数を登録するメソッド。<code>document.addEventListener('focusin', (e) =&gt; { … })</code>。</li>
 <li><strong><code>.trim()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、文字列の前後の空白を取り除いたものを返すメソッド。</li>
 <li><strong><code>?.</code></strong>（JavaScript・TypeScript）: <code>a?.b</code> は、<code>a</code> が <code>null</code> や <code>undefined</code> なら、そこで止めて <code>undefined</code> にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。</li>
+<li><strong><code>getComputedStyle()</code></strong>（JavaScript・TypeScript）: <code>getComputedStyle(el)</code> は、タグに最終的に付いている見た目（CSS の値）を読みます。</li>
+<li><strong><code>.target</code></strong>（JavaScript・TypeScript）: イベント（<code>e</code>）の <code>.target</code> は、イベントが起きたタグ（入力欄など）です。<code>e.target.value</code> で、入力欄に今入っている文字を読めます。</li>
+<li><strong><code>.textContent</code></strong>（JavaScript・TypeScript）: <code>.textContent</code> は、タグの中の文字です。入れた文字は、HTML としてではなく、ただの文字として表示されるので、安全です（<code>innerHTML</code> に入れると、タグとして動いてしまいます）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7053,6 +7082,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.querySelector()</code></strong>（JavaScript・TypeScript）: CSS と同じ書き方で、ページの中の合うタグを 1 つ（最初の物）だけ探すメソッド。見つからなければ <code>null</code> です。</li>
+<li><strong><code>.href</code></strong>（JavaScript・TypeScript）: <code>location.href</code> は、今のページの URL の全部です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

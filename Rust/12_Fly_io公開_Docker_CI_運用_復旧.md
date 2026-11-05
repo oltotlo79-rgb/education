@@ -558,6 +558,8 @@ cargo run -q --example u01_exe_report -- builds/build1.exe builds/build2.exe
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo clean`**（cargo のコマンド）: 翻訳でできたファイル（`target` フォルダの中）を消すコマンド。`--release -p rustnote` で、release の RustNote の分だけを消します。次の翻訳は時間がかかります。
+> - **`cargo clean --release`**（cargo のコマンド）: `cargo clean --release` は、`target\release`（本番用に作った物）だけを消します。
+> - **`cargo clean -p`**（cargo のコマンド）: `cargo clean -p rustnote` は、指定したパッケージの、翻訳した物だけを消します。部品（依存クレート）の分は残るので、作り直しが速く済みます。
 
 <!-- /first-use -->
 
@@ -584,6 +586,15 @@ Copy-Item target\brepro\release\rustnote.exe builds\brepro2.exe
 Remove-Item Env:RUSTFLAGS
 cargo run -q --example u01_exe_report -- builds/brepro1.exe builds/brepro2.exe
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo build --target-dir`**（cargo のコマンド）: `--target-dir target\brepro` は、翻訳した物を置くフォルダを、いつもの `target` から変える指定です。ほかの組み立てと混ざらないように、分けて試す時に使います。
+> - **`cargo clean --target-dir`**（cargo のコマンド）: `--target-dir` は、消す対象のフォルダ（`--target-dir` で作った物を置いたフォルダ）を指定します。
+
+<!-- /first-use -->
 
 ```text
 [builds/brepro1.exe]
@@ -752,6 +763,15 @@ count + 1 = 0
 overflow-checks = true
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[profile.release]`**（設定ファイル（TOML））: `[profile.release]` は、`--release` を付けて作る時（本番用）の、作り方の設定です。
+> - **`overflow-checks =`**（設定ファイル（TOML））: `overflow-checks = true` は、本番用でも、数があふれた時（`u8` に 256 を入れた時など）に止まって知らせる設定です。ふだん本番用では、確かめずに、あふれた数がそのまま回り込みます。
+
+<!-- /first-use -->
+
 この設定は、`Cargo.toml` を書き換えずに、環境変数 `CARGO_PROFILE_RELEASE_OVERFLOW_CHECKS=true` で試すこともできます。試すと、release でも debug と同じ panic になりました。
 
 ```text
@@ -781,6 +801,19 @@ RUN cargo build --release --locked
 # 実行ファイルの隣（target/release/assets/）に CSS の束を作る
 RUN topcoat asset bundle --release
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#`**（Docker）: Dockerfile では、`#` で始まる行がコメントです。
+> - **`FROM`**（Docker）: `FROM rust:1.99.1-trixie` は、「どのイメージ（ひな形）から作り始めるか」です。Dockerfile は、いつも `FROM` から始めます。
+> - **`FROM … AS 名前`**（Docker）: `FROM … AS builder` の `AS builder` は、その段に名前を付ける書き方です。1 つの Dockerfile に段をいくつも書き（multi-stage）、後の段で `COPY --from=builder` と書いて、前の段で作った物だけを持ってこられます。作るための道具を、最後のイメージに入れずに済みます。
+> - **`WORKDIR`**（Docker）: `WORKDIR /app` は、イメージの中の「今いるフォルダ」を決めます（無ければ作ります）。後の `COPY`・`RUN` は、このフォルダで動きます。
+> - **`RUN`**（Docker）: `RUN コマンド` は、イメージを作る途中で、そのコマンドを動かします（部品を入れる・翻訳する、など）。結果は、イメージの 1 つの層として残ります。
+> - **`COPY`**（Docker）: `COPY . .` は、パソコンのファイル（左。`.` は Dockerfile のあるフォルダ）を、イメージの中（右。`.` は `WORKDIR`）にコピーします。
+
+<!-- /first-use -->
 
 - Rust の版（1.99.1）と、作るフォルダ（`/app`）が、いつも同じです。例1-3で見た「作る場所が中身に入り込む」問題が、毎回同じ形になります。
 - `cargo build --release --locked` → `topcoat asset bundle --release` の順番も、例1-1と同じです。
@@ -1133,6 +1166,27 @@ EXPOSE 8080
 CMD ["/app/rustnote"]
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`\`**（Docker）: Dockerfile の行の最後の `\` は、「次の行へ続く」という印です。長い `RUN` を、見やすく分けて書けます。
+> - **`COPY --from=`**（Docker）: `COPY --from=builder /app/target/release/rustnote /app/rustnote` は、前の段（`builder`）で作った物を、この段にコピーします。
+> - **`USER`**（Docker）: `USER app` は、これより後の命令と、コンテナでアプリを動かす時の利用者を `app` にします。管理者（root）で動かさないことで、もし乗っ取られても、できることを小さくします。
+> - **`ENV`**（Docker）: `ENV HOST=0.0.0.0` は、イメージに環境変数を書き込みます。イメージを見ればだれでも読めるので、秘密の値は書きません。
+> - **`EXPOSE`**（Docker）: `EXPOSE 8080` は、「このコンテナは 8080 番で待ち受けます」という説明の印です。これだけではポートは開かず、`docker run -p` で開きます。
+> - **`CMD`**（Docker）: `CMD ["/app/rustnote"]` は、コンテナを動かした時に、最初に動かすプログラムです。
+> - **`["…"]`**（Docker）: `CMD ["/app/rustnote"]` のように `[ ]` と `"…"` で書く形（exec 形式）は、シェルを通さずに、プログラムを直接動かします。止める合図（Ctrl+C など）が、アプリに正しく届きます。
+> - **`apt-get`**（WSL・bash）: Debian・Ubuntu の部品（パッケージ）を入れる・新しくする道具です。`apt-get update` で部品の一覧を新しくし、`apt-get install -y 名前` で入れます。
+> - **`apt-get -y`**（WSL・bash）: `-y`（yes）は、「入れますか？」の質問に全部「はい」と答えて進める指定です。Dockerfile のように、人が答えられない所で使います。
+> - **`apt-get --no-install-recommends`**（WSL・bash）: `--no-install-recommends` は、「おすすめ」の部品は入れず、どうしても要る物だけを入れる指定です。コンテナを小さくできます。
+> - **`useradd`**（WSL・bash）: Linux に、新しい利用者（ユーザー）を作るコマンドです。コンテナの中で、管理者（root）ではない利用者でアプリを動かすために使います。
+> - **`useradd --create-home`**（WSL・bash）: `--create-home` は、利用者を作る時に、その人のホームフォルダ（`/home/名前`）も作る指定です。
+> - **`useradd --uid`**（WSL・bash）: `--uid 10001` は、利用者の番号（UID）を決める指定です。番号を決めておくと、フォルダの持ち主の設定がそろいます。
+> - **`chown`**（WSL・bash）: ファイルやフォルダの持ち主を変えるコマンドです。`chown app:app /data` は、`/data` の持ち主を、利用者 `app`・グループ `app` にします。
+
+<!-- /first-use -->
+
 教材のフォルダの中身（`.dockerignore` も含む）をコピーしたフォルダで、ビルドしました。
 
 ```powershell
@@ -1143,7 +1197,7 @@ docker build --progress=plain -t rustnote:u02 .
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`docker build`**（Docker）: `Dockerfile`（箱の作り方を書いたファイル）から、イメージ（箱の設計図）を作るコマンド。`-t 名前:タグ` で名前を付けます。最後の `.` は「今のフォルダの中身を使う」という意味です。
+> - **`docker build --progress`**（Docker）: `--progress=plain` は、組み立ての途中の表示を、まとめずに全部、1 行ずつそのまま出す指定です。どの段で何が起きたかを調べる時に使います。
 
 <!-- /first-use -->
 
@@ -1217,6 +1271,8 @@ docker history rustnote:u02 --format "{{.Size}}`t{{.CreatedBy}}"
 > **▶ ここで初めて出てくるコード**
 >
 > - **`docker history`**（Docker）: イメージが、どの手順で、どれだけの大きさを使って作られたかを表示するコマンド。
+> - **`docker history --format`**（Docker）: `` --format "{{.Size}}`t{{.CreatedBy}}" `` は、イメージの層（Dockerfile の 1 行ずつ）の一覧を、大きさと作った命令だけにします。
+> - **`` `t ``**（PowerShell）: `"…"` の中の `` `t `` はタブ（広めの空白のような区切りの文字）です。
 
 <!-- /first-use -->
 
@@ -1904,6 +1960,30 @@ primary_region = "nrt"
   cpus = 1
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`app =`**（設定ファイル（TOML））: `fly.toml` の `app = "rustnote-example"` は、Fly.io の上のアプリの名前です。
+> - **`primary_region =`**（設定ファイル（TOML））: `primary_region = "nrt"` は、アプリを動かす主な場所（地域）です。`nrt` は東京（成田）です。
+> - **`[build]`**（設定ファイル（TOML））: `fly.toml` の `[build]` は、イメージの作り方の見出しです。
+> - **`dockerfile =`**（設定ファイル（TOML））: `dockerfile = "Dockerfile"` は、イメージを作る時に使う Dockerfile のファイル名です。
+> - **`[env]`**（設定ファイル（TOML））: `fly.toml` の `[env]` の下には、アプリに渡す環境変数を `名前 = "値"` で書きます。秘密の値（パスワードなど）は、ここではなく `fly secrets set` で渡します（`fly.toml` は Git に入れて、みんなに見えるからです）。
+> - **`HOST =`**（設定ファイル（TOML））: `[env]` の `HOST = "0.0.0.0"` は、「どのアドレスで待ち受けるか」を渡します。`0.0.0.0` は「全部」で、コンテナの外から届くようにするために要ります。
+> - **`PORT =`**（設定ファイル（TOML））: `[env]` の `PORT = "8080"` は、アプリが待ち受けるポート番号です。`[http_service]` の `internal_port` と同じ数にします。
+> - **`[http_service]`**（設定ファイル（TOML））: `fly.toml` の `[http_service]` は、外からの HTTP（Web）の受け方の見出しです。
+> - **`internal_port =`**（設定ファイル（TOML））: `internal_port = 8080` は、Fly.io が、外から来た要求を、アプリのどのポートに渡すかです。アプリが待ち受けるポート（`PORT`）と同じでないと、つながりません。
+> - **`force_https =`**（設定ファイル（TOML））: `force_https = true` は、`http://` で来た人を、暗号化した `https://` へ移す設定です。
+> - **`auto_stop_machines =`**（設定ファイル（TOML））: `auto_stop_machines = "stop"` は、だれも使っていない時に、アプリの機械（マシン）を自動で止める設定です。お金を節約できます。
+> - **`auto_start_machines =`**（設定ファイル（TOML））: `auto_start_machines = true` は、止まっている時に要求が来たら、自動で起こす設定です。
+> - **`min_machines_running =`**（設定ファイル（TOML））: `min_machines_running = 0` は、いつも動かしておく機械の最低の数です。0 なら、だれも使っていない時は全部止まります（最初の 1 回の表示が少し遅くなります）。
+> - **`[[vm]]`**（設定ファイル（TOML））: `fly.toml` の `[[vm]]` は、アプリを動かす機械（マシン）の大きさの見出しです。
+> - **`memory =`**（設定ファイル（TOML））: `memory = "512mb"` は、機械のメモリの大きさです。
+> - **`cpu_kind =`**（設定ファイル（TOML））: `cpu_kind = "shared"` は、CPU をほかの人と分け合う、安い種類にする設定です。
+> - **`cpus =`**（設定ファイル（TOML））: `cpus = 1` は、CPU の数です。
+
+<!-- /first-use -->
+
 TOML として正しく読めるかを、Python の標準の `tomllib` で読んで、JSON の形で表示しました（Fly.io にはつながりません）。
 
 ```powershell
@@ -1915,6 +1995,7 @@ python -c "import tomllib, json, sys; print(json.dumps(tomllib.load(open(sys.arg
 > **▶ ここで初めて出てくるコード**
 >
 > - **`python`**（Python の道具）: Python を動かすコマンド。`python -c "…"` は、`"…"` の中の Python のコードを 1 回だけ動かします。
+> - **`python -c`**（Python の道具）: `python -c "…"` は、後ろの文字を Python のプログラムとして、その場で動かします。ファイルを作るほどでない、短い確かめに使います。
 
 <!-- /first-use -->
 
@@ -1994,6 +2075,8 @@ fly launch --no-deploy --name 自分用のアプリ名
 > **▶ ここで初めて出てくるコード**
 >
 > - **`fly launch`**（Fly.io）: Fly.io に、新しいアプリを作る準備をするコマンド。`fly.toml`（設定のファイル）を作ります。`--no-deploy` で、まだ公開はしません（第12巻）。
+> - **`fly launch --no-deploy`**（Fly.io）: `--no-deploy` は、アプリの登録と `fly.toml` 作りだけをして、まだ公開（deploy）しない指定です。設定を見直してから公開できます。
+> - **`fly launch --name`**（Fly.io）: `--name 自分用のアプリ名` は、Fly.io の上のアプリの名前を決めます。名前は世界中で 1 つだけなので、ほかの人と重ならない名前にします。
 
 <!-- /first-use -->
 
@@ -2091,6 +2174,15 @@ sys.exit(1 if problems else 0)
 > - **`getattr()`**（Python）: 物から、名前で属性（中の値）を取り出す関数。`getattr(error, "code", 既定値)` は、`code` が無ければ既定値を返します。
 > - **`type()`**（Python）: 値の型を返す関数。`type(error).__name__` は、エラーの種類の名前です。
 > - **`bool()`**（Python）: 値を `True`・`False` にする関数。空の文字列や `None` は `False`、中身があれば `True` です。
+> - **`\d`**（正規表現）: 正規表現の `\d` は、「数字 1 つ（0〜9）」を表します。
+> - **`.`**（正規表現）: 正規表現の `.` は、「どんな 1 文字でも」を表します。`.` という文字そのものを表したい時は、`\.` と書きます。
+> - **`{値!r}`**（Python）: f 文字列の `{no!r}` の `!r` は、値を `repr()` の形（プログラマー向けの形）で表示する指定です。文字なら `'012345'` のように `'` が付くので、空白や空の文字が見分けやすくなります。
+> - **`+=`**（Python）: `total += n` は `total = total + n` の短い形です。
+> - **`==`**（Python）: `a == b` は、「a と b が等しいか」です。`=`（1 つ）は「値を入れる」です。
+> - **`is not`**（Python）: `x is not None` は、「x が None ではない」です。`None` かどうかは、`==` ではなく `is` で調べます。
+> - **`__name__`**（Python）: `__name__` は、今のファイル（モジュール）の名前が入った、特別な変数です。ファイルを直接動かした時は `"__main__"` になります。`type(error).__name__` は、エラーの種類の名前です。
+> - **`Path`**（Python）: `Path`（`pathlib`）は、ファイルやフォルダの場所を表す型です。`Path("memo.txt").exists()`・`.read_text()`・`/` でのつなぎ（`BASE_DIR / "media"`）ができます。
+> - **`Exception`**（Python）: `Exception` は、Python のふつうのエラー全部の、元になる型です。`class TransitionError(Exception):` で、自分のエラーの種類を作れます。`except Exception as e:` は、ほとんど全部のエラーを受け止めます。
 
 <!-- /first-use -->
 
@@ -2292,6 +2384,14 @@ Turso の URL（`libsql://…`）だけを渡して、トークンを渡さず�
 docker run --rm -e DATABASE_URL=libsql://rustnote-example.turso.io rustnote:u02
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker run -e`**（Docker）: `-e DATABASE_URL=…` は、コンテナの中のプログラムに、環境変数を渡す指定です。
+
+<!-- /first-use -->
+
 ```text
 Error: 設定を読み込めませんでした
 
@@ -2329,6 +2429,15 @@ ENV DATABASE_AUTH_TOKEN=u05-fake-token-not-a-real-secret
 docker image inspect rustnote:baked --format "{{range .Config.Env}}{{println .}}{{end}}"
 docker history rustnote:baked --format "{{.CreatedBy}}" --no-trunc
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`docker image inspect --format`**（Docker）: `docker image inspect イメージ --format "{{range .Config.Env}}{{println .}}{{end}}"` は、イメージのくわしい情報から、環境変数の一覧だけを 1 行ずつ取り出します。
+> - **`docker history --no-trunc`**（Docker）: `--no-trunc` は、長い命令を途中で切らずに、全部表示する指定です。
+
+<!-- /first-use -->
 
 ```text
 --- docker image inspect（イメージの設定の環境変数）
@@ -2882,6 +2991,15 @@ RustNote の DB は Turso（ネットの向こう）なので、`release_command
   release_command = "/app/rustnote --migrate-only"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[deploy]`**（設定ファイル（TOML））: `fly.toml` の `[deploy]` は、公開（deploy）のしかたの見出しです。
+> - **`release_command =`**（設定ファイル（TOML））: `release_command = "/app/rustnote --migrate-only"` は、新しい版を動かす前に、1 回だけ動かすコマンドです。ここでは、データベースの表を新しい形にします（マイグレーション）。失敗したら、新しい版に切りかえません。
+
+<!-- /first-use -->
+
 手元では、空の sqld に、まず `rustnote --migrate-only` を1回動かし（release command の代わり）、そのあと3台を同時に起動しました。v2 には、足すだけのマイグレーション `0004_pinned`（例7-3）も入れてあります。
 
 ```text
@@ -3164,6 +3282,9 @@ Write-Output "全部 OK"
 >
 > - **`param`**（PowerShell）: PowerShell のスクリプトが受け取る引数を決める書き方。`param([string]$Base = "http://…")` は、`-Base` で渡せる文字列の引数で、渡さなければ既定値になります。
 > - **`New-TemporaryFile`**（PowerShell）: 一時的に使う、空のファイルを作るコマンド（作ったファイルの情報を返す）。テストでクッキーをためておく場所などに使い、使い終わったら `Remove-Item` で消します。
+> - **`$ErrorActionPreference`**（PowerShell）: `$ErrorActionPreference = "Stop"` は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（`.exe` のコマンドの失敗は止まらないので、`$LASTEXITCODE` も調べます）。
+> - **`@名前`**（PowerShell）: `コマンド @CurlArgs` のように、`$` の代わりに `@` を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。
+> - **`param( … )`**（PowerShell）: スクリプトの最初に書く `param([string]$Base = "http://…")` は、「このスクリプトが受け取る引数」の決まりです。`.\smoke.ps1 -Base http://…` のように、名前を付けて渡せます。`=` の右は、渡さなかった時の値です。
 
 <!-- /first-use -->
 
@@ -3171,6 +3292,14 @@ Write-Output "全部 OK"
 docker run -d --name rn-u08 -p 18080:8080 rustnote:u02
 powershell -NoProfile -ExecutionPolicy Bypass -File smoke.ps1 -Base http://127.0.0.1:18080
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`powershell -NoProfile`**（PowerShell）: `-NoProfile` は、プロフィール（起動するたびに動く、自分用の設定のスクリプト）を読まずに起動する指定です。どのパソコンでも同じ動きになります。
+
+<!-- /first-use -->
 
 ```text
 OK   GET /health（200）
@@ -3588,6 +3717,20 @@ ThreadingHTTPServer(("127.0.0.1", listen_port), Handler).serve_forever()
 > - **`.close()`**（Python）: 接続やファイルを閉じるメソッド。
 > - **`.serve_forever()`**（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。
 > - **`urlsplit()`**（Python）: URL を、部品（`scheme`・`hostname`・`port`・`path` など）に分ける関数。
+> - **`b"…"`**（Python）: `b"…"` は、文字ではなく「バイトの並び」（`bytes`）を作る書き方です。`b"\xff\xd8\xff"` は、JPEG の画像のファイルの、最初の 3 バイトです。
+> - **`\n`**（文字列の中の特別な書き方）: 文字列の中の `\n` は「改行」を表す書き方です。`\`（バックスラッシュ。日本語のキーボードやフォントでは `¥` に見えることがあります）と `n` の 2 文字で、改行 1 つを表します。`"1行目\n2行目"` を表示すると 2 行になります。
+> - **`*args`**（Python）: `def f(*args):` の `*args` は、「いくつでも引数を受け取り、タプル（並び）にまとめる」書き方です。
+> - **`{キー: 値 for …}`**（Python）: `{u.pk: u for u in users}` は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です（辞書内包表記）。
+> - **`[開始:終わり]`**（Python）: `text[1:4]` は、1 番目から 4 番目の手前まで（1, 2, 3）を取り出します（スライス）。`[:3]` は最初から、`[3:]` は 3 番目から最後まで、`[::-1]` は逆さまです。
+> - **`-> 型`**（Python）: `def apply(self, action: str) -> None:` の `-> None` は、「この関数が返す物の型」の説明です（`None` は「何も返さない」）。
+> - **`名前: 型`**（Python）: `def apply(self, action: str)` の `: str` は、「この引数は文字」という型の説明（型ヒント）です。Python は動かす時には確かめませんが、エディターや mypy が間違いを教えてくれます。
+> - **`self`**（Python）: クラスの中の関数（メソッド）の最初の引数 `self` は、「その関数を呼んだ、その物自身」です。`self.amount` で、自分の項目を読み書きします。呼ぶ時は、`self` は書きません（`r.apply("submit")`）。
+> - **`not in`**（Python）: `key not in TRANSITIONS` は、「`key` が `TRANSITIONS` の中に無い」です。`in` の反対です。
+> - **`BaseHTTPRequestHandler`**（Python）: `BaseHTTPRequestHandler`（`http.server`）は、Python で小さな HTTP のサーバーを作る時の、要求を受ける係の元になる型です。`do_GET`・`do_POST` を書くと、その要求に答えます。
+> - **`ThreadingHTTPServer`**（Python）: `ThreadingHTTPServer`（`http.server`）は、要求を同時にいくつもさばける、Python の小さな HTTP のサーバーです。
+> - **`ValueError`**（Python）: `ValueError` は、「型は合っているが、値がおかしい」時のエラーです。`int("abc")` で起きます。
+> - **`.headers`**（JavaScript・TypeScript）: `fetch` の答えの `.headers` は、返ってきた見出し（ヘッダー）です。`.headers.get("set-cookie")` で 1 つ読めます。
+> - **`.path`**（Python）: `self.path` は、届いた HTTP の要求の場所（`/notes?page=2` のような URL の部分）です。
 
 <!-- /first-use -->
 
@@ -4191,6 +4334,8 @@ fly deploy --image registry.fly.io/rustnote-example:deployment-XXXXXXXX
 > **▶ ここで初めて出てくるコード**
 >
 > - **`fly releases`**（Fly.io）: Fly.io のアプリの、公開した版の歴史を見るコマンド。`--image` で、どのイメージだったかも表示し、前の版に戻す時に使います。
+> - **`fly releases --image`**（Fly.io）: `fly releases --image` は、公開した版（リリース）の一覧に、それぞれが使ったイメージの名前も表示します。前の版に戻す時に使います。
+> - **`fly deploy --image`**（Fly.io）: `fly deploy --image registry.fly.io/…` は、作り直さずに、指定したイメージで公開します。前に動いていたイメージを指定すれば、前の版に戻せます。
 
 <!-- /first-use -->
 

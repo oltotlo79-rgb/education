@@ -1,0 +1,1789 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>10_付録_逆引き_やりたいことからコマンドを探す</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/10_%E4%BB%98%E9%8C%B2_%E9%80%86%E5%BC%95%E3%81%8D_%E3%82%84%E3%82%8A%E3%81%9F%E3%81%84%E3%81%93%E3%81%A8%E3%81%8B%E3%82%89%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E6%8E%A2%E3%81%99.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — 逆引き: やりたいことからコマンドを探す</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">「サービスを止めたい」「古いバックアップを消したい」から、コマンドと設定を 214 個引く。本文に出てくる所と、合わせて覚えるコマンドつき</div>
+</div>
+
+<style>
+/* 逆引きの表: 書き方の列を広めにして、コマンドが途中で折れにくくする */
+table th:nth-child(1), table td:nth-child(1) { width: 22%; }
+table th:nth-child(2), table td:nth-child(2) { width: 40%; }
+table td:nth-child(2) code { word-break: normal; overflow-wrap: anywhere; }
+table th:nth-child(4), table td:nth-child(4) { width: 15%; }
+/* 長い表は、ページの途中から始めて、次のページへ続ける（表全体を 1 ページに収めようとして、見出しの下を空けない） */
+table { page-break-inside: auto; }
+</style>
+
+<h1 id="_1">付録: 逆引き — やりたいことからコマンドを探す</h1>
+<h2 id="_2">この資料について</h2>
+<p>09 付録「出てくるコマンドと設定の一覧」は、「この <code>-StartupType</code> は何だっけ？」のように、<strong>コマンドから意味を引く</strong>ための物です。この付録は、その反対です。「<strong>サービスを止めたい</strong>」「<strong>古いバックアップを消したい</strong>」「<strong>ポートにつながるか確かめたい</strong>」のような、<strong>やりたいことから、コマンドや設定の書き方を引く</strong>ための物です。</p>
+<ul>
+<li><strong>全部で 214 個</strong>の「やりたいこと」を、<strong>11 の分類</strong>に分けています。下の「分類の一覧」から選ぶか、HTML 版（<code>onprem\html</code>）で <code>Ctrl</code> ＋ <code>F</code> を押して、やりたいことの言葉（「止める」「消す」「確かめる」など）で探してください。</li>
+<li><strong>「書き方」の列:</strong> そのまま使える形の、短いコマンドです。名前（<code>webapp-prod</code>・<code>D:\webapp\…</code>）は、04 の 4.1 の決まりに合わせています。自分の環境に合わせて書きかえます。</li>
+<li><strong>「ひとこと」の列:</strong> 気をつけることや、結果の見方です。くわしい意味は、09 付録の一覧と、本文の「▶ ここで初めて出てくるコード」の箱にあります。</li>
+<li><strong>「出てくる所」の列:</strong> そのコマンドが、00〜08 と「参考」で初めて出てくる資料と章です（187 個）。</li>
+<li><strong>「＋ 合わせて覚える」:</strong> 本文のコマンドと一緒に覚えておくと、困った時に役立つコマンドです（27 個）。この付録で足しました。本番のサーバーで打つ前に、<code>Get-Help コマンド名 -Examples</code> などで、くわしい使い方を確かめてください。</li>
+</ul>
+<blockquote>
+<p><strong>ヒント:</strong> 本番のサーバーで、止める・消す・戻すコマンドを打つ前には、まず「見る」コマンド（<code>Get-Service</code>・<code>Get-ChildItem</code>・<code>\l</code> など）で、対象が合っているかを確かめてください。</p>
+</blockquote>
+<h2 id="_3">分類の一覧</h2>
+<table>
+<thead>
+<tr>
+<th>分類</th>
+<th>数</th>
+<th>分類</th>
+<th>数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#rev-1">PowerShell の基本の操作</a></td>
+<td>56</td>
+<td><a href="#rev-7">決まった時刻に動かす（タスク スケジューラ）</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#rev-2">サーバーの様子を見る（OS・CPU・メモリ・ディスク）</a></td>
+<td>21</td>
+<td><a href="#rev-8">PostgreSQL と psql</a></td>
+<td>34</td>
+</tr>
+<tr>
+<td><a href="#rev-3">サービス（ずっと動くプログラム）</a></td>
+<td>13</td>
+<td><a href="#rev-9">バックアップと戻し方</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#rev-4">IIS（Web サーバー）</a></td>
+<td>18</td>
+<td><a href="#rev-10">アプリを持ち込んで動かす（Rust 版・Django 版）</a></td>
+<td>15</td>
+</tr>
+<tr>
+<td><a href="#rev-5">ファイアウォールとネットワーク</a></td>
+<td>20</td>
+<td><a href="#rev-11">正規表現と日時の書式</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#rev-6">フォルダの権限とコピー</a></td>
+<td>9</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-1">PowerShell の基本の操作</h2>
+<p>サーバーの上で、管理者の PowerShell から打つ時の、基本の書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>管理者として動いているか確かめる</td>
+<td><code>([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)</code></td>
+<td>True なら管理者</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>コマンドの使い方を見る</td>
+<td><code>Get-Help Get-Service -Examples</code></td>
+<td>例が出る</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>コマンドがあるか・どこにあるか</td>
+<td><code>Get-Command psql</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>前に打ったコマンドの一覧</td>
+<td><code>Get-History</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>今いるフォルダを移る</td>
+<td><code>cd D:\webapp\prod</code></td>
+<td></td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td>いったん移って、あとで戻る</td>
+<td><code>Push-Location D:\webapp</code><br><code>Pop-Location</code></td>
+<td></td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td>フォルダの中を見る</td>
+<td><code>Get-ChildItem D:\webapp\prod\logs</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>大きい順に見る</td>
+<td><code>Get-ChildItem -Recurse -File &#124; Sort-Object Length -Descending &#124; Select-Object -First 20 FullName, Length</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>フォルダを作る</td>
+<td><code>New-Item -ItemType Directory -Force D:\webapp\prod\logs</code></td>
+<td>もうあってもよい</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td>ファイルの中を見る</td>
+<td><code>Get-Content D:\webapp\prod\logs\app.log -Tail 50</code></td>
+<td>最後の 50 行</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>増える行を見続ける</td>
+<td><code>Get-Content app.log -Tail 50 -Wait</code></td>
+<td>Ctrl＋C で止める</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>文字を探す</td>
+<td><code>Select-String -Path *.log -Pattern "ERROR"</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>ファイルに書く</td>
+<td><code>Set-Content -Path a.txt -Value "…" -Encoding utf8</code></td>
+<td></td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td>コピー・名前の変更・削除</td>
+<td><code>Copy-Item a b</code><br><code>Rename-Item a b</code><br><code>Remove-Item a</code></td>
+<td></td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td>あるか調べる</td>
+<td><code>Test-Path D:\webapp\prod\app\webapp.exe</code></td>
+<td></td>
+<td>05 13. 動作確認・更新・切り戻し</td>
+</tr>
+<tr>
+<td>場所をつなぐ</td>
+<td><code>Join-Path $PSScriptRoot "dev.env"</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>ファイルやフォルダの情報</td>
+<td><code>Get-Item D:\webapp\prod\app\webapp.exe</code></td>
+<td></td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td>変数</td>
+<td><code>$dir = "D:\webapp\backup"</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>環境変数</td>
+<td><code>$env:Path</code><br><code>$env:Path += ";C:\Program Files\PostgreSQL\18\bin"</code></td>
+<td>この窓だけ</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>文字の中に変数</td>
+<td><code>"サービス: $name"</code><br><code>"ポート $($t.Port)"</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>そのままの文字</td>
+<td><code>'C:\Program Files'</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>空白の入った場所のプログラム</td>
+<td><code>&amp; "C:\Program Files\PostgreSQL\18\bin\psql.exe" --version</code></td>
+<td></td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td>今いるフォルダのスクリプト</td>
+<td><code>.\backup.ps1</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>結果を次に渡す</td>
+<td><code>Get-Service &#124; Where-Object Status -eq Running</code></td>
+<td></td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td>条件でしぼる</td>
+<td><code>Where-Object { $_.LastWriteTime -lt $limit }</code></td>
+<td>$_ は流れてきた 1 つ</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>1 つずつ処理</td>
+<td><code>ForEach-Object { $_.FullName }</code></td>
+<td></td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td>列を選ぶ・数をしぼる</td>
+<td><code>Select-Object Name, Status -First 10</code></td>
+<td></td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td>計算した列を作る</td>
+<td><code>Select-Object Name, @{ Name = 'MB'; Expression = { [int]($_.Length / 1MB) } }</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>Sort-Object LastWriteTime</code></td>
+<td></td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td>数える・合計</td>
+<td><code>Measure-Object Length -Sum</code></td>
+<td>.Sum</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td>表で見る・全部の項目を見る</td>
+<td><code>Format-Table -AutoSize</code><br><code>Format-List *</code></td>
+<td></td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td>出力を捨てる</td>
+<td><code>… &#124; Out-Null</code></td>
+<td></td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td>文字を作る（書式）</td>
+<td><code>"全体 {0:N1} GB" -f ($x / 1GB)</code></td>
+<td></td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td>日時を文字にする</td>
+<td><code>Get-Date -Format "yyyyMMdd_HHmm"</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>何日前の日時</td>
+<td><code>(Get-Date).AddDays(-14)</code></td>
+<td></td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td>文字から日時を作る</td>
+<td><code>[datetime]::ParseExact("20261105 0200", "yyyyMMdd HHmm", $null)</code></td>
+<td></td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td>くり返す</td>
+<td><code>foreach ($svc in @("W3SVC", "webapp-prod")) { … }</code></td>
+<td></td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
+<td>条件で分ける</td>
+<td><code>if ($LASTEXITCODE -ne 0) { … } else { … }</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>比べる</td>
+<td><code>-eq</code><br><code>-ne</code><br><code>-lt</code><br><code>-gt</code><br><code>-like "webapp*"</code><br><code>-match '^\d+$'</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>エラーで止める</td>
+<td><code>$ErrorActionPreference = "Stop"</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>エラーを受け止める</td>
+<td><code>try { … } catch { $_.Exception.Message } finally { … }</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>エラーを起こす</td>
+<td><code>throw "pg_dump が失敗しました"</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>スクリプトを終わる</td>
+<td><code>exit 1</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>関数を作る</td>
+<td><code>function Show-Result($Name, $Ok) { … }</code></td>
+<td></td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td>引数を受け取る</td>
+<td><code>param([ValidateSet("prod", "stg")] [string] $Env = "prod")</code></td>
+<td></td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td>入力してもらう</td>
+<td><code>Read-Host "続けますか (y/n)"</code></td>
+<td></td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td>記録を全部ファイルに残す</td>
+<td><code>Start-Transcript D:\work\log.txt</code><br><code>Stop-Transcript</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>長いコマンドを続ける（行の最後）</td>
+<td><code>&#96;</code></td>
+<td></td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td>XML を読む</td>
+<td><code>[xml](Get-Content x.xml -Encoding UTF8)</code></td>
+<td></td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td>外から取ってきたファイルを使えるようにする</td>
+<td><code>Unblock-File .\winsw.exe</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>スクリプトを動かせる設定か見る</td>
+<td><code>Get-ExecutionPolicy -List</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>本当には動かさずに試す</td>
+<td><code>Remove-Item D:\webapp\backup\*.dump -WhatIf</code></td>
+<td>何が消えるかだけ表示</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>確かめを聞いてもらう</td>
+<td><code>Remove-Item … -Confirm</code></td>
+<td>1 つずつ聞かれる</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>名前でプログラムを止める</td>
+<td><code>Stop-Process -Name webapp -Force</code></td>
+<td>サービスは Stop-Service で</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>管理者として PowerShell を開く</td>
+<td><code>Start-Process powershell -Verb RunAs</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルの権限を見る</td>
+<td><code>Get-Acl D:\webapp\prod\logs &#124; Format-List</code></td>
+<td>icacls と同じ物を別の形で</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-2">サーバーの様子を見る（OS・CPU・メモリ・ディスク）</h2>
+<p>サーバーが元気かを調べるコマンドです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OS の版など</td>
+<td><code>Get-ComputerInfo -Property OsName, OsVersion</code></td>
+<td></td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td>コンピューターの名前</td>
+<td><code>hostname</code></td>
+<td></td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td>今の利用者</td>
+<td><code>whoami</code></td>
+<td></td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td>ログインしている人</td>
+<td><code>quser</code></td>
+<td></td>
+<td>01 1. サーバーに入る</td>
+</tr>
+<tr>
+<td>最後に起動した日時</td>
+<td><code>(Get-CimInstance Win32_OperatingSystem).LastBootUpTime</code></td>
+<td></td>
+<td>01 11. Windows Update と再起動</td>
+</tr>
+<tr>
+<td>入っている更新プログラム</td>
+<td><code>Get-HotFix &#124; Sort-Object InstalledOn -Descending</code></td>
+<td></td>
+<td>01 11. Windows Update と再起動</td>
+</tr>
+<tr>
+<td>CPU を多く使うプログラム</td>
+<td><code>Get-Process &#124; Sort-Object CPU -Descending &#124; Select-Object -First 10</code></td>
+<td></td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td>メモリの全体と空き</td>
+<td><code>Get-CimInstance Win32_OperatingSystem</code></td>
+<td>.TotalVisibleMemorySize・.FreePhysicalMemory</td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td>ディスクの空き</td>
+<td><code>Get-Volume &#124; Select-Object DriveLetter, SizeRemaining, Size</code></td>
+<td></td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td>ドライブの一覧</td>
+<td><code>Get-PSDrive -PSProvider FileSystem</code></td>
+<td></td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td>時間帯を見る・変える</td>
+<td><code>Get-TimeZone</code><br><code>Set-TimeZone -Id "Tokyo Standard Time"</code></td>
+<td></td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td>時計の合わせ先を見る</td>
+<td><code>w32tm /query /status</code></td>
+<td></td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td>Windows の機能を見る・入れる</td>
+<td><code>Get-WindowsFeature Web-*</code><br><code>Install-WindowsFeature Web-Server -IncludeManagementTools</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>イベントログ（エラー）を見る</td>
+<td><code>Get-WinEvent -LogName System -MaxEvents 50</code></td>
+<td></td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td>エラーだけを見る</td>
+<td><code>Get-WinEvent -FilterHashtable @{ LogName = 'Application'; Level = 2 } -MaxEvents 20</code></td>
+<td>Level 2 はエラー</td>
+<td>01 7. イベント ビューアー</td>
+</tr>
+<tr>
+<td>ローカルの利用者・グループ</td>
+<td><code>Get-LocalUser</code><br><code>Get-LocalGroupMember Administrators</code></td>
+<td></td>
+<td>01 4. アカウントとグループ</td>
+</tr>
+<tr>
+<td>人を切断する</td>
+<td><code>logoff 2</code></td>
+<td>quser の ID</td>
+<td>01 1. サーバーに入る</td>
+</tr>
+<tr>
+<td>CPU・メモリの使い方を数秒おきに見る</td>
+<td><code>Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 2 -MaxSamples 5</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>サーバーを再起動する</td>
+<td><code>Restart-Computer</code></td>
+<td>利用者に知らせてから</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>イベントログの種類の一覧</td>
+<td><code>Get-WinEvent -ListLog * &#124; Where-Object RecordCount -gt 0</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>プログラムの一覧（古い方法）</td>
+<td><code>tasklist</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-3">サービス（ずっと動くプログラム）</h2>
+<p>アプリ・IIS・PostgreSQL は、Windows のサービスとして動かします。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サービスの一覧</td>
+<td><code>Get-Service</code></td>
+<td></td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td>名前でしぼる</td>
+<td><code>Get-Service -Name *postgres*</code></td>
+<td></td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td>動かす・止める・動かし直す</td>
+<td><code>Start-Service webapp-prod</code><br><code>Stop-Service webapp-prod</code><br><code>Restart-Service webapp-prod</code></td>
+<td></td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td>起動の種類を変える</td>
+<td><code>Set-Service webapp-prod -StartupType Automatic</code></td>
+<td></td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td>自動なのに止まっている物</td>
+<td><code>Get-CimInstance Win32_Service &#124; Where-Object { $<em>.StartMode -eq "Auto" -and $</em>.State -ne "Running" }</code></td>
+<td></td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td>サービスの設定を見る</td>
+<td><code>sc.exe qc webapp-prod</code></td>
+<td></td>
+<td>01 6. サービス</td>
+</tr>
+<tr>
+<td>WinSW でサービスにする</td>
+<td><code>.\webapp-prod-service.exe install</code><br><code>start</code><br><code>stop</code><br><code>uninstall</code></td>
+<td>同じフォルダの XML を読む</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td>動かすプログラム（WinSW）</td>
+<td><code>&lt;executable&gt;D:\webapp\prod\app\webapp.exe&lt;/executable&gt;</code></td>
+<td></td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td>渡す環境変数（WinSW）</td>
+<td><code>&lt;env name="PORT" value="8080" /&gt;</code></td>
+<td></td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td>先に動かすサービス（WinSW）</td>
+<td><code>&lt;depend&gt;postgresql-x64-18&lt;/depend&gt;</code></td>
+<td></td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td>落ちた時に動かし直す（WinSW）</td>
+<td><code>&lt;onfailure action="restart" delay="10 sec" /&gt;</code></td>
+<td></td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td>ログの残し方（WinSW）</td>
+<td><code>&lt;log mode="roll-by-size"&gt;</code></td>
+<td></td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td>自動で起動（WinSW）</td>
+<td><code>&lt;startmode&gt;Automatic&lt;/startmode&gt;</code></td>
+<td></td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-4">IIS（Web サーバー）</h2>
+<p>社員のブラウザーからの要求を受けて、アプリへ取り次ぐ IIS の操作です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IIS のコマンドを使えるようにする</td>
+<td><code>Import-Module IISAdministration</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>サイトの一覧</td>
+<td><code>Get-IISSite</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>サイトを作る</td>
+<td><code>New-IISSite -Name webapp-prod -PhysicalPath D:\webapp\prod\iis -BindingInformation "*:80:webapp.example.local"</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>サイトを止める</td>
+<td><code>Stop-IISSite -Name "Default Web Site" -Confirm:$false</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>待ち受けの組み合わせを見る</td>
+<td><code>Get-IISSiteBinding -Name webapp-prod</code></td>
+<td></td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td>待ち受けを足す</td>
+<td><code>New-IISSiteBinding -Name webapp-prod -BindingInformation "*:443:…" -Protocol https</code></td>
+<td></td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td>アプリへ取り次ぐ決まり</td>
+<td><code>&lt;rule name="to-webapp-prod" stopProcessing="true"&gt;</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>どの URL に合わせるか</td>
+<td><code>&lt;match url="(.*)" /&gt;</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>取り次ぐ先</td>
+<td><code>&lt;action type="Rewrite" url="http://127.0.0.1:8080/{R:1}" /&gt;</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>合った部分を使う</td>
+<td><code>{R:1}</code></td>
+<td></td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>送れる大きさの上限</td>
+<td><code>&lt;requestLimits maxAllowedContentLength="104857600" /&gt;</code></td>
+<td>100MB</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td>HTTPS へ移す</td>
+<td><code>&lt;action type="Redirect" url="https://{HTTP_HOST}/{R:1}" redirectType="Found" /&gt;</code></td>
+<td></td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td>条件を付ける</td>
+<td><code>&lt;conditions&gt;&lt;add input="{HTTPS}" pattern="off" /&gt;&lt;/conditions&gt;</code></td>
+<td></td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td>見出しを付けて取り次ぐ</td>
+<td><code>&lt;serverVariables&gt;&lt;set name="HTTP_X_FORWARDED_PROTO" value="https" /&gt;&lt;/serverVariables&gt;</code></td>
+<td></td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td>IIS のログを見る</td>
+<td><code>Get-ChildItem C:\inetpub\logs\LogFiles\W3SVC<em> -Filter </em>.log &#124; Sort-Object LastWriteTime &#124; Select-Object -Last 1</code></td>
+<td></td>
+<td>04 12. 定期処理・ログ・監視</td>
+</tr>
+<tr>
+<td>500 番台の行を探す</td>
+<td><code>Select-String -Path $log.FullName -Pattern " 5\d\d \d+ \d+ \d+$"</code></td>
+<td></td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td>IIS を動かし直す</td>
+<td><code>iisreset</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>サイトを動かす</td>
+<td><code>Start-IISSite -Name webapp-prod</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-5">ファイアウォールとネットワーク</h2>
+<p>どのポートを開けるか、つながるかを確かめるコマンドです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>決まりを作る</td>
+<td><code>New-NetFirewallRule -DisplayName "webapp HTTP 80" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow</code></td>
+<td></td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td>決まりの一覧</td>
+<td><code>Get-NetFirewallRule -Enabled True -Direction Inbound</code></td>
+<td></td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td>ポートで決まりを探す</td>
+<td><code>Get-NetFirewallPortFilter &#124; Where-Object { $_.LocalPort -in 80, 443 } &#124; Get-NetFirewallRule</code></td>
+<td></td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td>決まりを止める</td>
+<td><code>Disable-NetFirewallRule -DisplayName "…"</code></td>
+<td></td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td>ファイアウォールの状態</td>
+<td><code>Get-NetFirewallProfile</code></td>
+<td></td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td>ネットワークの種類（ドメイン・プライベート）</td>
+<td><code>Get-NetConnectionProfile</code></td>
+<td></td>
+<td>01 10. Windows Defender ファイアウォール</td>
+</tr>
+<tr>
+<td>IP アドレスなど</td>
+<td><code>Get-NetIPConfiguration</code></td>
+<td></td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td>名前から IP アドレスを調べる</td>
+<td><code>Resolve-DnsName webapp.example.local</code></td>
+<td></td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td>ポートにつながるか</td>
+<td><code>Test-NetConnection 127.0.0.1 -Port 5432</code></td>
+<td>TcpTestSucceeded</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td>待ち受けているポート</td>
+<td><code>Get-NetTCPConnection -State Listen -LocalPort 8080</code></td>
+<td>.OwningProcess が番号</td>
+<td>00 4. ネットワークの基礎</td>
+</tr>
+<tr>
+<td>ページを開いて状態コードを見る</td>
+<td><code>(Invoke-WebRequest http://webapp.example.local/health -UseBasicParsing).StatusCode</code></td>
+<td></td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td>名前を付けて開く</td>
+<td><code>Invoke-WebRequest http://127.0.0.1:8080/health -Headers @{ Host = "webapp.example.local" }</code></td>
+<td></td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td>要求と答えの形</td>
+<td><code>GET /requests HTTP/1.1</code><br><code>HTTP/1.1 200 OK</code></td>
+<td></td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td>ポートを使っているプログラム（古い方法）</td>
+<td><code>netstat -ano &#124; findstr :8080</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>相手に届くか（ping）</td>
+<td><code>Test-Connection webapp.example.local -Count 2</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>通り道を調べる</td>
+<td><code>tracert webapp.example.local</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>IP アドレスの全部を見る（古い方法）</td>
+<td><code>ipconfig /all</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>名前の覚え書きを消す</td>
+<td><code>Clear-DnsClientCache</code></td>
+<td>DNS を直した後に</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ネットワークの口の一覧</td>
+<td><code>Get-NetAdapter</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>共有フォルダの一覧</td>
+<td><code>Get-SmbShare</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-6">フォルダの権限とコピー</h2>
+<p>アプリのフォルダを、サービスの利用者だけが書けるようにします。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>権限を見る</td>
+<td><code>icacls D:\webapp\prod\logs</code></td>
+<td></td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td>権限を与える</td>
+<td><code>icacls D:\webapp\prod\logs /grant "NT SERVICE\webapp-prod:(OI)(CI)M"</code></td>
+<td>M は変更</td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td>引き継ぎを外す</td>
+<td><code>icacls D:\webapp\prod\app /inheritance:r</code></td>
+<td></td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td>権限を外す</td>
+<td><code>icacls D:\webapp\prod /remove "Users"</code></td>
+<td></td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td>フォルダごとコピー</td>
+<td><code>robocopy backend out\app /E /XD .venv __pycache__ /XF *.pyc</code></td>
+<td></td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td>失敗した時のやり直し</td>
+<td><code>robocopy 元 先 /R:2 /W:5</code></td>
+<td></td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td>ZIP にまとめる・ほどく</td>
+<td><code>Compress-Archive -Path "$out\*" -DestinationPath app.zip -Force</code><br><code>Expand-Archive app.zip D:\webapp\prod\app</code></td>
+<td></td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td>指紋で同じファイルか確かめる</td>
+<td><code>Get-FileHash app.zip -Algorithm SHA256</code></td>
+<td></td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td>何でも合う（ワイルドカード）</td>
+<td><code>*.log</code><br><code>webapp_prod_*.dump</code></td>
+<td></td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-7">決まった時刻に動かす（タスク スケジューラ）</h2>
+<p>バックアップなどを、毎日決まった時刻に動かす仕組みです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>動かす物を決める</td>
+<td><code>New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -File D:\webapp\tools\backup.ps1"</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>いつ動かすか決める</td>
+<td><code>New-ScheduledTaskTrigger -Daily -At 2:00</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>だれとして動かすか</td>
+<td><code>New-ScheduledTaskPrincipal -UserId "SYSTEM" -RunLevel Highest</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>細かい設定</td>
+<td><code>New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Hours 1)</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>登録する</td>
+<td><code>Register-ScheduledTask -TaskName "webapp-backup" -Action $action -Trigger $trigger -Principal $p</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>今すぐ動かす</td>
+<td><code>Start-ScheduledTask -TaskName "webapp-backup"</code></td>
+<td></td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td>最後の結果を見る</td>
+<td><code>Get-ScheduledTaskInfo -TaskName "webapp-backup"</code></td>
+<td>LastTaskResult 0 なら成功</td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td>登録の一覧</td>
+<td><code>Get-ScheduledTask -TaskPath \</code></td>
+<td></td>
+<td>01 9. タスク スケジューラ</td>
+</tr>
+<tr>
+<td>一時的に止める・戻す</td>
+<td><code>Disable-ScheduledTask -TaskName webapp-backup</code><br><code>Enable-ScheduledTask -TaskName webapp-backup</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>登録を消す</td>
+<td><code>Unregister-ScheduledTask -TaskName webapp-backup -Confirm:$false</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-8">PostgreSQL と psql</h2>
+<p>データベースにつないで、SQL を打つ道具 psql の使い方と、よく使う SQL です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>つなぐ</td>
+<td><code>psql -h 127.0.0.1 -p 5432 -U postgres -d postgres</code></td>
+<td></td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td>SQL を 1 回だけ動かす</td>
+<td><code>psql -h 127.0.0.1 -U webapp_stg_app -d webapp_stg -c "SELECT now();"</code></td>
+<td></td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td>SQL のファイルを流す</td>
+<td><code>psql -h 127.0.0.1 -U postgres -d practice -f setup.sql</code></td>
+<td></td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td>版を見る</td>
+<td><code>psql --version</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>データベースの一覧</td>
+<td><code>\l</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>つなぐ先を変える</td>
+<td><code>\c practice</code></td>
+<td></td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td>表の一覧・表の形</td>
+<td><code>\dt</code><br><code>\d requests</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>利用者（ロール）の一覧</td>
+<td><code>\du</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>パスワードを変える</td>
+<td><code>\password webapp_prod_app</code></td>
+<td>画面に出ない</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td>縦に並べて見る</td>
+<td><code>\x</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>終わる</td>
+<td><code>\q</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>データベースを作る</td>
+<td><code>CREATE DATABASE webapp_prod OWNER webapp_prod_app ENCODING 'UTF8'</code></td>
+<td></td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td>利用者を作る</td>
+<td><code>CREATE ROLE webapp_prod_app LOGIN PASSWORD '…'</code></td>
+<td></td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td>権限を与える・取り上げる</td>
+<td><code>GRANT SELECT ON ALL TABLES IN SCHEMA public TO webapp_readonly</code><br><code>REVOKE …</code></td>
+<td></td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
+<td>読む</td>
+<td><code>SELECT id, title, status FROM requests WHERE status = '回覧中' ORDER BY id DESC LIMIT 20</code></td>
+<td></td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td>全部の列</td>
+<td><code>SELECT * FROM departments</code></td>
+<td></td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td>文字の一部で探す</td>
+<td><code>WHERE name LIKE '%田%'</code></td>
+<td></td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>SELECT status, count(*) FROM requests GROUP BY status</code></td>
+<td></td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td>表をつなぐ</td>
+<td><code>SELECT r.title, e.name FROM requests r JOIN employees e ON e.id = r.requester_id</code></td>
+<td></td>
+<td>02 5. テーブルをつなぐ</td>
+</tr>
+<tr>
+<td>入れる・変える・消す</td>
+<td><code>INSERT INTO … VALUES (…)</code><br><code>UPDATE … SET … WHERE …</code><br><code>DELETE FROM … WHERE …</code></td>
+<td>WHERE を忘れない</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td>まとめて成功・失敗にする</td>
+<td><code>BEGIN; … COMMIT;</code><br><code>ROLLBACK;</code></td>
+<td></td>
+<td>02 7. トランザクション</td>
+</tr>
+<tr>
+<td>今の利用者とデータベース</td>
+<td><code>SELECT current_user, current_database();</code></td>
+<td></td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td>データベースの大きさ</td>
+<td><code>SELECT pg_size_pretty(pg_database_size('webapp_prod'));</code></td>
+<td></td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td>表の大きさ</td>
+<td><code>pg_total_relation_size('requests')</code></td>
+<td></td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td>つながりの一覧</td>
+<td><code>SELECT pid, usename, state FROM pg_stat_activity;</code></td>
+<td></td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td>つながりを切る</td>
+<td><code>SELECT pg_terminate_backend(12345);</code></td>
+<td></td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td>つないでよい相手の設定を見る</td>
+<td><code>Get-Content D:\pgsql\18\data\pg_hba.conf &#124; Select-String -Pattern "^\s*host"</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>設定を読み直す</td>
+<td><code>SELECT pg_reload_conf();</code></td>
+<td></td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td>SQL のコメント</td>
+<td><code>-- メモ</code></td>
+<td></td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td>SQL にかかった時間を表示する</td>
+<td><code>\timing</code></td>
+<td>もう一度打つと消える</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>どう探しているか（時間つき）を見る</td>
+<td><code>EXPLAIN ANALYZE SELECT …</code></td>
+<td>本当に動かすので UPDATE には使わない</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td>表を整理して統計を新しくする</td>
+<td><code>VACUUM ANALYZE requests</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>設定ファイルの場所を見る</td>
+<td><code>SHOW config_file;</code><br><code>SHOW hba_file;</code></td>
+<td></td>
+<td>02 10. 設定ファイル</td>
+</tr>
+<tr>
+<td>全部のデータベースと利用者を書き出す</td>
+<td><code>pg_dumpall -h 127.0.0.1 -U postgres -f all.sql</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-9">バックアップと戻し方</h2>
+<p>データベースとファイルのバックアップを取り、戻せるかを確かめます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>データベースを書き出す</td>
+<td><code>pg_dump -h 127.0.0.1 -U postgres -Fc -f D:\webapp\backup\db\webapp_prod.dump webapp_prod</code></td>
+<td>-Fc は PostgreSQL 用の形</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td>バックアップの中身を見る</td>
+<td><code>pg_restore --list webapp_prod.dump</code></td>
+<td></td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td>別のデータベースに戻して確かめる</td>
+<td><code>pg_restore -h 127.0.0.1 -U postgres -d webapp_restore_test --no-owner --no-privileges webapp_prod.dump</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>同じデータベースに戻す</td>
+<td><code>pg_restore -d webapp_prod --clean --if-exists webapp_prod.dump</code></td>
+<td>今のデータは消える</td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
+<tr>
+<td>失敗したら止める</td>
+<td><code>if ($LASTEXITCODE -ne 0) { throw "pg_dump が失敗しました" }</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>日付入りの名前にする</td>
+<td><code>"webapp_prod_$(Get-Date -Format yyyyMMdd_HHmm).dump"</code></td>
+<td></td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
+<tr>
+<td>古いバックアップを消す</td>
+<td><code>Get-ChildItem $dir -Filter "webapp_prod_*.dump" &#124; Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-14) } &#124; Remove-Item</code></td>
+<td></td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>いちばん新しい物を選ぶ</td>
+<td><code>Get-ChildItem *.dump &#124; Sort-Object LastWriteTime &#124; Select-Object -Last 1</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>ファイルの日時を変える（試し）</td>
+<td><code>(Get-Item $file).LastWriteTime = (Get-Date).AddDays(-20)</code></td>
+<td></td>
+<td>08 この資料について</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-10">アプリを持ち込んで動かす（Rust 版・Django 版）</h2>
+<p>開発用のパソコンで作った物を、サーバーに置いて動かすまでのコマンドです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rust 版を本番用に作る</td>
+<td><code>cargo build --release --locked</code></td>
+<td></td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td>CSS などの束を作る</td>
+<td><code>topcoat asset bundle --release</code></td>
+<td></td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td>C の部品を中に入れて作る</td>
+<td><code>rustflags = ["-C", "target-feature=+crt-static"]</code></td>
+<td>.cargo/config.toml</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td>画面側を作る（Django 版）</td>
+<td><code>npm ci</code><br><code>npm run build</code></td>
+<td></td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td>Python の仮想環境を作る</td>
+<td><code>py -m venv D:\webapp\stg\venv</code></td>
+<td></td>
+<td>05 4. Python を入れる</td>
+</tr>
+<tr>
+<td>部品を入れる</td>
+<td><code>D:\webapp\stg\venv\Scripts\python.exe -m pip install -r requirements.txt</code></td>
+<td></td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td>表を新しくする</td>
+<td><code>python manage.py migrate</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>静的ファイルを集める</td>
+<td><code>python manage.py collectstatic --noinput</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>本番の設定の確かめ</td>
+<td><code>python manage.py check --deploy</code></td>
+<td></td>
+<td>05 8. HTTP で動かすための設定</td>
+</tr>
+<tr>
+<td>Django を本番用のサーバーで動かす</td>
+<td><code>python -m waitress --listen=127.0.0.1:8081 config.wsgi:application</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>動いているか確かめる</td>
+<td><code>Invoke-WebRequest http://127.0.0.1:8080/health -UseBasicParsing</code></td>
+<td></td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td>秘密の値を環境変数で読む（Python）</td>
+<td><code>os.environ.get(name, default)</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>設定の値が無ければ止める</td>
+<td><code>raise RuntimeError(f"環境変数 {name} がありません")</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>受け付ける名前（Django）</td>
+<td><code>ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(",")</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>CSRF の札を付けて送る（JavaScript）</td>
+<td><code>headers: { "X-CSRFToken": csrfToken() }</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-11">正規表現と日時の書式</h2>
+<p>文字の形を表す書き方（正規表現）と、日時を文字にする書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>形に合うか（PowerShell）</td>
+<td><code>$line -match '^\s*host'</code></td>
+<td></td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td>行の頭・行の終わり</td>
+<td><code>^</code><br><code>$</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>数字・空白・英数字</td>
+<td><code>\d</code><br><code>\s</code><br><code>\w</code></td>
+<td></td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td>くり返し</td>
+<td><code>*</code><br><code>+</code><br><code>{6}</code></td>
+<td></td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td>どちらか</td>
+<td><code>api/&#124;admin/</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>まとまり</td>
+<td><code>(.*)</code></td>
+<td>{R:1} や $1 で使う</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>〜でない時だけ</td>
+<td><code>^(?!api/&#124;admin/).*$</code></td>
+<td></td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td>年・月・日・時・分</td>
+<td><code>yyyy</code><br><code>MM</code><br><code>dd</code><br><code>HH</code><br><code>mm</code></td>
+<td>MM は月、mm は分</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td>置きかえる</td>
+<td><code>$s -replace '\s+', ' '</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

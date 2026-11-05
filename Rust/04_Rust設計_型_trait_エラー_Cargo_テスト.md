@@ -184,6 +184,7 @@ cargo add serde --features derive
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo add`**（cargo のコマンド）: 部品（クレート）を、プロジェクトに足すコマンド。`cargo add thiserror anyhow serde_json` で、3 つの部品を `Cargo.toml` の `[dependencies]` に書き足します。`--features 機能` で、部品の追加の機能も選べます。部品は、世界中の人が公開している場所（crates.io）から自動で取ってきます。
+> - **`cargo add --features`**（cargo のコマンド）: `cargo add serde --features derive` の `--features` は、部品を足す時に、その部品の機能（ここでは `derive`）も ON にして、`Cargo.toml` に書き込みます。
 
 <!-- /first-use -->
 
@@ -236,6 +237,17 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 thiserror = "2.0.21"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`anyhow`**（Rust の部品（クレート））: `anyhow` は、いろいろな種類のエラーを、1 つの型（`anyhow::Error`）でまとめて扱い、説明を書き足せる（`.context(…)`）部品です。アプリの一番上の、エラーを表示する所で使います。
+> - **`serde`**（Rust の部品（クレート））: `serde` は、Rust の値を、JSON などの形に変えたり（シリアライズ）、JSON から Rust の値を作ったり（デシリアライズ）するための部品です。`features = ["derive"]` で、`#[derive(Serialize, Deserialize)]` が使えるようになります。
+> - **`serde_json`**（Rust の部品（クレート））: `serde_json` は、`serde` と組み合わせて、JSON を読み書きする部品です。
+> - **`thiserror`**（Rust の部品（クレート））: `thiserror` は、自分のエラーの型を、`#[derive(Error)]` と `#[error("…")]` だけで作れるようにする部品です。
+
+<!-- /first-use -->
 
 - `src/bin/u01_ids.rs` のようにファイルを置くと、`cargo run --bin u01_ids` でそのファイルの `main` だけを実行できます。1つのプロジェクトで、たくさんの小さなプログラムを試せて便利です。
 - 「よくあるエラー」の節のコードは、わざとコンパイルが失敗するコードです。`src/bin/` に置いたままにすると、プロジェクト全体をビルドする `cargo build`・`cargo test`・`cargo clippy` まで失敗するようになるので、エラーを確かめたら**ファイルを消すか、正しく直して**おいてください。
@@ -683,6 +695,7 @@ fn main() {
 >
 > - **`type`**（型とメソッド）: 型に別の名前を付ける書き方（型の別名）。`type DynRepo = Arc<dyn NoteRepository + Send + Sync>;` のように、長い型を短く呼べます。トレイトの中の `type Err = IdError;` は「このトレイトで使うエラーの型は `IdError`」と決める書き方です。
 > - **`FromStr`**（型とメソッド）: 「文字列から作れる」機能（トレイト）。`impl FromStr for 型 { … }` を書くと、`"42".parse::<型>()` で、文字列から自分の型を作れるようになります。
+> - **`<_>`**（型とメソッド）: `Vec<_>` の `_` は、「中の型は、Rust が使い方から決めて」という印です。`.collect::<Vec<_>>()` は「`Vec` に集めて。中身の型は任せる」という意味です。
 
 <!-- /first-use -->
 
@@ -1768,6 +1781,15 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`T: トレイト`**（型とメソッド）: `<T: Display>` の `: Display` は、「`T` は、`Display`（表示できる）という決まりを満たす型だけ」という条件です（トレイト境界）。`where T: Display` と後ろに書いても同じです。
+> - **`A + B`**（型とメソッド）: `T: Clone + Debug` の `+` は、「`Clone` と `Debug` の両方を満たす」という意味です。条件をいくつも並べられます。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u03_generic
 ```
@@ -2512,6 +2534,14 @@ fn main() {
     );
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`\"`**（文字列の中の特別な書き方）: 文字列の中に `"` そのものを入れたい時は、`\"` と書きます。`"\"Rust\""` は、`"Rust"` という `"` 付きの文字になります。`\` を付けないと、そこで文字列が終わったと思われます。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run --bin u04_dyn
@@ -3552,6 +3582,9 @@ fn main() {
 > - **`From`**（型とメソッド）: 「ある型から作れる」機能（トレイト）。`impl From<RepoError> for AppError` を書くと、`RepoError` を `AppError` に変えられます。`?` は、エラーを返す時にこの変換を自動で使います。
 > - **`ErrorKind`**（エラー処理）: 入出力のエラーの「種類」。`std::io::ErrorKind::NotFound`（無い）・`ConnectionRefused`（つなぐのを断られた）などがあり、`e.kind()` で調べて、種類ごとに処理を分けられます。
 > - **`ConnectionRefused`**（エラー処理）: `ErrorKind::ConnectionRefused` は、「相手のパソコンに、その番号で待っているプログラムがいない」ために、つなぐのを断られた、というエラーの種類です。
+> - **`{0}`**（画面に出す）: `{0}`・`{1}` のように `{ }` の中に番号を書くと、「後ろに並べた値の、何番目（0 から数える）を入れるか」を指定できます。`format!("{0} と {1} と {0}", "a", "b")` → `a と b と a` のように、同じ値を何度も使えます。`thiserror` の `#[error("…{0}…")]` では、名前の無い項目の 0 番目（`.0`）を入れます。
+> - **`#[error(transparent)]`**（エラー処理）: `thiserror` の `#[error(transparent)]` は、「自分では文を作らず、中に入れた元のエラーの文を、そのまま見せる」という印です。`#[from]` と組み合わせて、ほかのエラーを包むだけの種類に使います。
+> - **`while let`**（くり返し）: `while let Some(c) = cause { … }` は、「`Some` の形である間、中身を `c` に入れてくり返す」書き方です。`None` になったら止まります。`while let Some(x) = stack.pop()` のように、並びから 1 つずつ取り出す時によく使います。
 
 <!-- /first-use -->
 
@@ -4233,6 +4266,14 @@ fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pub(crate)`**（モジュール）: `pub(crate)` は、「このクレート（このプロジェクト）の中からは使えるが、外からは使えない」という公開の範囲です。`pub` だけなら、どこからでも使えます。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u06_mod
 ```
@@ -4524,6 +4565,16 @@ resolver = "3"
 members = []
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[workspace]`**（設定ファイル（TOML））: `[workspace]` は、いくつものパッケージ（`app`・`domain` など）を、1 つのまとまり（ワークスペース）にする見出しです。`Cargo.lock` と `target` フォルダを共有します。
+> - **`resolver =`**（設定ファイル（TOML））: `resolver = "3"` は、部品の版の選び方の決まりの版です。ワークスペースでは、edition 2024 に合う `"3"` を書きます。
+> - **`members =`**（設定ファイル（TOML））: `members = ["app", "domain"]` は、ワークスペースに入れるパッケージ（フォルダ）の一覧です。
+
+<!-- /first-use -->
+
 続けて、`ws_lab` の中で2つの package を作ります。
 
 ```powershell
@@ -4559,6 +4610,15 @@ rust-version = "1.99"
 thiserror = "2.0.21"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[workspace.package]`**（設定ファイル（TOML））: `[workspace.package]` には、ワークスペースの全部のパッケージで共通の設定（`edition` など）を書きます。各パッケージは `edition.workspace = true` で受け取ります。
+> - **`[workspace.dependencies]`**（設定ファイル（TOML））: `[workspace.dependencies]` には、ワークスペースで使う部品と版をまとめて書きます。各パッケージは `serde = { workspace = true }` で受け取ります。
+
+<!-- /first-use -->
+
 **ws_lab/crates/domain/Cargo.toml**
 
 ```toml
@@ -4571,6 +4631,16 @@ rust-version.workspace = true
 [dependencies]
 thiserror = { workspace = true }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`edition.workspace =`**（設定ファイル（TOML））: `edition.workspace = true` は、「edition は、ワークスペースの `[workspace.package]` に書いた物を使う」という指定です。
+> - **`rust-version.workspace =`**（設定ファイル（TOML））: `rust-version.workspace = true` は、「rust-version は、ワークスペースに書いた物を使う」という指定です。
+> - **`workspace =`**（設定ファイル（TOML））: `serde = { workspace = true }` は、「部品の版は、ワークスペースの `[workspace.dependencies]` に書いた物を使う」という指定です。いくつものパッケージで、版をそろえられます。
+
+<!-- /first-use -->
 
 **ws_lab/crates/app/Cargo.toml**
 
@@ -4585,6 +4655,14 @@ rust-version.workspace = true
 # 同じ workspace の domain を、フォルダの場所で指定して使う
 domain = { path = "../domain" }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`path =`**（設定ファイル（TOML））: `domain = { path = "../domain" }` の `path` は、部品を crates.io からではなく、このパソコンのフォルダから使う指定です。ワークスペースの中の、自分で作った部品を使う時に書きます。
+
+<!-- /first-use -->
 
 **ws_lab/crates/domain/src/lib.rs**
 
@@ -4663,6 +4741,14 @@ cargo run -p app
 OK: 牛乳を買う
 NG: タイトルを入力してください
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run -p`**（cargo のコマンド）: `cargo run -p app` の `-p`（package）は、ワークスペース（いくつものパッケージをまとめた物）の中の、どのパッケージを動かすかを選びます。
+
+<!-- /first-use -->
 
 ##### 解説8: workspace の Cargo.toml
 
@@ -5106,6 +5192,14 @@ cargo add serde --features derive --optional
 cargo add serde_json --optional
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo add --optional`**（cargo のコマンド）: `--optional` は、「いつもは使わず、機能（feature）を ON にした時だけ使う」部品として足す指定です。
+
+<!-- /first-use -->
+
 `--optional`（任意の依存）を付けると、「features で ON にしたときだけ使う依存」として追加されます。そのあと `Cargo.toml` を次のように整えます（`cargo add` が自動で作った `serde = ["dep:serde"]` などの行は、`json` の1つにまとめ直しています）。
 
 ```toml
@@ -5127,6 +5221,17 @@ markdown = []
 # ON にすると serde と serde_json が依存に加わる
 json = ["dep:serde", "dep:serde_json"]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`optional =`**（設定ファイル（TOML））: `optional = true` は、「この部品は、いつもは使わず、自分の機能（feature）を ON にした時だけ使う」という指定です。
+> - **`[features]`**（設定ファイル（TOML））: `[features]` には、このパッケージの「ON・OFF できる機能」を、`機能の名前 = [ON にした時に一緒に使う物]` の形で書きます。コードでは `#[cfg(feature = "名前")]` で、その機能の時だけの部分を書き分けます。
+> - **`default =`**（設定ファイル（TOML））: `[features]` の `default = ["markdown"]` は、「何も指定しない時に ON になる機能」の一覧です。`--no-default-features` で OFF にできます。
+> - **`機能の名前 =`**（設定ファイル（TOML））: `[features]` の `json = ["dep:serde_json"]` のような行は、`json` という機能を作り、ON にした時に一緒に使う部品（`dep:` を付けた名前）を並べます。`csv = []` のように空なら、部品は増えず、コードの書き分けだけに使います。
+
+<!-- /first-use -->
 
 **src/main.rs**
 
@@ -5185,6 +5290,7 @@ fn main() {
 > - **`#[cfg_attr]`**（テスト）: 「条件が合う時だけ、この印（属性）を付ける」という印。`#[cfg_attr(feature = "json", derive(Serialize))]` は、`json` の機能が ON の時だけ `Serialize` を付けます。
 > - **`serde_json::to_string()`**（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に `Serialize` が付いている必要があります。失敗することもあるので `Result` が返ります。
 > - **`Serialize`**（JSON）: 「JSON などにできる」機能（トレイト。`serde` の部品）。`#[derive(Serialize)]` を付けた型は、`serde_json::to_string` で JSON にできます。
+> - **`#[cfg(feature)]`**（モジュール）: `#[cfg(feature = "markdown")]` は、「`markdown` という機能（feature）が ON の時だけ、この部分を翻訳する」という印です。機能は `Cargo.toml` の `[features]` で決め、`cargo run --features markdown` などで ON にします。
 
 <!-- /first-use -->
 
@@ -5209,6 +5315,14 @@ JSON の機能を ON にします。
 ```powershell
 cargo run --features json
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run --features`**（cargo のコマンド）: `cargo run --features json` は、`Cargo.toml` の `[features]` で決めた `json` という機能を ON にして動かします。
+
+<!-- /first-use -->
 
 ```text
    Compiling proc-macro2 v1.0.107
@@ -5237,6 +5351,14 @@ markdown=true json=true
 ```powershell
 cargo run --no-default-features
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run --no-default-features`**（cargo のコマンド）: `--no-default-features` は、`[features]` の `default` で ON にしてある機能を、全部 OFF にして動かします。
+
+<!-- /first-use -->
 
 ```text
    Compiling feat_lab v0.1.0 (...\feat_lab)
@@ -5303,6 +5425,14 @@ feat_lab v0.1.0 (...\feat_lab)
 cargo tree --features json
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo tree --features`**（cargo のコマンド）: `cargo tree --features json` は、`json` の機能を ON にした時に使われる部品の木を表示します。
+
+<!-- /first-use -->
+
 ```text
 feat_lab v0.1.0 (...\feat_lab)
 ├── serde v1.0.229
@@ -5364,6 +5494,14 @@ dependencies = [
 cargo build --locked
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo build --locked`**（cargo のコマンド）: `--locked` は、`Cargo.lock` に書いてある部品の版のまま作り、`Cargo.lock` を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。
+
+<!-- /first-use -->
+
 ```text
 error: cannot update the lock file ...\Cargo.lock because --locked was passed to prevent this
 help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.
@@ -5388,6 +5526,14 @@ help: to generate the lock file without accessing the network, remove the --lock
 ```powershell
 cargo add serde_json --no-default-features --features alloc
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo add --no-default-features`**（cargo のコマンド）: `--no-default-features` は、部品の「既定で ON の機能」を OFF にして足す指定です。必要な機能だけを `--features` で選ぶ時に使います。
+
+<!-- /first-use -->
 
 ```text
     Updating crates.io index
@@ -5541,6 +5687,14 @@ error: rustc 1.90.0 is not supported by the following package:
 # CSV で書き出す機能（依存は増えない）
 csv = []
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`csv =`**（設定ファイル（TOML））: `[features]` に書く `csv = []` は、`csv` という機能を足す書き方です。`[]` が空なので、ON にしても部品は増えません。コードの `#[cfg(feature = "csv")]` の部分だけが ON になります。
+
+<!-- /first-use -->
 
 `src/main.rs` には、関数と呼び出しを足します（抜粋）。
 
@@ -5726,6 +5880,7 @@ fn main() {
 >
 > - **`serde_json::to_string_pretty()`**（JSON）: Rust の値を、人が読みやすい字下げ付きの JSON の文字列に変える関数。
 > - **`Deserialize`**（JSON）: 「JSON などから作れる」機能（トレイト。`serde` の部品）。`#[derive(Deserialize)]` を付けた型は、`serde_json::from_str` で JSON から作れます。逆向き（値 → JSON）は `Serialize` です。
+> - **`r#"…"#`**（文字列）: `r#"…"#` も「生の文字列」で、`"#` が来るまでを、`\` も `"` もそのまま文字にします。`r#"{"title": "牛乳"}"#` のように、`"` の多い JSON や、何行もの SQL を書く時に便利です。
 
 <!-- /first-use -->
 
@@ -5947,6 +6102,9 @@ fn main() {
 >
 > - **`#[serde]`**（JSON）: `serde` の印（属性）。JSON にする時の細かい決まりを付けます。`#[serde(rename_all = "camelCase")]`（名前の書き方を変える）・`#[serde(default)]`（無い時は初期値）・`#[serde(skip_serializing_if = "Option::is_none")]`（空なら書かない）などがあります。
 > - **`TryFrom`**（型とメソッド）: 「ある型から作れるが、失敗することもある」変換の機能（トレイト）。`impl TryFrom<CreateNoteInput> for NewNote` を書くと、`NewNote::try_from(input)` で、入力を確かめながら変換でき、だめなら `Err` を返します。
+> - **`#[serde(deny_unknown_fields)]`**（JSON）: `serde` の印。JSON に、構造体に無い名前の項目が入っていたら、読み込みをエラーにします。項目の名前の書き間違い（`titel` など）を見逃さないために付けます。
+> - **`#[serde(default)]`**（JSON）: `serde` の印。JSON にその項目が無い時、エラーにせず、型の初期値（`Default`。数なら 0、文字列なら空）を入れます。
+> - **`#[serde(rename_all)]`**（JSON）: `#[serde(rename_all = "camelCase")]` は、項目の名前を、JSON では別の書き方にする印です。`camelCase` なら、Rust の `width_mm` が JSON では `widthMm` になります。`snake_case`・`kebab-case`・`UPPERCASE` などもあります。
 
 <!-- /first-use -->
 
@@ -6291,6 +6449,14 @@ fn main() {
 OK [牛乳]
 NG タイトルを入力してください at line 1 column 15
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#[serde(try_from)]`**（JSON）: `#[serde(try_from = "String")]` は、「JSON の値を、いったん `String` として読み、それから `TryFrom` でこの型に変える」という印です。変える時の確かめ（空でないか、など）が失敗したら、読み込みのエラーになります。
+
+<!-- /first-use -->
 
 - `#[serde(try_from = "String")]` は、「いったん `String` として読み、`NoteTitle::try_from` を通してから入れる」という指定です。検証に失敗すると、その文章がそのまま serde_json のエラーになります（`タイトルを入力してください at line 1 column 15`）。
 - 便利ですが、「形式の誤り」と「内容の誤り」が同じ種類のエラーになり、どの項目が悪かったのかを入力欄ごとに出し分けにくくなります。フォームの検証では例8-2 の書き方、設定ファイルのように「間違っていたら止まればよい」読み込みでは `try_from` の書き方、と使い分けるとよいでしょう。
@@ -7235,6 +7401,7 @@ pub use title::{MAX_TITLE_CHARS, NoteTitle, TitleError};
 > - **`Action`**（RustNote で作る物）: RustNote のノートに対する操作（公開する・アーカイブするなど）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。
 > - **`NoteStatus`**（RustNote で作る物）: RustNote のノートの状態（下書き・公開・アーカイブ）を表す enum。この巻の後の方（「もう一歩」の所）で作ります。
 > - **`TransitionError`**（RustNote で作る物）: RustNote で、ノートの状態を、決まりにない形で変えようとした時のエラーを表す型。この巻の後の方で作ります。
+> - **`//!`**（コメント）: `//!` で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。`///`（すぐ下の関数や型の説明）と使い分けます。
 
 <!-- /first-use -->
 
@@ -7575,6 +7742,7 @@ cargo doc --no-deps
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo doc`**（cargo のコマンド）: コードに書いた説明（`///` のコメント）から、説明書（ドキュメント）の Web ページを作るコマンド。`--no-deps` で自分のコードだけ、`--open` でできたページをブラウザーで開きます。
+> - **`cargo doc --no-deps`**（cargo のコマンド）: `--no-deps` は、自分のクレートの説明書だけを作り、使っている部品の説明書は作らない指定です。速く作れます。
 
 <!-- /first-use -->
 
@@ -7774,6 +7942,14 @@ Open
 ```powershell
 cargo test --doc
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo test --doc`**（cargo のコマンド）: `cargo test --doc` は、ドキュメントコメント（`///`）の中に書いた、例のコードだけをテストとして動かします。説明の例が、本当に動くかを確かめられます。
+
+<!-- /first-use -->
 
 ```text
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s

@@ -79,6 +79,21 @@ node src\basics.ts   # 動かす
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`"name":`**（設定ファイル（JSON））: `package.json` の `"name"` は、このプロジェクト（パッケージ）の名前です。
+> - **`"private":`**（設定ファイル（JSON））: `"private": true` は、「このパッケージは npm に公開しない」という印です。間違って公開するのを防ぎます。
+> - **`"type":`**（設定ファイル（JSON））: `"type": "module"` は、「`.js` のファイルを、新しい書き方（ES モジュール。`import`・`export`）として読む」という設定です。
+> - **`"scripts":`**（設定ファイル（JSON））: `"scripts"` には、`npm run 名前` で動かすコマンドを書きます。`"check": "tsc"` なら、`npm run check` で `tsc`（型の確かめ）が動きます。
+> - **`"check":`**（設定ファイル（JSON））: `"scripts"` の中の `"check": "tsc"` は、`npm run check` という名前で、`tsc`（TypeScript の型の確かめ）を動かす登録です。名前は自分で決めます。
+> - **`"devDependencies":`**（設定ファイル（JSON））: `"devDependencies"` には、開発の時だけ使う部品と、その版を書きます。`npm install` で入ります。
+> - **`"@types/node":`**（設定ファイル（JSON））: `"@types/node"` は、Node.js の機能（`node:http` など）の型の説明の部品です。これが無いと、TypeScript が Node.js の関数の型を知りません。
+> - **`"typescript":`**（設定ファイル（JSON））: `"typescript": "7.0.2"` は、TypeScript（型を確かめる道具 `tsc`）の部品と、その版です。
+
+<!-- /first-use -->
+
 ```json
 {
   "compilerOptions": {
@@ -93,6 +108,22 @@ node src\basics.ts   # 動かす
   "include": ["src/*.ts"]
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`"compilerOptions":`**（設定ファイル（JSON））: `tsconfig.json` の `"compilerOptions"` には、TypeScript の確かめ方の設定を書きます。
+> - **`"strict":`**（設定ファイル（JSON））: `"strict": true` は、TypeScript の確かめを、いちばんきびしくする設定です。`null` の取り違えなど、間違いを多く見つけてくれます。
+> - **`"target":`**（設定ファイル（JSON））: `"target": "es2023"` は、どの版の JavaScript の書き方を前提にするかです。
+> - **`"module":`**（設定ファイル（JSON））: `"module": "nodenext"` は、`import` の読み方を、今の Node.js と同じにする設定です。
+> - **`"noEmit":`**（設定ファイル（JSON））: `"noEmit": true` は、`tsc` に、型の確かめだけをさせ、JavaScript のファイルは書き出させない設定です（動かす時は Node.js が直接 `.ts` を読みます）。
+> - **`"allowImportingTsExtensions":`**（設定ファイル（JSON））: `"allowImportingTsExtensions": true` は、`import … from "./types.ts"` のように、`.ts` を付けて読み込むことを許す設定です。
+> - **`"erasableSyntaxOnly":`**（設定ファイル（JSON））: `"erasableSyntaxOnly": true` は、「型を消すだけで JavaScript になる書き方」だけを許す設定です。Node.js が `.ts` をそのまま動かせる書き方に、そろえられます。
+> - **`"types":`**（設定ファイル（JSON））: `"types": ["node"]` は、使う型の説明の部品（ここでは `@types/node`）を選ぶ設定です。
+> - **`"include":`**（設定ファイル（JSON））: `"include": ["src/*.ts"]` は、確かめるファイルの範囲です。
+
+<!-- /first-use -->
 
 | 設定 | 意味 |
 |---|---|
@@ -142,7 +173,13 @@ console.log(double(21));
 > - **`return`**（JavaScript・TypeScript）: JavaScript・TypeScript で、関数の結果を返して、関数を終える命令。
 > - **`.log()`**（JavaScript・TypeScript）: `console.log(…)` は、渡した値を画面（ターミナルやブラウザーの開発者ツール）に表示します。
 > - **`.join()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の中身を区切り文字でつないで 1 つの文字列にするメソッド。`["a", "b"].join(";")` は `"a;b"`。
-> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`(path) => \`…${path}\`` は「`path` を受け取って文字列を返す関数」。
+> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`` (path) => `…${path}` `` は「`path` を受け取って文字列を返す関数」。
+> - **`//`**（JavaScript・TypeScript）: JavaScript・TypeScript では、`//` から行の終わりまでがコメントです。
+> - **`` `${…}` ``**（JavaScript・TypeScript）: `` `…` ``（バッククォートで囲んだ文字。テンプレート文字列）の中の `${ }` には、値や式を入れられます。`` `エラー ${res.status}` `` は、`res.status` が 404 なら `エラー 404` になります。改行も、そのまま書けます。
+> - **`条件 ? A : B`**（JavaScript・TypeScript）: `条件 ? A : B` は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。`user.isAdmin ? "管理者" : "一般"`。`if` とちがい、値を返すので、そのまま変数や表示に使えます。
+> - **`型[]`**（TypeScript）: `string[]` のように型の後ろに `[]` を付けると、「その型の並び（配列）」という型になります。`Array<string>` と書いても同じです。
+> - **`boolean`**（TypeScript）: `boolean` は、`true`（はい）か `false`（いいえ）の型です。
+> - **`.length`**（JavaScript・TypeScript）: `.length` は、並びの数や、文字の数です。文字の場合は、UTF-16 という数え方なので、絵文字などは 2 と数えることがあります（`[...文字].length` なら、見た目の文字の数に近くなります）。
 
 <!-- /first-use -->
 
@@ -264,6 +301,9 @@ export function badgeColor(status: RequestStatus): "白" | "オレンジ" | "青
 > - **`default`**（JavaScript・TypeScript）: `export default` は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は `import 名前 from "./ファイル"` と、好きな名前で受け取れます。
 > - **`never`**（TypeScript）: 「ここには絶対に来ない」ことを表す型。`switch` の最後に `const unreachable: never = current;` と書いておくと、状態を足したのに `case` を書き忘れた時、`npx tsc` がエラーで教えてくれます。
 > - **`===`**（TypeScript）: 「型も値も同じか」を比べる書き方。`==` は型を勝手にそろえてから比べて思わぬ結果になるので、ふつうは `===` を使います（違うかは `!==`）。
+> - **`/* */`**（JavaScript・TypeScript）: JavaScript・TypeScript では、`/*` から `*/` までがコメントです。何行にもまたがって書けます。
+> - **`A | B`**（TypeScript）: `type RequestStatus = "下書き" | "回覧中" | "承認済み";` の `|` は、「このどれか」を表す型です（ユニオン型）。決めた値以外を入れると、TypeScript がエラーで教えてくれます。`string | null` は「文字か、null」です。
+> - **`import type`**（TypeScript）: `import type { RequestStatus } from "./types.ts";` は、「型だけ」を読み込む書き方です。型は動く時には消えるので、動くプログラムには何も残りません。`import { useState, type FormEvent }` のように、1 つずつ `type` を付けることもできます。
 
 <!-- /first-use -->
 
@@ -298,6 +338,14 @@ export type RequestItem = {
   note?: string;        // ? が付いた項目は、無くてもよい
 };
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`名前?:`**（TypeScript）: `note?: string;` のように名前の後ろに `?` を付けると、「この項目は、無くてもよい」という意味になります。無い時の値は `undefined` です。
+
+<!-- /first-use -->
 
 - `status` に `RequestStatus` を使うと、依頼のデータにも、決まった状態しか入らなくなります。
 - `note?:` のように `?` を付けた項目は、無くてもかまいません。その代わり、使う前に「あるか」を確かめる必要があります（4 章の最後）。
@@ -375,6 +423,8 @@ for (const r of requests) {
 > - **`.localeCompare()`**（TypeScript）: 2 つの文字列を、辞書の順で比べるメソッド。`a.localeCompare(b)` は、`a` が先ならマイナス、同じなら 0、後ならプラス。`sort` の中で、文字（日付の文字など）で並べる時に使います。
 > - **`??`**（TypeScript）: `a ?? b` は、`a` が `null` か `undefined` なら `b` を使う書き方。`(acc[key] ?? 0) + 1` は「まだ無ければ 0 から数える」。
 > - **`...`**（TypeScript）: スプレッド構文。`[...requests]` は配列の中身を広げて、新しい配列（写し）を作ります。`{ ...user, isAdmin: true }` は、オブジェクトを写して一部だけ変えます。
+> - **`\n`**（文字列の中の特別な書き方）: 文字列の中の `\n` は「改行」を表す書き方です。`\`（バックスラッシュ。日本語のキーボードやフォントでは `¥` に見えることがあります）と `n` の 2 文字で、改行 1 つを表します。`"1行目\n2行目"` を表示すると 2 行になります。
+> - **`!==`**（JavaScript・TypeScript）: `a !== b` は、「a と b が同じではない」（型も含めて比べる）です。`===`（同じ）の反対です。
 
 <!-- /first-use -->
 
@@ -481,6 +531,11 @@ console.log(isDrawing(JSON.parse('{"version": 2}'))); // false（形が違う）
 > - **`.stringify()`**（TypeScript）: `JSON.stringify(値)` は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。
 > - **`.encode()`**（TypeScript）: `new TextEncoder().encode(文字列)` は、文字列を UTF-8 のバイトの並びにするメソッド。`.length` で、何バイトになるかが分かります（日本語は 1 文字 3 バイト）。
 > - **`.parse()`**（JavaScript・TypeScript）: `JSON.parse(文字列)` は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は `JSON.stringify(値)` です。
+> - **`&&`**（JavaScript・TypeScript）: `a && b` は、「a と b の両方が当てはまる」（かつ）です。左が当てはまらなければ、右は調べません。
+> - **`||`**（JavaScript・TypeScript）: `a || b` は、「a か b のどちらか」（または）です。`el.innerText || el.getAttribute("name") || ""` のように、「左が空なら右を使う」という使い方もします（`0` や `""` も「空」とみなされるので、`null`・`undefined` だけを見たい時は `??` を使います）。
+> - **`Record`**（TypeScript）: `Record<RequestStatus, string>` は、「キーが `RequestStatus` の全部で、値が文字」のオブジェクトの型です。キーの書き忘れを、TypeScript が見つけてくれます。
+> - **`Array`**（JavaScript・TypeScript）: `Array` は、並び（配列）の型です。`Array.isArray(値)` で、値が並びかどうかを調べられます。
+> - **`TextEncoder`**（JavaScript・TypeScript）: `new TextEncoder().encode(文字)` は、文字を UTF-8 のバイトの並びにします。`.length` で、バイトの数（大きさ）が分かります。
 
 <!-- /first-use -->
 
@@ -627,6 +682,15 @@ try {
 > - **`.then()`**（TypeScript）: `Promise`（あとで届く約束）の結果が届いた時に動く関数を登録するメソッド。`await` を使えば、多くの場合は書かずに済みます。
 > - **`.error()`**（TypeScript）: `console.error(…)` は、エラーの知らせを出す関数です（`console.log` のエラー版）。
 > - **`.close()`**（JavaScript・TypeScript）: Playwright で、ブラウザーを閉じるメソッド（`await browser.close()`）。
+> - **`!`**（JavaScript・TypeScript）: `!res.ok` のように前に付けた `!` は、「〜ではない」です。`if (!res.ok)` は「うまくいかなかったら」。
+> - **`名前<型>()`**（TypeScript）: `useState<RequestItem[] | null>(null)` や `res.json<T>()` のように、関数の名前の後ろの `< >` は、「どの型で扱うか」を指定する書き方です（ジェネリクス）。
+> - **`型<型>`**（TypeScript）: `Promise<void>`・`Record<string, unknown>` のように、型の後ろの `< >` には、中に入る型を書きます。`Promise<void>` は「終わると何も返さない、あとで終わる処理」です。
+> - **`AddressInfo`**（TypeScript）: `AddressInfo` は、Node.js のサーバーが待ち受けている場所（アドレスとポート番号）の型です。
+> - **`Promise`**（JavaScript・TypeScript）: `Promise` は、「あとで終わる処理」（サーバーの答えを待つ、時間を待つ）を表す物です。`await` を付けると、終わるまで待って、結果を受け取れます。`new Promise((resolve) => …)` で、自分で作ることもできます。
+> - **`Error`**（JavaScript・TypeScript）: `new Error("説明")` は、エラーを作ります。`throw new Error(…)` でエラーを起こし、`try { … } catch (err) { … }` で受け止めます。`err.message` で説明の文を読めます。
+> - **`createServer()`**（Node.js）: `createServer((req, res) => { … })` は、Node.js（`node:http`）で、HTTP のサーバーを作る関数です。
+> - **`fetch()`**（JavaScript・TypeScript）: `fetch(URL)` は、サーバーに HTTP の要求を送る関数です。`await fetch(…)` で答えを待ち、`res.ok`（うまくいったか）・`res.status`（状態コード）・`await res.json()`（JSON の中身）を読みます。
+> - **`.ok`**（JavaScript・TypeScript）: `fetch` の答えの `.ok` は、状態コードが 200〜299（うまくいった）なら `true` です。
 
 <!-- /first-use -->
 

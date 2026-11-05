@@ -1462,6 +1462,16 @@ content-length: 228
 date: Fri, 30 Oct 2026 11:31:05 GMT
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>curl.exe -I</code></strong>（HTTP クライアント）: <code>-I</code>（大文字）は、中身を取らずに、見出しだけを取る（HEAD という種類の要求を送る）指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>無い URL（<code>/nothing</code>）は <code>404 Not Found</code> で、本文は <code>not found</code> だけです。ページに名札を付けていない URL は、Topcoat が自動で 404 にします。自分の画面（ヘッダーやトップへのリンクの付いたもの）で 404 を出したいときは、<code>not_found!()</code> とレイアウトを使います（UNIT 03・10）。</li>
 <li><code>POST /</code> は <code>405 Method Not Allowed</code> と <code>allow: GET, HEAD</code> です。<code>#[page]</code> は GET（と HEAD）だけに答えるので、Topcoat が「使えるのは GET と HEAD です」と教えてくれました。UNIT 01 の問1で「本当は 405 と Allow を返すべき」と書いたことを、Topcoat は何も書かなくてもしてくれます。</li>
@@ -1744,6 +1754,16 @@ available binaries: u02_serve, web_lab
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;a&gt;</code></strong>（HTML）: リンクのタグ。<code>&lt;a href="../URL"&gt;文字&lt;/a&gt;</code> で、押すとその URL へ移ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u02_q1</span>
 </code></pre></div></div>
 
@@ -1782,6 +1802,16 @@ date: Fri, 30 Oct 2026 11:31:29 GMT
 <p><strong>問3の解答:</strong></p>
 <div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-i</span> <span class="p">-</span><span class="n">-compressed</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">3000</span><span class="p">/</span><span class="n">about</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>curl.exe --compressed</code></strong>（HTTP クライアント）: <code>--compressed</code> は、「圧縮して送ってよい」とサーバーに伝え、受け取った物をほどいてから表示する指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>HTTP/1.1 200 OK
 content-type: text/html; charset=utf-8
@@ -2033,6 +2063,9 @@ date: Fri, 30 Oct 2026 11:31:29 GMT
 <li><strong><code>#[route]</code></strong>（Topcoat）: Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。<code>#[route(GET)]</code> のように、メソッドを必ず書きます。人が見る画面は <code>#[page]</code>、プログラムが読む答えは <code>#[route]</code> と使い分けます。</li>
 <li><strong><code>.is_current()</code></strong>（Topcoat）: <code>href!(…)</code> で作ったリンク先が、「今開いているページ」なら <code>true</code> を返すメソッド。メニューの今のページに印（<code>aria-current</code>）を付ける時に使います。</li>
 <li><strong><code>.then_some()</code></strong>（Option）: <code>bool</code> が <code>true</code> なら <code>Some(値)</code>、<code>false</code> なら <code>None</code> を返すメソッド。<code>on_about.then_some("page")</code>。Topcoat の <code>view!</code> では、属性に <code>None</code> を入れると、その属性ごと書かれません。</li>
+<li><strong><code>&lt;nav&gt;</code></strong>（HTML）: <code>&lt;nav&gt;</code> は、ほかのページへのリンク（メニュー）をまとめるタグです。</li>
+<li><strong><code>aria-*=</code></strong>（HTML）: <code>aria-label="…"</code>・<code>aria-current="page"</code> のように <code>aria-</code> で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。<code>aria-label</code> は名前、<code>aria-current="page"</code> は「今開いているページ」、<code>aria-invalid="true"</code> は「入力に間違いがある」です。</li>
+<li><strong><code>class=</code></strong>（HTML）: <code>class</code> は、タグに付ける「グループの名前」です。CSS で <code>.note { … }</code> と書くと、<code>class="note"</code> の物全部に、同じ見た目が付きます。<code>class="note done"</code> のように、空白で区切っていくつも付けられます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2208,6 +2241,17 @@ ok
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;header&gt;</code></strong>（HTML）: <code>&lt;header&gt;</code> は、ページや区切りの「頭の部分」（サイトの名前・メニューなど）を囲むタグです。</li>
+<li><strong><code>&lt;div&gt;</code></strong>（HTML）: <code>&lt;div&gt;</code> は、意味を持たない、ただの「囲み」のタグです。CSS で見た目を付けるために、いくつかの物をまとめる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u03_nested</span>
 </code></pre></div></div>
 
@@ -2338,6 +2382,16 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 <div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">e03_href</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build --bin</code></strong>（cargo のコマンド）: <code>cargo build --bin e03_href</code> は、<code>src\bin</code> の中の 1 つだけを翻訳します。エラーの見本を、わざと翻訳して確かめる時などに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling web_lab v0.1.0 (...\web_lab)
 error[E0573]: cannot find type `about_page` in this scope
@@ -2784,6 +2838,7 @@ date: Fri, 30 Oct 2026 11:37:49 GMT
 <li><strong><code>#[query_params]</code></strong>（Topcoat）: Topcoat の印（属性）。<code>?q=rust&amp;page=2</code> のようなクエリ（URL の <code>?</code> の後ろ）を読むための構造体に付けます。項目は <code>Option&lt;T&gt;</code> にしておき、無い・空の時は <code>None</code> になります（第6巻 UNIT 04）。</li>
 <li><strong><code>.to_str()</code></strong>（文字列）: 値（HTTP のヘッダーの値・パスなど）を、<code>&amp;str</code>（文字列）として読むメソッド。文字として読めないこともあるので、<code>Result</code> や <code>Option</code> で返ります。</li>
 <li><strong><code>Name</code></strong>（Topcoat）: <code>module_param!(name: String)</code> で作られる、URL の部品の型（名前の頭を大文字にした形）。<code>path_param::&lt;Name&gt;(cx)</code> で、その部品の値を読みます。</li>
+<li><strong><code>#[query_params(error)]</code></strong>（Topcoat）: <code>#[query_params(error = bad_request)]</code> の <code>error = …</code> は、クエリ（URL の <code>?page=abc</code> など）を読めなかった時に返す答えを決める指定です。<code>bad_request</code> なら 400、<code>not_found</code> なら 404 を返します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2855,6 +2910,16 @@ content-length: 34
 </ul>
 <div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-i</span> <span class="n">-A</span> <span class="s2">&quot;RustNote-test/1.0&quot;</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">3000</span><span class="p">/</span><span class="n">whoami</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>curl.exe -A</code></strong>（HTTP クライアント）: <code>-A "RustNote-test/1.0"</code> は、「どの道具から来た要求か」を表す見出し（<code>User-Agent</code>）を指定します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### curl.exe -i -A &quot;RustNote-test/1.0&quot; http://127.0.0.1:3000/whoami
 HTTP/1.1 200 OK
@@ -3494,6 +3559,15 @@ bad request: invalid value for path parameter &quot;id&quot;
 <li><strong><code>#[default]</code></strong>（Topcoat）: コンポーネントの引数に付ける印。<code>#[default] child: Child&lt;'_&gt;</code> は、「名前を付けずにタグの間に書いた中身が、この引数に入る」という意味です。（<code>#[derive(Default)]</code> の中で、どの種類を初期値にするかの印にも使われます。）</li>
 <li><strong><code>#[key]</code></strong>（Topcoat）: <code>view!</code> の中の <code>for</code> に付ける印。くり返しの 1 つずつを、何で見分けるか（ノートの番号など）を決めます。画面を部分的に描き直す時に、正しく対応させるために使います。</li>
 <li><strong><code>Child</code></strong>（Topcoat）: コンポーネントの「中身」（タグの間に書いた物）を受け取る型。部品の中で <code>(child)</code> と書いた所に置かれます。</li>
+<li><strong><code>&lt;li&gt;</code></strong>（HTML）: <code>&lt;li&gt;</code> は、並び（<code>&lt;ul&gt;</code>・<code>&lt;ol&gt;</code>）の中の 1 つを表すタグです。</li>
+<li><strong><code>data-*=</code></strong>（HTML）: <code>data-tag="…"</code> のように <code>data-</code> で始まる属性は、自分で決めた名前で、タグに値を付けておける入れ物です。CSS や JavaScript から読めます。</li>
+<li><strong><code>&lt;section&gt;</code></strong>（HTML）: <code>&lt;section&gt;</code> は、ページの中の、ひとまとまりの区切り（見出しを持つ部分）を囲むタグです。</li>
+<li><strong><code>&lt;h2&gt;</code></strong>（HTML）: <code>&lt;h2&gt;</code> は、2 番目の大きさの見出しです。<code>&lt;h1&gt;</code> がページの題、<code>&lt;h2&gt;</code> がその下の区切りの見出し、<code>&lt;h3&gt;</code> がさらに下です。見た目の大きさではなく、文の組み立てで選びます。</li>
+<li><strong><code>&lt;ul&gt;</code></strong>（HTML）: <code>&lt;ul&gt;</code> は、順番の無い並び（・で始まる箇条書き）のタグです。中に <code>&lt;li&gt;</code> を並べます。順番のある並びは <code>&lt;ol&gt;</code> です。</li>
+<li><strong><code>&lt;input&gt;</code></strong>（HTML）: 1 行の入力欄のタグ。<code>type</code> で種類（<code>text</code>・<code>email</code>・<code>password</code>・<code>hidden</code> など）を、<code>name</code> で送る時の名前を決めます。閉じタグはありません。</li>
+<li><strong><code>type=</code></strong>（HTML）: <code>&lt;input type="…"&gt;</code> の <code>type</code> は、入力欄の種類です。<code>text</code>（文字）・<code>email</code>・<code>password</code>（伏せ字）・<code>number</code>・<code>date</code>・<code>checkbox</code>（チェック）・<code>file</code>（ファイル）・<code>search</code> などがあります。<code>&lt;button type="submit"&gt;</code> は、押すとフォームを送るボタンです。</li>
+<li><strong><code>checked=</code></strong>（HTML）: <code>checked</code> は、チェックボックスが最初からチェックされた状態にする印です。</li>
+<li><strong><code>disabled=</code></strong>（HTML）: <code>disabled</code> は、入力欄やボタンを使えなく（押せなく）する印です。送信中に、2 回押されるのを防ぐ時などに使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3589,6 +3663,16 @@ bad request: invalid value for path parameter &quot;id&quot;
 <span class="w">        </span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;サーバーを起動できませんでした&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>title=</code></strong>（HTML）: <code>title</code> は、マウスを乗せた時に出る、短い説明です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-106"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_escape</span>
 <span class="n">curl</span><span class="p">.</span><span class="n">exe</span> <span class="n">-s</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">3000</span><span class="p">/</span>
@@ -4102,6 +4186,20 @@ error: could not compile `web_lab` (bin &quot;e05_moved&quot;) due to 1 previous
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;form&gt;</code></strong>（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。<code>action</code> に送り先、<code>method="post"</code> に送り方を書きます。</li>
+<li><strong><code>method=</code></strong>（HTML）: <code>&lt;form method="post"&gt;</code> の <code>method</code> は、フォームの送り方です。<code>post</code> はデータを送って何かを変える時（登録・削除）、<code>get</code> は検索のように、URL の <code>?q=…</code> に入れて送る時に使います。</li>
+<li><strong><code>action=</code></strong>（HTML）: <code>&lt;form action="/notes"&gt;</code> の <code>action</code> は、フォームの送り先の URL です。書かなければ、今のページに送ります。</li>
+<li><strong><code>value=</code></strong>（HTML）: <code>value</code> は、入力欄の最初の値や、選び肢（<code>&lt;option&gt;</code>）を選んだ時に送られる値です。</li>
+<li><strong><code>&lt;button&gt;</code></strong>（HTML）: ボタンのタグ。<code>&lt;form&gt;</code> の中の <code>type="submit"</code> のボタンを押すと、フォームが送られます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この例から、構造体を JSON やフォームと変換する <code>serde</code> を使うので、<code>web_lab</code> に足します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-127"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">add</span> <span class="n">serde</span><span class="p">@=</span><span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">229</span> <span class="p">-</span><span class="n">-features</span> <span class="n">derive</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u06_form</span>
@@ -4267,6 +4365,17 @@ content-length: 25
 
 [{&quot;id&quot;:1,&quot;title&quot;:&quot;milk&quot;}]
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>curl.exe -H</code></strong>（HTTP クライアント）: <code>-H "Content-Type: application/json"</code> は、要求に見出し（ヘッダー）を 1 つ足します。何度も書けます。</li>
+<li><strong><code>curl.exe --data-binary</code></strong>（HTTP クライアント）: <code>--data-binary</code> は、送る中身を、改行なども変えずにそのまま送る指定です。<code>--data-binary "@note.json"</code> のように <code>@</code> を付けると、ファイルの中身を送ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>最初の <code>GET</code> は <code>[]</code>（空の配列）でした。<code>Json(…)</code> で包んで返すと、Topcoat が構造体を JSON に変え、<code>content-type: application/json</code> を付けます。<code>Memo</code> に付けた <code>#[derive(Serialize)]</code> が、構造体から JSON への変換を作ります。</li>
@@ -4872,6 +4981,8 @@ content too large
 <ul>
 <li><strong><code>#[memoize]</code></strong>（Topcoat）: Topcoat の印（属性）。付けた関数の結果を、<strong>1 つの要求（リクエスト）の間だけ</strong>覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます（第6巻 UNIT 07）。</li>
 <li><strong><code>.then()</code></strong>（Option）: <code>bool</code> が <code>true</code> の時だけ、渡した関数を動かして <code>Some(結果)</code> を返すメソッド（<code>false</code> なら <code>None</code>）。<code>then_some</code> と違い、値を作る処理が、必要な時だけ動きます。（Future の <code>.then</code> は別の物です。）</li>
+<li><strong><code>#[memoize(as_ref)]</code></strong>（Topcoat）: <code>#[memoize(as_ref)]</code> の <code>as_ref</code> は、覚えておいた結果を、複製せずに「借りる形」で返す指定です。<code>Option&lt;User&gt;</code> を返す関数なら、呼んだ側には <code>Option&lt;&amp;User&gt;</code> が返ります。付けない <code>#[memoize]</code> は <code>&amp;Option&lt;User&gt;</code> を返します。</li>
+<li><strong><code>&lt;span&gt;</code></strong>（HTML）: <code>&lt;span&gt;</code> は、文の中の一部を囲む、意味を持たないタグです。一部の文字だけに色を付ける時などに使います（<code>&lt;div&gt;</code> とちがい、改行しません）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5318,6 +5429,9 @@ content-length: 0
 <li><strong><code>font-family:</code></strong>（CSS）: CSS で、文字の書体（フォント）を決める項目。<code>font-family: sans-serif;</code> は「飾りの無い書体」。</li>
 <li><strong><code>margin:</code></strong>（CSS）: CSS で、箱の外側の余白を決める項目。<code>margin: 2rem;</code> は、上下左右に文字 2 つ分くらいの余白です。</li>
 <li><strong><code>color:</code></strong>（CSS）: CSS で、文字の色を決める項目。<code>color: #1e40af;</code> のように、色の番号（16 進数）や名前で書きます。</li>
+<li><strong><code>/* */</code></strong>（CSS）: CSS では、<code>/*</code> から <code>*/</code> までがコメントです。</li>
+<li><strong><code>数rem</code></strong>（CSS）: CSS の <code>1.5rem</code> の <code>rem</code> は、「ページの基本の文字の大きさ（ふつう 16px）の何倍か」で表す単位です。利用者が文字を大きくする設定にすると、一緒に大きくなるので、読みやすさのために、文字や余白によく使います。</li>
+<li><strong><code>#rrggbb</code></strong>（CSS）: CSS の <code>#0f172a</code> のような <code>#</code> と 6 けた（または 3 けた）の 16 進数は、色の書き方です。2 けたずつ、赤・緑・青の強さ（00〜ff）を表します。<code>#ffffff</code> は白、<code>#000000</code> は黒です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5382,6 +5496,16 @@ content-length: 0
 <div class="codehilite"><div class="code-wrap" id="code-175"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">topcoat</span> <span class="n">asset</span> <span class="n">bundle</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_assets</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>topcoat asset bundle --bin</code></strong>（Topcoat）: <code>topcoat asset bundle --bin u08_assets</code> の <code>--bin</code> は、<code>src\bin</code> の中のどのプログラムのアセットを束ねるかを指定します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-176"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>bundled assets into ...\web_lab\target\debug\assets
 </code></pre></div></div>
 
@@ -5401,6 +5525,20 @@ site-7becc8b6682e6054.css
 <span class="n">hash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;7becc8b6682e6054d01e53b6fa67af40714b1145b9a9b5191b328ac6e4c53d2e&quot;</span>
 <span class="n">content_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;text/css&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[[assets]]</code></strong>（設定ファイル（TOML））: <code>topcoat asset bundle</code> が作る目録（<code>manifest</code>）の <code>[[assets]]</code> は、束ねたアセット（CSS など）1 つ分の記録です。</li>
+<li><strong><code>id =</code></strong>（設定ファイル（TOML））: アセットの <code>id</code> は、アセットを見分けるための番号です（中身から計算されます）。</li>
+<li><strong><code>file =</code></strong>（設定ファイル（TOML））: アセットの <code>file</code> は、束ねた後のファイル名です。名前に中身の指紋（<code>7becc8b6…</code>）が入るので、中身が変わると名前も変わり、ブラウザーが古い物を使い続けることがありません。</li>
+<li><strong><code>hash =</code></strong>（設定ファイル（TOML））: <code>hash</code> は、ファイルの中身から計算した指紋（長い 16 進数）です。</li>
+<li><strong><code>content_type =</code></strong>（設定ファイル（TOML））: <code>content_type = "text/css"</code> は、そのファイルの種類です。ブラウザーに渡す時の <code>Content-Type</code> になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>起動して、ページと CSS を開きます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-180"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u08_assets</span>
@@ -5502,6 +5640,16 @@ h1 {
 
   ready on http://127.0.0.1:3000
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>topcoat dev --bin</code></strong>（Topcoat）: <code>topcoat dev --bin u08_dev</code> は、開発用に動かすコマンドです。ファイルを保存するたびに、作り直して動かし直します。<code>--bin</code> は、どのプログラムかを選びます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>2つ目の窓からページを開くと、<code>dev.js</code> のスクリプトが入っています（<code>59039</code> の番号は、起動するたびに変わります）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-185"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### curl.exe -s http://127.0.0.1:3000/
@@ -5855,6 +6003,9 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <li><strong><code>.runtime()</code></strong>（Topcoat）: ルーターに、ブラウザーの中で画面を変える仕組み（runtime）を登録するメソッド（第6巻 UNIT 09）。</li>
 <li><strong><code>topcoat::runtime::script()</code></strong>（Topcoat）: ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。</li>
 <li><strong><code>RouterBuilderRuntimeExt</code></strong>（Topcoat）: ルーターに <code>.runtime()</code>（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。</li>
+<li><strong><code>@click=</code></strong>（Topcoat）: <code>view!</code> の中の <code>@click=$(|_e| …)</code> は、「押された時に、ブラウザーの中で動かす処理」を付ける書き方です。サーバーには送らずに、ブラウザーの中だけで動きます（<code>$( )</code> の中は JavaScript になります）。</li>
+<li><strong><code>:hidden=</code></strong>（Topcoat）: <code>view!</code> の中の <code>:hidden=$(…)</code> は、「ブラウザーの中で、値が変わるたびに付け直す属性」の書き方です（結び付けの属性）。<code>$( )</code> の中が <code>true</code> の時は <code>hidden</code>（隠す）が付き、<code>false</code> の時は外れます。</li>
+<li><strong><code>$( … )</code></strong>（Topcoat）: <code>view!</code> の中の <code>$( … )</code> は、「ブラウザの中でも動く式」です。サーバーが最初の画面を作る時に計算し、さらに同じ式を JavaScript にしてページに入れます。signal の値が変わるたびに、ブラウザがその式を計算し直して、画面を書きかえます。ふつうの <code>( … )</code> は、サーバーで 1 回計算するだけです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

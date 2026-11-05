@@ -436,6 +436,17 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Sort-Object -Unique</code></strong>（PowerShell）: 並べかえたうえで、同じ物を 1 つにまとめるオプション。</li>
 <li><strong><code>Invoke-WebRequest -TimeoutSec</code></strong>（PowerShell）: 答えを待つ時間の上限（秒）を決めるオプション。過ぎたらエラーにして、いつまでも止まらないようにします。</li>
 <li><strong><code>-gt</code></strong>（PowerShell）: PowerShell の「より大きい」の比べ方（greater than）。<code>$failed -gt 0</code> は「失敗が 1 つ以上あるか」。</li>
+<li><strong><code>[ValidateSet()]</code></strong>（PowerShell）: <code>[ValidateSet("prod", "stg")]</code> は、「この引数には、<code>prod</code> か <code>stg</code> だけを受け付ける」という印です。ほかの値を渡すと、動く前にエラーで止まります。</li>
+<li><strong><code>[string]</code></strong>（PowerShell）: <code>[string]$Name</code> の <code>[string]</code> は、「この変数（引数）は文字列」という型の指定です。<code>[string]123</code> のように値の前に書くと、文字列に変えます。</li>
+<li><strong><code>[bool]</code></strong>（PowerShell）: <code>[bool]</code> は「はい・いいえ」（<code>$true</code>・<code>$false</code>）の型です。<code>[bool]$x</code> は、<code>$x</code> に何か入っていれば <code>$true</code>、空や <code>$null</code> なら <code>$false</code> にします。</li>
+<li><strong><code>.Service</code></strong>（PowerShell）: <code>$t.Service</code> は、上で作った表（<code>$targets</code>）から選んだ組の、<code>Service</code>（確かめるサービスの名前）の値です。</li>
+<li><strong><code>.Status</code></strong>（PowerShell）: <code>Get-Service</code> の結果の <code>.Status</code> は、サービスの状態（<code>Running</code>＝動いている・<code>Stopped</code>＝止まっている）です。</li>
+<li><strong><code>.Port</code></strong>（PowerShell）: <code>$t.Port</code> は、上で作った表（<code>$targets</code>）から選んだ組の、<code>Port</code>（アプリが待ち受けるポート番号）の値です。</li>
+<li><strong><code>.LocalAddress</code></strong>（PowerShell）: <code>.LocalAddress</code> は、待ち受けている、このパソコン側のアドレスです。<code>0.0.0.0</code> ならどこからでも、<code>127.0.0.1</code> ならこのパソコンの中からだけ受け付けます。</li>
+<li><strong><code>.Name</code></strong>（PowerShell）: <code>$t.Name</code> は、上で作った表（<code>$targets</code>）から選んだ組の、<code>Name</code>（サイトの名前）の値です。<code>$_.Name</code> のように、流れてきた物の名前を表すこともあります。</li>
+<li><strong><code>.Exception</code></strong>（PowerShell）: <code>catch</code> の中の <code>$_.Exception</code> は、起きたエラーの中身です。<code>.Message</code> で、エラーの説明文を取り出せます。</li>
+<li><strong><code>.Message</code></strong>（PowerShell）: <code>$_.Exception.Message</code> は、エラーの説明文です。</li>
+<li><strong><code>.DriveLetter</code></strong>（PowerShell）: <code>Get-Volume</code> の結果の <code>.DriveLetter</code> は、ドライブの文字（<code>C</code>・<code>D</code>）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -587,6 +598,10 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>-notmatch</code></strong>（PowerShell）: <code>-match</code> の逆で、正規表現に合わないかの比べ方。<code>$line -notmatch '='</code> は「<code>=</code> を含まない行か」。</li>
 <li><strong><code>-split</code></strong>（PowerShell）: 文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</li>
+<li><strong><code>\d</code></strong>（正規表現）: 正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</li>
+<li><strong><code>+</code></strong>（正規表現）: 正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</li>
+<li><strong><code>$</code></strong>（正規表現）: 正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</li>
+<li><strong><code>$並び[0]</code></strong>（PowerShell）: <code>$list[0]</code> は、並びの 0 番目（最初の 1 つ）を取り出します。<code>$list[-1]</code> は最後の 1 つです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -599,6 +614,16 @@ li, tr { page-break-inside: avoid; }
 <span class="nv">$pg</span> <span class="p">=</span> <span class="nb">Get-ChildItem</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">log</span> <span class="p">|</span> <span class="nb">Sort-Object</span> <span class="n">LastWriteTime</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">1</span>
 <span class="nb">Select-String</span> <span class="n">-Path</span> <span class="nv">$pg</span><span class="p">.</span><span class="n">FullName</span> <span class="n">-Pattern</span> <span class="s2">&quot;ERROR|FATAL|PANIC&quot;</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-Last</span> <span class="n">20</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>|</code></strong>（正規表現）: 正規表現の <code>|</code> は、「左か右のどちらか」を表します。<code>api/|admin/</code> は「<code>api/</code> か <code>admin/</code>」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>PostgreSQL のログが化けて読めないときは、</strong> <code>lc_messages = 'C'</code> になっているかを確かめます（04 の 5.3）。</p>
@@ -985,6 +1010,17 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Select-Object</span> <span class="n">TimeCreated</span><span class="p">,</span> <span class="n">Id</span><span class="p">,</span> <span class="n">Message</span> <span class="p">|</span> <span class="nb">Format-List</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.StartMode</code></strong>（PowerShell）: <code>Win32_Service</code> の <code>.StartMode</code> は、サービスの起動のしかたです（<code>Auto</code>＝パソコンの起動と一緒に・<code>Manual</code>＝手で・<code>Disabled</code>＝使わない）。</li>
+<li><strong><code>.State</code></strong>（PowerShell）: <code>Win32_Service</code> の <code>.State</code> は、サービスの今の状態（<code>Running</code> など）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -1039,6 +1075,9 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>ForEach-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物を、1 つずつ処理するコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」を表します。<code>… | ForEach-Object { $_.Name }</code> は、1 つずつ名前を取り出します。</li>
 <li><strong><code>Measure-Object</code></strong>（PowerShell）: 受け取った物の数や、合計・平均などを計算するコマンド。</li>
 <li><strong><code>Measure-Object -Sum</code></strong>（PowerShell）: 決めた項目の合計を計算するオプション。<code>Measure-Object Length -Sum</code> は、ファイルの大きさの合計（<code>.Sum</code> で取り出す）。</li>
+<li><strong><code>[pscustomobject]</code></strong>（PowerShell）: <code>[pscustomobject]@{ Folder = …; GB = … }</code> は、表（<code>@{ }</code>）から、列を持った 1 件の結果（オブジェクト）を作ります。並べて <code>Format-Table</code> や <code>Sort-Object</code> で扱えます。</li>
+<li><strong><code>[Math]</code></strong>（PowerShell）: <code>[Math]</code> は、計算の関数が集まった .NET の型です。<code>[math]::Round(3.14159, 2)</code> で、小数点以下 2 けたに丸めます（3.14）。</li>
+<li><strong><code>.Sum</code></strong>（PowerShell）: <code>Measure-Object Length -Sum</code> の結果の <code>.Sum</code> は、合計です（ここではファイルの大きさの合計）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

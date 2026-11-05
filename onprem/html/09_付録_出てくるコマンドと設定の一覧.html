@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/09_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A8%E8%A8%AD%E5%AE%9A%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">オンプレミス構築 教育資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">付録 — 出てくるコマンドと設定の一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜08 と「参考 HTTPS にする場合」に出てくる 418 個のコマンド・オプション・SQL・コードの部品を、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜08 と「参考 HTTPS にする場合」に出てくる 673 個のコマンド・オプション・SQL・コードの部品を、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -220,16 +220,20 @@ li, tr { page-break-inside: avoid; }
 table th:first-child, table td:first-child { width: 28%; }
 table td:first-child code { word-break: normal; overflow-wrap: anywhere; }
 table th:last-child, table td:last-child { width: 17%; }
+/* 長い表は、ページの途中から始めて、次のページへ続ける（表全体を 1 ページに収めようとして、見出しの下を空けない） */
+table { page-break-inside: auto; }
 </style>
 
 <h1 id="_1">付録: 出てくるコマンドと設定の一覧（機能ごと）</h1>
 <h2 id="_2">この資料について</h2>
-<p>00〜08 と「参考 HTTPS にする場合」のコードの枠に出てくる、<strong>PowerShell のコマンドとオプション・Windows のコマンド・SQL・psql・Python と Django・Rust と Topcoat の部品など 418 個</strong>を、<strong>27 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜08 と「参考 HTTPS にする場合」のコードの枠に出てくる、<strong>PowerShell のコマンドとオプションと書き方・Windows のコマンド・XML の設定・SQL・psql・Python と Django・Rust と Topcoat の部品など 673 個</strong>を、<strong>36 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どのコマンドや部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>-StartupType</code> は何だっけ？」「<code>robocopy</code> の <code>/E</code> は？」と思ったら、下の「分類の一覧」から分類を選んで探してください。HTML 版（<code>onprem\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コマンドの名前で探すのがいちばん速いです。</li>
 <li><strong>オプションの書き方:</strong> PowerShell のオプションは、<code>Get-Content -Tail</code> のように、<strong>コマンドの名前と組にして</strong>載せています。同じ <code>-Name</code> でも、コマンドによって意味が少しずつ違うからです。<code>-eq</code>・<code>-like</code>・<code>-join</code> などは、どのコマンドでも同じ意味の<strong>演算子</strong>なので、それだけで載せています。</li>
 <li><strong>「初めて出てくる所」の列:</strong> そのコマンドや部品が最初に出てくる資料と章です（<code>04 7. アプリを Windows サービスにする</code> は、04 の 7 章）。そこで、実際にどう使われているかを見られます。</li>
+<li><strong>書き方の決まりも入っています:</strong> PowerShell の <code>$_</code>・<code>|</code>・<code>"{0,-10}" -f</code>・<code>`</code>（行の続き）・<code>@{ }</code>・日時の書式（<code>yyyyMMdd</code>）・正規表現（<code>^\s*#</code>）・WinSW と IIS の XML の設定・HTTP の見出し・SQL の <code>?</code>・psql の <code>\l</code> なども、1 つずつ説明しています。</li>
+<li><strong>やりたいことから探す時は:</strong> 次の付録「逆引き」で、「サービスを止めたい」「古いログを消したい」のような、やりたいことからコマンドを探せます。本文に出てこない、合わせて覚えておくとよいコマンドも載せています。</li>
 <li><strong>名前の決まり:</strong> 本番のサービスは <code>webapp-prod</code>、検証は <code>webapp-stg</code>、フォルダは <code>D:\webapp\…</code> です（04 の 4.1）。説明の中の名前も、これに合わせています。</li>
 </ul>
 <blockquote>
@@ -248,87 +252,111 @@ table th:last-child, table td:last-child { width: 17%; }
 <tbody>
 <tr>
 <td><a href="#cat-1">PowerShell</a></td>
-<td>229</td>
-<td><a href="#cat-15">型とメソッド</a></td>
+<td>298</td>
+<td><a href="#cat-19">Option</a></td>
 <td>4</td>
 </tr>
 <tr>
-<td><a href="#cat-2">コマンド</a></td>
-<td>14</td>
-<td><a href="#cat-16">モジュール</a></td>
+<td><a href="#cat-2">日時の書式</a></td>
+<td>6</td>
+<td><a href="#cat-20">エラー処理</a></td>
 <td>3</td>
 </tr>
 <tr>
-<td><a href="#cat-3">psql</a></td>
-<td>3</td>
-<td><a href="#cat-17">スマートポインタ</a></td>
-<td>1</td>
+<td><a href="#cat-3">正規表現</a></td>
+<td>26</td>
+<td><a href="#cat-21">関数</a></td>
+<td>4</td>
 </tr>
 <tr>
-<td><a href="#cat-4">SQL</a></td>
-<td>61</td>
-<td><a href="#cat-18">時間</a></td>
-<td>3</td>
+<td><a href="#cat-4">コマンド</a></td>
+<td>24</td>
+<td><a href="#cat-22">型とメソッド</a></td>
+<td>6</td>
 </tr>
 <tr>
-<td><a href="#cat-5">Python の道具</a></td>
-<td>1</td>
-<td><a href="#cat-19">非同期</a></td>
+<td><a href="#cat-5">設定ファイル（XML）</a></td>
+<td>45</td>
+<td><a href="#cat-23">モジュール</a></td>
+<td>4</td>
+</tr>
+<tr>
+<td><a href="#cat-6">HTTP のやり取り</a></td>
+<td>8</td>
+<td><a href="#cat-24">所有権と借用</a></td>
 <td>2</td>
 </tr>
 <tr>
-<td><a href="#cat-6">Node.js</a></td>
+<td><a href="#cat-7">psql</a></td>
+<td>26</td>
+<td><a href="#cat-25">スマートポインタ</a></td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="#cat-8">SQL</a></td>
+<td>75</td>
+<td><a href="#cat-26">時間</a></td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="#cat-9">Python の道具</a></td>
+<td>1</td>
+<td><a href="#cat-27">非同期</a></td>
 <td>2</td>
-<td><a href="#cat-20">クッキー</a></td>
+</tr>
+<tr>
+<td><a href="#cat-10">Node.js</a></td>
+<td>2</td>
+<td><a href="#cat-28">クッキー</a></td>
 <td>12</td>
 </tr>
 <tr>
-<td><a href="#cat-7">cargo のコマンド</a></td>
-<td>1</td>
-<td><a href="#cat-21">認証</a></td>
+<td><a href="#cat-11">cargo のコマンド</a></td>
+<td>3</td>
+<td><a href="#cat-29">認証</a></td>
 <td>1</td>
 </tr>
 <tr>
-<td><a href="#cat-8">変数</a></td>
+<td><a href="#cat-12">設定ファイル（TOML）</a></td>
+<td>4</td>
+<td><a href="#cat-30">Topcoat</a></td>
+<td>12</td>
+</tr>
+<tr>
+<td><a href="#cat-13">コメント</a></td>
+<td>3</td>
+<td><a href="#cat-31">JavaScript・TypeScript</a></td>
+<td>25</td>
+</tr>
+<tr>
+<td><a href="#cat-14">変数</a></td>
 <td>2</td>
-<td><a href="#cat-22">Topcoat</a></td>
-<td>11</td>
-</tr>
-<tr>
-<td><a href="#cat-9">Vec（並び）</a></td>
-<td>2</td>
-<td><a href="#cat-23">JavaScript・TypeScript</a></td>
-<td>11</td>
-</tr>
-<tr>
-<td><a href="#cat-10">条件</a></td>
-<td>1</td>
-<td><a href="#cat-24">TypeScript</a></td>
+<td><a href="#cat-32">TypeScript</a></td>
 <td>9</td>
 </tr>
 <tr>
-<td><a href="#cat-11">くり返し</a></td>
+<td><a href="#cat-15">文字列</a></td>
 <td>1</td>
-<td><a href="#cat-25">Python</a></td>
-<td>23</td>
+<td><a href="#cat-33">React</a></td>
+<td>1</td>
 </tr>
 <tr>
-<td><a href="#cat-12">Option</a></td>
-<td>3</td>
-<td><a href="#cat-26">Django</a></td>
-<td>10</td>
-</tr>
-<tr>
-<td><a href="#cat-13">エラー処理</a></td>
-<td>3</td>
-<td><a href="#cat-27">Django REST framework</a></td>
+<td><a href="#cat-16">Vec（並び）</a></td>
 <td>2</td>
+<td><a href="#cat-34">Python</a></td>
+<td>36</td>
 </tr>
 <tr>
-<td><a href="#cat-14">関数</a></td>
+<td><a href="#cat-17">条件</a></td>
+<td>1</td>
+<td><a href="#cat-35">Django</a></td>
+<td>17</td>
+</tr>
+<tr>
+<td><a href="#cat-18">くり返し</a></td>
+<td>1</td>
+<td><a href="#cat-36">Django REST framework</a></td>
 <td>3</td>
-<td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -342,6 +370,16 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>#</code></td>
+<td><code>#</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、PowerShell は無視します。コマンドの横に、何をするかを日本語で書いておけます。コピーしてそのまま貼り付けても、問題ありません。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td><code>&amp; "C:\Program Files\…\vswhere.exe"</code> の先頭の <code>&amp;</code> は、「この文字（や変数）が指すプログラムを動かす」という印です。場所に空白が入っていて <code>"</code> で囲んだ時や、変数に入れた場所を動かす時に必要です。</td>
+<td>00 0. はじめの一歩: コンピューターの中身</td>
+</tr>
 <tr>
 <td><code>Get-Content</code></td>
 <td>ファイルの中身を画面に出すコマンド（短い呼び名は <code>cat</code>）。<code>Get-Content memo.txt</code> で中身を表示します。日本語のファイルは <code>-Encoding utf8</code> を付けると文字化けしません。<code>-Tail 10</code> で最後の 10 行だけを出せます。</td>
@@ -380,6 +418,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Select-Object</code></td>
 <td>結果のうち、見たい列だけを選ぶコマンド。<code>… &#124; Select-Object Name, Length</code> のように、<code>&#124;</code>（パイプ）で前のコマンドの結果を受け取って使います。<code>-First 5</code> で最初の 5 つだけにもできます。</td>
+<td>00 3. OS</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td><code>&#124;</code>（パイプ）は、左のコマンドの結果を、右のコマンドに流して渡す記号です。<code>Get-Service &#124; Where-Object { … } &#124; Select-Object Name</code> のように、「取り出す → しぼる → 選ぶ」をつないで書けます。キーボードでは <code>Shift</code> ＋ <code>¥</code> で打ちます。</td>
 <td>00 3. OS</td>
 </tr>
 <tr>
@@ -428,6 +471,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>00 5. Web アプリの仕組み</td>
 </tr>
 <tr>
+<td><code>.StatusCode</code></td>
+<td><code>Invoke-WebRequest</code> の結果の <code>.StatusCode</code> は、HTTP の状態コード（<code>200</code> など）です。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>[Security.Principal.WindowsPrincipal]</code></td>
+<td><code>[Security.Principal.WindowsPrincipal]</code> は、「今の利用者が、どのグループにいるか」を調べるための .NET の型です。<code>.IsInRole(…)</code> で、管理者として動いているかを確かめられます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>[Security.Principal.WindowsBuiltInRole]</code></td>
+<td><code>[Security.Principal.WindowsBuiltInRole]::Administrator</code> は、「Windows の管理者のグループ」を表す値です。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>[型]::名前</code></td>
+<td><code>[System.IO.File]::ReadAllBytes($path)</code> のように、<code>[型の名前]::名前</code> と書くと、.NET（PowerShell の土台）の型に付いている関数や値を、直接使えます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
 <td><code>Get-Help</code></td>
 <td>コマンドの説明を表示するコマンド。<code>Get-Help Get-Service</code> で使い方、<code>-Examples</code> で例が見られます。</td>
 <td>01 3. PowerShell の基本</td>
@@ -455,6 +518,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Where-Object</code></td>
 <td><code>&#124;</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>'…'</code></td>
+<td><code>'…'</code>（シングルクォート）で囲んだ文字は、書いたとおりの文字で、中の <code>$</code> や <code>`</code> は特別な意味になりません。正規表現（<code>'^\s*#'</code>）や、そのまま渡したい文字に使います。中に <code>'</code> を入れる時は <code>''</code> と 2 つ書きます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>"…$変数…"</code></td>
+<td><code>"…"</code>（ダブルクォート）で囲んだ文字の中の <code>$名前</code> は、変数の中身に置きかわります。<code>"こんにちは、$name さん"</code> → <code>こんにちは、太郎 さん</code>。そのまま <code>$</code> を出したい時は、<code>'…'</code>（シングルクォート）で囲みます。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>$名前</code></td>
+<td><code>$os = …</code> のように <code>$</code> で始まる名前は「変数」（値に付けた名前）です。<code>=</code> の右の結果を覚えておき、あとで <code>$os</code> と書けば使えます。名前の大文字・小文字は区別しません。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>$env:名前</code></td>
+<td><code>$env:GREETING</code> のように <code>$env:</code> を付けた名前は「環境変数」（プログラムに外から渡す設定）です。<code>$env:GREETING = "おはよう"</code> で設定すると、その PowerShell の窓から動かすプログラム（<code>cargo run</code> など）が読めます。窓を閉じると消えます。</td>
 <td>01 3. PowerShell の基本</td>
 </tr>
 <tr>
@@ -518,8 +601,38 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 3. PowerShell の基本</td>
 </tr>
 <tr>
+<td><code>$_</code></td>
+<td><code>$_</code> は、<code>&#124;</code>（パイプ）で流れてきた物の「今の 1 つ」を表す、特別な変数です。<code>Where-Object { $_.Name -like 'a*' }</code> は、「流れてきた 1 つずつの <code>Name</code> が a で始まる物だけ」。<code>catch { … }</code> の中では、起きたエラーを表します。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>[int]</code></td>
+<td><code>[int]</code> は「整数」という型です。<code>[int]($_.Length / 1MB)</code> のように値の前に書くと、整数に変えます（小数は四捨五入に近い形で丸めます）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td><code>;</code> は、1 行にコマンドを 2 つ以上書く時の区切りです。<code>cargo fmt --check; $LASTEXITCODE</code> は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>@{ … }</code></td>
+<td><code>@{ キー = 値; … }</code> は「表（ハッシュテーブル）」を作る書き方です。<code>$h = @{ Name = "web"; Port = 8080 }</code> なら <code>$h.Port</code> で <code>8080</code>。<code>Select-Object</code> の中の <code>@{ Name = 'MB'; Expression = { … } }</code> は、「計算して作る列」の決まった形です。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>.Length</code></td>
+<td><code>$_.Length</code> は、ファイルなら大きさ（バイト）、文字なら文字数です。<code>/ 1MB</code> で MB に直せます（<code>1MB</code> は PowerShell が知っている 1048576 のことです）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
 <td><code>.\backup.ps1</code></td>
 <td>今いるフォルダの <code>backup.ps1</code>（この資料で作る、データベースとファイルの控えを取るスクリプト）を動かす書き方。PowerShell では、今いるフォルダのスクリプトも <code>.\</code> を付けないと動きません（うっかり同じ名前の物を動かさないための決まり）。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>.\</code></td>
+<td><code>.\target\debug\practice.exe</code> の <code>.\</code> は、「今いるフォルダの中の」という意味です。PowerShell は、安全のため、今いるフォルダのプログラムでも <code>.\</code> を付けないと動かしません。</td>
 <td>01 3. PowerShell の基本</td>
 </tr>
 <tr>
@@ -658,6 +771,41 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 8. 重い・遅いを調べる</td>
 </tr>
 <tr>
+<td><code>"{0}" -f 値</code></td>
+<td><code>"{0} と {1}" -f $a, $b</code> の <code>-f</code> は、左の文字の <code>{0}</code>・<code>{1}</code> に、右に並べた値を、0 番目から順に入れる書き方です（書式の演算子）。<code>"全体 {0:N1} GB" -f 15.6</code> → <code>全体 15.6 GB</code>。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>{0:N桁}</code></td>
+<td><code>{0:N1}</code> の <code>N1</code> は、「3 けたごとに <code>,</code> を入れ、小数点以下を 1 けた」で表示する指定です。<code>N0</code> なら小数なし（<code>1,234</code>）。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>.WorkingSet64</code></td>
+<td><code>Get-Process</code> の結果の <code>.WorkingSet64</code> は、そのプログラムが今使っているメモリの量（バイト）です。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>.TotalVisibleMemorySize</code></td>
+<td><code>Win32_OperatingSystem</code> の <code>.TotalVisibleMemorySize</code> は、パソコンのメモリの全体の大きさです（単位は KB なので、<code>/ 1MB</code> で GB になります）。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>.FreePhysicalMemory</code></td>
+<td><code>Win32_OperatingSystem</code> の <code>.FreePhysicalMemory</code> は、今空いているメモリの大きさです（単位は KB）。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>.SizeRemaining</code></td>
+<td><code>Get-Volume</code> の結果の <code>.SizeRemaining</code> は、ドライブの空き容量（バイト）です。<code>.Size</code> は全体の大きさです。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
+<td><code>.Size</code></td>
+<td><code>Get-Volume</code> の結果の <code>.Size</code> は、ドライブ全体の大きさ（バイト）です。</td>
+<td>01 8. 重い・遅いを調べる</td>
+</tr>
+<tr>
 <td><code>Get-ScheduledTask</code></td>
 <td>タスクスケジューラーに登録した「予定の仕事」の一覧を表示するコマンド。</td>
 <td>01 9. タスク スケジューラ</td>
@@ -748,8 +896,18 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 10. Windows Defender ファイアウォール</td>
 </tr>
 <tr>
+<td><code><code>&lt;/code&gt; | 行の最後の ``</code> <code>（バッククォート。`Shift` ＋ `@` で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。</code> ` `` の後ろに空白があると続かないので、注意します。</td>
+<td>01 10. Windows Defender ファイアウォール</td>
+<td></td>
+</tr>
+<tr>
 <td><code>Get-HotFix</code></td>
 <td>入っている Windows の更新プログラム（番号 <code>HotFixID</code> と、入れた日 <code>InstalledOn</code>）の一覧を表示するコマンド。</td>
+<td>01 11. Windows Update と再起動</td>
+</tr>
+<tr>
+<td><code>.LastBootUpTime</code></td>
+<td><code>Win32_OperatingSystem</code> の <code>.LastBootUpTime</code> は、パソコンを最後に起動した日時です。</td>
 <td>01 11. Windows Update と再起動</td>
 </tr>
 <tr>
@@ -761,6 +919,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>Get-FileHash -Algorithm</code></td>
 <td>ハッシュの計算のしかたを決めるオプション。<code>-Algorithm SHA256</code> は、配っている所が公開している SHA256 の値と比べて、ファイルが壊れていない・すりかえられていないかを確かめる時に使います。</td>
 <td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td><code>$x += 1</code> は <code>$x = $x + 1</code> の短い形です。並びに <code>$names += "山田"</code> と書くと、後ろに 1 つ足した並びになります。</td>
+<td>02 2. ログインする</td>
 </tr>
 <tr>
 <td><code>Get-ComputerInfo</code></td>
@@ -823,6 +986,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 4. フォルダとアカウントの準備</td>
 </tr>
 <tr>
+<td><code>@( … )</code></td>
+<td><code>@( … )</code> は「並び（配列）」を作る書き方です。<code>@("a", "b")</code> で 2 つの並び、<code>@()</code> で空の並び。中のコマンドの結果が 1 つでも、必ず並びとして扱えます。</td>
+<td>04 4. フォルダとアカウントの準備</td>
+</tr>
+<tr>
 <td><code>Copy-Item</code></td>
 <td>ファイルやフォルダをコピーするコマンド。<code>Copy-Item 元 先</code>。最後の <code>.</code> は「今いるフォルダへ」という意味です。</td>
 <td>04 6. アプリを作る</td>
@@ -850,6 +1018,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Compress-Archive -Force</code></td>
 <td>同じ名前の zip がもうあれば、上書きするオプション。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td><code>'127*'</code> や <code>*.log</code> の <code>*</code> は、「何文字でも、何でも合う」という印（ワイルドカード）です。<code>-like '127*'</code> は「127 で始まる」、<code>-Filter *.log</code> は「名前が .log で終わる物」。1 文字だけなら <code>?</code> です。</td>
 <td>04 6. アプリを作る</td>
 </tr>
 <tr>
@@ -943,6 +1116,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 8. 受付</td>
 </tr>
 <tr>
+<td><code>$false</code></td>
+<td><code>$false</code> は「いいえ（偽）」を表す値です。<code>-Confirm:$false</code> は、「本当にしますか？」の確認を出さずに進める指定です。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
 <td><code>Get-NetFirewallPortFilter</code></td>
 <td>ファイアウォールの決まりの、ポート番号の条件の一覧を表示するコマンド。<code>&#124; Get-NetFirewallRule</code> につなぐと、そのポートを使う決まりが分かります。</td>
 <td>04 9. ファイアウォール</td>
@@ -953,6 +1131,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 9. ファイアウォール</td>
 </tr>
 <tr>
+<td><code>{ … }</code></td>
+<td><code>Where-Object { … }</code> や <code>ForEach-Object { … }</code> の <code>{ }</code> は「スクリプトブロック」（あとで動かす、命令のかたまり）です。流れてきた 1 つずつに対して、中の命令が動き、<code>$_</code> がその 1 つを表します。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>.LocalPort</code></td>
+<td><code>.LocalPort</code> は、待ち受けやつながりの、このパソコン側のポート番号です。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
 <td><code>-notlike</code></td>
 <td><code>-like</code> の逆で、ワイルドカードに合わないかの比べ方。<code>$_.DisplayName -notlike "webapp*"</code> は「webapp で始まらないか」。</td>
 <td>04 9. ファイアウォール</td>
@@ -960,6 +1148,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Disable-NetFirewallRule</code></td>
 <td>ファイアウォールの決まりを、消さずに使わない状態にするコマンド。あとで <code>Enable-NetFirewallRule</code> で戻せます。</td>
+<td>04 9. ファイアウォール</td>
+</tr>
+<tr>
+<td><code>.DisplayName</code></td>
+<td><code>.DisplayName</code> は、画面に出る名前です（サービスやファイアウォールの決まりの、人が読む名前）。</td>
 <td>04 9. ファイアウォール</td>
 </tr>
 <tr>
@@ -1093,6 +1286,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 11. 毎晩のバックアップ</td>
 </tr>
 <tr>
+<td><code>$ErrorActionPreference</code></td>
+<td><code>$ErrorActionPreference = "Stop"</code> は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（<code>.exe</code> のコマンドの失敗は止まらないので、<code>$LASTEXITCODE</code> も調べます）。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>$LASTEXITCODE</code></td>
+<td><code>$LASTEXITCODE</code> は、最後に動かしたプログラム（<code>cargo</code>・<code>git</code>・<code>psql</code> など、<code>.exe</code> のコマンド）の「終了コード」が入る、特別な変数です。<code>0</code> なら成功、<code>0</code> 以外なら失敗です。<code>if ($LASTEXITCODE -ne 0) { … }</code> で、失敗した時の処理を書けます。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>.LastWriteTime</code></td>
+<td><code>.LastWriteTime</code> は、ファイルを最後に書きかえた日時です。<code>Where-Object { $_.LastWriteTime -lt $limit }</code> で、古いファイルだけを選べます。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
 <td><code>New-ScheduledTaskAction</code></td>
 <td>予定の仕事で「何を動かすか」を作るコマンド。</td>
 <td>04 11. 毎晩のバックアップ</td>
@@ -1218,8 +1426,23 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 11. 毎晩のバックアップ</td>
 </tr>
 <tr>
+<td><code>.FullName</code></td>
+<td><code>Get-ChildItem</code> の結果の <code>.FullName</code> は、ファイルやフォルダの、<code>C:\</code> から始まる場所の全部です（<code>.Name</code> は名前だけ）。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code><code>"&lt;/code&gt; |</code>"…"<code>の中に</code>"<code>そのものを入れる時は、``</code>" <code>` と書きます（</code>""` と 2 つ重ねても同じです）。</td>
+<td>04 12. 定期処理・ログ・監視</td>
+<td></td>
+</tr>
+<tr>
 <td><code>Rename-Item</code></td>
 <td>ファイルやフォルダの名前を変えるコマンド。<code>Rename-Item 今の名前 新しい名前</code>。</td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>$( … )</code></td>
+<td><code>"…$($t.Port)…"</code> の <code>$( )</code> は、「中の式やコマンドの結果を、文字の中に入れる」書き方です。<code>"$x.Name"</code> のように書くと <code>$x</code> だけが置きかわってしまうので、<code>.</code> の付いた物や計算は <code>$( )</code> で囲みます。</td>
 <td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
 </tr>
 <tr>
@@ -1288,6 +1511,41 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 9. サーバーに置き、Windows サービスにする</td>
 </tr>
 <tr>
+<td><code>$true</code></td>
+<td><code>$true</code> は「はい（真）」を表す値です。<code>-Recurse:$true</code> のように、スイッチに値を渡す時にも使います。反対は <code>$false</code> です。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>$PSScriptRoot</code></td>
+<td><code>$PSScriptRoot</code> は、「今動いているスクリプト（<code>.ps1</code>）が置いてあるフォルダ」の場所が入った、特別な変数です。今いるフォルダがどこでも、スクリプトの隣のファイルを <code>Join-Path $PSScriptRoot "dev.env"</code> で見つけられます。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>[Parameter()]</code></td>
+<td><code>param( )</code> の中の <code>[Parameter(ValueFromRemainingArguments = $true)]</code> は、引数の受け取り方を決める印です。この指定なら、名前を付けずに渡した残りの引数を、全部その変数に受け取ります。<code>[Parameter(Mandatory)]</code> なら「必ず渡す」です。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>[string[]]</code></td>
+<td><code>[string[]]</code> は「文字列の並び（配列）」という型です。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>[xml]</code></td>
+<td><code>[xml](Get-Content x.xml)</code> は、XML のファイルの中身を読んで、<code>$svc.service.executable</code> のように、タグの名前でたどれる形にします。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>@名前</code></td>
+<td><code>コマンド @CurlArgs</code> のように、<code>$</code> の代わりに <code>@</code> を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>param( … )</code></td>
+<td>スクリプトの最初に書く <code>param([string]$Base = "http://…")</code> は、「このスクリプトが受け取る引数」の決まりです。<code>.\smoke.ps1 -Base http://…</code> のように、名前を付けて渡せます。<code>=</code> の右は、渡さなかった時の値です。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
 <td><code>Invoke-WebRequest -Headers</code></td>
 <td>送るリクエストに、見出し（ヘッダー）を足すオプション。<code>-Headers @{ Host = "webapp-stg.example.local" }</code> は、名前を DNS に登録する前に、IIS の振り分けを確かめる時に使います。</td>
 <td>05 9. サーバーに置き、Windows サービスにする</td>
@@ -1348,6 +1606,61 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 2. 切り分け: 手前から順に確かめる</td>
 </tr>
 <tr>
+<td><code>[ValidateSet()]</code></td>
+<td><code>[ValidateSet("prod", "stg")]</code> は、「この引数には、<code>prod</code> か <code>stg</code> だけを受け付ける」という印です。ほかの値を渡すと、動く前にエラーで止まります。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>[string]</code></td>
+<td><code>[string]$Name</code> の <code>[string]</code> は、「この変数（引数）は文字列」という型の指定です。<code>[string]123</code> のように値の前に書くと、文字列に変えます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>[bool]</code></td>
+<td><code>[bool]</code> は「はい・いいえ」（<code>$true</code>・<code>$false</code>）の型です。<code>[bool]$x</code> は、<code>$x</code> に何か入っていれば <code>$true</code>、空や <code>$null</code> なら <code>$false</code> にします。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.Service</code></td>
+<td><code>$t.Service</code> は、上で作った表（<code>$targets</code>）から選んだ組の、<code>Service</code>（確かめるサービスの名前）の値です。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.Status</code></td>
+<td><code>Get-Service</code> の結果の <code>.Status</code> は、サービスの状態（<code>Running</code>＝動いている・<code>Stopped</code>＝止まっている）です。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.Port</code></td>
+<td><code>$t.Port</code> は、上で作った表（<code>$targets</code>）から選んだ組の、<code>Port</code>（アプリが待ち受けるポート番号）の値です。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.LocalAddress</code></td>
+<td><code>.LocalAddress</code> は、待ち受けている、このパソコン側のアドレスです。<code>0.0.0.0</code> ならどこからでも、<code>127.0.0.1</code> ならこのパソコンの中からだけ受け付けます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.Name</code></td>
+<td><code>$t.Name</code> は、上で作った表（<code>$targets</code>）から選んだ組の、<code>Name</code>（サイトの名前）の値です。<code>$_.Name</code> のように、流れてきた物の名前を表すこともあります。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.Exception</code></td>
+<td><code>catch</code> の中の <code>$_.Exception</code> は、起きたエラーの中身です。<code>.Message</code> で、エラーの説明文を取り出せます。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.Message</code></td>
+<td><code>$_.Exception.Message</code> は、エラーの説明文です。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
+<td><code>.DriveLetter</code></td>
+<td><code>Get-Volume</code> の結果の <code>.DriveLetter</code> は、ドライブの文字（<code>C</code>・<code>D</code>）です。</td>
+<td>06 2. 切り分け: 手前から順に確かめる</td>
+</tr>
+<tr>
 <td><code>.\check.ps1</code></td>
 <td>今いるフォルダの <code>check.ps1</code>（この資料で作る、サービス・待ち受け・応答・控えなどを、まとめて確かめるスクリプト）を動かす書き方。</td>
 <td>06 2. 切り分け: 手前から順に確かめる</td>
@@ -1361,6 +1674,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>-split</code></td>
 <td>文字列を、区切り（正規表現）で分けて並びにする演算子。<code>"a=b" -split '=', 2</code> は <code>"a"</code> と <code>"b"</code>（<code>2</code> は「多くても 2 つに分ける」）。</td>
 <td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>$並び[0]</code></td>
+<td><code>$list[0]</code> は、並びの 0 番目（最初の 1 つ）を取り出します。<code>$list[-1]</code> は最後の 1 つです。</td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>.StartMode</code></td>
+<td><code>Win32_Service</code> の <code>.StartMode</code> は、サービスの起動のしかたです（<code>Auto</code>＝パソコンの起動と一緒に・<code>Manual</code>＝手で・<code>Disabled</code>＝使わない）。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>.State</code></td>
+<td><code>Win32_Service</code> の <code>.State</code> は、サービスの今の状態（<code>Running</code> など）です。</td>
+<td>06 5. 症状別の詳しい説明</td>
 </tr>
 <tr>
 <td><code>Get-ChildItem -Directory</code></td>
@@ -1380,6 +1708,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Measure-Object -Sum</code></td>
 <td>決めた項目の合計を計算するオプション。<code>Measure-Object Length -Sum</code> は、ファイルの大きさの合計（<code>.Sum</code> で取り出す）。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>[pscustomobject]</code></td>
+<td><code>[pscustomobject]@{ Folder = …; GB = … }</code> は、表（<code>@{ }</code>）から、列を持った 1 件の結果（オブジェクト）を作ります。並べて <code>Format-Table</code> や <code>Sort-Object</code> で扱えます。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>[Math]</code></td>
+<td><code>[Math]</code> は、計算の関数が集まった .NET の型です。<code>[math]::Round(3.14159, 2)</code> で、小数点以下 2 けたに丸めます（3.14）。</td>
+<td>06 5. 症状別の詳しい説明</td>
+</tr>
+<tr>
+<td><code>.Sum</code></td>
+<td><code>Measure-Object Length -Sum</code> の結果の <code>.Sum</code> は、合計です（ここではファイルの大きさの合計）。</td>
 <td>06 5. 症状別の詳しい説明</td>
 </tr>
 <tr>
@@ -1405,6 +1748,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Get-Item</code></td>
 <td>ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>$null</code></td>
+<td><code>$null</code> は「何も無い」を表す値です。<code>if ($x -eq $null)</code> で「何も入っていないか」を調べられます。<code>$null = コマンド</code> や <code>コマンド &#124; Out-Null</code> と書くと、コマンドの出力を捨てられます。</td>
+<td>08 この資料について</td>
+</tr>
+<tr>
+<td><code>[datetime]</code></td>
+<td><code>[datetime]</code> は「日時」の型です。<code>[datetime]::ParseExact("20261105 0200", "yyyyMMdd HHmm", $null)</code> のように、決まった形の文字から日時を作れます。</td>
 <td>08 この資料について</td>
 </tr>
 <tr>
@@ -1435,6 +1788,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Import-PfxCertificate -Password</code></td>
 <td><code>.pfx</code> のパスワード（<code>Read-Host -AsSecureString</code> で受け取った物）を渡すオプション。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>.DnsNameList</code></td>
+<td>証明書の <code>.DnsNameList</code> は、その証明書が使える名前（ドメイン名）の一覧です。<code>.Unicode</code> で、名前を文字として取り出します。</td>
+<td>参考 4. 証明書をサーバーに入れる</td>
+</tr>
+<tr>
+<td><code>.Unicode</code></td>
+<td><code>.DnsNameList</code> の 1 つずつの <code>.Unicode</code> は、名前を読める文字にした物です。</td>
 <td>参考 4. 証明書をサーバーに入れる</td>
 </tr>
 <tr>
@@ -1487,9 +1850,203 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>調べるサイトの名前を決めるオプション。</td>
 <td>参考 5. IIS に 443 番のバインドを足す</td>
 </tr>
+<tr>
+<td><code>.Thumbprint</code></td>
+<td>証明書の <code>.Thumbprint</code> は、証明書を見分けるための、長い 16 進数の文字（指紋）です。IIS に証明書を結び付ける時に使います。</td>
+<td>参考 5. IIS に 443 番のバインドを足す</td>
+</tr>
+<tr>
+<td><code>.NotAfter</code></td>
+<td>証明書の <code>.NotAfter</code> は、使える期限（この日時まで）です。</td>
+<td>参考 11. 証明書の期限を切らさない</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-2">コマンド</h2>
+<h2 id="cat-2">日時の書式</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>日時の書式</code></td>
+<td><code>Get-Date -Format "yyyyMMdd_HHmm"</code> の <code>"…"</code> は、日時を文字にする時の形（書式）です。<code>yyyy</code>（年）・<code>MM</code>（月）・<code>dd</code>（日）・<code>HH</code>（時）・<code>mm</code>（分）・<code>ss</code>（秒）を並べ、ほかの文字（<code>_</code>・<code>-</code>）はそのまま入ります。2026 年 11 月 5 日 9 時 3 分なら <code>20261105_0903</code>。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>yyyy</code></td>
+<td>日時の書式の <code>yyyy</code> は、4 けたの年（<code>2026</code>）です。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>MM</code></td>
+<td>日時の書式の <code>MM</code>（大文字）は、2 けたの月（<code>01</code>〜<code>12</code>）です。小文字の <code>mm</code> は分なので、取り違えに注意します。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>dd</code></td>
+<td>日時の書式の <code>dd</code> は、2 けたの日（<code>01</code>〜<code>31</code>）です。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>HH</code></td>
+<td>日時の書式の <code>HH</code>（大文字）は、24 時間の形の時（<code>00</code>〜<code>23</code>）です。小文字の <code>hh</code> は 12 時間の形です。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>mm</code></td>
+<td>日時の書式の <code>mm</code>（小文字）は、2 けたの分（<code>00</code>〜<code>59</code>）です。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-3">正規表現</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>正規表現</code></td>
+<td>正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</td>
+<td>01 3. PowerShell の基本</td>
+</tr>
+<tr>
+<td><code>\s</code></td>
+<td>正規表現の <code>\s</code> は、「空白 1 つ」（スペース・タブ・改行など）を表します。<code>\s*</code> は「空白が 0 個以上」。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>正規表現</code></td>
+<td>正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>\.</code></td>
+<td>正規表現の <code>\.</code> のように、記号の前に <code>\</code> を付けると、その記号を特別な意味にせず、文字そのものとして表します。<code>\.</code> は <code>.</code>、<code>\/</code> は <code>/</code> です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>[…]</code></td>
+<td>正規表現の <code>[ ]</code> は、「中に書いた文字の、どれか 1 つ」を表します。<code>[0-9a-zA-Z_-]</code> は「数字・英字・<code>_</code>・<code>-</code> のどれか」、<code>[.-]</code> は「<code>.</code> か <code>-</code>」。<code>-</code> で範囲を書けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>{n,m}</code></td>
+<td>正規表現の <code>{6}</code> は「すぐ前の物が、ちょうど 6 回」、<code>{8,12}</code> は「8 回から 12 回」を表します。<code>\d{6}</code> は「数字 6 けた」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>正規表現の <code>.</code> は、「どんな 1 文字でも」を表します。<code>.</code> という文字そのものを表したい時は、<code>\.</code> と書きます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>(?=…)</code></td>
+<td>正規表現の <code>(?= )</code> は「この後ろに、こういう形が続く時だけ」、<code>(?! )</code> は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。<code>^(?!api/&#124;admin/).*$</code> は「<code>api/</code> や <code>admin/</code> で始まらない物、全部」。中の文字は、合わせた文字には入りません。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td>正規表現の <code>&#124;</code> は、「左か右のどちらか」を表します。<code>api/&#124;admin/</code> は「<code>api/</code> か <code>admin/</code>」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>正規表現</code></td>
+<td>正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>(?:…)</code></td>
+<td>正規表現の <code>(?: )</code> は、取り出さないまとまりです。<code>(?:^&#124;; )</code> は「行の頭か、<code>;</code> のどちらか」をまとめるだけで、取り出す番号には数えません。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>[^…]</code></td>
+<td>正規表現の <code>[^ ]</code> は、「中に書いた文字<strong>以外</strong>の 1 文字」を表します。<code>[^;]+</code> は「<code>;</code> 以外の文字が 1 つ以上」、<code>[^\x21-\x7E]</code> は「英数字と記号（ASCII の見える文字）以外」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td>正規表現の <code>&#124;</code> は、「左か右のどちらか」を表します。<code>api/&#124;admin/</code> は「<code>api/</code> か <code>admin/</code>」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>(…)</code></td>
+<td>正規表現の <code>( )</code> は、まとまり（グループ）を作ります。合った文字のうち、<code>( )</code> の中の部分だけを、あとから取り出せます（<code>m[1]</code>・<code>m.group(1)</code>・<code>$1</code> など）。<code>(…)?</code> のように、まとまりごとくり返しや省略もできます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>\d</code></td>
+<td>正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</td>
+<td>06 3. 記録</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td>正規表現の <code>&#124;</code> は、「左か右のどちらか」を表します。<code>api/&#124;admin/</code> は「<code>api/</code> か <code>admin/</code>」。</td>
+<td>06 3. 記録</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-4">コマンド</h2>
 <table>
 <thead>
 <tr>
@@ -1525,6 +2082,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 5. ファイルとアクセス許可</td>
 </tr>
 <tr>
+<td><code>icacls /grant</code></td>
+<td><code>icacls フォルダ /grant "名前:(OI)(CI)M"</code> は、利用者やグループに権限を与えます。<code>M</code> は変更（読む・書く・消す）、<code>RX</code> は読んで実行、<code>F</code> は全部。<code>(OI)(CI)</code> は、中のファイルとフォルダにも同じ権限を引き継ぐ印です。</td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td><code>icacls /inheritance</code></td>
+<td><code>/inheritance:r</code> は、上のフォルダから引き継いだ権限を外す指定です。<code>/inheritance:e</code> なら引き継ぎを戻します。権限を、自分で決めた物だけにする時に使います。</td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
+<td><code>icacls /remove</code></td>
+<td><code>/remove 名前</code> は、その利用者やグループの権限を外します。</td>
+<td>01 5. ファイルとアクセス許可</td>
+</tr>
+<tr>
 <td><code>sc.exe</code></td>
 <td>Windows のサービスの細かい設定をするコマンド。<code>sc.exe failure 名前 reset= 86400 actions= restart/60000/…</code> は「止まったら 60 秒後に始め直す。数えるのは 1 日ごとにやり直す」。PowerShell では <code>sc</code> だけだと別のコマンドになるので、必ず <code>.exe</code> まで書きます（<code>=</code> の後ろの空白も必要）。</td>
 <td>01 6. サービス</td>
@@ -1535,8 +2107,28 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 12. ファイルを持ち込む</td>
 </tr>
 <tr>
+<td><code>robocopy /R</code></td>
+<td><code>/R:2</code> は、コピーに失敗した時に、やり直す回数です（決めないと 100 万回）。</td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
+<td><code>robocopy /W</code></td>
+<td><code>/W:5</code> は、やり直すまでに待つ秒数です（決めないと 30 秒）。</td>
+<td>01 12. ファイルを持ち込む</td>
+</tr>
+<tr>
 <td><code>w32tm</code></td>
 <td>Windows の時刻合わせの状態を見る・変えるコマンド。<code>w32tm /query /status</code> で、どこと時刻を合わせているか（<code>Source</code>）と、最後に合わせた時刻が分かります。時刻がずれると、ログの読み合わせやログインの期限が狂います。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>w32tm /query</code></td>
+<td><code>w32tm /query /status</code> は、パソコンの時計を、どこ（時刻のサーバー）に合わせているか、最後にいつ合わせたかを表示します。</td>
+<td>04 3. サーバーに入る・最初の確認</td>
+</tr>
+<tr>
+<td><code>w32tm /status</code></td>
+<td><code>/status</code> は、<code>w32tm /query</code> と一緒に使い、時刻合わせの今の状態を表示する指定です。</td>
 <td>04 3. サーバーに入る・最初の確認</td>
 </tr>
 <tr>
@@ -1560,6 +2152,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 4. Python を入れる</td>
 </tr>
 <tr>
+<td><code>robocopy /E</code></td>
+<td><code>/E</code> は、中のフォルダも（空のフォルダも）全部コピーする指定です。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td><code>robocopy /XD</code></td>
+<td><code>/XD .venv __pycache__</code> は、コピーしないフォルダの名前を並べる指定です。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
+<td><code>robocopy /XF</code></td>
+<td><code>/XF *.pyc</code> は、コピーしないファイルの名前（<code>*</code> で「何でも」）を並べる指定です。</td>
+<td>05 7. ビルドして、まとめる</td>
+</tr>
+<tr>
 <td><code>D:\webapp\stg\venv\Scripts\python.exe</code></td>
 <td>検証用の仮想環境の Python を、場所を書いて直接動かす書き方。<code>-m pip install …</code> は、その Python の pip で部品を入れる、<code>-c "…"</code> は、その場で 1 行の Python を動かす、という意味です。</td>
 <td>05 9. サーバーに置き、Windows サービスにする</td>
@@ -1571,7 +2178,296 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-3">psql</h2>
+<h2 id="cat-5">設定ファイル（XML）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;!-- --&gt;</code></td>
+<td>XML では、<code>&lt;!--</code> から <code>--&gt;</code> までがコメントです。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;service&gt;</code></td>
+<td>WinSW（ふつうのプログラムを Windows のサービスにする道具）の設定で、いちばん外側の <code>&lt;service&gt;</code> の中に、サービスの設定を全部書きます。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;id&gt;</code></td>
+<td><code>&lt;id&gt;webapp-prod&lt;/id&gt;</code> は、サービスの名前です。<code>Start-Service webapp-prod</code> のように、コマンドで使います。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;name&gt;</code></td>
+<td><code>&lt;name&gt;</code> は、サービスの一覧の画面に出る、人が読む名前です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;description&gt;</code></td>
+<td><code>&lt;description&gt;</code> は、サービスの説明です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;executable&gt;</code></td>
+<td><code>&lt;executable&gt;</code> は、サービスとして動かすプログラム（<code>.exe</code>）の場所です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;workingdirectory&gt;</code></td>
+<td><code>&lt;workingdirectory&gt;</code> は、プログラムを動かす時の「今いるフォルダ」です。プログラムが、相対の場所でファイルを探すので、アプリのフォルダにします。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;env&gt;</code></td>
+<td><code>&lt;env name="PORT" value="8080" /&gt;</code> は、プログラムに渡す環境変数を 1 つ書くタグです。<code>/&gt;</code> で終わるタグは、中身が無く、閉じるタグも要りません。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>name=</code></td>
+<td><code>&lt;env name="…"&gt;</code> の <code>name</code> は、環境変数の名前です（IIS の設定では、決まりの名前）。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>value=</code></td>
+<td><code>&lt;env … value="…"&gt;</code> の <code>value</code> は、環境変数の値です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;startmode&gt;</code></td>
+<td><code>&lt;startmode&gt;Automatic&lt;/startmode&gt;</code> は、パソコンの起動と一緒に、サービスも自動で動かす設定です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;depend&gt;</code></td>
+<td><code>&lt;depend&gt;postgresql-x64-18&lt;/depend&gt;</code> は、「このサービスより先に動かしておくサービス」です。データベースが動いてから、アプリを動かします。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;onfailure&gt;</code></td>
+<td><code>&lt;onfailure action="restart" delay="10 sec" /&gt;</code> は、プログラムが落ちた時の動きです。1 回目は 10 秒後、2 回目は 30 秒後…のように、何回か書けます。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>action=</code></td>
+<td><code>action="restart"</code> は、落ちた時に、動かし直す指定です。IIS の <code>&lt;action&gt;</code> の <code>type</code> とは別の物です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>delay=</code></td>
+<td><code>delay="10 sec"</code> は、動かし直すまでに待つ時間です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;stoptimeout&gt;</code></td>
+<td><code>&lt;stoptimeout&gt;15 sec&lt;/stoptimeout&gt;</code> は、サービスを止める時に、プログラムが自分で終わるのを待つ時間です。過ぎたら、強制的に止めます。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;logpath&gt;</code></td>
+<td><code>&lt;logpath&gt;</code> は、サービスのログ（プログラムが画面に出した文）を書くフォルダです。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;log&gt;</code></td>
+<td><code>&lt;log mode="roll-by-size"&gt;</code> は、ログの残し方です。<code>roll-by-size</code> は、決めた大きさになったら、新しいファイルに切りかえる方式です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>mode=</code></td>
+<td><code>mode="roll-by-size"</code> は、ログを大きさで区切る指定です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;sizeThreshold&gt;</code></td>
+<td><code>&lt;sizeThreshold&gt;10240&lt;/sizeThreshold&gt;</code> は、1 つのログのファイルの大きさの上限（KB。10240 は 10MB）です。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;keepFiles&gt;</code></td>
+<td><code>&lt;keepFiles&gt;8&lt;/keepFiles&gt;</code> は、残しておく古いログのファイルの数です。それより古い物は消えるので、ディスクがいっぱいになりません。</td>
+<td>04 7. アプリを Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;?xml … ?&gt;</code></td>
+<td><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</code> は、「これは XML のファイルで、文字の符号は UTF-8」という宣言です。ファイルのいちばん最初に書きます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;configuration&gt;</code></td>
+<td>IIS の設定ファイル（<code>web.config</code>）の、いちばん外側のタグです。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;system.webServer&gt;</code></td>
+<td><code>&lt;system.webServer&gt;</code> の中に、IIS（Windows の Web サーバー）の設定を書きます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;rewrite&gt;</code></td>
+<td><code>&lt;rewrite&gt;</code> の中に、来た要求の行き先を書きかえる決まり（URL Rewrite）を書きます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;rules&gt;</code></td>
+<td><code>&lt;rules&gt;</code> の中に、決まり（<code>&lt;rule&gt;</code>）を、上から順に並べます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;rule&gt;</code></td>
+<td><code>&lt;rule name="…"&gt;</code> は、書きかえの決まり 1 つです。<code>&lt;match&gt;</code>（どの要求に）と <code>&lt;action&gt;</code>（どうするか）を中に書きます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>stopProcessing=</code></td>
+<td><code>stopProcessing="true"</code> は、「この決まりに合ったら、下の決まりは調べない」という指定です。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;match&gt;</code></td>
+<td><code>&lt;match url="(.*)" /&gt;</code> は、「どの URL に合わせるか」を正規表現で書くタグです。<code>(.*)</code> は「全部」で、<code>( )</code> の中に合った部分は、あとで <code>{R:1}</code> として使えます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>url=</code></td>
+<td><code>&lt;match url="…"&gt;</code> の <code>url</code> は合わせる URL の形（正規表現）、<code>&lt;action url="…"&gt;</code> の <code>url</code> は、取り次ぐ先や移す先の URL です。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;action&gt;</code></td>
+<td><code>&lt;action type="Rewrite" url="http://127.0.0.1:8080/{R:1}" /&gt;</code> は、合った要求をどうするかです。<code>Rewrite</code> は、利用者には見せずに、裏で別の場所（ここではアプリ）へ取り次ぎます。<code>Redirect</code> は、利用者のブラウザーに、別の URL へ行き直させます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>type=</code></td>
+<td><code>&lt;action type="Rewrite"&gt;</code> の <code>type</code> は、どう処理するか（<code>Rewrite</code>＝裏で取り次ぐ・<code>Redirect</code>＝行き直させる）です。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;security&gt;</code></td>
+<td><code>&lt;security&gt;</code> の中に、IIS の守りの設定を書きます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;requestFiltering&gt;</code></td>
+<td><code>&lt;requestFiltering&gt;</code> は、受け付ける要求の決まり（大きさ・種類）の設定です。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;requestLimits&gt;</code></td>
+<td><code>&lt;requestLimits maxAllowedContentLength="104857600" /&gt;</code> は、1 回に受け付ける要求の大きさの上限です。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>maxAllowedContentLength=</code></td>
+<td><code>maxAllowedContentLength</code> は、1 回に送れる中身の大きさの上限（バイト）です。<code>104857600</code> は 100MB。これより大きいファイルは、アプリに届く前に、IIS が断ります。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>{R:1}</code></td>
+<td><code>{R:1}</code> は、<code>&lt;match url="(.*)"&gt;</code> の <code>( )</code> の中に合った部分（1 番目）が入る場所です。<code>/notes/3</code> で来たら、<code>http://127.0.0.1:8080/notes/3</code> に取り次がれます。</td>
+<td>04 8. 受付</td>
+</tr>
+<tr>
+<td><code>&lt;arguments&gt;</code></td>
+<td><code>&lt;arguments&gt;</code> は、プログラムに渡す引数です（コマンドで打つ時の、プログラム名の後ろの部分）。</td>
+<td>05 9. サーバーに置き、Windows サービスにする</td>
+</tr>
+<tr>
+<td><code>&lt;conditions&gt;</code></td>
+<td><code>&lt;conditions&gt;</code> は、決まりを使うための、追加の条件（<code>&lt;add&gt;</code>）を並べる所です。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td><code>&lt;add&gt;</code></td>
+<td><code>&lt;conditions&gt;</code> の中の <code>&lt;add input="{HTTPS}" pattern="off" /&gt;</code> は、「HTTPS ではない（<code>off</code>）時だけ」という条件です。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td><code>input=</code></td>
+<td><code>input="{HTTPS}"</code> は、調べる値です。<code>{HTTPS}</code> は、HTTPS で来たら <code>on</code>、そうでなければ <code>off</code> になる、IIS が用意した値です。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td><code>pattern=</code></td>
+<td><code>pattern="off"</code> は、<code>input</code> の値がこの形（正規表現）に合う時だけ、という条件です。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td><code>redirectType=</code></td>
+<td><code>redirectType="Found"</code> は、行き直させる時の状態コードの種類です。<code>Found</code> は 302（一時的に移った）、<code>Permanent</code> は 301（ずっと移った）です。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td><code>&lt;serverVariables&gt;</code></td>
+<td><code>&lt;serverVariables&gt;</code> は、取り次ぐ時に、要求の見出しなどの値を書き足す所です。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+<tr>
+<td><code>&lt;set&gt;</code></td>
+<td><code>&lt;set name="HTTP_X_FORWARDED_PROTO" value="https" /&gt;</code> は、取り次ぐ要求に、<code>X-Forwarded-Proto: https</code>（元は HTTPS で来た）という見出しを付けます。アプリは、これを見て、HTTPS で来たと分かります。</td>
+<td>参考 9. 80 番で来たお願いを、443 番へ案内する</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-6">HTTP のやり取り</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /… HTTP/1.1</code></td>
+<td><code>GET /requests HTTP/1.1</code> は、ブラウザーがサーバーに送る要求（リクエスト）の 1 行目です。左から「何をしたいか（メソッド。GET は取ってきて）」「どこを（URL の場所）」「HTTP の版」です。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Host:</code></td>
+<td><code>Host: webapp.example.local</code> は、「どの名前のサイトにアクセスしたいか」です。1 台のサーバーで、名前ごとに別のサイトを出す時に使われます。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>User-Agent:</code></td>
+<td><code>User-Agent:</code> は、「どのブラウザー（道具）から来た要求か」です。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Accept:</code></td>
+<td><code>Accept: text/html</code> は、「こういう種類の答えがほしい」という希望です。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Cookie:</code></td>
+<td><code>Cookie: session=AbC123...</code> は、ブラウザーが覚えていたクッキー（サイトから預かった札）を、サーバーに見せる見出しです。ログインの状態は、この札でサーバーに伝わります。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>HTTP/1.1 200 OK</code></td>
+<td><code>HTTP/1.1 200 OK</code> は、サーバーが返す答え（レスポンス）の 1 行目です。<code>200</code> は状態コードで「うまくいった」という意味です（404 は「無い」、500 は「サーバーの中で失敗」）。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Content-Type:</code></td>
+<td><code>Content-Type: text/html; charset=utf-8</code> は、「中身の種類と、文字の符号」です。ブラウザーは、これを見て HTML として表示します。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+<tr>
+<td><code>Content-Length:</code></td>
+<td><code>Content-Length: 5120</code> は、中身の大きさ（バイト）です。</td>
+<td>00 5. Web アプリの仕組み</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-7">psql</h2>
 <table>
 <thead>
 <tr>
@@ -1587,8 +2483,58 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 2. ログインする</td>
 </tr>
 <tr>
+<td><code>psql -h</code></td>
+<td><code>-h 127.0.0.1</code> は、つなぐ先のサーバーの場所（ホスト）です。<code>127.0.0.1</code> は「このパソコン自身」です。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>psql -p</code></td>
+<td><code>-p 5432</code> は、つなぐ先のポート番号です。PostgreSQL は、ふつう 5432 番で待ち受けます。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>psql -U</code></td>
+<td><code>-U postgres</code> は、どの利用者（ロール）としてつなぐかです。パスワードを聞かれたら、その利用者のパスワードを入れます。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>psql -d</code></td>
+<td><code>-d webapp_stg</code> は、どのデータベースにつなぐかです。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>psql -c</code></td>
+<td><code>-c "SELECT …;"</code> は、つないで、その SQL を 1 回だけ動かして、すぐに終わる指定です。確かめを 1 行で済ませる時に使います。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>\c</code></td>
+<td>psql の <code>\c practice</code> は、つなぐデータベースを <code>practice</code> に切りかえる命令です。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>\password</code></td>
+<td>psql の <code>\password 名前</code> は、その利用者（ロール）のパスワードを変える命令です。打つとパスワードを 2 回聞かれ、画面には表示されません（コマンドの履歴にも残りません）。</td>
+<td>02 9. ユーザー</td>
+</tr>
+<tr>
 <td><code>pg_dump</code></td>
 <td>PostgreSQL のデータベースの中身を、まるごと 1 つのファイルに書き出す（控えを取る）コマンド。<code>-Fc</code> はあとで <code>pg_restore</code> で戻せる形、<code>-f</code> は書き出すファイルの場所。動かしている途中でも、ある瞬間の中身がそろった形で取れます。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_dump -h</code></td>
+<td><code>-h 127.0.0.1</code> は、バックアップを取るサーバーの場所です。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_dump -U</code></td>
+<td><code>-U postgres</code> は、どの利用者としてつないで、バックアップを取るかです。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_dump -Fc</code></td>
+<td><code>-Fc</code> は、「カスタム形式」（PostgreSQL 用に圧縮した形）でバックアップを書き出す指定です。この形は <code>pg_restore</code> で戻し、戻す時に表を選ぶこともできます。<code>-f ファイル</code> で書き出す先を決めます。</td>
 <td>02 11. バックアップとリストア</td>
 </tr>
 <tr>
@@ -1596,9 +2542,74 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>pg_dump -Fc</code> で取った控えを、データベースに戻すコマンド。<code>-d</code> で戻す先のデータベースを決めます。戻す練習は、本物とは別の、空のデータベースに対してします。</td>
 <td>02 11. バックアップとリストア</td>
 </tr>
+<tr>
+<td><code>pg_restore -h</code></td>
+<td><code>-h 127.0.0.1</code> は、戻す先のサーバーの場所です。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_restore -U</code></td>
+<td><code>-U postgres</code> は、どの利用者としてつないで戻すかです。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_restore -d</code></td>
+<td><code>-d practice_restore</code> は、戻す先のデータベースです（先に作っておきます）。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>pg_restore --list</code></td>
+<td><code>--list</code> は、戻さずに、バックアップの中身（表などの一覧）だけを表示します。バックアップが読めるかの確かめにも使えます。</td>
+<td>02 11. バックアップとリストア</td>
+</tr>
+<tr>
+<td><code>psql --version</code></td>
+<td><code>psql --version</code> は、psql（PostgreSQL につなぐ道具）の版を表示します。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>\l</code></td>
+<td>psql の <code>\l</code> は、データベースの一覧を表示する命令です。<code>\l webapp*</code> で、<code>webapp</code> で始まる物だけにしぼれます。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>\du</code></td>
+<td>psql の <code>\du</code> は、利用者（ロール）の一覧と、その権限を表示する命令です。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>\q</code></td>
+<td>psql の <code>\q</code> は、psql を終わる命令です。</td>
+<td>04 5. データベース</td>
+</tr>
+<tr>
+<td><code>pg_restore --no-owner</code></td>
+<td><code>--no-owner</code> は、表の持ち主を、バックアップを取った時の利用者に戻さず、戻している利用者にする指定です。別のサーバーや、別の名前の利用者で試しに戻す時に使います。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>pg_restore --no-privileges</code></td>
+<td><code>--no-privileges</code> は、表の権限（<code>GRANT</code>）を戻さない指定です。</td>
+<td>04 11. 毎晩のバックアップ</td>
+</tr>
+<tr>
+<td><code>pg_dump -d</code></td>
+<td><code>-d webapp_prod</code> は、バックアップを取るデータベースです。</td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>pg_restore --clean</code></td>
+<td><code>--clean</code> は、戻す前に、同じ名前の表などを消してから戻す指定です。今のデータが消えるので、戻す先をよく確かめます。</td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
+<tr>
+<td><code>pg_restore --if-exists</code></td>
+<td><code>--if-exists</code> は、<code>--clean</code> で消す時に、「あれば消す」（無くてもエラーにしない）にする指定です。</td>
+<td>04 13. 動作確認・本番の開始・更新・切り戻し</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-4">SQL</h2>
+<h2 id="cat-8">SQL</h2>
 <table>
 <thead>
 <tr>
@@ -1644,6 +2655,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>00 7. データベースの基礎</td>
 </tr>
 <tr>
+<td><code>'文字'</code></td>
+<td>SQL では、文字の値を <code>'…'</code>（シングルクォート）で囲みます（<code>'2026-11-05'</code>・<code>'山田'</code>）。<code>"…"</code>（ダブルクォート）は表や列の名前に使う物なので、文字の値には使いません。中に <code>'</code> を入れる時は <code>''</code> と 2 つ書きます。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>--</code></td>
+<td>SQL では、<code>--</code> から行の終わりまでがコメントです。</td>
+<td>00 7. データベースの基礎</td>
+</tr>
+<tr>
+<td><code>current_database()</code></td>
+<td>PostgreSQL の <code>current_database()</code> は、今つないでいるデータベースの名前を返します。<code>current_user</code> は、今の利用者（ロール）の名前です。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
+<td><code>now()</code></td>
+<td>PostgreSQL の <code>now()</code> は、今の日時を返す関数です。<code>DEFAULT now()</code> で、行を作った日時を自動で入れられます。</td>
+<td>02 2. ログインする</td>
+</tr>
+<tr>
 <td><code>CREATE</code></td>
 <td><code>CREATE ROLE</code>（ユーザーを作る）・<code>CREATE DATABASE</code>（データベースを作る）・<code>CREATE TABLE</code>（表を作る）のように、何かを新しく作る SQL の命令です。</td>
 <td>02 3. 練習用のデータベースを作る</td>
@@ -1661,6 +2692,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>TEMPLATE</code></td>
 <td><code>TEMPLATE template0</code> で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。</td>
+<td>02 3. 練習用のデータベースを作る</td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td>SQL の <code>;</code> は、1 つの命令（文）の終わりの印です。psql では、<code>;</code> を打つまで命令が送られません（<code>;</code> を忘れると、続きを待つ <code>practice-#</code> の表示になります）。</td>
 <td>02 3. 練習用のデータベースを作る</td>
 </tr>
 <tr>
@@ -1749,6 +2785,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 3. 練習用のデータベースを作る</td>
 </tr>
 <tr>
+<td><code>SELECT *</code></td>
+<td>SQL の <code>SELECT *</code> の <code>*</code> は、「全部の列」という意味です。試しに中身を見る時は便利ですが、プログラムでは、使う列の名前を並べて書くほうが安全です（あとで列が増えても、読む物が変わりません）。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
 <td><code>AND</code></td>
 <td>SQL で「かつ」。<code>WHERE a = 1 AND b = 2</code> は両方に合う行だけ。<code>BETWEEN 0 AND 100</code> の一部としても使います。</td>
 <td>02 4. データを見る</td>
@@ -1764,6 +2805,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 4. データを見る</td>
 </tr>
 <tr>
+<td><code>%</code></td>
+<td>SQL の <code>LIKE '%買い物%'</code> の <code>%</code> は、「何文字でも、何でも合う」という印です（ワイルドカード）。<code>'買い物%'</code> なら「買い物で始まる」。<code>_</code> は「何でも 1 文字」です。<code>%</code> や <code>_</code> そのものを探したい時は、<code>ESCAPE</code> を使います。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
 <td><code>IS</code></td>
 <td>SQL で NULL かどうかを調べる時の書き方。<code>WHERE x IS NULL</code>（無い）・<code>WHERE x IS NOT NULL</code>（ある）。NULL は <code>= NULL</code> では比べられません。</td>
 <td>02 4. データを見る</td>
@@ -1771,6 +2817,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>GROUP</code></td>
 <td><code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>COUNT(*)</code></td>
+<td>SQL の <code>COUNT(*)</code> は、行の数を数えます。<code>GROUP BY status</code> と組み合わせると、<code>status</code> ごとの件数になります。</td>
+<td>02 4. データを見る</td>
+</tr>
+<tr>
+<td><code>count()</code></td>
+<td>SQL の <code>count(*)</code> は、行の数を数える関数です（<code>COUNT(*)</code> と同じで、大文字・小文字はどちらでもかまいません）。</td>
 <td>02 4. データを見る</td>
 </tr>
 <tr>
@@ -1791,6 +2847,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>JOIN</code></td>
 <td>2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</td>
+<td>02 5. テーブルをつなぐ</td>
+</tr>
+<tr>
+<td><code>表.列</code></td>
+<td>SQL の <code>n.title</code>・<code>users.email</code> のように <code>表.列</code> と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（<code>JOIN</code>）時は、同じ名前の列（<code>id</code> など）があるので、こう書きます。<code>notes AS n</code> のように、表に短い別名を付けて使います。</td>
 <td>02 5. テーブルをつなぐ</td>
 </tr>
 <tr>
@@ -1894,6 +2955,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 12. 運用で使う SQL</td>
 </tr>
 <tr>
+<td><code>pg_size_pretty()</code></td>
+<td>PostgreSQL の <code>pg_size_pretty(数)</code> は、バイトの数を、<code>12 MB</code> のような読みやすい形にします。</td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td><code>pg_database_size()</code></td>
+<td>PostgreSQL の <code>pg_database_size(名前)</code> は、データベースの大きさ（バイト）を返します。</td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td><code>pg_total_relation_size()</code></td>
+<td>PostgreSQL の <code>pg_total_relation_size(表)</code> は、表の大きさ（索引なども合わせたバイト）を返します。</td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
+<td><code>pg_terminate_backend()</code></td>
+<td>PostgreSQL の <code>pg_terminate_backend(番号)</code> は、その番号（PID）のつながりを、強制的に切ります。止まらない問い合わせを止める時に使います。</td>
+<td>02 12. 運用で使う SQL</td>
+</tr>
+<tr>
 <td><code>DROP</code></td>
 <td><code>DROP TABLE 表</code>・<code>DROP INDEX 索引</code> で、表や索引を消す SQL の命令。中のデータも消えるので注意します。</td>
 <td>02 13. 練習の片付け</td>
@@ -1915,7 +2996,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-5">Python の道具</h2>
+<h2 id="cat-9">Python の道具</h2>
 <table>
 <thead>
 <tr>
@@ -1932,7 +3013,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-6">Node.js</h2>
+<h2 id="cat-10">Node.js</h2>
 <table>
 <thead>
 <tr>
@@ -1954,7 +3035,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-7">cargo のコマンド</h2>
+<h2 id="cat-11">cargo のコマンド</h2>
 <table>
 <thead>
 <tr>
@@ -1969,9 +3050,78 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</td>
 <td>04 6. アプリを作る</td>
 </tr>
+<tr>
+<td><code>cargo build --release</code></td>
+<td><code>cargo build --release</code> は、時間をかけて最適化した、速い本番用の実行ファイルを作ります（動かしはしません）。できた物は <code>target\release</code> に置かれます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>cargo build --locked</code></td>
+<td><code>--locked</code> は、<code>Cargo.lock</code> に書いてある部品の版のまま作り、<code>Cargo.lock</code> を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-8">変数</h2>
+<h2 id="cat-12">設定ファイル（TOML）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#</code></td>
+<td>TOML（<code>Cargo.toml</code> などの設定ファイルの書き方）では、<code>#</code> から行の終わりまでがコメントです。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>[target.…]</code></td>
+<td><code>.cargo/config.toml</code> の <code>[target.x86_64-pc-windows-msvc]</code> は、「その種類のパソコン向けに作る時だけの設定」の見出しです。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>rustflags =</code></td>
+<td><code>rustflags = ["-C", "target-feature=+crt-static"]</code> は、Rust のコンパイラーに渡す追加の指定です。<code>+crt-static</code> は、Windows の実行ファイルに、C の部品（ランタイム）を中に入れる指定で、Visual C++ の部品が入っていないサーバーでも動くようになります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>[ … ]</code></td>
+<td><code>["rustfmt", "clippy"]</code> のように <code>[ ]</code> の中に <code>,</code> で区切って並べると、いくつもの値の並び（配列）になります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-13">コメント</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>//!</code></td>
+<td><code>//!</code> で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。<code>///</code>（すぐ下の関数や型の説明）と使い分けます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>///</code></td>
+<td><code>///</code> で始まるコメントは、すぐ下の関数や型の「説明書」（ドキュメントコメント）です。<code>cargo doc</code> で説明のページになり、VS Code では、名前にマウスを乗せると表示されます。ふつうのコメント（<code>//</code>）とちがい、何の説明かが決まっています。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>//</code></td>
+<td><code>//</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、プログラムとしては無視されます。<code>// OS の種類を表示する</code> のように、何をしているかを日本語で書いておくと、あとで読み返す時に助かります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-14">変数</h2>
 <table>
 <thead>
 <tr>
@@ -1993,7 +3143,24 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-9">Vec（並び）</h2>
+<h2 id="cat-15">文字列</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>str</code></td>
+<td><code>&amp;str</code> の <code>str</code> は「文字列の中身」を表す型で、ふつうは <code>&amp;str</code>（借りた文字列）の形で使います。<code>"こんにちは"</code> のように <code>"</code> で囲んで直接書いた文字列は <code>&amp;str</code> です。自分で持って、あとから書き足せる文字列は <code>String</code> です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-16">Vec（並び）</h2>
 <table>
 <thead>
 <tr>
@@ -2015,7 +3182,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-10">条件</h2>
+<h2 id="cat-17">条件</h2>
 <table>
 <thead>
 <tr>
@@ -2032,7 +3199,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-11">くり返し</h2>
+<h2 id="cat-18">くり返し</h2>
 <table>
 <thead>
 <tr>
@@ -2049,7 +3216,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-12">Option</h2>
+<h2 id="cat-19">Option</h2>
 <table>
 <thead>
 <tr>
@@ -2074,9 +3241,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</td>
 <td>04 6. アプリを作る</td>
 </tr>
+<tr>
+<td><code>let … else</code></td>
+<td><code>let Some(x) = 値 else { return …; };</code> は、「<code>Some</code> の形なら中身を <code>x</code> に入れて先へ進み、そうでなければ <code>else</code> の中で抜ける」という書き方です。<code>else</code> の中は、必ず <code>return</code> や <code>continue</code> などで抜けます。思ったとおりでない時に早めに抜けて、残りの処理を平らに書けます。</td>
+<td>04 6. アプリを作る</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-13">エラー処理</h2>
+<h2 id="cat-20">エラー処理</h2>
 <table>
 <thead>
 <tr>
@@ -2103,7 +3275,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-14">関数</h2>
+<h2 id="cat-21">関数</h2>
 <table>
 <thead>
 <tr>
@@ -2128,9 +3300,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>関数を、その場で終えて値を返す命令。<code>return Err(…);</code> のように、途中で抜ける時に使います。Rust では、関数の最後の <code>;</code> の無い式が自動で戻り値になるので、最後の行では <code>return</code> を書かないのがふつうです。</td>
 <td>04 6. アプリを作る</td>
 </tr>
+<tr>
+<td><code>-&gt;</code></td>
+<td><code>fn main() -&gt; std::io::Result&lt;()&gt;</code> の <code>-&gt;</code> は、「この関数が返す値の型」を書く印です。<code>fn add(a: i32, b: i32) -&gt; i32</code> なら「<code>i32</code> を返す」。<code>-&gt;</code> が無い関数は、何も返しません（<code>()</code> という「空」を返します）。</td>
+<td>04 6. アプリを作る</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-15">型とメソッド</h2>
+<h2 id="cat-22">型とメソッド</h2>
 <table>
 <thead>
 <tr>
@@ -2156,13 +3333,23 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 6. アプリを作る</td>
 </tr>
 <tr>
+<td><code>impl トレイト</code></td>
+<td><code>-&gt; Result&lt;impl View&gt;</code> の <code>impl View</code> は、「<code>View</code> という決まり（トレイト）を満たす、何かの型」という意味です。本当の型の名前は長くて書けないので、「<code>View</code> として使える物を返す」とだけ書きます。引数の <code>x: impl Display</code> なら、「表示できる物なら何でも受け取る」です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>&lt;T&gt;</code></td>
+<td><code>fn longest&lt;'a&gt;(…)</code> や <code>struct Wrapper&lt;T&gt;</code> の、名前のすぐ後ろの <code>&lt; &gt;</code> は、「型（やライフタイム）を、使う時に決める」ための入れ物（ジェネリクス）です。<code>T</code> は「何かの型」の仮の名前で、使う時に <code>i32</code> や <code>String</code> などに決まります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
 <td><code>.build()</code></td>
 <td>設定を少しずつ足していく「組み立て係」（ビルダー）の最後に呼んで、でき上がった物を作るメソッド。<code>Router::builder()…build()</code> の形で、ルーターなどを作る時に使います。</td>
 <td>04 6. アプリを作る</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cat-16">モジュール</h2>
+<h2 id="cat-23">モジュール</h2>
 <table>
 <thead>
 <tr>
@@ -2183,13 +3370,40 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 6. アプリを作る</td>
 </tr>
 <tr>
+<td><code>::</code></td>
+<td><code>std::env</code> の <code>::</code> は、「〜の中の」を表す区切りです。<code>std::env::args()</code> は「標準ライブラリ（<code>std</code>）の中の <code>env</code> の中の <code>args</code> 関数」という意味です。型の関数（<code>String::new()</code>）や、enum の種類（<code>Ordering::Less</code>）を指す時にも使います。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
 <td><code>crate</code></td>
 <td>「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</td>
 <td>04 6. アプリを作る</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cat-17">スマートポインタ</h2>
+<h2 id="cat-24">所有権と借用</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&amp;</code></td>
+<td>値の前の <code>&amp;</code> は「貸す（借用）」の印です。<code>fs::write(&amp;relative, …)</code> は、<code>relative</code> を手放さずに、見せるだけ貸します。型に付けた <code>&amp;str</code>・<code>&amp;Vec&lt;i32&gt;</code> は「借りた値」の型です。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>'a</code></td>
+<td><code>&amp;'a str</code> の <code>'a</code> は、「借りている期間」（ライフタイム）に付けた名前です。<code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code> は、「返す参照は、<code>x</code> と <code>y</code> の両方が有効な間だけ使える」という約束を表します。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-25">スマートポインタ</h2>
 <table>
 <thead>
 <tr>
@@ -2206,7 +3420,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-18">時間</h2>
+<h2 id="cat-26">時間</h2>
 <table>
 <thead>
 <tr>
@@ -2233,7 +3447,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-19">非同期</h2>
+<h2 id="cat-27">非同期</h2>
 <table>
 <thead>
 <tr>
@@ -2255,7 +3469,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-20">クッキー</h2>
+<h2 id="cat-28">クッキー</h2>
 <table>
 <thead>
 <tr>
@@ -2327,7 +3541,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-21">認証</h2>
+<h2 id="cat-29">認証</h2>
 <table>
 <thead>
 <tr>
@@ -2344,7 +3558,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-22">Topcoat</h2>
+<h2 id="cat-30">Topcoat</h2>
 <table>
 <thead>
 <tr>
@@ -2357,6 +3571,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>topcoat</code></td>
 <td>Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</td>
+<td>04 6. アプリを作る</td>
+</tr>
+<tr>
+<td><code>topcoat asset bundle --release</code></td>
+<td><code>topcoat asset bundle --release</code> は、CSS などのアセットの束を、本番用（<code>target\release\assets</code>）に作ります。<code>cargo build --release</code> と組にして使います。</td>
 <td>04 6. アプリを作る</td>
 </tr>
 <tr>
@@ -2411,7 +3630,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-23">JavaScript・TypeScript</h2>
+<h2 id="cat-31">JavaScript・TypeScript</h2>
 <table>
 <thead>
 <tr>
@@ -2434,6 +3653,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>default</code></td>
 <td><code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>//</code></td>
+<td>JavaScript・TypeScript では、<code>//</code> から行の終わりまでがコメントです。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>defineConfig()</code></td>
+<td><code>defineConfig({ … })</code> は、設定ファイル（Vite の <code>vite.config</code> や Playwright の <code>playwright.config</code>）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。</td>
 <td>05 6. アプリの作り</td>
 </tr>
 <tr>
@@ -2473,12 +3702,72 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 <tr>
 <td><code>=&gt;</code></td>
-<td>アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</td>
+<td>アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; `…${path}`</code> は「<code>path</code> を受け取って文字列を返す関数」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>/…/</code></td>
+<td>JavaScript の <code>/…/</code> は、正規表現（文字の形を表す書き方）をそのまま書く形です。<code>/\d+/</code> は「数字が 1 つ以上」。<code>.match(/…/)</code>・<code>.test(…)</code>・<code>.split(/…/)</code> などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code><code>${…}</code></code></td>
+<td><code>`…`</code>（バッククォートで囲んだ文字。テンプレート文字列）の中の <code>${ }</code> には、値や式を入れられます。<code>`エラー ${res.status}`</code> は、<code>res.status</code> が 404 なら <code>エラー 404</code> になります。改行も、そのまま書けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>!==</code></td>
+<td><code>a !== b</code> は、「a と b が同じではない」（型も含めて比べる）です。<code>===</code>（同じ）の反対です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>&#124;&#124;</code></td>
+<td><code>a &#124;&#124; b</code> は、「a か b のどちらか」（または）です。<code>el.innerText &#124;&#124; el.getAttribute("name") &#124;&#124; ""</code> のように、「左が空なら右を使う」という使い方もします（<code>0</code> や <code>""</code> も「空」とみなされるので、<code>null</code>・<code>undefined</code> だけを見たい時は <code>??</code> を使います）。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td><code>!res.ok</code> のように前に付けた <code>!</code> は、「〜ではない」です。<code>if (!res.ok)</code> は「うまくいかなかったら」。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>条件 ? A : B</code></td>
+<td><code>条件 ? A : B</code> は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。<code>user.isAdmin ? "管理者" : "一般"</code>。<code>if</code> とちがい、値を返すので、そのまま変数や表示に使えます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>() =&gt;</code></td>
+<td><code>() =&gt; { … }</code> は、名前の無い関数（アロー関数）の書き方です。<code>( )</code> の中が引数、<code>=&gt;</code> の右が中身です。<code>(e) =&gt; setKeyword(e.target.value)</code> のように、1 つの式なら <code>{ }</code> を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>Error</code></td>
+<td><code>new Error("説明")</code> は、エラーを作ります。<code>throw new Error(…)</code> でエラーを起こし、<code>try { … } catch (err) { … }</code> で受け止めます。<code>err.message</code> で説明の文を読めます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>decodeURIComponent()</code></td>
+<td><code>decodeURIComponent("%E5%B1%B1")</code> は、URL やクッキーの中で <code>%XX</code> の形にした文字を、元の文字（山）に戻します。反対は <code>encodeURIComponent()</code> です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>fetch()</code></td>
+<td><code>fetch(URL)</code> は、サーバーに HTTP の要求を送る関数です。<code>await fetch(…)</code> で答えを待ち、<code>res.ok</code>（うまくいったか）・<code>res.status</code>（状態コード）・<code>await res.json()</code>（JSON の中身）を読みます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.cookie</code></td>
+<td><code>document.cookie</code> は、そのページのクッキーを、<code>名前=値; 名前=値</code> の形の文字で読みます（<code>HttpOnly</code> のクッキーは読めません）。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.ok</code></td>
+<td><code>fetch</code> の答えの <code>.ok</code> は、状態コードが 200〜299（うまくいった）なら <code>true</code> です。</td>
 <td>05 6. アプリの作り</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cat-24">TypeScript</h2>
+<h2 id="cat-32">TypeScript</h2>
 <table>
 <thead>
 <tr>
@@ -2535,7 +3824,24 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-25">Python</h2>
+<h2 id="cat-33">React</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>react()</code></td>
+<td><code>react()</code> は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-34">Python</h2>
 <table>
 <thead>
 <tr>
@@ -2641,6 +3947,66 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 6. アプリの作り</td>
 </tr>
 <tr>
+<td><code>#</code></td>
+<td>Python では、<code>#</code> から行の終わりまでがコメントです。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>"""…"""</code></td>
+<td><code>"""…"""</code>（<code>"</code> を 3 つ）で囲んだ文字は、何行にもまたがって書けます。関数・クラス・ファイルのいちばん最初に書いた物は、その説明書（docstring）になり、<code>help()</code> やエディターで読めます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>f"…{値}…"</code></td>
+<td><code>f"…"</code>（頭に <code>f</code> を付けた文字）の中の <code>{ }</code> には、変数や式を書けて、その値が入ります（f 文字列）。<code>f"環境変数 {name} がありません"</code>。<code>{ }</code> の中の <code>:</code> の後ろには、<code>{amount:,}</code> のように書式も書けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>r"…"</code></td>
+<td><code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。正規表現の <code>r"\d{6}"</code> のように、<code>\</code> の多い文字をそのまま書けます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>[式 for 名前 in 並び]</code></td>
+<td><code>[f"http://{host}" for host in ALLOWED_HOSTS]</code> は、「並びの 1 つずつから、新しい値を作って、並び（リスト）にする」書き方です（リスト内包表記）。後ろに <code>if 条件</code> を付けると、条件に合う物だけになります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td><code>a == b</code> は、「a と b が等しいか」です。<code>=</code>（1 つ）は「値を入れる」です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>名前=値</code></td>
+<td><code>open(path, encoding="utf-8")</code> の <code>encoding="utf-8"</code> のように、<code>名前=値</code> で渡す引数は「キーワード引数」です。順番に関係なく、名前で渡せます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>__file__</code></td>
+<td><code>__file__</code> は、今のファイルの場所が入った、特別な変数です。<code>Path(__file__).resolve().parent</code> で、このファイルが置いてあるフォルダが分かります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>Path</code></td>
+<td><code>Path</code>（<code>pathlib</code>）は、ファイルやフォルダの場所を表す型です。<code>Path("memo.txt").exists()</code>・<code>.read_text()</code>・<code>/</code> でのつなぎ（<code>BASE_DIR / "media"</code>）ができます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>RuntimeError</code></td>
+<td><code>RuntimeError</code> は、ほかの種類に当てはまらない、動いている時のエラーです。<code>raise RuntimeError("…")</code> で、説明を付けて止めます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.parent</code></td>
+<td><code>Path</code> の <code>.parent</code> は、1 つ上のフォルダです。<code>.parent.parent</code> で 2 つ上です。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.environ</code></td>
+<td><code>os.environ</code> は、環境変数の入れ物（辞書のような物）です。<code>os.environ.get("名前", 無い時の値)</code> で読みます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
 <td><code>class</code></td>
 <td>クラス（データと、それを扱う関数をまとめた設計図）を作る書き方。<code>class Request:</code> の次から、字下げした所が中身です。</td>
 <td>05 6. アプリの作り</td>
@@ -2660,9 +4026,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>長さ（中身の数）を返す関数。<code>len("abc")</code> は 3、<code>len([1, 2])</code> は 2、<code>len(sys.argv)</code> は「渡された引数の数＋1」です。</td>
 <td>05 6. アプリの作り</td>
 </tr>
+<tr>
+<td><code>b"…"</code></td>
+<td><code>b"…"</code> は、文字ではなく「バイトの並び」（<code>bytes</code>）を作る書き方です。<code>b"\xff\xd8\xff"</code> は、JPEG の画像のファイルの、最初の 3 バイトです。</td>
+<td>05 6. アプリの作り</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-26">Django</h2>
+<h2 id="cat-35">Django</h2>
 <table>
 <thead>
 <tr>
@@ -2708,6 +4079,31 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 6. アプリの作り</td>
 </tr>
 <tr>
+<td><code>JsonResponse</code></td>
+<td>Django の <code>JsonResponse({"status": "ok"})</code> は、辞書を JSON にして返す答えです。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>TemplateView</code></td>
+<td>Django の <code>TemplateView</code> は、決まったテンプレート（HTML）を表示するだけのビューです。<code>template_name = "index.html"</code> を書くだけで使えます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.body</code></td>
+<td>Django の <code>request.body</code> は、届いた要求の中身（バイトのまま）です。JSON なら <code>json.loads(request.body)</code> で読みます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.user</code></td>
+<td>Django の <code>request.user</code> は、今ログインしている人（していなければ「だれでもない人」）です。<code>request.user.is_authenticated</code> で、ログインしているかが分かります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.META</code></td>
+<td>Django の <code>request.META</code> は、要求の見出しやサーバーの情報が入った辞書です。<code>request.META.get("REMOTE_ADDR")</code> で、送ってきた所のアドレスが分かります。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
 <td><code>.as_view()</code></td>
 <td>クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。</td>
 <td>05 6. アプリの作り</td>
@@ -2722,9 +4118,19 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>正規表現で URL の決まりを書く関数。<code>re_path(r"^(?!api/&#124;admin/).*$", …)</code> は「<code>api/</code>・<code>admin/</code> で始まらない URL は全部」（React の画面を返す）。</td>
 <td>05 6. アプリの作り</td>
 </tr>
+<tr>
+<td><code>.urls</code></td>
+<td><code>admin.site.urls</code> は、Django の管理画面の URL の一覧です。<code>path("admin/", admin.site.urls)</code> で、<code>/admin/</code> に管理画面を出します。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>.site</code></td>
+<td><code>admin.site</code> は、Django の管理画面そのものです。<code>admin.site.register(モデル)</code> で、モデルを管理画面に出します。</td>
+<td>05 6. アプリの作り</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-27">Django REST framework</h2>
+<h2 id="cat-36">Django REST framework</h2>
 <table>
 <thead>
 <tr>
@@ -2742,6 +4148,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>@api_view</code></td>
 <td><code>@api_view(["GET", "POST"])</code> を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。</td>
+<td>05 6. アプリの作り</td>
+</tr>
+<tr>
+<td><code>Response</code></td>
+<td>DRF の <code>Response(data)</code> は、API の答えです。辞書や並びを、JSON にして返します。</td>
 <td>05 6. アプリの作り</td>
 </tr>
 </tbody>

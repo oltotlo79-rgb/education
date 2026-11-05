@@ -729,6 +729,16 @@ i32 の大きさ: 4 バイト
 String の持ち手の大きさ: 24 バイト
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run --bin</code></strong>（cargo のコマンド）: <code>cargo run --bin u01_stack_heap</code> は、<code>src\bin</code> の中の <code>u01_stack_heap.rs</code> を動かします。1 つのプロジェクトに、プログラムをいくつも置いた時に、どれを動かすかを選びます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_2">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-size_of">解説1: <code>size_of</code> を使えるようにする</h5>
 <div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">mem</span><span class="p">::</span><span class="n">size_of</span><span class="p">;</span>
@@ -1407,6 +1417,7 @@ Err(&quot;負の数は保存できません&quot;)
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.as_ptr()</code></strong>（所有権と借用）: 値の本体がメモリのどこにあるか（アドレス）を返すメソッド。「同じ場所を指しているか」を見るための、仕組みの確かめ用です。ふだんのプログラムではあまり使いません。</li>
+<li><strong><code>{:p}</code></strong>（画面に出す）: <code>{:p}</code> は、参照（<code>&amp;x</code>）やポインタが指している、メモリの中の場所（アドレス）を、<code>0x7ff6…</code> のような 16 進数で表示する指定です。2 つが同じ場所を指しているかを確かめる時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2309,6 +2320,17 @@ count = 11
 引っ越し: cap =  96, 本体の場所 = 0x2ba44111300
 引っ越し: cap = 192, 本体の場所 = 0x2ba441181d0
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>{:&gt;幅}</code></strong>（画面に出す）: <code>{:&gt;3}</code> の <code>&gt;</code> は<strong>右寄せ</strong>の指定で、数は幅（何文字分の場所を取るか）です。<code>{:&gt;3}</code> で <code>7</code> は <code>7</code>（前に空白 2 つ）。数を表のように並べる時に、けたがそろいます。左寄せは <code>&lt;</code>、中央寄せは <code>^</code> です。</li>
+<li><strong><code>!=</code></strong>（条件）: <code>a != b</code> は「a と b が等しくないか」を調べます。等しくなければ <code>true</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>{:&gt;3}</code> は「3文字分の幅で右寄せして表示する」という書式です。</li>
@@ -3446,6 +3468,17 @@ None
 <span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;長いほう: {result2}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;T&gt;</code></strong>（型とメソッド）: <code>fn longest&lt;'a&gt;(…)</code> や <code>struct Wrapper&lt;T&gt;</code> の、名前のすぐ後ろの <code>&lt; &gt;</code> は、「型（やライフタイム）を、使う時に決める」ための入れ物（ジェネリクス）です。<code>T</code> は「何かの型」の仮の名前で、使う時に <code>i32</code> や <code>String</code> などに決まります（第4巻で、くわしく学びます）。</li>
+<li><strong><code>'a</code></strong>（所有権と借用）: <code>&amp;'a str</code> の <code>'a</code> は、「借りている期間」（ライフタイム）に付けた名前です。<code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code> は、「返す参照は、<code>x</code> と <code>y</code> の両方が有効な間だけ使える」という約束を表します（第3巻で、くわしく学びます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-121"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">u05_longest</span>
 </code></pre></div></div>

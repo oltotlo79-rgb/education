@@ -181,6 +181,9 @@ class Approval(models.Model):
 > - **`.DateTimeField()`**（Django）: 日時の列を表すモデルの項目。`auto_now_add=True` で、作った時の日時を自動で入れます。
 > - **`.PositiveSmallIntegerField()`**（Django）: 0 以上の小さな整数の列を表すモデルの項目（順番などに使う）。
 > - **`.UniqueConstraint()`**（Django）: 「この組み合わせの値は、表の中で重ならない」という決まりを表す物。`fields=["request", "order"]` は「同じ依頼の中で、同じ順番は 2 つ作れない」。
+> - **`"-列の名前"`**（Django）: Django の `ordering = ["-created_at"]` や `.order_by("-created_at")` の、名前の頭の `-` は、「大きい順（新しい順）に並べる」という意味です。`-` が無ければ、小さい順（古い順）です。
+> - **`__str__`**（Python）: `def __str__(self):` は、`str(物)` や `print(物)`、管理画面の一覧で表示する時の文字を決める関数です。
+> - **`.choices`**（Django）: Django の `Status.choices` は、選び肢の一覧（値と表示名の組）です。`CharField(choices=Status.choices)` で、管理画面に選ぶ欄ができます。
 
 <!-- /first-use -->
 
@@ -390,6 +393,14 @@ except Request.DoesNotExist:
 > - **`.select_related()`**（Django）: つながった表（外部キーの先）を、1 回の問い合わせでまとめて読むメソッド。`select_related("approver")` で、ループの中で承認者を 1 人ずつ読みに行く無駄（N+1）を防げます。
 > - **`get_user_model()`**（Django）: 今のプロジェクトで使っている「ユーザー」のモデルを返す関数。自分でユーザーのモデルを作った時も、これで正しく取れます。
 > - **`date()`**（Python）: 日付を表す型。`date(2026, 11, 10)` のように作ります。
+> - **`\\`**（文字列の中の特別な書き方）: 文字列の中に `\` そのもの（1 つ）を入れたい時は、`\\` と 2 つ書きます。`\` は、`\n` のような特別な書き方の始まりの印だからです。Windows の場所を `"C:\\Users"` と書くのも、この理由です（生の文字列 `r"C:\Users"` なら 1 つで済みます）。
+> - **`{キー: 値 for …}`**（Python）: `{u.pk: u for u in users}` は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です（辞書内包表記）。
+> - **`列__条件=`**（Django）: Django の ORM の `filter(created_at__gte=日時)` のように、列の名前の後ろに `__` と条件を付けると、いろいろな比べ方ができます。`__gte`（以上）・`__lte`（以下）・`__gt`（より大きい）・`__in`（並びのどれか）・`__icontains`（大文字・小文字を区別せず、含む）・`__isnull`（空か）など。
+> - **`外の表__列=`**（Django）: Django の ORM の `filter(requester__dept="製造")` のように、`__` でつなぐと、つながった別の表（外部キーの先）の列で、しぼり込めます。
+> - **`Count`**（Django）: Django の `Count("id")` は、ORM の集計で、数を数えます。`.annotate(n=Count("id"))` で、グループごとの件数が付きます。
+> - **`.objects`**（Django）: Django の `Request.objects` は、その表の行を取り出す係（マネージャー）です。`.all()`（全部）・`.filter(…)`（しぼる）・`.get(…)`（1 つだけ）・`.create(…)`（作る）などを付けて使います。
+> - **`.pk`**（Django）: Django の `.pk` は、その行の主キー（ふつうは `id`）です。
+> - **`.DoesNotExist`**（Django）: `Request.DoesNotExist` は、`.get(…)` で、合う行が 1 つも無かった時のエラーです。`except Request.DoesNotExist:` で受け止めます。
 
 <!-- /first-use -->
 
@@ -468,6 +479,7 @@ class RequestViewSet(viewsets.ModelViewSet):
 >
 > - **`render()`**（Django）: Django で、テンプレート（HTML のひな形）に値を入れて、答え（HTML）を作る関数。`render(request, "テンプレート名", {"名前": 値})`。
 > - **`@login_required`**（Django）: 関数の画面（ビュー）の上に付けると、ログインしていない人をログインの画面へ移す印（デコレーター）です。
+> - **`.user`**（Django）: Django の `request.user` は、今ログインしている人（していなければ「だれでもない人」）です。`request.user.is_authenticated` で、ログインしているかが分かります。
 
 <!-- /first-use -->
 
@@ -494,6 +506,8 @@ urlpatterns = [
 >
 > - **`path()`**（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。`path("requests/<int:pk>/", views.detail)` の `<int:pk>` は、URL の中の数を `pk` という名前で受け取ります。
 > - **`include()`**（Django）: URL の決まりの中で、ほかのファイル（アプリ）の URL の決まりを、まとめて取り込む関数。`path("api/", include("requests_app.urls"))` のように使います。
+> - **`DefaultRouter`**（Django REST framework）: DRF の `DefaultRouter` は、ViewSet（一覧・詳細・作成・変更・削除をまとめた物）から、URL を自動で作る係です。
+> - **`.urls`**（Django）: `admin.site.urls` は、Django の管理画面の URL の一覧です。`path("admin/", admin.site.urls)` で、`/admin/` に管理画面を出します。
 
 <!-- /first-use -->
 
@@ -506,6 +520,14 @@ urlpatterns = [
     path('', include('requests_app.urls')),
 ]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.site`**（Django）: `admin.site` は、Django の管理画面そのものです。`admin.site.register(モデル)` で、モデルを管理画面に出します。
+
+<!-- /first-use -->
 
 `requests_app/templates/requests_app/request_list.html`:
 
@@ -546,6 +568,22 @@ urlpatterns = [
   </body>
 </html>
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`colspan=`**（HTML）: `<td colspan="4">` の `colspan` は、表の 1 つのマスを、横に何列分つなげるかです。
+> - **`{% load %}`**（Django）: Django のテンプレートの `{% load static %}` は、`{% static %}` などの道具を使えるようにする命令です。テンプレートの最初に書きます。
+> - **`{% static %}`**（Django）: `{% static 'style.css' %}` は、静的なファイル（CSS・画像）の URL（`/static/style.css`）を作る命令です。
+> - **`{% for %}`**（Django）: Django のテンプレートの `{% for r in items %} … {% endfor %}` は、並びの 1 つずつについて、間の HTML をくり返します。
+> - **`{% empty %}`**（Django）: `{% for %}` の中の `{% empty %}` の下は、並びが空の時だけ表示されます。「依頼はまだありません」のような文に使います。
+> - **`{% endfor %}`**（Django）: `{% endfor %}` は、`{% for %}` のくり返しの終わりの印です。
+> - **`{{ 値 }}`**（Django）: Django のテンプレートの `{{ r.title }}` は、値をそこに表示します。中の `<` などは自動で `&lt;` に変わる（エスケープされる）ので、入力された文字がタグとして動くことはありません。
+> - **`{{ 値|default }}`**（Django）: `{{ r.note|default:"なし" }}` の `|default:"なし"` は、値が空の時に、代わりに表示する文字です（`|` の後ろは「フィルター」という、値の変え方です）。
+> - **`{{ 値|date }}`**（Django）: `{{ r.created_at|date:"Y-m-d H:i" }}` の `|date` は、日時を、その形の文字にするフィルターです。`Y`（年）・`m`（月）・`d`（日）・`H`（時）・`i`（分）。
+
+<!-- /first-use -->
 
 | テンプレートの書き方 | 意味 |
 |---|---|
@@ -696,6 +734,8 @@ class RequestApiTests(APITestCase):
 > - **`.json()`**（Django）: テストで受け取った答え（レスポンス）の本文を、JSON として読んで、Python のリストや辞書にするメソッド。`self.assertEqual(res.json(), [])`。
 > - **`.post()`**（Django）: テストの係（`self.client`）で、POST のリクエストを送るメソッド。`self.client.post("/api/requests/", {…})` で、サーバーを動かさずに、API を試せます。
 > - **`.assertIn()`**（Django）: テストで、値が入れ物の中にあるかを確かめるメソッド。`self.assertIn("title", res.json())`。
+> - **`APITestCase`**（Django REST framework）: DRF の `APITestCase` は、API のテストを書くための元の型です。`self.client.get(…)` で要求を送り、答えを確かめます。
+> - **`.status_code`**（Django）: テストの答えの `res.status_code` は、HTTP の状態コード（`200`・`403` など）です。
 
 <!-- /first-use -->
 

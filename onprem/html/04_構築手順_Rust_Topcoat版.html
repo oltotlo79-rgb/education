@@ -597,6 +597,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Get-ComputerInfo -Property</code></strong>（PowerShell）: 表示する項目を決めるオプション。<code>-Property OsName, OsVersion, CsName, CsDomain</code> は、OS の名前と版、パソコンの名前、ドメインだけ（全部だと、とても長い）。</li>
 <li><strong><code>Format-Table</code></strong>（PowerShell）: 結果を表の形に整えて表示するコマンド。</li>
 <li><strong><code>w32tm</code></strong>（コマンド）: Windows の時刻合わせの状態を見る・変えるコマンド。<code>w32tm /query /status</code> で、どこと時刻を合わせているか（<code>Source</code>）と、最後に合わせた時刻が分かります。時刻がずれると、ログの読み合わせやログインの期限が狂います。</li>
+<li><strong><code>w32tm /query</code></strong>（コマンド）: <code>w32tm /query /status</code> は、パソコンの時計を、どこ（時刻のサーバー）に合わせているか、最後にいつ合わせたかを表示します。</li>
+<li><strong><code>w32tm /status</code></strong>（コマンド）: <code>/status</code> は、<code>w32tm /query</code> と一緒に使い、時刻合わせの今の状態を表示する指定です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -686,6 +688,7 @@ D:\pgsql\18\data\       PostgreSQL のデータ（5 章で、インストール�
 <li><strong><code>New-Item -Force</code></strong>（PowerShell）: <code>-Force</code> で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。</li>
 <li><strong><code>New-Item -Path</code></strong>（PowerShell）: <code>-Path 場所</code> で、作るファイルやフォルダの場所（名前）を指定します。</li>
 <li><strong><code>Out-Null</code></strong>（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。<code>… | Out-Null</code> のように後ろに付けると、表示が出なくなります。</li>
+<li><strong><code>@( … )</code></strong>（PowerShell）: <code>@( … )</code> は「並び（配列）」を作る書き方です。<code>@("a", "b")</code> で 2 つの並び、<code>@()</code> で空の並び。中のコマンドの結果が 1 つでも、必ず並びとして扱えます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -906,6 +909,18 @@ lc_messages = &#39;C&#39;
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Get-Content</span> <span class="n">D</span><span class="p">:\</span><span class="n">pgsql</span><span class="p">\</span><span class="n">18</span><span class="p">\</span><span class="n">data</span><span class="p">\</span><span class="n">pg_hba</span><span class="p">.</span><span class="n">conf</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">-Pattern</span> <span class="s2">&quot;^\s*host&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>\s</code></strong>（正規表現）: 正規表現の <code>\s</code> は、「空白 1 つ」（スペース・タブ・改行など）を表します。<code>\s*</code> は「空白が 0 個以上」。</li>
+<li><strong><code>*</code></strong>（正規表現）: 正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</li>
+<li><strong><code>^</code></strong>（正規表現）: 正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>用語:</strong> pg_hba.conf（PostgreSQL の「誰がどこからつないでよいか」の決まりを書いたファイル。hba は host-based authentication）</p>
 </blockquote>
@@ -919,6 +934,16 @@ lc_messages = &#39;C&#39;
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nv">$env:Path</span> <span class="p">+=</span> <span class="s2">&quot;;C:\Program Files\PostgreSQL\18\bin&quot;</span>
 <span class="n">psql</span> <span class="p">-</span><span class="n">-version</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>psql --version</code></strong>（psql）: <code>psql --version</code> は、psql（PostgreSQL につなぐ道具）の版を表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> psql（ピーエスキューエル：PostgreSQL に SQL を打ち込む、文字の道具）</p>
@@ -966,6 +991,9 @@ lc_messages = &#39;C&#39;
 <li><strong><code>OWNER</code></strong>（SQL）: <code>OWNER ユーザー</code> で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。</li>
 <li><strong><code>REVOKE</code></strong>（SQL）: 利用者（ロール）から、権限を取り上げる命令（<code>GRANT</code> の逆）。<code>REVOKE ALL ON DATABASE webapp_prod FROM PUBLIC;</code> は「だれでもつなげる、の決まりを取り上げる」。</li>
 <li><strong><code>PUBLIC</code></strong>（SQL）: PostgreSQL で「すべての利用者」を表す名前。初めの状態では、だれでもデータベースにつなげるので、<code>REVOKE … FROM PUBLIC</code> で閉じます。</li>
+<li><strong><code>\l</code></strong>（psql）: psql の <code>\l</code> は、データベースの一覧を表示する命令です。<code>\l webapp*</code> で、<code>webapp</code> で始まる物だけにしぼれます。</li>
+<li><strong><code>\du</code></strong>（psql）: psql の <code>\du</code> は、利用者（ロール）の一覧と、その権限を表示する命令です。</li>
+<li><strong><code>\q</code></strong>（psql）: psql の <code>\q</code> は、psql を終わる命令です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1030,7 +1058,10 @@ lc_messages = &#39;C&#39;
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo build</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</li>
+<li><strong><code>cargo build --release</code></strong>（cargo のコマンド）: <code>cargo build --release</code> は、時間をかけて最適化した、速い本番用の実行ファイルを作ります（動かしはしません）。できた物は <code>target\release</code> に置かれます。</li>
+<li><strong><code>cargo build --locked</code></strong>（cargo のコマンド）: <code>--locked</code> は、<code>Cargo.lock</code> に書いてある部品の版のまま作り、<code>Cargo.lock</code> を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。</li>
 <li><strong><code>topcoat</code></strong>（Topcoat）: Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</li>
+<li><strong><code>topcoat asset bundle --release</code></strong>（Topcoat）: <code>topcoat asset bundle --release</code> は、CSS などのアセットの束を、本番用（<code>target\release\assets</code>）に作ります。<code>cargo build --release</code> と組にして使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1054,6 +1085,19 @@ lc_messages = &#39;C&#39;
 <span class="k">[target.x86_64-pc-windows-msvc]</span>
 <span class="n">rustflags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-C&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;target-feature=+crt-static&quot;</span><span class="p">]</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#</code></strong>（設定ファイル（TOML））: TOML（<code>Cargo.toml</code> などの設定ファイルの書き方）では、<code>#</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>[target.…]</code></strong>（設定ファイル（TOML））: <code>.cargo/config.toml</code> の <code>[target.x86_64-pc-windows-msvc]</code> は、「その種類のパソコン向けに作る時だけの設定」の見出しです。</li>
+<li><strong><code>rustflags =</code></strong>（設定ファイル（TOML））: <code>rustflags = ["-C", "target-feature=+crt-static"]</code> は、Rust のコンパイラーに渡す追加の指定です。<code>+crt-static</code> は、Windows の実行ファイルに、C の部品（ランタイム）を中に入れる指定で、Visual C++ の部品が入っていないサーバーでも動くようになります。</li>
+<li><strong><code>[ … ]</code></strong>（設定ファイル（TOML））: <code>["rustfmt", "clippy"]</code> のように <code>[ ]</code> の中に <code>,</code> で区切って並べると、いくつもの値の並び（配列）になります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> DLL（ディーエルエル：ほかのプログラムが使う部品を入れたファイル。実行ファイルとは別に、OS の中に入っている必要がある）</p>
@@ -1087,6 +1131,7 @@ lc_messages = &#39;C&#39;
 <li><strong><code>Compress-Archive -Path</code></strong>（PowerShell）: zip に入れる物を決めるオプション。<code>"$out\*"</code> は、そのフォルダの中身全部。</li>
 <li><strong><code>Compress-Archive -DestinationPath</code></strong>（PowerShell）: 作る zip のファイルの場所と名前を決めるオプション。</li>
 <li><strong><code>Compress-Archive -Force</code></strong>（PowerShell）: 同じ名前の zip がもうあれば、上書きするオプション。</li>
+<li><strong><code>*</code></strong>（PowerShell）: <code>'127*'</code> や <code>*.log</code> の <code>*</code> は、「何文字でも、何でも合う」という印（ワイルドカード）です。<code>-like '127*'</code> は「127 で始まる」、<code>-Filter *.log</code> は「名前が .log で終わる物」。1 文字だけなら <code>?</code> です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1234,6 +1279,16 @@ lc_messages = &#39;C&#39;
 <li><strong><code>Ok</code></strong>（エラー処理）: <code>Result</code> の「うまくいった」の方。<code>Ok(値)</code> の形で結果を包みます。<code>Ok(())</code> は「うまくいった。返す値は特に無い（<code>()</code> は空っぽの値）」という意味で、<code>Result&lt;()&gt;</code> を返す関数の最後によく書きます。</li>
 <li><strong><code>None</code></strong>（Option）: <code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</li>
 <li><strong><code>?</code></strong>（エラー処理）: <code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</li>
+<li><strong><code>//!</code></strong>（コメント）: <code>//!</code> で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。<code>///</code>（すぐ下の関数や型の説明）と使い分けます。</li>
+<li><strong><code>///</code></strong>（コメント）: <code>///</code> で始まるコメントは、すぐ下の関数や型の「説明書」（ドキュメントコメント）です。<code>cargo doc</code> で説明のページになり、VS Code では、名前にマウスを乗せると表示されます。ふつうのコメント（<code>//</code>）とちがい、何の説明かが決まっています。</li>
+<li><strong><code>str</code></strong>（文字列）: <code>&amp;str</code> の <code>str</code> は「文字列の中身」を表す型で、ふつうは <code>&amp;str</code>（借りた文字列）の形で使います。<code>"こんにちは"</code> のように <code>"</code> で囲んで直接書いた文字列は <code>&amp;str</code> です。自分で持って、あとから書き足せる文字列は <code>String</code> です。</li>
+<li><strong><code>&amp;</code></strong>（所有権と借用）: 値の前の <code>&amp;</code> は「貸す（借用）」の印です。<code>fs::write(&amp;relative, …)</code> は、<code>relative</code> を手放さずに、見せるだけ貸します。型に付けた <code>&amp;str</code>・<code>&amp;Vec&lt;i32&gt;</code> は「借りた値」の型です。</li>
+<li><strong><code>let … else</code></strong>（Option）: <code>let Some(x) = 値 else { return …; };</code> は、「<code>Some</code> の形なら中身を <code>x</code> に入れて先へ進み、そうでなければ <code>else</code> の中で抜ける」という書き方です。<code>else</code> の中は、必ず <code>return</code> や <code>continue</code> などで抜けます。思ったとおりでない時に早めに抜けて、残りの処理を平らに書けます。</li>
+<li><strong><code>-&gt;</code></strong>（関数）: <code>fn main() -&gt; std::io::Result&lt;()&gt;</code> の <code>-&gt;</code> は、「この関数が返す値の型」を書く印です。<code>fn add(a: i32, b: i32) -&gt; i32</code> なら「<code>i32</code> を返す」。<code>-&gt;</code> が無い関数は、何も返しません（<code>()</code> という「空」を返します）。</li>
+<li><strong><code>::</code></strong>（モジュール）: <code>std::env</code> の <code>::</code> は、「〜の中の」を表す区切りです。<code>std::env::args()</code> は「標準ライブラリ（<code>std</code>）の中の <code>env</code> の中の <code>args</code> 関数」という意味です。型の関数（<code>String::new()</code>）や、enum の種類（<code>Ordering::Less</code>）を指す時にも使います。</li>
+<li><strong><code>impl トレイト</code></strong>（型とメソッド）: <code>-&gt; Result&lt;impl View&gt;</code> の <code>impl View</code> は、「<code>View</code> という決まり（トレイト）を満たす、何かの型」という意味です。本当の型の名前は長くて書けないので、「<code>View</code> として使える物を返す」とだけ書きます。引数の <code>x: impl Display</code> なら、「表示できる物なら何でも受け取る」です。</li>
+<li><strong><code>&lt;T&gt;</code></strong>（型とメソッド）: <code>fn longest&lt;'a&gt;(…)</code> や <code>struct Wrapper&lt;T&gt;</code> の、名前のすぐ後ろの <code>&lt; &gt;</code> は、「型（やライフタイム）を、使う時に決める」ための入れ物（ジェネリクス）です。<code>T</code> は「何かの型」の仮の名前で、使う時に <code>i32</code> や <code>String</code> などに決まります。</li>
+<li><strong><code>'a</code></strong>（所有権と借用）: <code>&amp;'a str</code> の <code>'a</code> は、「借りている期間」（ライフタイム）に付けた名前です。<code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code> は、「返す参照は、<code>x</code> と <code>y</code> の両方が有効な間だけ使える」という約束を表します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1262,6 +1317,7 @@ lc_messages = &#39;C&#39;
 <li><strong><code>SessionConfig::builder()</code></strong>（Topcoat）: Topcoat のセッションの設定を、少しずつ決めて組み立て始める関数。<code>.token_store(…)</code>・<code>.lifetime(…)</code> をつなげて、最後に <code>.build()</code> で出来上がりです。</li>
 <li><strong><code>std::time::Duration::from_secs()</code></strong>（時間）: 秒数ぶんの長さ（<code>Duration</code>）を作る関数。<code>Duration::from_secs(5)</code> は 5 秒です。</li>
 <li><strong><code>SessionConfig</code></strong>（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。</li>
+<li><strong><code>//</code></strong>（コメント）: <code>//</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、プログラムとしては無視されます。<code>// OS の種類を表示する</code> のように、何をしているかを日本語で書いておくと、あとで読み返す時に助かります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1368,6 +1424,36 @@ lc_messages = &#39;C&#39;
 <span class="w">  </span><span class="nt">&lt;/log&gt;</span>
 <span class="nt">&lt;/service&gt;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;!-- --&gt;</code></strong>（設定ファイル（XML））: XML では、<code>&lt;!--</code> から <code>--&gt;</code> までがコメントです。</li>
+<li><strong><code>&lt;service&gt;</code></strong>（設定ファイル（XML））: WinSW（ふつうのプログラムを Windows のサービスにする道具）の設定で、いちばん外側の <code>&lt;service&gt;</code> の中に、サービスの設定を全部書きます。</li>
+<li><strong><code>&lt;id&gt;</code></strong>（設定ファイル（XML））: <code>&lt;id&gt;webapp-prod&lt;/id&gt;</code> は、サービスの名前です。<code>Start-Service webapp-prod</code> のように、コマンドで使います。</li>
+<li><strong><code>&lt;name&gt;</code></strong>（設定ファイル（XML））: <code>&lt;name&gt;</code> は、サービスの一覧の画面に出る、人が読む名前です。</li>
+<li><strong><code>&lt;description&gt;</code></strong>（設定ファイル（XML））: <code>&lt;description&gt;</code> は、サービスの説明です。</li>
+<li><strong><code>&lt;executable&gt;</code></strong>（設定ファイル（XML））: <code>&lt;executable&gt;</code> は、サービスとして動かすプログラム（<code>.exe</code>）の場所です。</li>
+<li><strong><code>&lt;workingdirectory&gt;</code></strong>（設定ファイル（XML））: <code>&lt;workingdirectory&gt;</code> は、プログラムを動かす時の「今いるフォルダ」です。プログラムが、相対の場所でファイルを探すので、アプリのフォルダにします。</li>
+<li><strong><code>&lt;env&gt;</code></strong>（設定ファイル（XML））: <code>&lt;env name="PORT" value="8080" /&gt;</code> は、プログラムに渡す環境変数を 1 つ書くタグです。<code>/&gt;</code> で終わるタグは、中身が無く、閉じるタグも要りません。</li>
+<li><strong><code>name=</code></strong>（設定ファイル（XML））: <code>&lt;env name="…"&gt;</code> の <code>name</code> は、環境変数の名前です（IIS の設定では、決まりの名前）。</li>
+<li><strong><code>value=</code></strong>（設定ファイル（XML））: <code>&lt;env … value="…"&gt;</code> の <code>value</code> は、環境変数の値です。</li>
+<li><strong><code>&lt;startmode&gt;</code></strong>（設定ファイル（XML））: <code>&lt;startmode&gt;Automatic&lt;/startmode&gt;</code> は、パソコンの起動と一緒に、サービスも自動で動かす設定です。</li>
+<li><strong><code>&lt;depend&gt;</code></strong>（設定ファイル（XML））: <code>&lt;depend&gt;postgresql-x64-18&lt;/depend&gt;</code> は、「このサービスより先に動かしておくサービス」です。データベースが動いてから、アプリを動かします。</li>
+<li><strong><code>&lt;onfailure&gt;</code></strong>（設定ファイル（XML））: <code>&lt;onfailure action="restart" delay="10 sec" /&gt;</code> は、プログラムが落ちた時の動きです。1 回目は 10 秒後、2 回目は 30 秒後…のように、何回か書けます。</li>
+<li><strong><code>action=</code></strong>（設定ファイル（XML））: <code>action="restart"</code> は、落ちた時に、動かし直す指定です。IIS の <code>&lt;action&gt;</code> の <code>type</code> とは別の物です。</li>
+<li><strong><code>delay=</code></strong>（設定ファイル（XML））: <code>delay="10 sec"</code> は、動かし直すまでに待つ時間です。</li>
+<li><strong><code>&lt;stoptimeout&gt;</code></strong>（設定ファイル（XML））: <code>&lt;stoptimeout&gt;15 sec&lt;/stoptimeout&gt;</code> は、サービスを止める時に、プログラムが自分で終わるのを待つ時間です。過ぎたら、強制的に止めます。</li>
+<li><strong><code>&lt;logpath&gt;</code></strong>（設定ファイル（XML））: <code>&lt;logpath&gt;</code> は、サービスのログ（プログラムが画面に出した文）を書くフォルダです。</li>
+<li><strong><code>&lt;log&gt;</code></strong>（設定ファイル（XML））: <code>&lt;log mode="roll-by-size"&gt;</code> は、ログの残し方です。<code>roll-by-size</code> は、決めた大きさになったら、新しいファイルに切りかえる方式です。</li>
+<li><strong><code>mode=</code></strong>（設定ファイル（XML））: <code>mode="roll-by-size"</code> は、ログを大きさで区切る指定です。</li>
+<li><strong><code>&lt;sizeThreshold&gt;</code></strong>（設定ファイル（XML））: <code>&lt;sizeThreshold&gt;10240&lt;/sizeThreshold&gt;</code> は、1 つのログのファイルの大きさの上限（KB。10240 は 10MB）です。</li>
+<li><strong><code>&lt;keepFiles&gt;</code></strong>（設定ファイル（XML））: <code>&lt;keepFiles&gt;8&lt;/keepFiles&gt;</code> は、残しておく古いログのファイルの数です。それより古い物は消えるので、ディスクがいっぱいになりません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <table>
 <thead>
@@ -1722,6 +1808,7 @@ lc_messages = &#39;C&#39;
 <li><strong><code>New-IISSite -PhysicalPath</code></strong>（PowerShell）: サイトの中身（設定ファイル <code>web.config</code> など）を置くフォルダを決めるオプション。</li>
 <li><strong><code>New-IISSite -BindingInformation</code></strong>（PowerShell）: どの住所・ポート・名前で来た通信を、このサイトが受け取るかを決めるオプション。<code>"*:80:webapp.example.local"</code> は「どの住所でも・80 番で・名前が webapp.example.local の物」。同じ 80 番でも、名前で検証用と本番用を振り分けられます。</li>
 <li><strong><code>Get-IISSite</code></strong>（PowerShell）: IIS のサイトの一覧と、動いているか・受け取る住所（バインド）を表示するコマンド。</li>
+<li><strong><code>$false</code></strong>（PowerShell）: <code>$false</code> は「いいえ（偽）」を表す値です。<code>-Confirm:$false</code> は、「本当にしますか？」の確認を出さずに進める指定です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1767,6 +1854,31 @@ lc_messages = &#39;C&#39;
 <span class="w">  </span><span class="nt">&lt;/system.webServer&gt;</span>
 <span class="nt">&lt;/configuration&gt;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;?xml … ?&gt;</code></strong>（設定ファイル（XML））: <code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</code> は、「これは XML のファイルで、文字の符号は UTF-8」という宣言です。ファイルのいちばん最初に書きます。</li>
+<li><strong><code>&lt;configuration&gt;</code></strong>（設定ファイル（XML））: IIS の設定ファイル（<code>web.config</code>）の、いちばん外側のタグです。</li>
+<li><strong><code>&lt;system.webServer&gt;</code></strong>（設定ファイル（XML））: <code>&lt;system.webServer&gt;</code> の中に、IIS（Windows の Web サーバー）の設定を書きます。</li>
+<li><strong><code>&lt;rewrite&gt;</code></strong>（設定ファイル（XML））: <code>&lt;rewrite&gt;</code> の中に、来た要求の行き先を書きかえる決まり（URL Rewrite）を書きます。</li>
+<li><strong><code>&lt;rules&gt;</code></strong>（設定ファイル（XML））: <code>&lt;rules&gt;</code> の中に、決まり（<code>&lt;rule&gt;</code>）を、上から順に並べます。</li>
+<li><strong><code>&lt;rule&gt;</code></strong>（設定ファイル（XML））: <code>&lt;rule name="…"&gt;</code> は、書きかえの決まり 1 つです。<code>&lt;match&gt;</code>（どの要求に）と <code>&lt;action&gt;</code>（どうするか）を中に書きます。</li>
+<li><strong><code>stopProcessing=</code></strong>（設定ファイル（XML））: <code>stopProcessing="true"</code> は、「この決まりに合ったら、下の決まりは調べない」という指定です。</li>
+<li><strong><code>&lt;match&gt;</code></strong>（設定ファイル（XML））: <code>&lt;match url="(.*)" /&gt;</code> は、「どの URL に合わせるか」を正規表現で書くタグです。<code>(.*)</code> は「全部」で、<code>( )</code> の中に合った部分は、あとで <code>{R:1}</code> として使えます。</li>
+<li><strong><code>url=</code></strong>（設定ファイル（XML））: <code>&lt;match url="…"&gt;</code> の <code>url</code> は合わせる URL の形（正規表現）、<code>&lt;action url="…"&gt;</code> の <code>url</code> は、取り次ぐ先や移す先の URL です。</li>
+<li><strong><code>&lt;action&gt;</code></strong>（設定ファイル（XML））: <code>&lt;action type="Rewrite" url="http://127.0.0.1:8080/{R:1}" /&gt;</code> は、合った要求をどうするかです。<code>Rewrite</code> は、利用者には見せずに、裏で別の場所（ここではアプリ）へ取り次ぎます。<code>Redirect</code> は、利用者のブラウザーに、別の URL へ行き直させます。</li>
+<li><strong><code>type=</code></strong>（設定ファイル（XML））: <code>&lt;action type="Rewrite"&gt;</code> の <code>type</code> は、どう処理するか（<code>Rewrite</code>＝裏で取り次ぐ・<code>Redirect</code>＝行き直させる）です。</li>
+<li><strong><code>&lt;security&gt;</code></strong>（設定ファイル（XML））: <code>&lt;security&gt;</code> の中に、IIS の守りの設定を書きます。</li>
+<li><strong><code>&lt;requestFiltering&gt;</code></strong>（設定ファイル（XML））: <code>&lt;requestFiltering&gt;</code> は、受け付ける要求の決まり（大きさ・種類）の設定です。</li>
+<li><strong><code>&lt;requestLimits&gt;</code></strong>（設定ファイル（XML））: <code>&lt;requestLimits maxAllowedContentLength="104857600" /&gt;</code> は、1 回に受け付ける要求の大きさの上限です。</li>
+<li><strong><code>maxAllowedContentLength=</code></strong>（設定ファイル（XML））: <code>maxAllowedContentLength</code> は、1 回に送れる中身の大きさの上限（バイト）です。<code>104857600</code> は 100MB。これより大きいファイルは、アプリに届く前に、IIS が断ります。</li>
+<li><strong><code>{R:1}</code></strong>（設定ファイル（XML））: <code>{R:1}</code> は、<code>&lt;match url="(.*)"&gt;</code> の <code>( )</code> の中に合った部分（1 番目）が入る場所です。<code>/notes/3</code> で来たら、<code>http://127.0.0.1:8080/notes/3</code> に取り次がれます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>検証の <code>D:\webapp\stg\iis\web.config</code> は、ルールの名前を <code>to-webapp-stg</code> に、行き先を <code>http://127.0.0.1:8081/{R:1}</code> にします。</p>
 <table>
@@ -1864,6 +1976,8 @@ lc_messages = &#39;C&#39;
 <ul>
 <li><strong><code>Get-NetFirewallPortFilter</code></strong>（PowerShell）: ファイアウォールの決まりの、ポート番号の条件の一覧を表示するコマンド。<code>| Get-NetFirewallRule</code> につなぐと、そのポートを使う決まりが分かります。</li>
 <li><strong><code>-in</code></strong>（PowerShell）: 左の値が、右の並びの中にあるかの比べ方。<code>$_.LocalPort -in 80, 443</code> は「80 か 443 か」。</li>
+<li><strong><code>{ … }</code></strong>（PowerShell）: <code>Where-Object { … }</code> や <code>ForEach-Object { … }</code> の <code>{ }</code> は「スクリプトブロック」（あとで動かす、命令のかたまり）です。流れてきた 1 つずつに対して、中の命令が動き、<code>$_</code> がその 1 つを表します。</li>
+<li><strong><code>.LocalPort</code></strong>（PowerShell）: <code>.LocalPort</code> は、待ち受けやつながりの、このパソコン側のポート番号です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1888,6 +2002,7 @@ lc_messages = &#39;C&#39;
 <ul>
 <li><strong><code>-notlike</code></strong>（PowerShell）: <code>-like</code> の逆で、ワイルドカードに合わないかの比べ方。<code>$_.DisplayName -notlike "webapp*"</code> は「webapp で始まらないか」。</li>
 <li><strong><code>Disable-NetFirewallRule</code></strong>（PowerShell）: ファイアウォールの決まりを、消さずに使わない状態にするコマンド。あとで <code>Enable-NetFirewallRule</code> で戻せます。</li>
+<li><strong><code>.DisplayName</code></strong>（PowerShell）: <code>.DisplayName</code> は、画面に出る名前です（サービスやファイアウォールの決まりの、人が読む名前）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2161,6 +2276,15 @@ lc_messages = &#39;C&#39;
 <li><strong><code>Stop-Transcript</code></strong>（PowerShell）: <code>Start-Transcript</code> で始めた記録を終えるコマンド。</li>
 <li><strong><code>exit</code></strong>（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。<code>exit $code</code> は、manage.py の終了コードをそのまま返します。</li>
 <li><strong><code>catch</code></strong>（PowerShell）: <code>try { … } catch { … }</code> の <code>catch</code> の所は、<code>try</code> の中でエラーが起きた時だけ動きます。起きたエラーは <code>$_</code> で受け取れます（<code>$_.Exception.Message</code> で説明の文）。</li>
+<li><strong><code>日時の書式</code></strong>（日時の書式）: <code>Get-Date -Format "yyyyMMdd_HHmm"</code> の <code>"…"</code> は、日時を文字にする時の形（書式）です。<code>yyyy</code>（年）・<code>MM</code>（月）・<code>dd</code>（日）・<code>HH</code>（時）・<code>mm</code>（分）・<code>ss</code>（秒）を並べ、ほかの文字（<code>_</code>・<code>-</code>）はそのまま入ります。2026 年 11 月 5 日 9 時 3 分なら <code>20261105_0903</code>。</li>
+<li><strong><code>yyyy</code></strong>（日時の書式）: 日時の書式の <code>yyyy</code> は、4 けたの年（<code>2026</code>）です。</li>
+<li><strong><code>MM</code></strong>（日時の書式）: 日時の書式の <code>MM</code>（大文字）は、2 けたの月（<code>01</code>〜<code>12</code>）です。小文字の <code>mm</code> は分なので、取り違えに注意します。</li>
+<li><strong><code>dd</code></strong>（日時の書式）: 日時の書式の <code>dd</code> は、2 けたの日（<code>01</code>〜<code>31</code>）です。</li>
+<li><strong><code>HH</code></strong>（日時の書式）: 日時の書式の <code>HH</code>（大文字）は、24 時間の形の時（<code>00</code>〜<code>23</code>）です。小文字の <code>hh</code> は 12 時間の形です。</li>
+<li><strong><code>mm</code></strong>（日時の書式）: 日時の書式の <code>mm</code>（小文字）は、2 けたの分（<code>00</code>〜<code>59</code>）です。</li>
+<li><strong><code>$ErrorActionPreference</code></strong>（PowerShell）: <code>$ErrorActionPreference = "Stop"</code> は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（<code>.exe</code> のコマンドの失敗は止まらないので、<code>$LASTEXITCODE</code> も調べます）。</li>
+<li><strong><code>$LASTEXITCODE</code></strong>（PowerShell）: <code>$LASTEXITCODE</code> は、最後に動かしたプログラム（<code>cargo</code>・<code>git</code>・<code>psql</code> など、<code>.exe</code> のコマンド）の「終了コード」が入る、特別な変数です。<code>0</code> なら成功、<code>0</code> 以外なら失敗です。<code>if ($LASTEXITCODE -ne 0) { … }</code> で、失敗した時の処理を書けます。</li>
+<li><strong><code>.LastWriteTime</code></strong>（PowerShell）: <code>.LastWriteTime</code> は、ファイルを最後に書きかえた日時です。<code>Where-Object { $_.LastWriteTime -lt $limit }</code> で、古いファイルだけを選べます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2283,6 +2407,18 @@ lc_messages = &#39;C&#39;
 <span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-c</span> <span class="s2">&quot;DROP DATABASE webapp_restore_test;&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pg_restore --no-owner</code></strong>（psql）: <code>--no-owner</code> は、表の持ち主を、バックアップを取った時の利用者に戻さず、戻している利用者にする指定です。別のサーバーや、別の名前の利用者で試しに戻す時に使います。</li>
+<li><strong><code>pg_restore --no-privileges</code></strong>（psql）: <code>--no-privileges</code> は、表の権限（<code>GRANT</code>）を戻さない指定です。</li>
+<li><strong><code>.FullName</code></strong>（PowerShell）: <code>Get-ChildItem</code> の結果の <code>.FullName</code> は、ファイルやフォルダの、<code>C:\</code> から始まる場所の全部です（<code>.Name</code> は名前だけ）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>pg_restore</code> がエラー無しで終わり、テーブルの一覧と、件数（<code>SELECT count(*) FROM テーブル名;</code>）が本番と同じくらいになっている。</p>
 <blockquote>
 <p><strong>用語:</strong> pg_restore（ピージーリストア：<code>pg_dump -Fc</code> で書き出したファイルを、データベースに戻す道具）</p>
@@ -2342,6 +2478,16 @@ lc_messages = &#39;C&#39;
   <span class="n">-Trigger</span> <span class="p">(</span><span class="nb">New-ScheduledTaskTrigger</span> <span class="n">-Daily</span> <span class="n">-At</span> <span class="s2">&quot;03:00&quot;</span><span class="p">)</span> <span class="p">`</span>
   <span class="n">-Principal</span> <span class="p">(</span><span class="nb">New-ScheduledTaskPrincipal</span> <span class="n">-UserId</span> <span class="s2">&quot;SYSTEM&quot;</span> <span class="n">-LogonType</span> <span class="n">ServiceAccount</span> <span class="n">-RunLevel</span> <span class="n">Highest</span><span class="p">)</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>`"</code></strong>（PowerShell）: <code>"…"</code> の中に <code>"</code> そのものを入れる時は、<code>`"</code> と書きます（<code>""</code> と 2 つ重ねても同じです）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> アクセスログ（IIS が、来たお願いを 1 件 1 行で書く記録。いつ・どこから・どの URL に・どんな結果（ステータスコード）だったか）</p>
@@ -2447,6 +2593,17 @@ lc_messages = &#39;C&#39;
 <span class="n">pg_dump</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_prod_app</span> <span class="n">-d</span> <span class="n">webapp_prod</span> <span class="n">-Fc</span> <span class="o">-f</span> <span class="s2">&quot;D:\webapp\backup\db\before_1.1.0_</span><span class="p">$(</span><span class="nb">Get-Date</span> <span class="n">-Format</span> <span class="n">yyyyMMdd_HHmm</span><span class="p">)</span><span class="s2">.dump&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pg_dump -d</code></strong>（psql）: <code>-d webapp_prod</code> は、バックアップを取るデータベースです。</li>
+<li><strong><code>$( … )</code></strong>（PowerShell）: <code>"…$($t.Port)…"</code> の <code>$( )</code> は、「中の式やコマンドの結果を、文字の中に入れる」書き方です。<code>"$x.Name"</code> のように書くと <code>$x</code> だけが置きかわってしまうので、<code>.</code> の付いた物や計算は <code>$( )</code> で囲みます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>アプリが止まっている間、社員のブラウザには、IIS の <code>502</code> のエラーが出ます（アプリから返事が無いため）。</li>
 </ul>
@@ -2477,6 +2634,17 @@ lc_messages = &#39;C&#39;
 
 <span class="nb">Start-Service</span> <span class="n">webapp-prod</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pg_restore --clean</code></strong>（psql）: <code>--clean</code> は、戻す前に、同じ名前の表などを消してから戻す指定です。今のデータが消えるので、戻す先をよく確かめます。</li>
+<li><strong><code>pg_restore --if-exists</code></strong>（psql）: <code>--if-exists</code> は、<code>--clean</code> で消す時に、「あれば消す」（無くてもエラーにしない）にする指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>データベースを控えに戻すと、②のあとに入った依頼や承認は消えます。②から④の間はアプリを止めているので、ふつうは消える物はありません。<strong>本番を再開したあとで、時間がたってから戻すときは、消える物が出る</strong>ので、関係者と相談してから戻します。</li>

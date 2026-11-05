@@ -1189,6 +1189,16 @@ Some(
 これはエラー用の出口に出たメッセージです
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>{:^幅}</code></strong>（画面に出す）: <code>{:^8}</code> の <code>^</code> は<strong>中央寄せ</strong>の指定で、数は幅です。8 文字分の場所の真ん中に置き、左右を空白で埋めます。左寄せは <code>&lt;</code>、右寄せは <code>&gt;</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>ここがポイント:</strong></p>
 <table>
 <thead>
@@ -3341,6 +3351,16 @@ test tests::grade_rejects_over_100 - should panic ... ok
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test --bin</code></strong>（cargo のコマンド）: <code>cargo test --bin a18_tests</code> は、<code>src\bin</code> の中の <code>a18_tests.rs</code> に書いたテストだけを動かします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>わざと失敗させてみる:</strong> テストの <code>assert_eq!(grade(89), "B");</code> を <code>assert_eq!(grade(89), "A");</code> に書きかえて、もう一度 <code>cargo test --bin a18_tests</code> を打ちます（<code>Compiling</code> などの行は省いています）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-77"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>running 3 tests
 test tests::divide_ok_and_err ... ok
@@ -3660,6 +3680,16 @@ json!: {&quot;count&quot;:3,&quot;ok&quot;:true}
   原因0: 設定ファイル no_such_config.toml を読めませんでした
   原因1: 指定されたファイルが見つかりません。 (os error 2)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>{:#}</code></strong>（画面に出す）: <code>{:#}</code> は、人が読む形（<code>{}</code>）の「もう 1 つの形」で表示する指定です。<code>anyhow</code> のエラーを <code>{:#}</code> で出すと、「書き足した説明: 元のエラー」のように、原因までを 1 行につないで表示します（<code>{}</code> だと、いちばん外側の説明だけです）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>ここがポイント:</strong></p>
 <ul>

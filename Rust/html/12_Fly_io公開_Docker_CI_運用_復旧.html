@@ -827,6 +827,8 @@ date: Fri, 30 Oct 2026 22:19:10 GMT
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo clean</code></strong>（cargo のコマンド）: 翻訳でできたファイル（<code>target</code> フォルダの中）を消すコマンド。<code>--release -p rustnote</code> で、release の RustNote の分だけを消します。次の翻訳は時間がかかります。</li>
+<li><strong><code>cargo clean --release</code></strong>（cargo のコマンド）: <code>cargo clean --release</code> は、<code>target\release</code>（本番用に作った物）だけを消します。</li>
+<li><strong><code>cargo clean -p</code></strong>（cargo のコマンド）: <code>cargo clean -p rustnote</code> は、指定したパッケージの、翻訳した物だけを消します。部品（依存クレート）の分は残るので、作り直しが速く済みます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -852,6 +854,17 @@ date: Fri, 30 Oct 2026 22:19:10 GMT
 <span class="nb">Remove-Item</span> <span class="n">Env</span><span class="p">:</span><span class="n">RUSTFLAGS</span>
 <span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u01_exe_report</span> <span class="p">--</span> <span class="n">builds</span><span class="p">/</span><span class="n">brepro1</span><span class="p">.</span><span class="n">exe</span> <span class="n">builds</span><span class="p">/</span><span class="n">brepro2</span><span class="p">.</span><span class="n">exe</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build --target-dir</code></strong>（cargo のコマンド）: <code>--target-dir target\brepro</code> は、翻訳した物を置くフォルダを、いつもの <code>target</code> から変える指定です。ほかの組み立てと混ざらないように、分けて試す時に使います。</li>
+<li><strong><code>cargo clean --target-dir</code></strong>（cargo のコマンド）: <code>--target-dir</code> は、消す対象のフォルダ（<code>--target-dir</code> で作った物を置いたフォルダ）を指定します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[builds/brepro1.exe]
     大きさ: 11731968 バイト
@@ -1005,6 +1018,17 @@ count + 1 = 0
 <span class="n">overflow-checks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[profile.release]</code></strong>（設定ファイル（TOML））: <code>[profile.release]</code> は、<code>--release</code> を付けて作る時（本番用）の、作り方の設定です。</li>
+<li><strong><code>overflow-checks =</code></strong>（設定ファイル（TOML））: <code>overflow-checks = true</code> は、本番用でも、数があふれた時（<code>u8</code> に 256 を入れた時など）に止まって知らせる設定です。ふだん本番用では、確かめずに、あふれた数がそのまま回り込みます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>この設定は、<code>Cargo.toml</code> を書き換えずに、環境変数 <code>CARGO_PROFILE_RELEASE_OVERFLOW_CHECKS=true</code> で試すこともできます。試すと、release でも debug と同じ panic になりました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>count = 255
 
@@ -1029,6 +1053,21 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 <span class="c"># 実行ファイルの隣（target/release/assets/）に CSS の束を作る</span>
 <span class="k">RUN</span><span class="w"> </span>topcoat<span class="w"> </span>asset<span class="w"> </span>bundle<span class="w"> </span>--release
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#</code></strong>（Docker）: Dockerfile では、<code>#</code> で始まる行がコメントです。</li>
+<li><strong><code>FROM</code></strong>（Docker）: <code>FROM rust:1.99.1-trixie</code> は、「どのイメージ（ひな形）から作り始めるか」です。Dockerfile は、いつも <code>FROM</code> から始めます。</li>
+<li><strong><code>FROM … AS 名前</code></strong>（Docker）: <code>FROM … AS builder</code> の <code>AS builder</code> は、その段に名前を付ける書き方です。1 つの Dockerfile に段をいくつも書き（multi-stage）、後の段で <code>COPY --from=builder</code> と書いて、前の段で作った物だけを持ってこられます。作るための道具を、最後のイメージに入れずに済みます。</li>
+<li><strong><code>WORKDIR</code></strong>（Docker）: <code>WORKDIR /app</code> は、イメージの中の「今いるフォルダ」を決めます（無ければ作ります）。後の <code>COPY</code>・<code>RUN</code> は、このフォルダで動きます。</li>
+<li><strong><code>RUN</code></strong>（Docker）: <code>RUN コマンド</code> は、イメージを作る途中で、そのコマンドを動かします（部品を入れる・翻訳する、など）。結果は、イメージの 1 つの層として残ります。</li>
+<li><strong><code>COPY</code></strong>（Docker）: <code>COPY . .</code> は、パソコンのファイル（左。<code>.</code> は Dockerfile のあるフォルダ）を、イメージの中（右。<code>.</code> は <code>WORKDIR</code>）にコピーします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li>Rust の版（1.99.1）と、作るフォルダ（<code>/app</code>）が、いつも同じです。例1-3で見た「作る場所が中身に入り込む」問題が、毎回同じ形になります。</li>
@@ -1390,6 +1429,29 @@ built at:   2026-10-30 22:20:06Z
 <span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/app/rustnote&quot;</span><span class="p">]</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>\</code></strong>（Docker）: Dockerfile の行の最後の <code>\</code> は、「次の行へ続く」という印です。長い <code>RUN</code> を、見やすく分けて書けます。</li>
+<li><strong><code>COPY --from=</code></strong>（Docker）: <code>COPY --from=builder /app/target/release/rustnote /app/rustnote</code> は、前の段（<code>builder</code>）で作った物を、この段にコピーします。</li>
+<li><strong><code>USER</code></strong>（Docker）: <code>USER app</code> は、これより後の命令と、コンテナでアプリを動かす時の利用者を <code>app</code> にします。管理者（root）で動かさないことで、もし乗っ取られても、できることを小さくします。</li>
+<li><strong><code>ENV</code></strong>（Docker）: <code>ENV HOST=0.0.0.0</code> は、イメージに環境変数を書き込みます。イメージを見ればだれでも読めるので、秘密の値は書きません。</li>
+<li><strong><code>EXPOSE</code></strong>（Docker）: <code>EXPOSE 8080</code> は、「このコンテナは 8080 番で待ち受けます」という説明の印です。これだけではポートは開かず、<code>docker run -p</code> で開きます。</li>
+<li><strong><code>CMD</code></strong>（Docker）: <code>CMD ["/app/rustnote"]</code> は、コンテナを動かした時に、最初に動かすプログラムです。</li>
+<li><strong><code>["…"]</code></strong>（Docker）: <code>CMD ["/app/rustnote"]</code> のように <code>[ ]</code> と <code>"…"</code> で書く形（exec 形式）は、シェルを通さずに、プログラムを直接動かします。止める合図（Ctrl+C など）が、アプリに正しく届きます。</li>
+<li><strong><code>apt-get</code></strong>（WSL・bash）: Debian・Ubuntu の部品（パッケージ）を入れる・新しくする道具です。<code>apt-get update</code> で部品の一覧を新しくし、<code>apt-get install -y 名前</code> で入れます。</li>
+<li><strong><code>apt-get -y</code></strong>（WSL・bash）: <code>-y</code>（yes）は、「入れますか？」の質問に全部「はい」と答えて進める指定です。Dockerfile のように、人が答えられない所で使います。</li>
+<li><strong><code>apt-get --no-install-recommends</code></strong>（WSL・bash）: <code>--no-install-recommends</code> は、「おすすめ」の部品は入れず、どうしても要る物だけを入れる指定です。コンテナを小さくできます。</li>
+<li><strong><code>useradd</code></strong>（WSL・bash）: Linux に、新しい利用者（ユーザー）を作るコマンドです。コンテナの中で、管理者（root）ではない利用者でアプリを動かすために使います。</li>
+<li><strong><code>useradd --create-home</code></strong>（WSL・bash）: <code>--create-home</code> は、利用者を作る時に、その人のホームフォルダ（<code>/home/名前</code>）も作る指定です。</li>
+<li><strong><code>useradd --uid</code></strong>（WSL・bash）: <code>--uid 10001</code> は、利用者の番号（UID）を決める指定です。番号を決めておくと、フォルダの持ち主の設定がそろいます。</li>
+<li><strong><code>chown</code></strong>（WSL・bash）: ファイルやフォルダの持ち主を変えるコマンドです。<code>chown app:app /data</code> は、<code>/data</code> の持ち主を、利用者 <code>app</code>・グループ <code>app</code> にします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>教材のフォルダの中身（<code>.dockerignore</code> も含む）をコピーしたフォルダで、ビルドしました。</p>
 <div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">build</span> <span class="p">-</span><span class="n">-progress</span><span class="p">=</span><span class="n">plain</span> <span class="n">-t</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span> <span class="p">.</span>
 </code></pre></div></div>
@@ -1399,7 +1461,7 @@ built at:   2026-10-30 22:20:06Z
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>docker build</code></strong>（Docker）: <code>Dockerfile</code>（箱の作り方を書いたファイル）から、イメージ（箱の設計図）を作るコマンド。<code>-t 名前:タグ</code> で名前を付けます。最後の <code>.</code> は「今のフォルダの中身を使う」という意味です。</li>
+<li><strong><code>docker build --progress</code></strong>（Docker）: <code>--progress=plain</code> は、組み立ての途中の表示を、まとめずに全部、1 行ずつそのまま出す指定です。どの段で何が起きたかを調べる時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1468,6 +1530,8 @@ built at:   2026-10-30 22:20:06Z
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>docker history</code></strong>（Docker）: イメージが、どの手順で、どれだけの大きさを使って作られたかを表示するコマンド。</li>
+<li><strong><code>docker history --format</code></strong>（Docker）: <code>--format "{{.Size}}`t{{.CreatedBy}}"</code> は、イメージの層（Dockerfile の 1 行ずつ）の一覧を、大きさと作った命令だけにします。</li>
+<li><strong><code>`t</code></strong>（PowerShell）: <code>"…"</code> の中の <code>`t</code> はタブ（広めの空白のような区切りの文字）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2146,6 +2210,32 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <span class="w">  </span><span class="n">cpus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>app =</code></strong>（設定ファイル（TOML））: <code>fly.toml</code> の <code>app = "rustnote-example"</code> は、Fly.io の上のアプリの名前です。</li>
+<li><strong><code>primary_region =</code></strong>（設定ファイル（TOML））: <code>primary_region = "nrt"</code> は、アプリを動かす主な場所（地域）です。<code>nrt</code> は東京（成田）です。</li>
+<li><strong><code>[build]</code></strong>（設定ファイル（TOML））: <code>fly.toml</code> の <code>[build]</code> は、イメージの作り方の見出しです。</li>
+<li><strong><code>dockerfile =</code></strong>（設定ファイル（TOML））: <code>dockerfile = "Dockerfile"</code> は、イメージを作る時に使う Dockerfile のファイル名です。</li>
+<li><strong><code>[env]</code></strong>（設定ファイル（TOML））: <code>fly.toml</code> の <code>[env]</code> の下には、アプリに渡す環境変数を <code>名前 = "値"</code> で書きます。秘密の値（パスワードなど）は、ここではなく <code>fly secrets set</code> で渡します（<code>fly.toml</code> は Git に入れて、みんなに見えるからです）。</li>
+<li><strong><code>HOST =</code></strong>（設定ファイル（TOML））: <code>[env]</code> の <code>HOST = "0.0.0.0"</code> は、「どのアドレスで待ち受けるか」を渡します。<code>0.0.0.0</code> は「全部」で、コンテナの外から届くようにするために要ります。</li>
+<li><strong><code>PORT =</code></strong>（設定ファイル（TOML））: <code>[env]</code> の <code>PORT = "8080"</code> は、アプリが待ち受けるポート番号です。<code>[http_service]</code> の <code>internal_port</code> と同じ数にします。</li>
+<li><strong><code>[http_service]</code></strong>（設定ファイル（TOML））: <code>fly.toml</code> の <code>[http_service]</code> は、外からの HTTP（Web）の受け方の見出しです。</li>
+<li><strong><code>internal_port =</code></strong>（設定ファイル（TOML））: <code>internal_port = 8080</code> は、Fly.io が、外から来た要求を、アプリのどのポートに渡すかです。アプリが待ち受けるポート（<code>PORT</code>）と同じでないと、つながりません。</li>
+<li><strong><code>force_https =</code></strong>（設定ファイル（TOML））: <code>force_https = true</code> は、<code>http://</code> で来た人を、暗号化した <code>https://</code> へ移す設定です。</li>
+<li><strong><code>auto_stop_machines =</code></strong>（設定ファイル（TOML））: <code>auto_stop_machines = "stop"</code> は、だれも使っていない時に、アプリの機械（マシン）を自動で止める設定です。お金を節約できます。</li>
+<li><strong><code>auto_start_machines =</code></strong>（設定ファイル（TOML））: <code>auto_start_machines = true</code> は、止まっている時に要求が来たら、自動で起こす設定です。</li>
+<li><strong><code>min_machines_running =</code></strong>（設定ファイル（TOML））: <code>min_machines_running = 0</code> は、いつも動かしておく機械の最低の数です。0 なら、だれも使っていない時は全部止まります（最初の 1 回の表示が少し遅くなります）。</li>
+<li><strong><code>[[vm]]</code></strong>（設定ファイル（TOML））: <code>fly.toml</code> の <code>[[vm]]</code> は、アプリを動かす機械（マシン）の大きさの見出しです。</li>
+<li><strong><code>memory =</code></strong>（設定ファイル（TOML））: <code>memory = "512mb"</code> は、機械のメモリの大きさです。</li>
+<li><strong><code>cpu_kind =</code></strong>（設定ファイル（TOML））: <code>cpu_kind = "shared"</code> は、CPU をほかの人と分け合う、安い種類にする設定です。</li>
+<li><strong><code>cpus =</code></strong>（設定ファイル（TOML））: <code>cpus = 1</code> は、CPU の数です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>TOML として正しく読めるかを、Python の標準の <code>tomllib</code> で読んで、JSON の形で表示しました（Fly.io にはつながりません）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;import tomllib, json, sys; print(json.dumps(tomllib.load(open(sys.argv[1], &#39;rb&#39;)), ensure_ascii=False, indent=2))&quot;</span> <span class="n">fly</span><span class="p">.</span><span class="n">toml</span>
 </code></pre></div></div>
@@ -2156,6 +2246,7 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>python</code></strong>（Python の道具）: Python を動かすコマンド。<code>python -c "…"</code> は、<code>"…"</code> の中の Python のコードを 1 回だけ動かします。</li>
+<li><strong><code>python -c</code></strong>（Python の道具）: <code>python -c "…"</code> は、後ろの文字を Python のプログラムとして、その場で動かします。ファイルを作るほどでない、短い確かめに使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2233,6 +2324,8 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>fly launch</code></strong>（Fly.io）: Fly.io に、新しいアプリを作る準備をするコマンド。<code>fly.toml</code>（設定のファイル）を作ります。<code>--no-deploy</code> で、まだ公開はしません（第12巻）。</li>
+<li><strong><code>fly launch --no-deploy</code></strong>（Fly.io）: <code>--no-deploy</code> は、アプリの登録と <code>fly.toml</code> 作りだけをして、まだ公開（deploy）しない指定です。設定を見直してから公開できます。</li>
+<li><strong><code>fly launch --name</code></strong>（Fly.io）: <code>--name 自分用のアプリ名</code> は、Fly.io の上のアプリの名前を決めます。名前は世界中で 1 つだけなので、ほかの人と重ならない名前にします。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2330,6 +2423,15 @@ HTML の &lt;link&gt;: /_topcoat/assets/style-e9b983efabcfc6c3.css
 <li><strong><code>getattr()</code></strong>（Python）: 物から、名前で属性（中の値）を取り出す関数。<code>getattr(error, "code", 既定値)</code> は、<code>code</code> が無ければ既定値を返します。</li>
 <li><strong><code>type()</code></strong>（Python）: 値の型を返す関数。<code>type(error).__name__</code> は、エラーの種類の名前です。</li>
 <li><strong><code>bool()</code></strong>（Python）: 値を <code>True</code>・<code>False</code> にする関数。空の文字列や <code>None</code> は <code>False</code>、中身があれば <code>True</code> です。</li>
+<li><strong><code>\d</code></strong>（正規表現）: 正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</li>
+<li><strong><code>.</code></strong>（正規表現）: 正規表現の <code>.</code> は、「どんな 1 文字でも」を表します。<code>.</code> という文字そのものを表したい時は、<code>\.</code> と書きます。</li>
+<li><strong><code>{値!r}</code></strong>（Python）: f 文字列の <code>{no!r}</code> の <code>!r</code> は、値を <code>repr()</code> の形（プログラマー向けの形）で表示する指定です。文字なら <code>'012345'</code> のように <code>'</code> が付くので、空白や空の文字が見分けやすくなります。</li>
+<li><strong><code>+=</code></strong>（Python）: <code>total += n</code> は <code>total = total + n</code> の短い形です。</li>
+<li><strong><code>==</code></strong>（Python）: <code>a == b</code> は、「a と b が等しいか」です。<code>=</code>（1 つ）は「値を入れる」です。</li>
+<li><strong><code>is not</code></strong>（Python）: <code>x is not None</code> は、「x が None ではない」です。<code>None</code> かどうかは、<code>==</code> ではなく <code>is</code> で調べます。</li>
+<li><strong><code>__name__</code></strong>（Python）: <code>__name__</code> は、今のファイル（モジュール）の名前が入った、特別な変数です。ファイルを直接動かした時は <code>"__main__"</code> になります。<code>type(error).__name__</code> は、エラーの種類の名前です。</li>
+<li><strong><code>Path</code></strong>（Python）: <code>Path</code>（<code>pathlib</code>）は、ファイルやフォルダの場所を表す型です。<code>Path("memo.txt").exists()</code>・<code>.read_text()</code>・<code>/</code> でのつなぎ（<code>BASE_DIR / "media"</code>）ができます。</li>
+<li><strong><code>Exception</code></strong>（Python）: <code>Exception</code> は、Python のふつうのエラー全部の、元になる型です。<code>class TransitionError(Exception):</code> で、自分のエラーの種類を作れます。<code>except Exception as e:</code> は、ほとんど全部のエラーを受け止めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2539,6 +2641,16 @@ NG  ヘルスチェック GET /health → RemoteDisconnected（http://127.0.0.1:
 <div class="codehilite"><div class="code-wrap" id="code-91"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">run</span> <span class="p">-</span><span class="n">-rm</span> <span class="n">-e</span> <span class="n">DATABASE_URL</span><span class="p">=</span><span class="n">libsql</span><span class="p">://</span><span class="n">rustnote-example</span><span class="p">.</span><span class="n">turso</span><span class="p">.</span><span class="n">io</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker run -e</code></strong>（Docker）: <code>-e DATABASE_URL=…</code> は、コンテナの中のプログラムに、環境変数を渡す指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Error: 設定を読み込めませんでした
 
 Caused by:
@@ -2589,6 +2701,17 @@ Caused by:
 <div class="codehilite"><div class="code-wrap" id="code-94"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">image</span> <span class="n">inspect</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">baked</span> <span class="p">-</span><span class="n">-format</span> <span class="s2">&quot;{{range .Config.Env}}{{println .}}{{end}}&quot;</span>
 <span class="n">docker</span> <span class="nb">history </span><span class="n">rustnote</span><span class="p">:</span><span class="n">baked</span> <span class="p">-</span><span class="n">-format</span> <span class="s2">&quot;{{.CreatedBy}}&quot;</span> <span class="p">-</span><span class="n">-no-trunc</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>docker image inspect --format</code></strong>（Docker）: <code>docker image inspect イメージ --format "{{range .Config.Env}}{{println .}}{{end}}"</code> は、イメージのくわしい情報から、環境変数の一覧だけを 1 行ずつ取り出します。</li>
+<li><strong><code>docker history --no-trunc</code></strong>（Docker）: <code>--no-trunc</code> は、長い命令を途中で切らずに、全部表示する指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-95"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>--- docker image inspect（イメージの設定の環境変数）
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -3150,6 +3273,17 @@ RustNote を起動しました: http://127.0.0.1:18013
 <span class="w">  </span><span class="n">release_command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/app/rustnote --migrate-only&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[deploy]</code></strong>（設定ファイル（TOML））: <code>fly.toml</code> の <code>[deploy]</code> は、公開（deploy）のしかたの見出しです。</li>
+<li><strong><code>release_command =</code></strong>（設定ファイル（TOML））: <code>release_command = "/app/rustnote --migrate-only"</code> は、新しい版を動かす前に、1 回だけ動かすコマンドです。ここでは、データベースの表を新しい形にします（マイグレーション）。失敗したら、新しい版に切りかえません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>手元では、空の sqld に、まず <code>rustnote --migrate-only</code> を1回動かし（release command の代わり）、そのあと3台を同時に起動しました。v2 には、足すだけのマイグレーション <code>0004_pinned</code>（例7-3）も入れてあります。</p>
 <div class="codehilite"><div class="code-wrap" id="code-111"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>v1 の rustnote.exe の SHA-256（先頭 16 文字）: d56999f31e8172cf
 v2 の rustnote.exe の SHA-256（先頭 16 文字）: 773a55a6088ce1e4
@@ -3436,6 +3570,9 @@ GET /notes -&gt; 500 Internal Server Error (8.722ms)
 <ul>
 <li><strong><code>param</code></strong>（PowerShell）: PowerShell のスクリプトが受け取る引数を決める書き方。<code>param([string]$Base = "http://…")</code> は、<code>-Base</code> で渡せる文字列の引数で、渡さなければ既定値になります。</li>
 <li><strong><code>New-TemporaryFile</code></strong>（PowerShell）: 一時的に使う、空のファイルを作るコマンド（作ったファイルの情報を返す）。テストでクッキーをためておく場所などに使い、使い終わったら <code>Remove-Item</code> で消します。</li>
+<li><strong><code>$ErrorActionPreference</code></strong>（PowerShell）: <code>$ErrorActionPreference = "Stop"</code> は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（<code>.exe</code> のコマンドの失敗は止まらないので、<code>$LASTEXITCODE</code> も調べます）。</li>
+<li><strong><code>@名前</code></strong>（PowerShell）: <code>コマンド @CurlArgs</code> のように、<code>$</code> の代わりに <code>@</code> を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。</li>
+<li><strong><code>param( … )</code></strong>（PowerShell）: スクリプトの最初に書く <code>param([string]$Base = "http://…")</code> は、「このスクリプトが受け取る引数」の決まりです。<code>.\smoke.ps1 -Base http://…</code> のように、名前を付けて渡せます。<code>=</code> の右は、渡さなかった時の値です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3443,6 +3580,16 @@ GET /notes -&gt; 500 Internal Server Error (8.722ms)
 <div class="codehilite"><div class="code-wrap" id="code-119"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">docker</span> <span class="n">run</span> <span class="n">-d</span> <span class="p">-</span><span class="n">-name</span> <span class="n">rn-u08</span> <span class="n">-p</span> <span class="n">18080</span><span class="p">:</span><span class="n">8080</span> <span class="n">rustnote</span><span class="p">:</span><span class="n">u02</span>
 <span class="n">powershell</span> <span class="n">-NoProfile</span> <span class="n">-ExecutionPolicy</span> <span class="n">Bypass</span> <span class="o">-File</span> <span class="n">smoke</span><span class="p">.</span><span class="n">ps1</span> <span class="n">-Base</span> <span class="n">http</span><span class="p">://</span><span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">:</span><span class="n">18080</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>powershell -NoProfile</code></strong>（PowerShell）: <code>-NoProfile</code> は、プロフィール（起動するたびに動く、自分用の設定のスクリプト）を読まずに起動する指定です。どのパソコンでも同じ動きになります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-120"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>OK   GET /health（200）
 OK   GET /（トップ）（200）
@@ -3853,6 +4000,20 @@ NG   POST /logout（期待 303・実際 000）
 <li><strong><code>.close()</code></strong>（Python）: 接続やファイルを閉じるメソッド。</li>
 <li><strong><code>.serve_forever()</code></strong>（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。</li>
 <li><strong><code>urlsplit()</code></strong>（Python）: URL を、部品（<code>scheme</code>・<code>hostname</code>・<code>port</code>・<code>path</code> など）に分ける関数。</li>
+<li><strong><code>b"…"</code></strong>（Python）: <code>b"…"</code> は、文字ではなく「バイトの並び」（<code>bytes</code>）を作る書き方です。<code>b"\xff\xd8\xff"</code> は、JPEG の画像のファイルの、最初の 3 バイトです。</li>
+<li><strong><code>\n</code></strong>（文字列の中の特別な書き方）: 文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</li>
+<li><strong><code>*args</code></strong>（Python）: <code>def f(*args):</code> の <code>*args</code> は、「いくつでも引数を受け取り、タプル（並び）にまとめる」書き方です。</li>
+<li><strong><code>{キー: 値 for …}</code></strong>（Python）: <code>{u.pk: u for u in users}</code> は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です（辞書内包表記）。</li>
+<li><strong><code>[開始:終わり]</code></strong>（Python）: <code>text[1:4]</code> は、1 番目から 4 番目の手前まで（1, 2, 3）を取り出します（スライス）。<code>[:3]</code> は最初から、<code>[3:]</code> は 3 番目から最後まで、<code>[::-1]</code> は逆さまです。</li>
+<li><strong><code>-&gt; 型</code></strong>（Python）: <code>def apply(self, action: str) -&gt; None:</code> の <code>-&gt; None</code> は、「この関数が返す物の型」の説明です（<code>None</code> は「何も返さない」）。</li>
+<li><strong><code>名前: 型</code></strong>（Python）: <code>def apply(self, action: str)</code> の <code>: str</code> は、「この引数は文字」という型の説明（型ヒント）です。Python は動かす時には確かめませんが、エディターや mypy が間違いを教えてくれます。</li>
+<li><strong><code>self</code></strong>（Python）: クラスの中の関数（メソッド）の最初の引数 <code>self</code> は、「その関数を呼んだ、その物自身」です。<code>self.amount</code> で、自分の項目を読み書きします。呼ぶ時は、<code>self</code> は書きません（<code>r.apply("submit")</code>）。</li>
+<li><strong><code>not in</code></strong>（Python）: <code>key not in TRANSITIONS</code> は、「<code>key</code> が <code>TRANSITIONS</code> の中に無い」です。<code>in</code> の反対です。</li>
+<li><strong><code>BaseHTTPRequestHandler</code></strong>（Python）: <code>BaseHTTPRequestHandler</code>（<code>http.server</code>）は、Python で小さな HTTP のサーバーを作る時の、要求を受ける係の元になる型です。<code>do_GET</code>・<code>do_POST</code> を書くと、その要求に答えます。</li>
+<li><strong><code>ThreadingHTTPServer</code></strong>（Python）: <code>ThreadingHTTPServer</code>（<code>http.server</code>）は、要求を同時にいくつもさばける、Python の小さな HTTP のサーバーです。</li>
+<li><strong><code>ValueError</code></strong>（Python）: <code>ValueError</code> は、「型は合っているが、値がおかしい」時のエラーです。<code>int("abc")</code> で起きます。</li>
+<li><strong><code>.headers</code></strong>（JavaScript・TypeScript）: <code>fetch</code> の答えの <code>.headers</code> は、返ってきた見出し（ヘッダー）です。<code>.headers.get("set-cookie")</code> で 1 つ読めます。</li>
+<li><strong><code>.path</code></strong>（Python）: <code>self.path</code> は、届いた HTTP の要求の場所（<code>/notes?page=2</code> のような URL の部分）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -4464,6 +4625,8 @@ error: 2 targets failed:
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>fly releases</code></strong>（Fly.io）: Fly.io のアプリの、公開した版の歴史を見るコマンド。<code>--image</code> で、どのイメージだったかも表示し、前の版に戻す時に使います。</li>
+<li><strong><code>fly releases --image</code></strong>（Fly.io）: <code>fly releases --image</code> は、公開した版（リリース）の一覧に、それぞれが使ったイメージの名前も表示します。前の版に戻す時に使います。</li>
+<li><strong><code>fly deploy --image</code></strong>（Fly.io）: <code>fly deploy --image registry.fly.io/…</code> は、作り直さずに、指定したイメージで公開します。前に動いていたイメージを指定すれば、前の版に戻せます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

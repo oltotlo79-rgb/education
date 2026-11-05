@@ -316,6 +316,14 @@ thiserror = "2.0.21"
 tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros"] }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`libsql`**（Rust の部品（クレート））: `libsql` は、Turso（SQLite の仲間のデータベース）や、このパソコンの SQLite のファイルに、Rust からつなぐための部品です。
+
+<!-- /first-use -->
+
 #### ARM64 版の Windows では clang が必要
 
 libsql の `tls` の機能は、`ring` という暗号のクレートを使います。ARM64 版の Windows では、この `ring` をビルドするのに **clang**（クラン：LLVM という C 言語コンパイラの仲間）が必要です。clang が無いと、最初のビルドが次のように失敗します（実際の出力から要点を抜き出したもの）。
@@ -634,6 +642,11 @@ fn push_statement(statements: &mut Vec<String>, text: &str) {
 > - **`Real`**（データベース）: `Value::Real(x)` は、データベースの値が小数であることを表す種類です。
 > - **`Text`**（データベース）: `Value::Text(s)` は、データベースの値が文字列であることを表す種類です。
 > - **`Blob`**（データベース）: `Value::Blob(bytes)` は、データベースの値がバイトの並び（画像などの生のデータ）であることを表す種類です。
+> - **`DELETE`**（SQL）: `DELETE FROM 表 WHERE 条件` で、表の行を消す SQL の命令。`WHERE` を忘れると、全部の行が消えます。`ON DELETE CASCADE` の中では「消された時」という意味です。
+> - **`EXPLAIN`**（SQL）: `EXPLAIN QUERY PLAN SELECT …` で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します（第7巻 UNIT 04）。
+> - **`QUERY`**（SQL）: `EXPLAIN QUERY PLAN` の一部。
+> - **`PLAN`**（SQL）: `EXPLAIN QUERY PLAN` の一部で、「実行の計画」という意味です。
+> - **`\'`**（文字列の中の特別な書き方）: `'\''` のように、`'` で囲んだ 1 文字の中に `'` そのものを入れる時は、`\'` と書きます。
 
 <!-- /first-use -->
 
@@ -652,6 +665,7 @@ SELECT sqlite_version() AS version;
 > **▶ ここで初めて出てくるコード**
 >
 > - **`AS`**（SQL）: SQL で、列や表に別の名前を付ける書き方。`SELECT COUNT(*) AS notes` は、結果の列の名前を `notes` にします。`FROM users AS u` は、表を `u` と短く呼べるようにします。
+> - **`--`**（SQL）: SQL では、`--` から行の終わりまでがコメントです。
 
 <!-- /first-use -->
 
@@ -879,6 +893,15 @@ SELECT id, email, password_hash FROM users;
 SELECT * FROM notes;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SELECT *`**（SQL）: SQL の `SELECT *` の `*` は、「全部の列」という意味です。試しに中身を見る時は便利ですが、プログラムでは、使う列の名前を並べて書くほうが安全です（あとで列が増えても、読む物が変わりません）。
+> - **`datetime()`**（SQL）: SQLite の `datetime('now')` は、今の日時（UTC）を `2026-11-05 00:03:00` の形の文字で返します。`DEFAULT (datetime('now'))` で、行を作った日時を自動で入れられます。
+
+<!-- /first-use -->
+
 `sql/u01_create.sql` として保存し、`sql-lab` フォルダで次のコマンドを実行します。
 
 ```powershell
@@ -1019,6 +1042,7 @@ SELECT n, typeof(n) FROM strict_t;
 > - **`CAST`**（SQL）: SQL で、値の型を変える書き方。`CAST('あいう' AS BLOB)` は、文字列をバイトの並びとして扱います。
 > - **`BLOB`**（SQL）: SQL の型の 1 つで、バイトの並び（画像などの生のデータ）を入れる型。
 > - **`STRICT`**（SQL）: SQLite（libSQL）で、表の後ろに付けると、列の型と違う値を断るようにする決まり。付けないと、整数の列に文字が入ってしまうことがあります。
+> - **`typeof()`**（SQL）: SQLite の `typeof(値)` は、値の種類（`integer`・`text`・`real`・`blob`・`null`）を返します。
 
 <!-- /first-use -->
 
@@ -1129,8 +1153,6 @@ CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC)
 > **▶ ここで初めて出てくるコード**
 >
 > - **`AUTOINCREMENT`**（SQL）: `INTEGER PRIMARY KEY AUTOINCREMENT` で、番号を自動で振り、消した番号を二度と使わないようにする決まり。
-> - **`ON`**（SQL）: SQL の「〜の時」「〜で」。`ON DELETE CASCADE` は「消された時は」、`JOIN … ON a.id = b.user_id` は「この条件で横につなぐ」、`CREATE INDEX … ON 表 (列)` は「この表の、この列に」という意味です。
-> - **`DELETE`**（SQL）: `DELETE FROM 表 WHERE 条件` で、表の行を消す SQL の命令。`WHERE` を忘れると、全部の行が消えます。`ON DELETE CASCADE` の中では「消された時」という意味です。
 > - **`CASCADE`**（SQL）: `ON DELETE CASCADE` は、「つながった元の行（ユーザー）が消されたら、こちらの行（そのユーザーのノート）も一緒に消す」という決まりです。
 > - **`INDEX`**（SQL）: `CREATE INDEX 名前 ON 表 (列)` で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります（第7巻 UNIT 04）。
 > - **`DESC`**（SQL）: `ORDER BY 列 DESC` で、大きい順（新しい順）に並べます（小さい順は `ASC`）。
@@ -1181,6 +1203,14 @@ sql> SELECT type, name, tbl_name FROM sqlite_schema ORDER BY tbl_name, type DESC
 +-------+-----------------------------+-----------------+
 (9 行)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run -- --setup`**（cargo のコマンド）: `cargo run -q --bin sql -- --setup 準備.sql 実行.sql` の `--setup` は、練習用の道具 `sql`（第7巻で作る）のオプションです。`--setup` で渡した SQL は、結果を表示せずに先に流します（表やデータの準備用）。
+
+<!-- /first-use -->
 
 ##### 解説9: 自分で作っていない名前が混ざっている
 
@@ -1271,14 +1301,6 @@ INSERT INTO notes (user_id title) VALUES (1, 'カンマ忘れ');
 -- 失敗した文は、1行も追加していない
 SELECT (SELECT COUNT(*) FROM users) AS users_count, (SELECT COUNT(*) FROM notes) AS notes_count;
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`COUNT`**（SQL）: 行の数を数える SQL の関数。`SELECT COUNT(*) FROM notes` は、ノートの数です。`COUNT(列)` は、その列が NULL でない行の数です。
-
-<!-- /first-use -->
 
 ```powershell
 cargo run -q --bin sql -- --setup sql/u01_create.sql sql/u01_errors.sql
@@ -1376,7 +1398,6 @@ PRAGMA foreign_keys;
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`PRAGMA`**（SQL）: SQLite（libSQL）の設定を見る・変える命令。`PRAGMA foreign_keys = ON;` は、表どうしのつながりの決まり（外部キー）を確かめるようにします。
 > - **`OFF`**（SQL）: `PRAGMA … = OFF` で、その設定を切ります（`ON` で入れます）。
 
 <!-- /first-use -->
@@ -1841,6 +1862,7 @@ SELECT id, title FROM notes WHERE user_id = 1 AND title LIKE '%\%%' ESCAPE '\';
 > - **`OFFSET`**（SQL）: `LIMIT 件数 OFFSET 飛ばす数` で、「先頭から何件飛ばしてから取り出すか」を決める書き方。ページ送り（2 ページ目なら 20 件飛ばす）に使います。
 > - **`LIKE`**（SQL）: SQL のあいまい検索。`WHERE title LIKE '%買い物%'` は、`買い物` を含む行です（`%` は「何文字でも」、`_` は「どれか 1 文字」）。
 > - **`ESCAPE`**（SQL）: `LIKE … ESCAPE '\'` で、「`\` の次の文字は、特別な意味の無いただの文字」と決める書き方。検索の言葉に `%` や `_` が入っていても、正しく探せます（第10巻 UNIT 07）。
+> - **`%`**（SQL）: SQL の `LIKE '%買い物%'` の `%` は、「何文字でも、何でも合う」という印です（ワイルドカード）。`'買い物%'` なら「買い物で始まる」。`_` は「何でも 1 文字」です。`%` や `_` そのものを探したい時は、`ESCAPE` を使います。
 
 <!-- /first-use -->
 
@@ -1990,7 +2012,7 @@ ORDER BY users.id;
 >
 > - **`JOIN`**（SQL）: 2 つの表を、条件で横につないで取り出す書き方。`FROM notes JOIN users ON users.id = notes.user_id` は、ノートと、その持ち主を 1 行に並べます。
 > - **`LEFT`**（SQL）: `LEFT JOIN` は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。
-> - **`GROUP`**（SQL）: `GROUP BY 列` で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。`SELECT user_id, COUNT(*) FROM notes GROUP BY user_id` は、人ごとのノートの数です。
+> - **`表.列`**（SQL）: SQL の `n.title`・`users.email` のように `表.列` と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（`JOIN`）時は、同じ名前の列（`id` など）があるので、こう書きます。`notes AS n` のように、表に短い別名を付けて使います。
 
 <!-- /first-use -->
 
@@ -2199,6 +2221,14 @@ let list_sql = format!(
      LIMIT ?3 OFFSET ?4"
 );
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`\\`**（文字列の中の特別な書き方）: 文字列の中に `\` そのもの（1 つ）を入れたい時は、`\\` と 2 つ書きます。`\` は、`\n` のような特別な書き方の始まりの印だからです。Windows の場所を `"C:\\Users"` と書くのも、この理由です（生の文字列 `r"C:\Users"` なら 1 つで済みます）。
+
+<!-- /first-use -->
 
 - `user_id = ?1` が**持ち主の条件**です。ログイン中の人のノートだけを読みます。
 - `?1`・`?2` は、後から値を当てはめる**場所取り**（プレースホルダー）です。キーワードを SQL の文字列に直接つなげないことで、SQL インジェクションを防ぎます（UNIT 07 で詳しく学びます）。
@@ -2930,6 +2960,7 @@ FROM seq;
 >
 > - **`WITH`**（SQL）: `WITH 名前 AS (SELECT …)` で、その文の中だけで使う「一時的な表」に名前を付ける書き方。長い SQL を読みやすく分けられます。
 > - **`RECURSIVE`**（SQL）: `WITH RECURSIVE` は、自分自身を使って行を増やしていく一時的な表を作る書き方。1〜1000 の数を作る、などに使えます。
+> - **`||`**（SQL）: SQL の `||` は、文字と文字をつなぐ記号です。`'user' || 42 || '@example.com'` → `user42@example.com`。
 
 <!-- /first-use -->
 
@@ -2953,16 +2984,6 @@ SELECT id, title FROM notes WHERE user_id = 42 ORDER BY updated_at DESC, id DESC
 -- ⑤ 結果は同じ（索引は速さだけを変え、答えは変えない）
 SELECT id, title, updated_at FROM notes WHERE user_id = 42 ORDER BY updated_at DESC, id DESC LIMIT 3;
 ```
-
-<!-- first-use -->
-
-> **▶ ここで初めて出てくるコード**
->
-> - **`EXPLAIN`**（SQL）: `EXPLAIN QUERY PLAN SELECT …` で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します（第7巻 UNIT 04）。
-> - **`QUERY`**（SQL）: `EXPLAIN QUERY PLAN` の一部。
-> - **`PLAN`**（SQL）: `EXPLAIN QUERY PLAN` の一部で、「実行の計画」という意味です。
-
-<!-- /first-use -->
 
 `sql/u04_plan.sql` として保存し、表の準備（`schema.sql`）と 10 万件のデータ（`u04_big.sql`）を `--setup` で用意してから実行します。
 
@@ -3042,6 +3063,14 @@ EXPLAIN QUERY PLAN SELECT id FROM users WHERE lower(email) = 'user42@example.com
 -- ⑤ 数える問い合わせも索引で速くなる
 EXPLAIN QUERY PLAN SELECT COUNT(*) FROM notes WHERE user_id = 42;
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`lower()`**（SQL）: SQL の `lower(email)` は、英字を小文字にします。大文字・小文字を区別せずに比べる時に使います。
+
+<!-- /first-use -->
 
 索引を作る1行だけの SQL を `sql/u04_index.sql` に保存しておき（`CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC);`）、それも `--setup` に加えて実行します。
 
@@ -4596,6 +4625,14 @@ SELECT id, title, done FROM notes;
 cargo run -q --bin sql -- --db u06.db sql/u06_data.sql
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run -- --db`**（cargo のコマンド）: 練習用の道具 `sql`（第7巻で作る）の `--db ファイル` は、使うデータベースのファイルを指定します。付けないと、メモリの中だけのデータベース（終わると消える）を使います。
+
+<!-- /first-use -->
+
 ```text
 sql> INSERT INTO users (email, password_hash) VALUES ('alice@example.com', 'dummy-a')
 OK（変更: 1 行）
@@ -4782,6 +4819,7 @@ UPDATE notes SET body = printf('%10001s', '') WHERE id = 1;
 >
 > - **`RENAME`**（SQL）: `ALTER TABLE 表 RENAME TO 新しい名前` で、表の名前を変えます。
 > - **`TO`**（SQL）: `RENAME TO 新しい名前` の「〜へ」の部分です。
+> - **`printf()`**（SQL）: SQLite の `printf('%10001s', '')` は、書式に従って文字を作る関数です。`%10001s` は「10001 文字の幅（足りない分は空白）」なので、ここでは空白が 10001 個の文字を作ります。
 
 <!-- /first-use -->
 
@@ -5244,6 +5282,7 @@ async fn main() -> Result<(), libsql::Error> {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`named_params!`**（データベース）: `libsql::named_params! { ":owner": 1 }` は、SQL の `:owner` のような名前付きの場所に入れる値を並べるマクロ。番号（`?1`）の代わりに名前で渡せます。
+> - **`:名前`**（SQL）: SQL の `:owner` のように `:` で始まる名前は、名前で値を渡す場所（名前付きのプレースホルダー）です。
 
 <!-- /first-use -->
 
@@ -8227,6 +8266,7 @@ async fn main() -> Result<(), libsql::Error> {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`std::fs::metadata()`**（ファイルとフォルダ）: ファイルの情報（大きさ・日時など）を取り出す関数。`std::fs::metadata(path)?.len()` で、ファイルの大きさ（バイト）が分かります。
+> - **`VACUUM`**（SQL）: SQLite の `VACUUM` は、データベースのファイルを詰め直して、消した行の分の空きを無くす命令です。`VACUUM INTO 'copy.db'` は、開いたまま、別のファイルに写しを書き出します（バックアップに使えます）。
 
 <!-- /first-use -->
 

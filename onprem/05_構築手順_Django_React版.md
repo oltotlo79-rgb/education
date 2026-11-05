@@ -391,6 +391,26 @@ SILENCED_SYSTEM_CHECKS = ["security.W004", "security.W008", "security.W012", "se
 > - **`.match()`**（Python）: `re.match(パターン, 文字列)` は、文字列の**先頭から**正規表現に合うかを調べる関数です。合えば、見つかった物が返ります（合わなければ `None`）。
 > - **`str()`**（Python）: 値を文字列に変える関数。`str(8080)` は `"8080"`。数と文字列は `==` で比べても等しくならないので、そろえる時に使います。
 > - **`int()`**（Python）: 文字列などを整数にする関数。`int("25")` は 25。数でない文字だと `ValueError` です。
+> - **`#`**（Python）: Python では、`#` から行の終わりまでがコメントです。
+> - **`"""…"""`**（Python）: `"""…"""`（`"` を 3 つ）で囲んだ文字は、何行にもまたがって書けます。関数・クラス・ファイルのいちばん最初に書いた物は、その説明書（docstring）になり、`help()` やエディターで読めます。
+> - **`f"…{値}…"`**（Python）: `f"…"`（頭に `f` を付けた文字）の中の `{ }` には、変数や式を書けて、その値が入ります（f 文字列）。`f"環境変数 {name} がありません"`。`{ }` の中の `:` の後ろには、`{amount:,}` のように書式も書けます。
+> - **`r"…"`**（Python）: `r"…"` は「生の文字列」で、中の `\` を特別な意味にしません。正規表現の `r"\d{6}"` のように、`\` の多い文字をそのまま書けます。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`\.`**（正規表現）: 正規表現の `\.` のように、記号の前に `\` を付けると、その記号を特別な意味にせず、文字そのものとして表します。`\.` は `.`、`\/` は `/` です。
+> - **`[…]`**（正規表現）: 正規表現の `[ ]` は、「中に書いた文字の、どれか 1 つ」を表します。`[0-9a-zA-Z_-]` は「数字・英字・`_`・`-` のどれか」、`[.-]` は「`.` か `-`」。`-` で範囲を書けます。
+> - **`{n,m}`**（正規表現）: 正規表現の `{6}` は「すぐ前の物が、ちょうど 6 回」、`{8,12}` は「8 回から 12 回」を表します。`\d{6}` は「数字 6 けた」。
+> - **`+`**（正規表現）: 正規表現の `+` は、「すぐ前の物が、1 回以上くり返す」を表します。`\d+` は「数字が 1 つ以上」。
+> - **`.`**（正規表現）: 正規表現の `.` は、「どんな 1 文字でも」を表します。`.` という文字そのものを表したい時は、`\.` と書きます。
+> - **`^`**（正規表現）: 正規表現の `^` は、「行（文字）の頭」を表します。`^#` は「`#` で始まる」。
+> - **`$`**（正規表現）: 正規表現の `$` は、「行（文字）の終わり」を表します。`\d+$` は「数字で終わる」。`^…$` と両方書くと、「全体がこの形か」を調べられます。
+> - **`[式 for 名前 in 並び]`**（Python）: `[f"http://{host}" for host in ALLOWED_HOSTS]` は、「並びの 1 つずつから、新しい値を作って、並び（リスト）にする」書き方です（リスト内包表記）。後ろに `if 条件` を付けると、条件に合う物だけになります。
+> - **`==`**（Python）: `a == b` は、「a と b が等しいか」です。`=`（1 つ）は「値を入れる」です。
+> - **`名前=値`**（Python）: `open(path, encoding="utf-8")` の `encoding="utf-8"` のように、`名前=値` で渡す引数は「キーワード引数」です。順番に関係なく、名前で渡せます。
+> - **`__file__`**（Python）: `__file__` は、今のファイルの場所が入った、特別な変数です。`Path(__file__).resolve().parent` で、このファイルが置いてあるフォルダが分かります。
+> - **`Path`**（Python）: `Path`（`pathlib`）は、ファイルやフォルダの場所を表す型です。`Path("memo.txt").exists()`・`.read_text()`・`/` でのつなぎ（`BASE_DIR / "media"`）ができます。
+> - **`RuntimeError`**（Python）: `RuntimeError` は、ほかの種類に当てはまらない、動いている時のエラーです。`raise RuntimeError("…")` で、説明を付けて止めます。
+> - **`.parent`**（Python）: `Path` の `.parent` は、1 つ上のフォルダです。`.parent.parent` で 2 つ上です。
+> - **`.environ`**（Python）: `os.environ` は、環境変数の入れ物（辞書のような物）です。`os.environ.get("名前", 無い時の値)` で読みます。
 
 <!-- /first-use -->
 
@@ -487,6 +507,13 @@ def echo(request):
 > - **`@method_decorator`**（Django）: `@method_decorator(ensure_csrf_cookie, name="dispatch")` をクラスの上に付けて、そのクラスの画面に印を付けます。
 > - **`@require_POST`**（Django）: 「この画面は POST だけを受け付ける」という印（デコレーター）。GET などで来たら `405` を返します。ログアウトのように、状態を変える物に付けます。
 > - **`@api_view`**（Django REST framework）: `@api_view(["GET", "POST"])` を関数の上に付けて、API にします。決めたメソッド以外は 405 で断られます。
+> - **`b"…"`**（Python）: `b"…"` は、文字ではなく「バイトの並び」（`bytes`）を作る書き方です。`b"\xff\xd8\xff"` は、JPEG の画像のファイルの、最初の 3 バイトです。
+> - **`JsonResponse`**（Django）: Django の `JsonResponse({"status": "ok"})` は、辞書を JSON にして返す答えです。
+> - **`TemplateView`**（Django）: Django の `TemplateView` は、決まったテンプレート（HTML）を表示するだけのビューです。`template_name = "index.html"` を書くだけで使えます。
+> - **`Response`**（Django REST framework）: DRF の `Response(data)` は、API の答えです。辞書や並びを、JSON にして返します。
+> - **`.body`**（Django）: Django の `request.body` は、届いた要求の中身（バイトのまま）です。JSON なら `json.loads(request.body)` で読みます。
+> - **`.user`**（Django）: Django の `request.user` は、今ログインしている人（していなければ「だれでもない人」）です。`request.user.is_authenticated` で、ログインしているかが分かります。
+> - **`.META`**（Django）: Django の `request.META` は、要求の見出しやサーバーの情報が入った辞書です。`request.META.get("REMOTE_ADDR")` で、送ってきた所のアドレスが分かります。
 
 <!-- /first-use -->
 
@@ -515,6 +542,11 @@ urlpatterns = [
 > - **`.as_view()`**（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。
 > - **`path()`**（Django）: URL と、それに答える画面（ビュー）を結び付ける関数。`path("requests/<int:pk>/", views.detail)` の `<int:pk>` は、URL の中の数を `pk` という名前で受け取ります。
 > - **`re_path()`**（Django）: 正規表現で URL の決まりを書く関数。`re_path(r"^(?!api/|admin/).*$", …)` は「`api/`・`admin/` で始まらない URL は全部」（React の画面を返す）。
+> - **`(?=…)`**（正規表現）: 正規表現の `(?= )` は「この後ろに、こういう形が続く時だけ」、`(?! )` は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。`^(?!api/|admin/).*$` は「`api/` や `admin/` で始まらない物、全部」。中の文字は、合わせた文字には入りません。
+> - **`*`**（正規表現）: 正規表現の `*` は、「すぐ前の物が、0 回以上くり返す」を表します。`\s*` は「空白が 0 個以上」、`.*` は「何でも、何文字でも」。
+> - **`|`**（正規表現）: 正規表現の `|` は、「左か右のどちらか」を表します。`api/|admin/` は「`api/` か `admin/`」。
+> - **`.urls`**（Django）: `admin.site.urls` は、Django の管理画面の URL の一覧です。`path("admin/", admin.site.urls)` で、`/admin/` に管理画面を出します。
+> - **`.site`**（Django）: `admin.site` は、Django の管理画面そのものです。`admin.site.register(モデル)` で、モデルを管理画面に出します。
 
 <!-- /first-use -->
 
@@ -551,6 +583,9 @@ export default defineConfig({
 > - **`from`**（JavaScript・TypeScript）: `import { 名前 } from "場所";` の一部で、「どこから読み込むか」を書きます。
 > - **`export`**（TypeScript）: 「このファイルの外から使ってよい」という印。`export type RequestStatus = …` と書くと、ほかのファイルで `import` して使えます。
 > - **`default`**（JavaScript・TypeScript）: `export default` は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は `import 名前 from "./ファイル"` と、好きな名前で受け取れます。
+> - **`//`**（JavaScript・TypeScript）: JavaScript・TypeScript では、`//` から行の終わりまでがコメントです。
+> - **`defineConfig()`**（JavaScript・TypeScript）: `defineConfig({ … })` は、設定ファイル（Vite の `vite.config` や Playwright の `playwright.config`）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。
+> - **`react()`**（React）: `react()` は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。
 
 <!-- /first-use -->
 
@@ -596,8 +631,27 @@ export async function api(path, { method = "GET", body } = {}) {
 > - **`.stringify()`**（TypeScript）: `JSON.stringify(値)` は、オブジェクトや配列を、JSON の文字列にする関数です。保存したり、サーバーへ送ったりする時に使います。
 > - **`.json()`**（JavaScript・TypeScript）: `fetch` の答え（`Response`）の本文を、JSON として読んで、オブジェクトにするメソッド。`await res.json()`。
 > - **`.catch()`**（TypeScript）: `Promise` が失敗した時の代わりの処理を登録するメソッド。`res.json().catch(() => ({}))` は「JSON として読めなければ空のオブジェクト」。
-> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`(path) => \`…${path}\`` は「`path` を受け取って文字列を返す関数」。
+> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`` (path) => `…${path}` `` は「`path` を受け取って文字列を返す関数」。
 > - **`...`**（TypeScript）: スプレッド構文。`[...requests]` は配列の中身を広げて、新しい配列（写し）を作ります。`{ ...user, isAdmin: true }` は、オブジェクトを写して一部だけ変えます。
+> - **`/…/`**（JavaScript・TypeScript）: JavaScript の `/…/` は、正規表現（文字の形を表す書き方）をそのまま書く形です。`/\d+/` は「数字が 1 つ以上」。`.match(/…/)`・`.test(…)`・`.split(/…/)` などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`(?:…)`**（正規表現）: 正規表現の `(?: )` は、取り出さないまとまりです。`(?:^|; )` は「行の頭か、`; ` のどちらか」をまとめるだけで、取り出す番号には数えません。
+> - **`[^…]`**（正規表現）: 正規表現の `[^ ]` は、「中に書いた文字**以外**の 1 文字」を表します。`[^;]+` は「`;` 以外の文字が 1 つ以上」、`[^\x21-\x7E]` は「英数字と記号（ASCII の見える文字）以外」。
+> - **`+`**（正規表現）: 正規表現の `+` は、「すぐ前の物が、1 回以上くり返す」を表します。`\d+` は「数字が 1 つ以上」。
+> - **`^`**（正規表現）: 正規表現の `^` は、「行（文字）の頭」を表します。`^#` は「`#` で始まる」。
+> - **`|`**（正規表現）: 正規表現の `|` は、「左か右のどちらか」を表します。`api/|admin/` は「`api/` か `admin/`」。
+> - **`(…)`**（正規表現）: 正規表現の `( )` は、まとまり（グループ）を作ります。合った文字のうち、`( )` の中の部分だけを、あとから取り出せます（`m[1]`・`m.group(1)`・`$1` など）。`(…)?` のように、まとまりごとくり返しや省略もできます。
+> - **`` `${…}` ``**（JavaScript・TypeScript）: `` `…` ``（バッククォートで囲んだ文字。テンプレート文字列）の中の `${ }` には、値や式を入れられます。`` `エラー ${res.status}` `` は、`res.status` が 404 なら `エラー 404` になります。改行も、そのまま書けます。
+> - **`!==`**（JavaScript・TypeScript）: `a !== b` は、「a と b が同じではない」（型も含めて比べる）です。`===`（同じ）の反対です。
+> - **`||`**（JavaScript・TypeScript）: `a || b` は、「a か b のどちらか」（または）です。`el.innerText || el.getAttribute("name") || ""` のように、「左が空なら右を使う」という使い方もします（`0` や `""` も「空」とみなされるので、`null`・`undefined` だけを見たい時は `??` を使います）。
+> - **`!`**（JavaScript・TypeScript）: `!res.ok` のように前に付けた `!` は、「〜ではない」です。`if (!res.ok)` は「うまくいかなかったら」。
+> - **`条件 ? A : B`**（JavaScript・TypeScript）: `条件 ? A : B` は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。`user.isAdmin ? "管理者" : "一般"`。`if` とちがい、値を返すので、そのまま変数や表示に使えます。
+> - **`() =>`**（JavaScript・TypeScript）: `() => { … }` は、名前の無い関数（アロー関数）の書き方です。`( )` の中が引数、`=>` の右が中身です。`(e) => setKeyword(e.target.value)` のように、1 つの式なら `{ }` を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。
+> - **`Error`**（JavaScript・TypeScript）: `new Error("説明")` は、エラーを作ります。`throw new Error(…)` でエラーを起こし、`try { … } catch (err) { … }` で受け止めます。`err.message` で説明の文を読めます。
+> - **`decodeURIComponent()`**（JavaScript・TypeScript）: `decodeURIComponent("%E5%B1%B1")` は、URL やクッキーの中で `%XX` の形にした文字を、元の文字（山）に戻します。反対は `encodeURIComponent()` です。
+> - **`fetch()`**（JavaScript・TypeScript）: `fetch(URL)` は、サーバーに HTTP の要求を送る関数です。`await fetch(…)` で答えを待ち、`res.ok`（うまくいったか）・`res.status`（状態コード）・`await res.json()`（JSON の中身）を読みます。
+> - **`.cookie`**（JavaScript・TypeScript）: `document.cookie` は、そのページのクッキーを、`名前=値; 名前=値` の形の文字で読みます（`HttpOnly` のクッキーは読めません）。
+> - **`.ok`**（JavaScript・TypeScript）: `fetch` の答えの `.ok` は、状態コードが 200〜299（うまくいった）なら `true` です。
 
 <!-- /first-use -->
 
@@ -695,6 +749,16 @@ robocopy wheelhouse "out\webapp-$ver\wheelhouse" /E
 Compress-Archive -Path "out\webapp-$ver\*" -DestinationPath "out\webapp-$ver.zip" -Force
 Get-FileHash "out\webapp-$ver.zip" -Algorithm SHA256
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`robocopy /E`**（コマンド）: `/E` は、中のフォルダも（空のフォルダも）全部コピーする指定です。
+> - **`robocopy /XD`**（コマンド）: `/XD .venv __pycache__` は、コピーしないフォルダの名前を並べる指定です。
+> - **`robocopy /XF`**（コマンド）: `/XF *.pyc` は、コピーしないファイルの名前（`*` で「何でも」）を並べる指定です。
+
+<!-- /first-use -->
 
 **確かめること:** zip の中に、`app\manage.py`・`app\frontend_dist\index.html`・`app\staticfiles\`・`app\requirements.txt`・`wheelhouse\*.whl` があること。
 
@@ -836,6 +900,14 @@ WinSW は、04 の 7.2 のとおり持ち込み、`D:\webapp\stg\service\webapp-
 </service>
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<arguments>`**（設定ファイル（XML））: `<arguments>` は、プログラムに渡す引数です（コマンドで打つ時の、プログラム名の後ろの部分）。
+
+<!-- /first-use -->
+
 | 設定 | 意味 |
 |---|---|
 | `--listen=127.0.0.1:8081` | サーバーの中だけで待ち受ける（**`0.0.0.0` にしない**。IIS を通らずに外からつながってしまう） |
@@ -925,6 +997,13 @@ exit $code
 > - **`Remove-Item -Path`**（PowerShell）: `Remove-Item` で、消す物の場所を決めるオプション。`Remove-Item -Path "Env:NAME"` は、環境変数 `NAME` を消します（`Env:` は環境変数の場所）。
 > - **`Remove-Item -ErrorAction`**（PowerShell）: `Remove-Item` で、エラーが起きた時の動きを決めるオプション。`-ErrorAction SilentlyContinue` は「無くてもエラーを出さずに次へ進む」。
 > - **`Pop-Location`**（PowerShell）: `Push-Location` で覚えたフォルダへ戻るコマンド。
+> - **`$true`**（PowerShell）: `$true` は「はい（真）」を表す値です。`-Recurse:$true` のように、スイッチに値を渡す時にも使います。反対は `$false` です。
+> - **`$PSScriptRoot`**（PowerShell）: `$PSScriptRoot` は、「今動いているスクリプト（`.ps1`）が置いてあるフォルダ」の場所が入った、特別な変数です。今いるフォルダがどこでも、スクリプトの隣のファイルを `Join-Path $PSScriptRoot "dev.env"` で見つけられます。
+> - **`[Parameter()]`**（PowerShell）: `param( )` の中の `[Parameter(ValueFromRemainingArguments = $true)]` は、引数の受け取り方を決める印です。この指定なら、名前を付けずに渡した残りの引数を、全部その変数に受け取ります。`[Parameter(Mandatory)]` なら「必ず渡す」です。
+> - **`[string[]]`**（PowerShell）: `[string[]]` は「文字列の並び（配列）」という型です。
+> - **`[xml]`**（PowerShell）: `[xml](Get-Content x.xml)` は、XML のファイルの中身を読んで、`$svc.service.executable` のように、タグの名前でたどれる形にします。
+> - **`@名前`**（PowerShell）: `コマンド @CurlArgs` のように、`$` の代わりに `@` を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。
+> - **`param( … )`**（PowerShell）: スクリプトの最初に書く `param([string]$Base = "http://…")` は、「このスクリプトが受け取る引数」の決まりです。`.\smoke.ps1 -Base http://…` のように、名前を付けて渡せます。`=` の右は、渡さなかった時の値です。
 
 <!-- /first-use -->
 
