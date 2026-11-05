@@ -587,6 +587,16 @@ note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.
 <span class="n">tokio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;1.54.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;rt-multi-thread&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;macros&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>libsql</code></strong>（Rust の部品（クレート））: <code>libsql</code> は、Turso（SQLite の仲間のデータベース）や、このパソコンの SQLite のファイルに、Rust からつなぐための部品です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="arm64-windows-clang">ARM64 版の Windows では clang が必要</h4>
 <p>libsql の <code>tls</code> の機能は、<code>ring</code> という暗号のクレートを使います。ARM64 版の Windows では、この <code>ring</code> をビルドするのに <strong>clang</strong>（クラン：LLVM という C 言語コンパイラの仲間）が必要です。clang が無いと、最初のビルドが次のように失敗します（実際の出力から要点を抜き出したもの）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>warning: ring@0.17.14: Compiler family detection failed due to error: ToolNotFound: failed to find tool &quot;clang&quot;: program not found (see https://docs.rs/cc/latest/cc/#compile-time-requirements for help)
@@ -901,6 +911,11 @@ Caused by:
 <li><strong><code>Real</code></strong>（データベース）: <code>Value::Real(x)</code> は、データベースの値が小数であることを表す種類です。</li>
 <li><strong><code>Text</code></strong>（データベース）: <code>Value::Text(s)</code> は、データベースの値が文字列であることを表す種類です。</li>
 <li><strong><code>Blob</code></strong>（データベース）: <code>Value::Blob(bytes)</code> は、データベースの値がバイトの並び（画像などの生のデータ）であることを表す種類です。</li>
+<li><strong><code>DELETE</code></strong>（SQL）: <code>DELETE FROM 表 WHERE 条件</code> で、表の行を消す SQL の命令。<code>WHERE</code> を忘れると、全部の行が消えます。<code>ON DELETE CASCADE</code> の中では「消された時」という意味です。</li>
+<li><strong><code>EXPLAIN</code></strong>（SQL）: <code>EXPLAIN QUERY PLAN SELECT …</code> で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します（第7巻 UNIT 04）。</li>
+<li><strong><code>QUERY</code></strong>（SQL）: <code>EXPLAIN QUERY PLAN</code> の一部。</li>
+<li><strong><code>PLAN</code></strong>（SQL）: <code>EXPLAIN QUERY PLAN</code> の一部で、「実行の計画」という意味です。</li>
+<li><strong><code>\'</code></strong>（文字列の中の特別な書き方）: <code>'\''</code> のように、<code>'</code> で囲んだ 1 文字の中に <code>'</code> そのものを入れる時は、<code>\'</code> と書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -918,6 +933,7 @@ Caused by:
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>AS</code></strong>（SQL）: SQL で、列や表に別の名前を付ける書き方。<code>SELECT COUNT(*) AS notes</code> は、結果の列の名前を <code>notes</code> にします。<code>FROM users AS u</code> は、表を <code>u</code> と短く呼べるようにします。</li>
+<li><strong><code>--</code></strong>（SQL）: SQL では、<code>--</code> から行の終わりまでがコメントです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1187,6 +1203,17 @@ sql&gt; SELECT sqlite_version() AS version
 <span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">notes</span><span class="p">;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SELECT *</code></strong>（SQL）: SQL の <code>SELECT *</code> の <code>*</code> は、「全部の列」という意味です。試しに中身を見る時は便利ですが、プログラムでは、使う列の名前を並べて書くほうが安全です（あとで列が増えても、読む物が変わりません）。</li>
+<li><strong><code>datetime()</code></strong>（SQL）: SQLite の <code>datetime('now')</code> は、今の日時（UTC）を <code>2026-11-05 00:03:00</code> の形の文字で返します。<code>DEFAULT (datetime('now'))</code> で、行を作った日時を自動で入れられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>sql/u01_create.sql</code> として保存し、<code>sql-lab</code> フォルダで次のコマンドを実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">sql</span> <span class="p">--</span> <span class="n">sql</span><span class="p">/</span><span class="n">u01_create</span><span class="p">.</span><span class="n">sql</span>
 </code></pre></div></div>
@@ -1317,6 +1344,7 @@ sql&gt; SELECT * FROM notes
 <li><strong><code>CAST</code></strong>（SQL）: SQL で、値の型を変える書き方。<code>CAST('あいう' AS BLOB)</code> は、文字列をバイトの並びとして扱います。</li>
 <li><strong><code>BLOB</code></strong>（SQL）: SQL の型の 1 つで、バイトの並び（画像などの生のデータ）を入れる型。</li>
 <li><strong><code>STRICT</code></strong>（SQL）: SQLite（libSQL）で、表の後ろに付けると、列の型と違う値を断るようにする決まり。付けないと、整数の列に文字が入ってしまうことがあります。</li>
+<li><strong><code>typeof()</code></strong>（SQL）: SQLite の <code>typeof(値)</code> は、値の種類（<code>integer</code>・<code>text</code>・<code>real</code>・<code>blob</code>・<code>null</code>）を返します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1456,8 +1484,6 @@ sql&gt; SELECT n, typeof(n) FROM strict_t
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>AUTOINCREMENT</code></strong>（SQL）: <code>INTEGER PRIMARY KEY AUTOINCREMENT</code> で、番号を自動で振り、消した番号を二度と使わないようにする決まり。</li>
-<li><strong><code>ON</code></strong>（SQL）: SQL の「〜の時」「〜で」。<code>ON DELETE CASCADE</code> は「消された時は」、<code>JOIN … ON a.id = b.user_id</code> は「この条件で横につなぐ」、<code>CREATE INDEX … ON 表 (列)</code> は「この表の、この列に」という意味です。</li>
-<li><strong><code>DELETE</code></strong>（SQL）: <code>DELETE FROM 表 WHERE 条件</code> で、表の行を消す SQL の命令。<code>WHERE</code> を忘れると、全部の行が消えます。<code>ON DELETE CASCADE</code> の中では「消された時」という意味です。</li>
 <li><strong><code>CASCADE</code></strong>（SQL）: <code>ON DELETE CASCADE</code> は、「つながった元の行（ユーザー）が消されたら、こちらの行（そのユーザーのノート）も一緒に消す」という決まりです。</li>
 <li><strong><code>INDEX</code></strong>（SQL）: <code>CREATE INDEX 名前 ON 表 (列)</code> で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります（第7巻 UNIT 04）。</li>
 <li><strong><code>DESC</code></strong>（SQL）: <code>ORDER BY 列 DESC</code> で、大きい順（新しい順）に並べます（小さい順は <code>ASC</code>）。</li>
@@ -1531,6 +1557,16 @@ sql&gt; SELECT type, name, tbl_name FROM sqlite_schema ORDER BY tbl_name, type D
 +-------+-----------------------------+-----------------+
 (9 行)
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run -- --setup</code></strong>（cargo のコマンド）: <code>cargo run -q --bin sql -- --setup 準備.sql 実行.sql</code> の <code>--setup</code> は、練習用の道具 <code>sql</code>（第7巻で作る）のオプションです。<code>--setup</code> で渡した SQL は、結果を表示せずに先に流します（表やデータの準備用）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h5 id="9">解説9: 自分で作っていない名前が混ざっている</h5>
 <ul>
@@ -1616,16 +1652,6 @@ sql&gt; SELECT name, seq FROM sqlite_sequence
 <span class="c1">-- 失敗した文は、1行も追加していない</span>
 <span class="k">SELECT</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">users_count</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">notes</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">notes_count</span><span class="p">;</span>
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>COUNT</code></strong>（SQL）: 行の数を数える SQL の関数。<code>SELECT COUNT(*) FROM notes</code> は、ノートの数です。<code>COUNT(列)</code> は、その列が NULL でない行の数です。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">sql</span> <span class="p">--</span> <span class="p">-</span><span class="n">-setup</span> <span class="n">sql</span><span class="p">/</span><span class="n">u01_create</span><span class="p">.</span><span class="n">sql</span> <span class="n">sql</span><span class="p">/</span><span class="n">u01_errors</span><span class="p">.</span><span class="n">sql</span>
 </code></pre></div></div>
@@ -1755,7 +1781,6 @@ OK
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>PRAGMA</code></strong>（SQL）: SQLite（libSQL）の設定を見る・変える命令。<code>PRAGMA foreign_keys = ON;</code> は、表どうしのつながりの決まり（外部キー）を確かめるようにします。</li>
 <li><strong><code>OFF</code></strong>（SQL）: <code>PRAGMA … = OFF</code> で、その設定を切ります（<code>ON</code> で入れます）。</li>
 </ul>
 </blockquote>
@@ -2237,6 +2262,7 @@ sql&gt; SELECT COUNT(*) AS alice_notes FROM notes WHERE user_id = 1
 <li><strong><code>OFFSET</code></strong>（SQL）: <code>LIMIT 件数 OFFSET 飛ばす数</code> で、「先頭から何件飛ばしてから取り出すか」を決める書き方。ページ送り（2 ページ目なら 20 件飛ばす）に使います。</li>
 <li><strong><code>LIKE</code></strong>（SQL）: SQL のあいまい検索。<code>WHERE title LIKE '%買い物%'</code> は、<code>買い物</code> を含む行です（<code>%</code> は「何文字でも」、<code>_</code> は「どれか 1 文字」）。</li>
 <li><strong><code>ESCAPE</code></strong>（SQL）: <code>LIKE … ESCAPE '\'</code> で、「<code>\</code> の次の文字は、特別な意味の無いただの文字」と決める書き方。検索の言葉に <code>%</code> や <code>_</code> が入っていても、正しく探せます（第10巻 UNIT 07）。</li>
+<li><strong><code>%</code></strong>（SQL）: SQL の <code>LIKE '%買い物%'</code> の <code>%</code> は、「何文字でも、何でも合う」という印です（ワイルドカード）。<code>'買い物%'</code> なら「買い物で始まる」。<code>_</code> は「何でも 1 文字」です。<code>%</code> や <code>_</code> そのものを探したい時は、<code>ESCAPE</code> を使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2381,7 +2407,7 @@ sql&gt; SELECT id, title FROM notes WHERE user_id = 1 AND title LIKE &#39;%\%%&#
 <ul>
 <li><strong><code>JOIN</code></strong>（SQL）: 2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</li>
 <li><strong><code>LEFT</code></strong>（SQL）: <code>LEFT JOIN</code> は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。</li>
-<li><strong><code>GROUP</code></strong>（SQL）: <code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</li>
+<li><strong><code>表.列</code></strong>（SQL）: SQL の <code>n.title</code>・<code>users.email</code> のように <code>表.列</code> と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（<code>JOIN</code>）時は、同じ名前の列（<code>id</code> など）があるので、こう書きます。<code>notes AS n</code> のように、表に短い別名を付けて使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2613,6 +2639,16 @@ sql&gt; SELECT id, title FROM notes WHERE title LIKE &#39;%rust%&#39;
 <span class="s">     LIMIT ?3 OFFSET ?4&quot;</span>
 <span class="p">);</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>\\</code></strong>（文字列の中の特別な書き方）: 文字列の中に <code>\</code> そのもの（1 つ）を入れたい時は、<code>\\</code> と 2 つ書きます。<code>\</code> は、<code>\n</code> のような特別な書き方の始まりの印だからです。Windows の場所を <code>"C:\\Users"</code> と書くのも、この理由です（生の文字列 <code>r"C:\Users"</code> なら 1 つで済みます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <ul>
 <li><code>user_id = ?1</code> が<strong>持ち主の条件</strong>です。ログイン中の人のノートだけを読みます。</li>
@@ -3317,6 +3353,7 @@ sql&gt; UPDATE notes SET body = &#39;牛乳、卵、パン、バター&#39;, ver
 <ul>
 <li><strong><code>WITH</code></strong>（SQL）: <code>WITH 名前 AS (SELECT …)</code> で、その文の中だけで使う「一時的な表」に名前を付ける書き方。長い SQL を読みやすく分けられます。</li>
 <li><strong><code>RECURSIVE</code></strong>（SQL）: <code>WITH RECURSIVE</code> は、自分自身を使って行を増やしていく一時的な表を作る書き方。1〜1000 の数を作る、などに使えます。</li>
+<li><strong><code>||</code></strong>（SQL）: SQL の <code>||</code> は、文字と文字をつなぐ記号です。<code>'user' || 42 || '@example.com'</code> → <code>user42@example.com</code>。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3339,18 +3376,6 @@ sql&gt; UPDATE notes SET body = &#39;牛乳、卵、パン、バター&#39;, ver
 <span class="c1">-- ⑤ 結果は同じ（索引は速さだけを変え、答えは変えない）</span>
 <span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">updated_at</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">notes</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">updated_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>EXPLAIN</code></strong>（SQL）: <code>EXPLAIN QUERY PLAN SELECT …</code> で、データベースがその SQL をどう実行するつもりか（索引を使うか、全部の行を見るか）を表示します（第7巻 UNIT 04）。</li>
-<li><strong><code>QUERY</code></strong>（SQL）: <code>EXPLAIN QUERY PLAN</code> の一部。</li>
-<li><strong><code>PLAN</code></strong>（SQL）: <code>EXPLAIN QUERY PLAN</code> の一部で、「実行の計画」という意味です。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <p><code>sql/u04_plan.sql</code> として保存し、表の準備（<code>schema.sql</code>）と 10 万件のデータ（<code>u04_big.sql</code>）を <code>--setup</code> で用意してから実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">sql</span> <span class="p">--</span> <span class="p">-</span><span class="n">-setup</span> <span class="n">sql</span><span class="p">/</span><span class="n">schema</span><span class="p">.</span><span class="n">sql</span> <span class="p">-</span><span class="n">-setup</span> <span class="n">sql</span><span class="p">/</span><span class="n">u04_big</span><span class="p">.</span><span class="n">sql</span> <span class="n">sql</span><span class="p">/</span><span class="n">u04_plan</span><span class="p">.</span><span class="n">sql</span>
@@ -3420,6 +3445,16 @@ sql&gt; SELECT id, title, updated_at FROM notes WHERE user_id = 42 ORDER BY upda
 <span class="c1">-- ⑤ 数える問い合わせも索引で速くなる</span>
 <span class="k">EXPLAIN</span><span class="w"> </span><span class="n">QUERY</span><span class="w"> </span><span class="n">PLAN</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">notes</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>lower()</code></strong>（SQL）: SQL の <code>lower(email)</code> は、英字を小文字にします。大文字・小文字を区別せずに比べる時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>索引を作る1行だけの SQL を <code>sql/u04_index.sql</code> に保存しておき（<code>CREATE INDEX idx_notes_user_updated ON notes (user_id, updated_at DESC, id DESC);</code>）、それも <code>--setup</code> に加えて実行します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-94"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">sql</span> <span class="p">--</span> <span class="p">-</span><span class="n">-setup</span> <span class="n">sql</span><span class="p">/</span><span class="n">schema</span><span class="p">.</span><span class="n">sql</span> <span class="p">-</span><span class="n">-setup</span> <span class="n">sql</span><span class="p">/</span><span class="n">u04_big</span><span class="p">.</span><span class="n">sql</span> <span class="p">-</span><span class="n">-setup</span> <span class="n">sql</span><span class="p">/</span><span class="n">u04_index</span><span class="p">.</span><span class="n">sql</span> <span class="n">sql</span><span class="p">/</span><span class="n">u04_more</span><span class="p">.</span><span class="n">sql</span>
@@ -4934,6 +4969,16 @@ sql&gt; SELECT id, title, version FROM notes WHERE id = 1
 <div class="codehilite"><div class="code-wrap" id="code-147"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-bin</span> <span class="n">sql</span> <span class="p">--</span> <span class="p">-</span><span class="n">-db</span> <span class="n">u06</span><span class="p">.</span><span class="n">db</span> <span class="n">sql</span><span class="p">/</span><span class="n">u06_data</span><span class="p">.</span><span class="n">sql</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run -- --db</code></strong>（cargo のコマンド）: 練習用の道具 <code>sql</code>（第7巻で作る）の <code>--db ファイル</code> は、使うデータベースのファイルを指定します。付けないと、メモリの中だけのデータベース（終わると消える）を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-148"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>sql&gt; INSERT INTO users (email, password_hash) VALUES (&#39;alice@example.com&#39;, &#39;dummy-a&#39;)
 OK（変更: 1 行）
 
@@ -5099,6 +5144,7 @@ sql&gt; SELECT version FROM schema_migrations ORDER BY version
 <ul>
 <li><strong><code>RENAME</code></strong>（SQL）: <code>ALTER TABLE 表 RENAME TO 新しい名前</code> で、表の名前を変えます。</li>
 <li><strong><code>TO</code></strong>（SQL）: <code>RENAME TO 新しい名前</code> の「〜へ」の部分です。</li>
+<li><strong><code>printf()</code></strong>（SQL）: SQLite の <code>printf('%10001s', '')</code> は、書式に従って文字を作る関数です。<code>%10001s</code> は「10001 文字の幅（足りない分は空白）」なので、ここでは空白が 10001 個の文字を作ります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5534,6 +5580,7 @@ error: could not compile `sql-lab` (bin &quot;u06_err_path&quot;) due to 1 previ
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>named_params!</code></strong>（データベース）: <code>libsql::named_params! { ":owner": 1 }</code> は、SQL の <code>:owner</code> のような名前付きの場所に入れる値を並べるマクロ。番号（<code>?1</code>）の代わりに名前で渡せます。</li>
+<li><strong><code>:名前</code></strong>（SQL）: SQL の <code>:owner</code> のように <code>:</code> で始まる名前は、名前で値を渡す場所（名前付きのプレースホルダー）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -8505,6 +8552,7 @@ JOIN 版: SQL 1 回
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>std::fs::metadata()</code></strong>（ファイルとフォルダ）: ファイルの情報（大きさ・日時など）を取り出す関数。<code>std::fs::metadata(path)?.len()</code> で、ファイルの大きさ（バイト）が分かります。</li>
+<li><strong><code>VACUUM</code></strong>（SQL）: SQLite の <code>VACUUM</code> は、データベースのファイルを詰め直して、消した行の分の空きを無くす命令です。<code>VACUUM INTO 'copy.db'</code> は、開いたまま、別のファイルに写しを書き出します（バックアップに使えます）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

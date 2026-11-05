@@ -107,6 +107,11 @@ psql -h 127.0.0.1 -p 5432 -U postgres -d postgres
 > **▶ ここで初めて出てくるコード**
 >
 > - **`psql`**（psql）: PostgreSQL に、コマンドでつないで SQL を打つ道具。`psql -h 127.0.0.1 -U postgres -d データベース名` でつなぎます（`-h` は相手の住所、`-U` は利用者の名前、`-d` はデータベース）。`\q` で抜けます。
+> - **`psql -h`**（psql）: `-h 127.0.0.1` は、つなぐ先のサーバーの場所（ホスト）です。`127.0.0.1` は「このパソコン自身」です。
+> - **`psql -p`**（psql）: `-p 5432` は、つなぐ先のポート番号です。PostgreSQL は、ふつう 5432 番で待ち受けます。
+> - **`psql -U`**（psql）: `-U postgres` は、どの利用者（ロール）としてつなぐかです。パスワードを聞かれたら、その利用者のパスワードを入れます。
+> - **`psql -d`**（psql）: `-d webapp_stg` は、どのデータベースにつなぐかです。
+> - **`+=`**（PowerShell）: `$x += 1` は `$x = $x + 1` の短い形です。並びに `$names += "山田"` と書くと、後ろに 1 つ足した並びになります。
 
 <!-- /first-use -->
 
@@ -162,6 +167,16 @@ postgres=#
 psql -h 127.0.0.1 -U webapp_stg_app -d webapp_stg -c "SELECT current_user, current_database(), now();"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`psql -c`**（psql）: `-c "SELECT …;"` は、つないで、その SQL を 1 回だけ動かして、すぐに終わる指定です。確かめを 1 行で済ませる時に使います。
+> - **`current_database()`**（SQL）: PostgreSQL の `current_database()` は、今つないでいるデータベースの名前を返します。`current_user` は、今の利用者（ロール）の名前です。
+> - **`now()`**（SQL）: PostgreSQL の `now()` は、今の日時を返す関数です。`DEFAULT now()` で、行を作った日時を自動で入れられます。
+
+<!-- /first-use -->
+
 > **日本語を含む SQL は、`-c` で渡さない方が安全です。** 試した環境では、`-c` に日本語を書くと、文字コードの食い違いで `invalid byte sequence for encoding "UTF8"` というエラーになりました。日本語を含む SQL は、psql の中で打つか、**UTF-8 で保存した `.sql` のファイル**を `-f` で渡します（`psql ... -f D:\work\check.sql`）。
 
 ### 2.5 pgAdmin（画面の道具）
@@ -197,6 +212,8 @@ CREATE DATABASE practice ENCODING 'UTF8' TEMPLATE template0;
 > - **`DATABASE`**（SQL）: `CREATE DATABASE 名前` で、データベースを作ります。
 > - **`ENCODING`**（SQL）: `ENCODING 'UTF8'` で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。
 > - **`TEMPLATE`**（SQL）: `TEMPLATE template0` で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。
+> - **`\c`**（psql）: psql の `\c practice` は、つなぐデータベースを `practice` に切りかえる命令です。
+> - **`;`**（SQL）: SQL の `;` は、1 つの命令（文）の終わりの印です。psql では、`;` を打つまで命令が送られません（`;` を忘れると、続きを待つ `practice-#` の表示になります）。
 
 <!-- /first-use -->
 
@@ -306,6 +323,14 @@ INSERT INTO requests (title, status, requester_id, due_date, created_at) VALUES
 SELECT * FROM departments;
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`SELECT *`**（SQL）: SQL の `SELECT *` の `*` は、「全部の列」という意味です。試しに中身を見る時は便利ですが、プログラムでは、使う列の名前を並べて書くほうが安全です（あとで列が増えても、読む物が変わりません）。
+
+<!-- /first-use -->
+
 ```text
  id |    name
 ----+------------
@@ -385,6 +410,7 @@ WHERE name LIKE '%田%';
 > **▶ ここで初めて出てくるコード**
 >
 > - **`LIKE`**（SQL）: SQL のあいまい検索。`WHERE title LIKE '%買い物%'` は、`買い物` を含む行です（`%` は「何文字でも」、`_` は「どれか 1 文字」）。
+> - **`%`**（SQL）: SQL の `LIKE '%買い物%'` の `%` は、「何文字でも、何でも合う」という印です（ワイルドカード）。`'買い物%'` なら「買い物で始まる」。`_` は「何でも 1 文字」です。`%` や `_` そのものを探したい時は、`ESCAPE` を使います。
 
 <!-- /first-use -->
 
@@ -433,6 +459,8 @@ ORDER BY 件数 DESC, status;
 > **▶ ここで初めて出てくるコード**
 >
 > - **`GROUP`**（SQL）: `GROUP BY 列` で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。`SELECT user_id, COUNT(*) FROM notes GROUP BY user_id` は、人ごとのノートの数です。
+> - **`COUNT(*)`**（SQL）: SQL の `COUNT(*)` は、行の数を数えます。`GROUP BY status` と組み合わせると、`status` ごとの件数になります。
+> - **`count()`**（SQL）: SQL の `count(*)` は、行の数を数える関数です（`COUNT(*)` と同じで、大文字・小文字はどちらでもかまいません）。
 
 <!-- /first-use -->
 
@@ -525,6 +553,7 @@ ORDER BY r.id;
 > **▶ ここで初めて出てくるコード**
 >
 > - **`JOIN`**（SQL）: 2 つの表を、条件で横につないで取り出す書き方。`FROM notes JOIN users ON users.id = notes.user_id` は、ノートと、その持ち主を 1 行に並べます。
+> - **`表.列`**（SQL）: SQL の `n.title`・`users.email` のように `表.列` と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（`JOIN`）時は、同じ名前の列（`id` など）があるので、こう書きます。`notes AS n` のように、表に短い別名を付けて使います。
 
 <!-- /first-use -->
 
@@ -840,6 +869,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE webapp_prod_app IN SCHEMA public
 > - **`ALTER`**（SQL）: `ALTER TABLE 表 …` で、もうある表の形を変える SQL の命令（列を足す・名前を変える など）。
 > - **`PRIVILEGES`**（SQL）: `ALTER DEFAULT PRIVILEGES … GRANT SELECT ON TABLES TO …` は、「これから作られる表にも、自動で同じ権限を付ける」という決まりを作る命令です。これが無いと、あとで足した表は読めません。
 > - **`FOR`**（SQL）: `SELECT … FOR UPDATE` は、読んだ行に鍵をかける書き方です。同じ行を、別の人が同時に変えようとしても、こちらのトランザクションが終わるまで待たせるので、「2 人が同時に承認して 2 回進む」ことを防げます。
+> - **`\password`**（psql）: psql の `\password 名前` は、その利用者（ロール）のパスワードを変える命令です。打つとパスワードを 2 回聞かれ、画面には表示されません（コマンドの履歴にも残りません）。
 
 <!-- /first-use -->
 
@@ -933,6 +963,9 @@ pg_dump -h 127.0.0.1 -U postgres -Fc -f D:\work\practice.dump practice
 > **▶ ここで初めて出てくるコード**
 >
 > - **`pg_dump`**（psql）: PostgreSQL のデータベースの中身を、まるごと 1 つのファイルに書き出す（控えを取る）コマンド。`-Fc` はあとで `pg_restore` で戻せる形、`-f` は書き出すファイルの場所。動かしている途中でも、ある瞬間の中身がそろった形で取れます。
+> - **`pg_dump -h`**（psql）: `-h 127.0.0.1` は、バックアップを取るサーバーの場所です。
+> - **`pg_dump -U`**（psql）: `-U postgres` は、どの利用者としてつないで、バックアップを取るかです。
+> - **`pg_dump -Fc`**（psql）: `-Fc` は、「カスタム形式」（PostgreSQL 用に圧縮した形）でバックアップを書き出す指定です。この形は `pg_restore` で戻し、戻す時に表を選ぶこともできます。`-f ファイル` で書き出す先を決めます。
 
 <!-- /first-use -->
 
@@ -968,6 +1001,10 @@ pg_restore --list D:\work\practice.dump
 > **▶ ここで初めて出てくるコード**
 >
 > - **`pg_restore`**（psql）: `pg_dump -Fc` で取った控えを、データベースに戻すコマンド。`-d` で戻す先のデータベースを決めます。戻す練習は、本物とは別の、空のデータベースに対してします。
+> - **`pg_restore -h`**（psql）: `-h 127.0.0.1` は、戻す先のサーバーの場所です。
+> - **`pg_restore -U`**（psql）: `-U postgres` は、どの利用者としてつないで戻すかです。
+> - **`pg_restore -d`**（psql）: `-d practice_restore` は、戻す先のデータベースです（先に作っておきます）。
+> - **`pg_restore --list`**（psql）: `--list` は、戻さずに、バックアップの中身（表などの一覧）だけを表示します。バックアップが読めるかの確かめにも使えます。
 
 <!-- /first-use -->
 
@@ -1006,6 +1043,9 @@ WHERE state = 'active' AND now() - query_start > interval '5 minutes';
 > **▶ ここで初めて出てくるコード**
 >
 > - **`SQL`**（SQL）: ここでは SQL の命令ではなく、`AS SQL` で列に付けた名前（見出し）です。`left(query, 60) AS SQL` は「動いている SQL の先頭 60 文字を、SQL という見出しで出す」。
+> - **`pg_size_pretty()`**（SQL）: PostgreSQL の `pg_size_pretty(数)` は、バイトの数を、`12 MB` のような読みやすい形にします。
+> - **`pg_database_size()`**（SQL）: PostgreSQL の `pg_database_size(名前)` は、データベースの大きさ（バイト）を返します。
+> - **`pg_total_relation_size()`**（SQL）: PostgreSQL の `pg_total_relation_size(表)` は、表の大きさ（索引なども合わせたバイト）を返します。
 
 <!-- /first-use -->
 
@@ -1023,6 +1063,14 @@ SELECT pg_cancel_backend(12345);
 -- つないでいるのを切る（アプリのつなぎが切れることがあるので、最後の手段）
 SELECT pg_terminate_backend(12345);
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pg_terminate_backend()`**（SQL）: PostgreSQL の `pg_terminate_backend(番号)` は、その番号（PID）のつながりを、強制的に切ります。止まらない問い合わせを止める時に使います。
+
+<!-- /first-use -->
 
 > **用語:** VACUUM（バキューム：消したり直したりした行の、使われなくなった場所を片付ける PostgreSQL の仕組み。ふつうは自動（autovacuum）で動くので、自分で打つ必要はない）
 

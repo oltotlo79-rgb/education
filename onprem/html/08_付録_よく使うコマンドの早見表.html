@@ -307,6 +307,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Set-Content -Encoding</code></strong>（PowerShell）: <code>-Encoding utf8</code> で、ファイルを UTF-8 という文字コードで書きます。Windows PowerShell 5.1 は、指定しないと古い文字コード（Shift_JIS）で書くので、日本語を書く時は付けておくと安心です。</li>
 <li><strong><code>Set-Content -Value</code></strong>（PowerShell）: <code>-Value 中身</code> で、ファイルに書く中身を指定します。<code>@' … '@</code> で囲むと、何行もの文章をそのまま中身にできます（ヒア文字列）。</li>
 <li><strong><code>Get-Item</code></strong>（PowerShell）: ファイルやフォルダ 1 つの情報（名前・大きさ・日時）を取り出すコマンド。</li>
+<li><strong><code>$null</code></strong>（PowerShell）: <code>$null</code> は「何も無い」を表す値です。<code>if ($x -eq $null)</code> で「何も入っていないか」を調べられます。<code>$null = コマンド</code> や <code>コマンド | Out-Null</code> と書くと、コマンドの出力を捨てられます。</li>
+<li><strong><code>[datetime]</code></strong>（PowerShell）: <code>[datetime]</code> は「日時」の型です。<code>[datetime]::ParseExact("20261105 0200", "yyyyMMdd HHmm", $null)</code> のように、決まった形の文字から日時を作れます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

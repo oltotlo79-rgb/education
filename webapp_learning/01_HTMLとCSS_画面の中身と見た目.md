@@ -115,6 +115,10 @@ code .
 > - **`<body>`**（HTML）: 画面に出す中身を全部入れるタグ。見出し・段落・フォームなどは、全部この中に書きます。
 > - **`<h1>`**（HTML）: いちばん大きな見出し（heading 1）のタグ。数が大きいほど小さな見出しになります（`<h2>`〜`<h6>`）。`<h1>` は、1 ページに 1 つにします。
 > - **`<p>`**（HTML）: 段落（paragraph）のタグ。ひとまとまりの文を囲みます。段落と段落の間には、自動で少し間が空きます。
+> - **`<!DOCTYPE html>`**（HTML）: `<!DOCTYPE html>` は、「これは今の HTML（HTML5）で書いたページです」という、ページのいちばん最初に書く宣言です。大文字でも小文字（`<!doctype html>`）でもかまいません。
+> - **`lang=`**（HTML）: `<html lang="ja">` の `lang` は、ページの言葉（`ja` は日本語、`en` は英語）です。読み上げソフトの読み方や、ブラウザーの翻訳の判断に使われます。
+> - **`charset=`**（HTML）: `<meta charset="utf-8">` の `charset` は、ページの文字の符号（エンコーディング）です。いつも `utf-8` にしておくと、日本語が文字化けしません。
+> - **`class=`**（HTML）: `class` は、タグに付ける「グループの名前」です。CSS で `.note { … }` と書くと、`class="note"` の物全部に、同じ見た目が付きます。`class="note done"` のように、空白で区切っていくつも付けられます。
 
 <!-- /first-use -->
 
@@ -252,6 +256,24 @@ code .
 > - **`<select>`**（HTML）: 選ぶ欄（プルダウン）のタグ。中に `<option value="値">表示する文字</option>` を並べます。`selected` を付けた物が、最初に選ばれます。
 > - **`<option>`**（HTML）: `<select>`（選ぶ欄）の中の、選べる 1 つ。`<option value="new">新しく作る</option>` の `value` が送られる値、間の文字が画面に出る文字です。`selected` で最初に選ばれます。
 > - **`<button>`**（HTML）: ボタンのタグ。フォームの中の `<button type="submit">送る</button>` は、押すとフォームを送ります。`type="button"` にすると、送らない、ふつうのボタンになります。
+> - **`name=`**（HTML）: `name` は、入力欄（`<input>`・`<textarea>`・`<select>`）の名前です。フォームを送ると、`title=牛乳` のように、この名前と入れた値の組がサーバーに届きます。`<meta name="viewport" …>` の `name` は、設定の種類の名前です。
+> - **`content=`**（HTML）: `<meta name="viewport" content="width=device-width, initial-scale=1">` の `content` は、その設定の値です。この `viewport` の設定は、「スマホでも、画面の幅に合わせて表示する」という意味で、いつも書いておきます。
+> - **`rel=`**（HTML）: `<link rel="stylesheet" …>` の `rel` は、つなぐファイルが「何か」です。`stylesheet` は CSS のファイル、`icon` はタブの小さな絵です。
+> - **`href=`**（HTML）: `href` は、リンク先や、読み込むファイルの場所（URL）です。`<a href="/notes">一覧</a>` は、押すと `/notes` へ移るリンクです。
+> - **`action=`**（HTML）: `<form action="/notes">` の `action` は、フォームの送り先の URL です。書かなければ、今のページに送ります。
+> - **`method=`**（HTML）: `<form method="post">` の `method` は、フォームの送り方です。`post` はデータを送って何かを変える時（登録・削除）、`get` は検索のように、URL の `?q=…` に入れて送る時に使います。
+> - **`enctype=`**（HTML）: `<form enctype="multipart/form-data">` の `enctype` は、フォームの送り方の形です。ファイルを送るフォームでは、必ずこの `multipart/form-data` にします。
+> - **`for=`**（HTML）: `<label for="q">` の `for` は、この説明の文字が、どの入力欄（`id="q"`）のための物かを結び付けます。文字を押しても、その欄に入力できるようになり、読み上げソフトも欄の名前を読めます。
+> - **`id=`**（HTML）: `id` は、ページの中で 1 つだけの名前です。`<label for="title">` で欄と結び付けたり、`#title` のリンクでその場所へ飛んだりできます。同じ `id` を 2 つ付けてはいけません。
+> - **`type=`**（HTML）: `<input type="…">` の `type` は、入力欄の種類です。`text`（文字）・`email`・`password`（伏せ字）・`number`・`date`・`checkbox`（チェック）・`file`（ファイル）・`search` などがあります。`<button type="submit">` は、押すとフォームを送るボタンです。
+> - **`maxlength=`**（HTML）: `maxlength="100"` は、入力できる文字の数の上限です。それより長くは打てません（サーバー側でも、必ず確かめます）。
+> - **`required`**（HTML）: `required` は、「この欄は必ず入れる」という印です。値は書かず、名前だけで ON になります。空のまま送ろうとすると、ブラウザーが止めます。
+> - **`placeholder=`**（HTML）: `placeholder` は、入力欄が空の時に、うすく見せる例の文字です。入力の説明の代わりにはならないので、`<label>` も付けます。
+> - **`rows=`**（HTML）: `<textarea rows="6">` の `rows` は、見える行の数です。
+> - **`accept=`**（HTML）: `<input type="file" accept=".jpg,.png,.pdf">` の `accept` は、選べるファイルの種類です。ファイルを選ぶ画面で、ほかの種類が見えにくくなります（ブラウザーの手助けなので、サーバー側でも必ず確かめます）。
+> - **`multiple`**（HTML）: `<input type="file" multiple>` の `multiple` は、ファイルを一度にいくつも選べるようにする印です。
+> - **`aria-*=`**（HTML）: `aria-label="…"`・`aria-current="page"` のように `aria-` で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。`aria-label` は名前、`aria-current="page"` は「今開いているページ」、`aria-invalid="true"` は「入力に間違いがある」です。
+> - **`value=`**（HTML）: `value` は、入力欄の最初の値や、選び肢（`<option>`）を選んだ時に送られる値です。
 
 <!-- /first-use -->
 
@@ -396,6 +418,10 @@ body { color: var(--navy); }
 > - **`navy:`**（CSS）: この資料の CSS で決めた色の変数（`--navy`：濃紺。文字や線の色）。`:root { --navy: #1e3a5f; }` のように、名前の頭を `--` にして決め、`color: var(--navy);` のように使います。色を 1 か所で決めておくと、あとで変える時に 1 か所直すだけで済みます。
 > - **`blue:`**（CSS）: この資料の CSS で決めた色の変数（`--blue`：青。ボタンやリンクの色）。`var(--blue)` で使います。
 > - **`color:`**（CSS）: 文字の色を決める項目。`color: var(--navy);` や `color: #eb5757;` のように書きます。
+> - **`:root`**（CSS）: CSS の `:root` は、ページ全体（いちばん外側の `<html>`）を選ぶ書き方です。ページのどこからでも使う色などの変数（`--color-text`）を、ここに書きます。
+> - **`--名前`**（CSS）: CSS の `--color-text: #0f172a;` のように `--` で始まる名前は、自分で決める変数（カスタムプロパティ）です。`color: var(--color-text);` で使います。色を 1 か所で決めておけば、変える時も 1 か所で済みます。
+> - **`#rrggbb`**（CSS）: CSS の `#0f172a` のような `#` と 6 けた（または 3 けた）の 16 進数は、色の書き方です。2 けたずつ、赤・緑・青の強さ（00〜ff）を表します。`#ffffff` は白、`#000000` は黒です。
+> - **`var()`**（CSS）: CSS の `var(--color-text)` は、`--` で始まる変数の値を使う書き方です。
 
 <!-- /first-use -->
 
@@ -442,6 +468,8 @@ body { color: var(--navy); }
 > - **`display:`**（CSS）: 箱の並べ方を決める項目。`display: flex;` は「中身を横一列に並べる」、`display: grid;` は「ます目に並べる」、`display: none;` は「表示しない」です。
 > - **`align-items:`**（CSS）: `display: flex` の中身を、上下（横に並べた時の縦）のどこにそろえるかを決める項目。`center` で真ん中にそろえます。
 > - **`justify-content:`**（CSS）: `display: flex` の中身を、並ぶ向きにどう配るかを決める項目。`space-between` は「両端に寄せて、間を均等に空ける」。
+> - **`/* */`**（CSS）: CSS では、`/*` から `*/` までがコメントです。
+> - **`.クラス名`**（CSS）: CSS の `.note { … }` のように `.` で始まる名前は、「`class="note"` の付いたタグ全部」を選ぶ書き方（クラスセレクター）です。`{ }` の中の見た目が、その全部に付きます。
 
 <!-- /first-use -->
 
@@ -461,6 +489,8 @@ body { color: var(--navy); }
 >
 > - **`grid-template-columns:`**（CSS）: `display: grid` の、列の幅を決める項目。`160px 1fr` は「1 列目は 160px、2 列目は残り全部」。`fr` は「残りを分ける割合」です。
 > - **`gap:`**（CSS）: `flex` や `grid` の中身どうしの間の幅を決める項目。`gap: 12px 16px;` は「行の間 12px、列の間 16px」。
+> - **`数px`**（CSS）: CSS の `16px` の `px` は、画面の点（ピクセル）の数で表す大きさの単位です。
+> - **`数fr`**（CSS）: CSS のグリッドの `1fr` は、「残りの場所を分ける割合」の単位です。`grid-template-columns: 1fr 2fr;` なら、残りを 1 対 2 で分けた 2 列になります。
 
 <!-- /first-use -->
 
@@ -486,6 +516,9 @@ body { color: var(--navy); }
 > - **`margin:`**（CSS）: 箱の外側の余白を決める項目。`margin: 12px;` は上下左右に 12px。2 つ書くと「上下 左右」、4 つ書くと「上 右 下 左」の順です。
 > - **`padding:`**（CSS）: 箱の内側の余白（枠と中身の間）を決める項目。書き方は `margin` と同じです。
 > - **`flex-direction:`**（CSS）: `display: flex` の中身を並べる向きを決める項目。`row` は横（最初の値）、`column` は縦に並べます。
+> - **`@media`**（CSS）: CSS の `@media (max-width: 640px) { … }` は、「画面の幅が 640px 以下の時だけ」の見た目を書く所です（メディアクエリ）。スマホでは 1 列にする、などに使います。
+> - **`(max-width)`**（CSS）: `@media` の `(max-width: 640px)` は、「画面の幅が 640px 以下」という条件です。`(min-width: …)` なら「以上」、`(prefers-color-scheme: dark)` なら「暗い色の設定の時」です。
+> - **`minmax()`**（CSS）: CSS の `minmax(0, 1fr)` は、グリッドの列の幅を「いちばん小さくて 0、いちばん大きくて残りの 1 つ分」の範囲で決める書き方です。中身が長くても、列がはみ出さなくなります。
 
 <!-- /first-use -->
 

@@ -690,6 +690,19 @@ ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo test --test</code></strong>（cargo のコマンド）: <code>cargo test --test u01_three_checks</code> は、<code>tests</code> フォルダの中の <code>u01_three_checks.rs</code> のテストだけを動かします。</li>
+<li><strong><code>cargo test --</code></strong>（cargo のコマンド）: <code>cargo test -- --nocapture</code> の <code>--</code> は、「ここから後ろは、Cargo ではなく、テストを動かすプログラムに渡す」という区切りです。</li>
+<li><strong><code>cargo test -- --nocapture</code></strong>（cargo のコマンド）: <code>--nocapture</code> は、テストの中の <code>println!</code> の表示を、そのまま画面に出す指定です。ふだんは、成功したテストの表示は隠されます。</li>
+<li><strong><code>cargo test -- --test-threads</code></strong>（cargo のコマンド）: <code>--test-threads=1</code> は、テストを 1 つずつ順番に動かす指定です。ふだんは、いくつものテストを同時に動かします。同じファイルやポートを使うテストが、ぶつからないようにする時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-1-303">解説1: ① 認証が無いと、303 でログイン画面へ</h5>
 <ul>
@@ -788,6 +801,8 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>.headers()</code></strong>（HTTP）: 答え（レスポンス）の見出し（ヘッダー）の一覧を返すメソッド。<code>.headers().get("set-cookie")</code> のように、名前で 1 つ取り出せます。</li>
 <li><strong><code>.get_all()</code></strong>（HTTP）: HTTP のヘッダーで、同じ名前の物（<code>Set-Cookie</code> など）を全部取り出すメソッド。<code>get</code> だと最初の 1 つだけです。</li>
 <li><strong><code>.trim_start_matches()</code></strong>（文字列）: 文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。<code>pair.trim_start_matches("__Host-session=")</code> は、クッキーの名前の部分を取って値だけにします。</li>
+<li><strong><code>unixepoch()</code></strong>（SQL）: SQLite の <code>unixepoch()</code> は、今の日時を、1970 年 1 月 1 日からの秒数（UNIX 時間）で返します。期限が過ぎたかを、数の比べっこで調べられます。</li>
+<li><strong><code>count()</code></strong>（SQL）: SQL の <code>count(*)</code> は、行の数を数える関数です（<code>COUNT(*)</code> と同じで、大文字・小文字はどちらでもかまいません）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1091,6 +1106,16 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-example</span> <span class="n">e01_find_without_owner</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo build --example</code></strong>（cargo のコマンド）: <code>cargo build --example 名前</code> は、<code>examples</code> フォルダの中の 1 つだけを翻訳します（動かしません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>   Compiling rustnote v0.1.0 (...\rustnote)
 error[E0308]: `?` operator has incompatible types
   --&gt; examples\e01_find_without_owner.rs:12:33
@@ -1179,6 +1204,16 @@ error: could not compile `rustnote` (example &quot;e01_find_without_owner&quot;)
 
 <div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">run</span> <span class="n">-q</span> <span class="p">-</span><span class="n">-example</span> <span class="n">u01_idor</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run --example</code></strong>（cargo のコマンド）: <code>cargo run --example u01_idor</code> は、<code>examples</code> フォルダの中の <code>u01_idor.rs</code> を動かします。例やエラーの見本を、本体とは別に置く時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ID だけで探す: 見つかった → alice の秘密のメモ
 持ち主の条件も付ける: 見つからない（404 にする）
@@ -3667,6 +3702,16 @@ help: consider `await`ing on the `Future`
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>substr()</code></strong>（SQL）: SQL の <code>substr(文字, 1, 8)</code> は、文字の 1 文字目から 8 文字分を取り出します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u05_life</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span>
 </code></pre></div></div>
 
@@ -3785,6 +3830,16 @@ help: consider `await`ing on the `Future`
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>instr()</code></strong>（SQL）: SQLite の <code>instr(email, '@')</code> は、文字の中で、<code>@</code> が何文字目にあるかを返します（無ければ 0）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">test</span> <span class="p">-</span><span class="n">-test</span> <span class="n">u05_server</span> <span class="p">--</span> <span class="p">-</span><span class="n">-nocapture</span> <span class="p">-</span><span class="n">-test-threads</span><span class="p">=</span><span class="n">1</span>
 </code></pre></div></div>
@@ -4264,15 +4319,7 @@ error: could not compile `rustnote` (lib) due to 1 previous error
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>&lt;html&gt;</code></strong>（HTML）: HTML の文書全体を包むタグ。中に <code>&lt;head&gt;</code>（ページの情報）と <code>&lt;body&gt;</code>（画面に出す中身）を入れます。</li>
-<li><strong><code>&lt;meta&gt;</code></strong>（HTML）: HTML の <code>&lt;head&gt;</code> の中に書く、ページの情報のタグ。<code>&lt;meta charset="utf-8"&gt;</code>（文字コード）・<code>&lt;meta name="viewport" …&gt;</code>（スマホでの表示の幅）などがあります。</li>
-<li><strong><code>&lt;title&gt;</code></strong>（HTML）: ブラウザーのタブに出る、ページの題名のタグ。<code>&lt;head&gt;</code> の中に書きます。</li>
-<li><strong><code>&lt;h1&gt;</code></strong>（HTML）: いちばん大きな見出しのタグ。</li>
-<li><strong><code>&lt;form&gt;</code></strong>（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。<code>action</code> に送り先、<code>method="post"</code> に送り方を書きます。</li>
-<li><strong><code>&lt;input&gt;</code></strong>（HTML）: 1 行の入力欄のタグ。<code>type</code> で種類（<code>text</code>・<code>email</code>・<code>password</code>・<code>hidden</code> など）を、<code>name</code> で送る時の名前を決めます。閉じタグはありません。</li>
-<li><strong><code>&lt;button&gt;</code></strong>（HTML）: ボタンのタグ。<code>&lt;form&gt;</code> の中の <code>type="submit"</code> のボタンを押すと、フォームが送られます。</li>
-<li><strong><code>&lt;p&gt;</code></strong>（HTML）: 段落のタグ。</li>
-<li><strong><code>&lt;a&gt;</code></strong>（HTML）: リンクのタグ。<code>&lt;a href="../URL"&gt;文字&lt;/a&gt;</code> で、押すとその URL へ移ります。</li>
+<li><strong><code>id=</code></strong>（HTML）: <code>id</code> は、ページの中で 1 つだけの名前です。<code>&lt;label for="title"&gt;</code> で欄と結び付けたり、<code>#title</code> のリンクでその場所へ飛んだりできます。同じ <code>id</code> を 2 つ付けてはいけません。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5227,8 +5274,29 @@ help: provide the argument
 <li><strong><code>.prepare()</code></strong>（JavaScript・TypeScript）: Node.js の SQLite（<code>node:sqlite</code>）で、SQL の文を用意するメソッド。<code>.get()</code>・<code>.all()</code> で結果を受け取ります。</li>
 <li><strong><code>.startsWith()</code></strong>（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば <code>true</code> を返すメソッド（Rust の <code>starts_with</code>）。</li>
 <li><strong><code>??</code></strong>（JavaScript・TypeScript）: <code>a ?? b</code> は、<code>a</code> が <code>null</code> か <code>undefined</code>（値が無い）なら <code>b</code> を使う、という書き方です。</li>
-<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</li>
+<li><strong><code>=&gt;</code></strong>（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; `…${path}`</code> は「<code>path</code> を受け取って文字列を返す関数」。</li>
 <li><strong><code>...</code></strong>（JavaScript・TypeScript）: スプレッド構文。<code>[...a, x]</code> は配列 <code>a</code> の中身を広げて新しい配列を作り、<code>{ ...obj, k: v }</code> はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。</li>
+<li><strong><code>//</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript では、<code>//</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>`${…}`</code></strong>（JavaScript・TypeScript）: <code>`…`</code>（バッククォートで囲んだ文字。テンプレート文字列）の中の <code>${ }</code> には、値や式を入れられます。<code>`エラー ${res.status}`</code> は、<code>res.status</code> が 404 なら <code>エラー 404</code> になります。改行も、そのまま書けます。</li>
+<li><strong><code>/…/</code></strong>（JavaScript・TypeScript）: JavaScript の <code>/…/</code> は、正規表現（文字の形を表す書き方）をそのまま書く形です。<code>/\d+/</code> は「数字が 1 つ以上」。<code>.match(/…/)</code>・<code>.test(…)</code>・<code>.split(/…/)</code> などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>(?=…)</code></strong>（正規表現）: 正規表現の <code>(?= )</code> は「この後ろに、こういう形が続く時だけ」、<code>(?! )</code> は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。<code>^(?!api/|admin/).*$</code> は「<code>api/</code> や <code>admin/</code> で始まらない物、全部」。中の文字は、合わせた文字には入りません。</li>
+<li><strong><code>\s</code></strong>（正規表現）: 正規表現の <code>\s</code> は、「空白 1 つ」（スペース・タブ・改行など）を表します。<code>\s*</code> は「空白が 0 個以上」。</li>
+<li><strong><code>*</code></strong>（正規表現）: 正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</li>
+<li><strong><code>条件 ? A : B</code></strong>（JavaScript・TypeScript）: <code>条件 ? A : B</code> は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。<code>user.isAdmin ? "管理者" : "一般"</code>。<code>if</code> とちがい、値を返すので、そのまま変数や表示に使えます。</li>
+<li><strong><code>const [ … ] =</code></strong>（JavaScript・TypeScript）: <code>const [a, b] = 並び;</code> は、並びの 0 番目を <code>a</code> に、1 番目を <code>b</code> に取り出す書き方です（分割代入）。React の <code>const [count, setCount] = useState(0);</code> もこれで、「今の値」と「値を変える関数」の 2 つを受け取っています。</li>
+<li><strong><code>++</code></strong>（JavaScript・TypeScript）: <code>n++</code> は、<code>n</code> を 1 増やします（<code>n += 1</code> と同じ）。<code>nextIp++</code> のように式の中で使うと、「今の値を使ってから、1 増やす」になります。</li>
+<li><strong><code>DatabaseSync</code></strong>（Node.js）: <code>DatabaseSync</code> は、Node.js に付いている SQLite の部品（<code>node:sqlite</code>）で、データベースのファイルを開く型です。</li>
+<li><strong><code>Request</code></strong>（JavaScript・TypeScript）: <code>Request</code> は、HTTP の要求（どこへ・何を）を表す、Web の決まりの型です。<code>new Request(URL, { method: "POST", … })</code> で作ります。</li>
+<li><strong><code>Math</code></strong>（JavaScript・TypeScript）: <code>Math</code> は、計算の関数が集まった物です。<code>Math.round(3.6)</code> は四捨五入で <code>4</code>、<code>Math.max(1, 5)</code> は大きい方の <code>5</code> です。</li>
+<li><strong><code>Set</code></strong>（JavaScript・TypeScript）: <code>new Set(並び)</code> は、同じ値を 1 つにまとめた集まりを作ります。<code>new Set(chosen).size !== chosen.length</code> は、「重なりを消すと数が減る」＝「同じ人が 2 回選ばれている」の確かめです。</li>
+<li><strong><code>Date</code></strong>（JavaScript・TypeScript）: <code>new Date(文字)</code> は、日時の値を作ります。<code>.toLocaleString("ja-JP")</code> で、日本の形の日時の文字になります。</li>
+<li><strong><code>rmSync()</code></strong>（Node.js）: <code>rmSync(場所, { force: true })</code> は、Node.js（<code>node:fs</code>）で、ファイルを消す関数です。<code>force: true</code> で、無くてもエラーにしません。</li>
+<li><strong><code>betterAuth()</code></strong>（JavaScript・TypeScript）: <code>betterAuth({ … })</code> は、Better Auth（JavaScript のログインの部品）の設定を受け取って、ログインの仕組みを作る関数です。</li>
+<li><strong><code>getMigrations()</code></strong>（JavaScript・TypeScript）: Better Auth の <code>getMigrations(設定)</code> は、ログインに要る表を、データベースに作るための準備をする関数です。</li>
+<li><strong><code>decodeURIComponent()</code></strong>（JavaScript・TypeScript）: <code>decodeURIComponent("%E5%B1%B1")</code> は、URL やクッキーの中で <code>%XX</code> の形にした文字を、元の文字（山）に戻します。反対は <code>encodeURIComponent()</code> です。</li>
+<li><strong><code>.headers</code></strong>（JavaScript・TypeScript）: <code>fetch</code> の答えの <code>.headers</code> は、返ってきた見出し（ヘッダー）です。<code>.headers.get("set-cookie")</code> で 1 つ読めます。</li>
+<li><strong><code>.value</code></strong>（JavaScript・TypeScript）: <code>.value</code> は、入力欄に今入っている文字や、クッキーなどの値です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -5318,6 +5386,16 @@ sign-out → 200（session: 2 行 → 1 行）
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">post</span><span class="p">(</span><span class="nx">auth</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/sign-up/email&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">email</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;correct horse battery&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;alice&quot;</span><span class="w"> </span><span class="p">}));</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.env</code></strong>（Node.js）: <code>process.env</code> は、Node.js のプログラムが読める環境変数の入れ物です。<code>process.env.NODE_ENV</code> で 1 つ読めます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-131"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### $env:NODE_ENV = &quot;production&quot;; node e1_no_secret.mjs
 作れた
 node:internal/modules/run_main:107
@@ -5356,6 +5434,16 @@ exit=1
 <span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">n</span><span class="si">}</span><span class="sb"> 回目 → </span><span class="si">${</span><span class="nx">result</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>({ 名前 })</code></strong>（JavaScript・TypeScript）: 関数の引数の <code>({ status, label })</code> は、渡されたオブジェクトから、<code>status</code> と <code>label</code> を取り出して受け取る書き方です。React の部品（コンポーネント）が props を受け取る時によく使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-133"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>### node e2_dev_limit.mjs
 1 回目 → 401（INVALID_EMAIL_OR_PASSWORD）
@@ -5579,6 +5667,20 @@ user4 → 429（Too many requests. Please try again later.）
 <span class="n">sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.11.0&quot;</span>
 <span class="n">sha2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.11.1&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>base64</code></strong>（Rust の部品（クレート））: <code>base64</code> は、バイトの並びを、英数字と <code>+</code>・<code>/</code> だけの文字（Base64）に変えたり、戻したりする部品です。</li>
+<li><strong><code>hmac</code></strong>（Rust の部品（クレート））: <code>hmac</code> は、秘密の鍵を使って、データに「改ざんされていない印」（HMAC）を付ける計算の部品です。</li>
+<li><strong><code>rand</code></strong>（Rust の部品（クレート））: <code>rand</code> は、でたらめな数（乱数）を作る部品です。</li>
+<li><strong><code>sha1</code></strong>（Rust の部品（クレート））: <code>sha1</code> は、SHA-1 という古い指紋の計算をする部品です。安全のためではなく、昔の決まり（ほかの仕組みとの比べっこ）に合わせるために使います。</li>
+<li><strong><code>sha2</code></strong>（Rust の部品（クレート））: <code>sha2</code> は、SHA-256 などの、データの指紋（ハッシュ）を計算する部品です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h4 id="9-1-pkcestatenonce">例9-1: PKCE・state・nonce を作る</h4>
 <blockquote>

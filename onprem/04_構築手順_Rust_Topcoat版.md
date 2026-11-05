@@ -193,6 +193,8 @@ w32tm /query /status
 > - **`Get-ComputerInfo -Property`**（PowerShell）: 表示する項目を決めるオプション。`-Property OsName, OsVersion, CsName, CsDomain` は、OS の名前と版、パソコンの名前、ドメインだけ（全部だと、とても長い）。
 > - **`Format-Table`**（PowerShell）: 結果を表の形に整えて表示するコマンド。
 > - **`w32tm`**（コマンド）: Windows の時刻合わせの状態を見る・変えるコマンド。`w32tm /query /status` で、どこと時刻を合わせているか（`Source`）と、最後に合わせた時刻が分かります。時刻がずれると、ログの読み合わせやログインの期限が狂います。
+> - **`w32tm /query`**（コマンド）: `w32tm /query /status` は、パソコンの時計を、どこ（時刻のサーバー）に合わせているか、最後にいつ合わせたかを表示します。
+> - **`w32tm /status`**（コマンド）: `/status` は、`w32tm /query` と一緒に使い、時刻合わせの今の状態を表示する指定です。
 
 <!-- /first-use -->
 
@@ -286,6 +288,7 @@ foreach ($d in $dirs) { New-Item -ItemType Directory -Force -Path $d | Out-Null 
 > - **`New-Item -Force`**（PowerShell）: `-Force` で、同じ名前のファイルがあっても上書きして作ります（無いと、エラーで止まります）。上書きするので、使う時は名前をよく確かめます。
 > - **`New-Item -Path`**（PowerShell）: `-Path 場所` で、作るファイルやフォルダの場所（名前）を指定します。
 > - **`Out-Null`**（PowerShell）: コマンドの結果を、画面に出さずに捨てるコマンド。`… | Out-Null` のように後ろに付けると、表示が出なくなります。
+> - **`@( … )`**（PowerShell）: `@( … )` は「並び（配列）」を作る書き方です。`@("a", "b")` で 2 つの並び、`@()` で空の並び。中のコマンドの結果が 1 つでも、必ず並びとして扱えます。
 
 <!-- /first-use -->
 
@@ -455,6 +458,16 @@ PostgreSQL の Windows 用インストーラーは、**ほかのコンピュー�
 Get-Content D:\pgsql\18\data\pg_hba.conf | Select-String -Pattern "^\s*host"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`\s`**（正規表現）: 正規表現の `\s` は、「空白 1 つ」（スペース・タブ・改行など）を表します。`\s*` は「空白が 0 個以上」。
+> - **`*`**（正規表現）: 正規表現の `*` は、「すぐ前の物が、0 回以上くり返す」を表します。`\s*` は「空白が 0 個以上」、`.*` は「何でも、何文字でも」。
+> - **`^`**（正規表現）: 正規表現の `^` は、「行（文字）の頭」を表します。`^#` は「`#` で始まる」。
+
+<!-- /first-use -->
+
 > **用語:** pg_hba.conf（PostgreSQL の「誰がどこからつないでよいか」の決まりを書いたファイル。hba は host-based authentication）
 
 <!-- -->
@@ -469,6 +482,14 @@ Get-Content D:\pgsql\18\data\pg_hba.conf | Select-String -Pattern "^\s*host"
 $env:Path += ";C:\Program Files\PostgreSQL\18\bin"
 psql --version
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`psql --version`**（psql）: `psql --version` は、psql（PostgreSQL につなぐ道具）の版を表示します。
+
+<!-- /first-use -->
 
 > **用語:** psql（ピーエスキューエル：PostgreSQL に SQL を打ち込む、文字の道具）
 
@@ -518,6 +539,9 @@ REVOKE ALL ON DATABASE webapp_stg FROM PUBLIC;
 > - **`OWNER`**（SQL）: `OWNER ユーザー` で、そのデータベースの持ち主を決めます。持ち主は、中の表を自由に作れます。
 > - **`REVOKE`**（SQL）: 利用者（ロール）から、権限を取り上げる命令（`GRANT` の逆）。`REVOKE ALL ON DATABASE webapp_prod FROM PUBLIC;` は「だれでもつなげる、の決まりを取り上げる」。
 > - **`PUBLIC`**（SQL）: PostgreSQL で「すべての利用者」を表す名前。初めの状態では、だれでもデータベースにつなげるので、`REVOKE … FROM PUBLIC` で閉じます。
+> - **`\l`**（psql）: psql の `\l` は、データベースの一覧を表示する命令です。`\l webapp*` で、`webapp` で始まる物だけにしぼれます。
+> - **`\du`**（psql）: psql の `\du` は、利用者（ロール）の一覧と、その権限を表示する命令です。
+> - **`\q`**（psql）: psql の `\q` は、psql を終わる命令です。
 
 <!-- /first-use -->
 
@@ -584,7 +608,10 @@ topcoat asset bundle --release
 > **▶ ここで初めて出てくるコード**
 >
 > - **`cargo build`**（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は `target\debug\` に入ります。`cargo build --release` だと、速く動く本番用の物が `target\release\` にできます。
+> - **`cargo build --release`**（cargo のコマンド）: `cargo build --release` は、時間をかけて最適化した、速い本番用の実行ファイルを作ります（動かしはしません）。できた物は `target\release` に置かれます。
+> - **`cargo build --locked`**（cargo のコマンド）: `--locked` は、`Cargo.lock` に書いてある部品の版のまま作り、`Cargo.lock` を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。
 > - **`topcoat`**（Topcoat）: Topcoat の道具のコマンド（`cargo install topcoat-cli` で入る）。`topcoat dev`（コードを直すと自動で作り直して読み直す開発用の起動）・`topcoat asset bundle`（CSS などの束を作る）などがあります。
+> - **`topcoat asset bundle --release`**（Topcoat）: `topcoat asset bundle --release` は、CSS などのアセットの束を、本番用（`target\release\assets`）に作ります。`cargo build --release` と組にして使います。
 
 <!-- /first-use -->
 
@@ -608,6 +635,17 @@ Rust で作った Windows の実行ファイルは、そのままだと、**Visu
 [target.x86_64-pc-windows-msvc]
 rustflags = ["-C", "target-feature=+crt-static"]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`#`**（設定ファイル（TOML））: TOML（`Cargo.toml` などの設定ファイルの書き方）では、`#` から行の終わりまでがコメントです。
+> - **`[target.…]`**（設定ファイル（TOML））: `.cargo/config.toml` の `[target.x86_64-pc-windows-msvc]` は、「その種類のパソコン向けに作る時だけの設定」の見出しです。
+> - **`rustflags =`**（設定ファイル（TOML））: `rustflags = ["-C", "target-feature=+crt-static"]` は、Rust のコンパイラーに渡す追加の指定です。`+crt-static` は、Windows の実行ファイルに、C の部品（ランタイム）を中に入れる指定で、Visual C++ の部品が入っていないサーバーでも動くようになります。
+> - **`[ … ]`**（設定ファイル（TOML））: `["rustfmt", "clippy"]` のように `[ ]` の中に `,` で区切って並べると、いくつもの値の並び（配列）になります。
+
+<!-- /first-use -->
 
 > **用語:** DLL（ディーエルエル：ほかのプログラムが使う部品を入れたファイル。実行ファイルとは別に、OS の中に入っている必要がある）
 
@@ -642,6 +680,7 @@ Get-FileHash "dist\webapp-$ver.zip" -Algorithm SHA256
 > - **`Compress-Archive -Path`**（PowerShell）: zip に入れる物を決めるオプション。`"$out\*"` は、そのフォルダの中身全部。
 > - **`Compress-Archive -DestinationPath`**（PowerShell）: 作る zip のファイルの場所と名前を決めるオプション。
 > - **`Compress-Archive -Force`**（PowerShell）: 同じ名前の zip がもうあれば、上書きするオプション。
+> - **`*`**（PowerShell）: `'127*'` や `*.log` の `*` は、「何文字でも、何でも合う」という印（ワイルドカード）です。`-like '127*'` は「127 で始まる」、`-Filter *.log` は「名前が .log で終わる物」。1 文字だけなら `?` です。
 
 <!-- /first-use -->
 
@@ -788,6 +827,16 @@ impl TokenStore for HttpCookieTokenStore {
 > - **`Ok`**（エラー処理）: `Result` の「うまくいった」の方。`Ok(値)` の形で結果を包みます。`Ok(())` は「うまくいった。返す値は特に無い（`()` は空っぽの値）」という意味で、`Result<()>` を返す関数の最後によく書きます。
 > - **`None`**（Option）: `Option` の「値が無い」側。`Some(値)`（値がある）か `None`（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず `Option` で表し、`match` などで両方の場合を書きます。
 > - **`?`**（エラー処理）: `Result` や `Option` の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。`let text = fs::read_to_string("a.txt")?;` のように使います。`?` を使える関数は、戻り値が `Result`（または `Option`）の関数だけです。
+> - **`//!`**（コメント）: `//!` で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。`///`（すぐ下の関数や型の説明）と使い分けます。
+> - **`///`**（コメント）: `///` で始まるコメントは、すぐ下の関数や型の「説明書」（ドキュメントコメント）です。`cargo doc` で説明のページになり、VS Code では、名前にマウスを乗せると表示されます。ふつうのコメント（`//`）とちがい、何の説明かが決まっています。
+> - **`str`**（文字列）: `&str` の `str` は「文字列の中身」を表す型で、ふつうは `&str`（借りた文字列）の形で使います。`"こんにちは"` のように `"` で囲んで直接書いた文字列は `&str` です。自分で持って、あとから書き足せる文字列は `String` です。
+> - **`&`**（所有権と借用）: 値の前の `&` は「貸す（借用）」の印です。`fs::write(&relative, …)` は、`relative` を手放さずに、見せるだけ貸します。型に付けた `&str`・`&Vec<i32>` は「借りた値」の型です。
+> - **`let … else`**（Option）: `let Some(x) = 値 else { return …; };` は、「`Some` の形なら中身を `x` に入れて先へ進み、そうでなければ `else` の中で抜ける」という書き方です。`else` の中は、必ず `return` や `continue` などで抜けます。思ったとおりでない時に早めに抜けて、残りの処理を平らに書けます。
+> - **`->`**（関数）: `fn main() -> std::io::Result<()>` の `->` は、「この関数が返す値の型」を書く印です。`fn add(a: i32, b: i32) -> i32` なら「`i32` を返す」。`->` が無い関数は、何も返しません（`()` という「空」を返します）。
+> - **`::`**（モジュール）: `std::env` の `::` は、「〜の中の」を表す区切りです。`std::env::args()` は「標準ライブラリ（`std`）の中の `env` の中の `args` 関数」という意味です。型の関数（`String::new()`）や、enum の種類（`Ordering::Less`）を指す時にも使います。
+> - **`impl トレイト`**（型とメソッド）: `-> Result<impl View>` の `impl View` は、「`View` という決まり（トレイト）を満たす、何かの型」という意味です。本当の型の名前は長くて書けないので、「`View` として使える物を返す」とだけ書きます。引数の `x: impl Display` なら、「表示できる物なら何でも受け取る」です。
+> - **`<T>`**（型とメソッド）: `fn longest<'a>(…)` や `struct Wrapper<T>` の、名前のすぐ後ろの `< >` は、「型（やライフタイム）を、使う時に決める」ための入れ物（ジェネリクス）です。`T` は「何かの型」の仮の名前で、使う時に `i32` や `String` などに決まります。
+> - **`'a`**（所有権と借用）: `&'a str` の `'a` は、「借りている期間」（ライフタイム）に付けた名前です。`fn longest<'a>(x: &'a str, y: &'a str) -> &'a str` は、「返す参照は、`x` と `y` の両方が有効な間だけ使える」という約束を表します。
 
 <!-- /first-use -->
 
@@ -816,6 +865,7 @@ impl TokenStore for HttpCookieTokenStore {
 > - **`SessionConfig::builder()`**（Topcoat）: Topcoat のセッションの設定を、少しずつ決めて組み立て始める関数。`.token_store(…)`・`.lifetime(…)` をつなげて、最後に `.build()` で出来上がりです。
 > - **`std::time::Duration::from_secs()`**（時間）: 秒数ぶんの長さ（`Duration`）を作る関数。`Duration::from_secs(5)` は 5 秒です。
 > - **`SessionConfig`**（Topcoat）: Topcoat のセッションの設定（クッキーの名前・期限など）の型。
+> - **`//`**（コメント）: `//` から行の終わりまでは「コメント」（人が読むためのメモ）で、プログラムとしては無視されます。`// OS の種類を表示する` のように、何をしているかを日本語で書いておくと、あとで読み返す時に助かります。
 
 <!-- /first-use -->
 
@@ -925,6 +975,34 @@ Get-ChildItem D:\webapp\prod\app
   </log>
 </service>
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<!-- -->`**（設定ファイル（XML））: XML では、`<!--` から `-->` までがコメントです。
+> - **`<service>`**（設定ファイル（XML））: WinSW（ふつうのプログラムを Windows のサービスにする道具）の設定で、いちばん外側の `<service>` の中に、サービスの設定を全部書きます。
+> - **`<id>`**（設定ファイル（XML））: `<id>webapp-prod</id>` は、サービスの名前です。`Start-Service webapp-prod` のように、コマンドで使います。
+> - **`<name>`**（設定ファイル（XML））: `<name>` は、サービスの一覧の画面に出る、人が読む名前です。
+> - **`<description>`**（設定ファイル（XML））: `<description>` は、サービスの説明です。
+> - **`<executable>`**（設定ファイル（XML））: `<executable>` は、サービスとして動かすプログラム（`.exe`）の場所です。
+> - **`<workingdirectory>`**（設定ファイル（XML））: `<workingdirectory>` は、プログラムを動かす時の「今いるフォルダ」です。プログラムが、相対の場所でファイルを探すので、アプリのフォルダにします。
+> - **`<env>`**（設定ファイル（XML））: `<env name="PORT" value="8080" />` は、プログラムに渡す環境変数を 1 つ書くタグです。`/>` で終わるタグは、中身が無く、閉じるタグも要りません。
+> - **`name=`**（設定ファイル（XML））: `<env name="…">` の `name` は、環境変数の名前です（IIS の設定では、決まりの名前）。
+> - **`value=`**（設定ファイル（XML））: `<env … value="…">` の `value` は、環境変数の値です。
+> - **`<startmode>`**（設定ファイル（XML））: `<startmode>Automatic</startmode>` は、パソコンの起動と一緒に、サービスも自動で動かす設定です。
+> - **`<depend>`**（設定ファイル（XML））: `<depend>postgresql-x64-18</depend>` は、「このサービスより先に動かしておくサービス」です。データベースが動いてから、アプリを動かします。
+> - **`<onfailure>`**（設定ファイル（XML））: `<onfailure action="restart" delay="10 sec" />` は、プログラムが落ちた時の動きです。1 回目は 10 秒後、2 回目は 30 秒後…のように、何回か書けます。
+> - **`action=`**（設定ファイル（XML））: `action="restart"` は、落ちた時に、動かし直す指定です。IIS の `<action>` の `type` とは別の物です。
+> - **`delay=`**（設定ファイル（XML））: `delay="10 sec"` は、動かし直すまでに待つ時間です。
+> - **`<stoptimeout>`**（設定ファイル（XML））: `<stoptimeout>15 sec</stoptimeout>` は、サービスを止める時に、プログラムが自分で終わるのを待つ時間です。過ぎたら、強制的に止めます。
+> - **`<logpath>`**（設定ファイル（XML））: `<logpath>` は、サービスのログ（プログラムが画面に出した文）を書くフォルダです。
+> - **`<log>`**（設定ファイル（XML））: `<log mode="roll-by-size">` は、ログの残し方です。`roll-by-size` は、決めた大きさになったら、新しいファイルに切りかえる方式です。
+> - **`mode=`**（設定ファイル（XML））: `mode="roll-by-size"` は、ログを大きさで区切る指定です。
+> - **`<sizeThreshold>`**（設定ファイル（XML））: `<sizeThreshold>10240</sizeThreshold>` は、1 つのログのファイルの大きさの上限（KB。10240 は 10MB）です。
+> - **`<keepFiles>`**（設定ファイル（XML））: `<keepFiles>8</keepFiles>` は、残しておく古いログのファイルの数です。それより古い物は消えるので、ディスクがいっぱいになりません。
+
+<!-- /first-use -->
 
 | 設定 | 意味 | 本番の値（例） | 検証の値（例） |
 |---|---|---|---|
@@ -1204,6 +1282,7 @@ Get-IISSite
 > - **`New-IISSite -PhysicalPath`**（PowerShell）: サイトの中身（設定ファイル `web.config` など）を置くフォルダを決めるオプション。
 > - **`New-IISSite -BindingInformation`**（PowerShell）: どの住所・ポート・名前で来た通信を、このサイトが受け取るかを決めるオプション。`"*:80:webapp.example.local"` は「どの住所でも・80 番で・名前が webapp.example.local の物」。同じ 80 番でも、名前で検証用と本番用を振り分けられます。
 > - **`Get-IISSite`**（PowerShell）: IIS のサイトの一覧と、動いているか・受け取る住所（バインド）を表示するコマンド。
+> - **`$false`**（PowerShell）: `$false` は「いいえ（偽）」を表す値です。`-Confirm:$false` は、「本当にしますか？」の確認を出さずに進める指定です。
 
 <!-- /first-use -->
 
@@ -1251,6 +1330,29 @@ icacls D:\webapp\stg\iis  /grant "*S-1-5-32-568:(OI)(CI)RX"
   </system.webServer>
 </configuration>
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<?xml … ?>`**（設定ファイル（XML））: `<?xml version="1.0" encoding="UTF-8"?>` は、「これは XML のファイルで、文字の符号は UTF-8」という宣言です。ファイルのいちばん最初に書きます。
+> - **`<configuration>`**（設定ファイル（XML））: IIS の設定ファイル（`web.config`）の、いちばん外側のタグです。
+> - **`<system.webServer>`**（設定ファイル（XML））: `<system.webServer>` の中に、IIS（Windows の Web サーバー）の設定を書きます。
+> - **`<rewrite>`**（設定ファイル（XML））: `<rewrite>` の中に、来た要求の行き先を書きかえる決まり（URL Rewrite）を書きます。
+> - **`<rules>`**（設定ファイル（XML））: `<rules>` の中に、決まり（`<rule>`）を、上から順に並べます。
+> - **`<rule>`**（設定ファイル（XML））: `<rule name="…">` は、書きかえの決まり 1 つです。`<match>`（どの要求に）と `<action>`（どうするか）を中に書きます。
+> - **`stopProcessing=`**（設定ファイル（XML））: `stopProcessing="true"` は、「この決まりに合ったら、下の決まりは調べない」という指定です。
+> - **`<match>`**（設定ファイル（XML））: `<match url="(.*)" />` は、「どの URL に合わせるか」を正規表現で書くタグです。`(.*)` は「全部」で、`( )` の中に合った部分は、あとで `{R:1}` として使えます。
+> - **`url=`**（設定ファイル（XML））: `<match url="…">` の `url` は合わせる URL の形（正規表現）、`<action url="…">` の `url` は、取り次ぐ先や移す先の URL です。
+> - **`<action>`**（設定ファイル（XML））: `<action type="Rewrite" url="http://127.0.0.1:8080/{R:1}" />` は、合った要求をどうするかです。`Rewrite` は、利用者には見せずに、裏で別の場所（ここではアプリ）へ取り次ぎます。`Redirect` は、利用者のブラウザーに、別の URL へ行き直させます。
+> - **`type=`**（設定ファイル（XML））: `<action type="Rewrite">` の `type` は、どう処理するか（`Rewrite`＝裏で取り次ぐ・`Redirect`＝行き直させる）です。
+> - **`<security>`**（設定ファイル（XML））: `<security>` の中に、IIS の守りの設定を書きます。
+> - **`<requestFiltering>`**（設定ファイル（XML））: `<requestFiltering>` は、受け付ける要求の決まり（大きさ・種類）の設定です。
+> - **`<requestLimits>`**（設定ファイル（XML））: `<requestLimits maxAllowedContentLength="104857600" />` は、1 回に受け付ける要求の大きさの上限です。
+> - **`maxAllowedContentLength=`**（設定ファイル（XML））: `maxAllowedContentLength` は、1 回に送れる中身の大きさの上限（バイト）です。`104857600` は 100MB。これより大きいファイルは、アプリに届く前に、IIS が断ります。
+> - **`{R:1}`**（設定ファイル（XML））: `{R:1}` は、`<match url="(.*)">` の `( )` の中に合った部分（1 番目）が入る場所です。`/notes/3` で来たら、`http://127.0.0.1:8080/notes/3` に取り次がれます。
+
+<!-- /first-use -->
 
 検証の `D:\webapp\stg\iis\web.config` は、ルールの名前を `to-webapp-stg` に、行き先を `http://127.0.0.1:8081/{R:1}` にします。
 
@@ -1321,6 +1423,8 @@ Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -in 80, 443 } | Get-NetF
 >
 > - **`Get-NetFirewallPortFilter`**（PowerShell）: ファイアウォールの決まりの、ポート番号の条件の一覧を表示するコマンド。`| Get-NetFirewallRule` につなぐと、そのポートを使う決まりが分かります。
 > - **`-in`**（PowerShell）: 左の値が、右の並びの中にあるかの比べ方。`$_.LocalPort -in 80, 443` は「80 か 443 か」。
+> - **`{ … }`**（PowerShell）: `Where-Object { … }` や `ForEach-Object { … }` の `{ }` は「スクリプトブロック」（あとで動かす、命令のかたまり）です。流れてきた 1 つずつに対して、中の命令が動き、`$_` がその 1 つを表します。
+> - **`.LocalPort`**（PowerShell）: `.LocalPort` は、待ち受けやつながりの、このパソコン側のポート番号です。
 
 <!-- /first-use -->
 
@@ -1344,6 +1448,7 @@ Get-NetFirewallPortFilter | Where-Object { $_.LocalPort -in 80, 443 } | Get-NetF
 >
 > - **`-notlike`**（PowerShell）: `-like` の逆で、ワイルドカードに合わないかの比べ方。`$_.DisplayName -notlike "webapp*"` は「webapp で始まらないか」。
 > - **`Disable-NetFirewallRule`**（PowerShell）: ファイアウォールの決まりを、消さずに使わない状態にするコマンド。あとで `Enable-NetFirewallRule` で戻せます。
+> - **`.DisplayName`**（PowerShell）: `.DisplayName` は、画面に出る名前です（サービスやファイアウォールの決まりの、人が読む名前）。
 
 <!-- /first-use -->
 
@@ -1589,6 +1694,15 @@ catch {
 > - **`Stop-Transcript`**（PowerShell）: `Start-Transcript` で始めた記録を終えるコマンド。
 > - **`exit`**（PowerShell）: スクリプトを、決めた終了コードで終えるコマンド。`exit $code` は、manage.py の終了コードをそのまま返します。
 > - **`catch`**（PowerShell）: `try { … } catch { … }` の `catch` の所は、`try` の中でエラーが起きた時だけ動きます。起きたエラーは `$_` で受け取れます（`$_.Exception.Message` で説明の文）。
+> - **`日時の書式`**（日時の書式）: `Get-Date -Format "yyyyMMdd_HHmm"` の `"…"` は、日時を文字にする時の形（書式）です。`yyyy`（年）・`MM`（月）・`dd`（日）・`HH`（時）・`mm`（分）・`ss`（秒）を並べ、ほかの文字（`_`・`-`）はそのまま入ります。2026 年 11 月 5 日 9 時 3 分なら `20261105_0903`。
+> - **`yyyy`**（日時の書式）: 日時の書式の `yyyy` は、4 けたの年（`2026`）です。
+> - **`MM`**（日時の書式）: 日時の書式の `MM`（大文字）は、2 けたの月（`01`〜`12`）です。小文字の `mm` は分なので、取り違えに注意します。
+> - **`dd`**（日時の書式）: 日時の書式の `dd` は、2 けたの日（`01`〜`31`）です。
+> - **`HH`**（日時の書式）: 日時の書式の `HH`（大文字）は、24 時間の形の時（`00`〜`23`）です。小文字の `hh` は 12 時間の形です。
+> - **`mm`**（日時の書式）: 日時の書式の `mm`（小文字）は、2 けたの分（`00`〜`59`）です。
+> - **`$ErrorActionPreference`**（PowerShell）: `$ErrorActionPreference = "Stop"` は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（`.exe` のコマンドの失敗は止まらないので、`$LASTEXITCODE` も調べます）。
+> - **`$LASTEXITCODE`**（PowerShell）: `$LASTEXITCODE` は、最後に動かしたプログラム（`cargo`・`git`・`psql` など、`.exe` のコマンド）の「終了コード」が入る、特別な変数です。`0` なら成功、`0` 以外なら失敗です。`if ($LASTEXITCODE -ne 0) { … }` で、失敗した時の処理を書けます。
+> - **`.LastWriteTime`**（PowerShell）: `.LastWriteTime` は、ファイルを最後に書きかえた日時です。`Where-Object { $_.LastWriteTime -lt $limit }` で、古いファイルだけを選べます。
 
 <!-- /first-use -->
 
@@ -1685,6 +1799,16 @@ psql -h 127.0.0.1 -U postgres -d webapp_restore_test -c "\dt"
 psql -h 127.0.0.1 -U postgres -c "DROP DATABASE webapp_restore_test;"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pg_restore --no-owner`**（psql）: `--no-owner` は、表の持ち主を、バックアップを取った時の利用者に戻さず、戻している利用者にする指定です。別のサーバーや、別の名前の利用者で試しに戻す時に使います。
+> - **`pg_restore --no-privileges`**（psql）: `--no-privileges` は、表の権限（`GRANT`）を戻さない指定です。
+> - **`.FullName`**（PowerShell）: `Get-ChildItem` の結果の `.FullName` は、ファイルやフォルダの、`C:\` から始まる場所の全部です（`.Name` は名前だけ）。
+
+<!-- /first-use -->
+
 **確かめること:** `pg_restore` がエラー無しで終わり、テーブルの一覧と、件数（`SELECT count(*) FROM テーブル名;`）が本番と同じくらいになっている。
 
 > **用語:** pg_restore（ピージーリストア：`pg_dump -Fc` で書き出したファイルを、データベースに戻す道具）
@@ -1721,6 +1845,14 @@ Register-ScheduledTask -TaskPath "\webapp\" -TaskName "iis-log-cleanup" -Action 
   -Trigger (New-ScheduledTaskTrigger -Daily -At "03:00") `
   -Principal (New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest)
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`` `" ``**（PowerShell）: `"…"` の中に `"` そのものを入れる時は、`` `" `` と書きます（`""` と 2 つ重ねても同じです）。
+
+<!-- /first-use -->
 
 > **用語:** アクセスログ（IIS が、来たお願いを 1 件 1 行で書く記録。いつ・どこから・どの URL に・どんな結果（ステータスコード）だったか）
 
@@ -1809,6 +1941,15 @@ $env:PGPASSFILE = "D:\webapp\secrets\pgpass.conf"
 pg_dump -h 127.0.0.1 -U webapp_prod_app -d webapp_prod -Fc -f "D:\webapp\backup\db\before_1.1.0_$(Get-Date -Format yyyyMMdd_HHmm).dump"
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pg_dump -d`**（psql）: `-d webapp_prod` は、バックアップを取るデータベースです。
+> - **`$( … )`**（PowerShell）: `"…$($t.Port)…"` の `$( )` は、「中の式やコマンドの結果を、文字の中に入れる」書き方です。`"$x.Name"` のように書くと `$x` だけが置きかわってしまうので、`.` の付いた物や計算は `$( )` で囲みます。
+
+<!-- /first-use -->
+
 - アプリが止まっている間、社員のブラウザには、IIS の `502` のエラーが出ます（アプリから返事が無いため）。
 
 **③ 入れ替える**
@@ -1845,6 +1986,15 @@ pg_restore -h 127.0.0.1 -U webapp_prod_app -d webapp_prod --clean --if-exists "D
 
 Start-Service webapp-prod
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`pg_restore --clean`**（psql）: `--clean` は、戻す前に、同じ名前の表などを消してから戻す指定です。今のデータが消えるので、戻す先をよく確かめます。
+> - **`pg_restore --if-exists`**（psql）: `--if-exists` は、`--clean` で消す時に、「あれば消す」（無くてもエラーにしない）にする指定です。
+
+<!-- /first-use -->
 
 - データベースを控えに戻すと、②のあとに入った依頼や承認は消えます。②から④の間はアプリを止めているので、ふつうは消える物はありません。**本番を再開したあとで、時間がたってから戻すときは、消える物が出る**ので、関係者と相談してから戻します。
 - `app-failed-1.1.0` は、原因を調べるために、しばらく残します。

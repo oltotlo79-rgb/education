@@ -591,6 +591,18 @@ li, tr { page-break-inside: avoid; }
     <span class="no">[Security.Principal.WindowsBuiltInRole]</span><span class="p">::</span><span class="n">Administrator</span><span class="p">)</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[Security.Principal.WindowsPrincipal]</code></strong>（PowerShell）: <code>[Security.Principal.WindowsPrincipal]</code> は、「今の利用者が、どのグループにいるか」を調べるための .NET の型です。<code>.IsInRole(…)</code> で、管理者として動いているかを確かめられます。</li>
+<li><strong><code>[Security.Principal.WindowsBuiltInRole]</code></strong>（PowerShell）: <code>[Security.Principal.WindowsBuiltInRole]::Administrator</code> は、「Windows の管理者のグループ」を表す値です。</li>
+<li><strong><code>[型]::名前</code></strong>（PowerShell）: <code>[System.IO.File]::ReadAllBytes($path)</code> のように、<code>[型の名前]::名前</code> と書くと、.NET（PowerShell の土台）の型に付いている関数や値を、直接使えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>確かめること:</strong> <code>True</code> と出ること。<code>False</code> なら、一度閉じて、「管理者」の方で開き直します。インストール・サービス・ファイアウォール・アクセス許可の変更は、管理者でないと「<strong>アクセスが拒否されました</strong>」になります。</p>
 <blockquote>
 <p><strong>PowerShell の版:</strong> Windows Server に最初から入っているのは <strong>Windows PowerShell 5.1</strong> です。別に入れる「PowerShell 7」もありますが、この資料と手順書は、すべて 5.1 で動くように書いています。</p>
@@ -743,6 +755,7 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>-eq</code></strong>（PowerShell）: PowerShell の「等しい」の比べ方（equal）。<code>$LASTEXITCODE -eq 0</code> は「終わった時の番号が 0（成功）か」。PowerShell では <code>==</code> ではなく <code>-eq</code> と書きます。大文字・小文字は区別しません（<code>"ABC" -eq "abc"</code> も <code>True</code>）。</li>
 <li><strong><code>Where-Object</code></strong>（PowerShell）: <code>|</code> で流れてきた物のうち、条件に合う物だけを残すコマンド。<code>{ }</code> の中の <code>$_</code> が「今の 1 つ」です。<code>Where-Object { $_.Length -gt 1000 }</code> のように使います。</li>
+<li><strong><code>'…'</code></strong>（PowerShell）: <code>'…'</code>（シングルクォート）で囲んだ文字は、書いたとおりの文字で、中の <code>$</code> や <code>`</code> は特別な意味になりません。正規表現（<code>'^\s*#'</code>）や、そのまま渡したい文字に使います。中に <code>'</code> を入れる時は <code>''</code> と 2 つ書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -824,6 +837,18 @@ li, tr { page-break-inside: avoid; }
 <span class="c"># 環境変数は $env: を付けて読む</span>
 <span class="nv">$env:COMPUTERNAME</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>"…$変数…"</code></strong>（PowerShell）: <code>"…"</code>（ダブルクォート）で囲んだ文字の中の <code>$名前</code> は、変数の中身に置きかわります。<code>"こんにちは、$name さん"</code> → <code>こんにちは、太郎 さん</code>。そのまま <code>$</code> を出したい時は、<code>'…'</code>（シングルクォート）で囲みます。</li>
+<li><strong><code>$名前</code></strong>（PowerShell）: <code>$os = …</code> のように <code>$</code> で始まる名前は「変数」（値に付けた名前）です。<code>=</code> の右の結果を覚えておき、あとで <code>$os</code> と書けば使えます。名前の大文字・小文字は区別しません。</li>
+<li><strong><code>$env:名前</code></strong>（PowerShell）: <code>$env:GREETING</code> のように <code>$env:</code> を付けた名前は「環境変数」（プログラムに外から渡す設定）です。<code>$env:GREETING = "おはよう"</code> で設定すると、その PowerShell の窓から動かすプログラム（<code>cargo run</code> など）が読めます。窓を閉じると消えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> <code>"..."</code> と <code>'...'</code> で結果が変わること。パスワードなど <code>$</code> を含む文字を書くときは、<code>'...'</code> で囲まないと、<code>$</code> の後ろが変数として消えてしまいます。</p>
 <h3 id="36">3.6 ファイルとフォルダの操作</h3>
@@ -928,6 +953,12 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Get-ChildItem -ErrorAction</code></strong>（PowerShell）: エラーが起きた時の動きを決めるオプション。<code>-ErrorAction SilentlyContinue</code> は、読めないフォルダ（権限が無い所）があっても、エラーを出さずに続けます。</li>
 <li><strong><code>Sort-Object -Descending</code></strong>（PowerShell）: 大きい順（新しい順）に並べるオプション。<code>Sort-Object Length -Descending</code> は、大きいファイルから順に並べます。</li>
 <li><strong><code>Select-Object -First</code></strong>（PowerShell）: <code>-First 1</code> で、結果の最初の 1 つだけを取り出します。<code>-Last 3</code> なら最後の 3 つです。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>$_</code></strong>（PowerShell）: <code>$_</code> は、<code>|</code>（パイプ）で流れてきた物の「今の 1 つ」を表す、特別な変数です。<code>Where-Object { $_.Name -like 'a*' }</code> は、「流れてきた 1 つずつの <code>Name</code> が a で始まる物だけ」。<code>catch { … }</code> の中では、起きたエラーを表します。</li>
+<li><strong><code>[int]</code></strong>（PowerShell）: <code>[int]</code> は「整数」という型です。<code>[int]($_.Length / 1MB)</code> のように値の前に書くと、整数に変えます（小数は四捨五入に近い形で丸めます）。</li>
+<li><strong><code>;</code></strong>（PowerShell）: <code>;</code> は、1 行にコマンドを 2 つ以上書く時の区切りです。<code>cargo fmt --check; $LASTEXITCODE</code> は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。</li>
+<li><strong><code>@{ … }</code></strong>（PowerShell）: <code>@{ キー = 値; … }</code> は「表（ハッシュテーブル）」を作る書き方です。<code>$h = @{ Name = "web"; Port = 8080 }</code> なら <code>$h.Port</code> で <code>8080</code>。<code>Select-Object</code> の中の <code>@{ Name = 'MB'; Expression = { … } }</code> は、「計算して作る列」の決まった形です。</li>
+<li><strong><code>.Length</code></strong>（PowerShell）: <code>$_.Length</code> は、ファイルなら大きさ（バイト）、文字なら文字数です。<code>/ 1MB</code> で MB に直せます（<code>1MB</code> は PowerShell が知っている 1048576 のことです）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -950,6 +981,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.\backup.ps1</code></strong>（PowerShell）: 今いるフォルダの <code>backup.ps1</code>（この資料で作る、データベースとファイルの控えを取るスクリプト）を動かす書き方。PowerShell では、今いるフォルダのスクリプトも <code>.\</code> を付けないと動きません（うっかり同じ名前の物を動かさないための決まり）。</li>
+<li><strong><code>.\</code></strong>（PowerShell）: <code>.\target\debug\practice.exe</code> の <code>.\</code> は、「今いるフォルダの中の」という意味です。PowerShell は、安全のため、今いるフォルダのプログラムでも <code>.\</code> を付けないと動かしません。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1218,6 +1250,9 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>icacls</code></strong>（コマンド）: ファイルやフォルダの権限（だれが読める・書けるか）を表示する・変えるコマンド。<code>(R)</code> は読む、<code>(M)</code> は変える、<code>(F)</code> は全部できる、<code>(OI)(CI)</code> は中のファイルとフォルダにも引き継ぐ、という意味です。</li>
+<li><strong><code>icacls /grant</code></strong>（コマンド）: <code>icacls フォルダ /grant "名前:(OI)(CI)M"</code> は、利用者やグループに権限を与えます。<code>M</code> は変更（読む・書く・消す）、<code>RX</code> は読んで実行、<code>F</code> は全部。<code>(OI)(CI)</code> は、中のファイルとフォルダにも同じ権限を引き継ぐ印です。</li>
+<li><strong><code>icacls /inheritance</code></strong>（コマンド）: <code>/inheritance:r</code> は、上のフォルダから引き継いだ権限を外す指定です。<code>/inheritance:e</code> なら引き継ぎを戻します。権限を、自分で決めた物だけにする時に使います。</li>
+<li><strong><code>icacls /remove</code></strong>（コマンド）: <code>/remove 名前</code> は、その利用者やグループの権限を外します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1563,6 +1598,13 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>-f</code></strong>（PowerShell）: 書式（形）を決めて文字列を作る演算子。<code>"{0,-10} {1}" -f $name, $hash</code> は、<code>{0}</code> に 1 つ目、<code>{1}</code> に 2 つ目を入れます（<code>,-10</code> は「10 文字分の幅で左に寄せる」）。</li>
 <li><strong><code>Get-Volume</code></strong>（PowerShell）: ディスク（ボリューム）の一覧と、大きさ・空いている量を表示するコマンド。</li>
 <li><strong><code>Get-NetTCPConnection -LocalPort</code></strong>（PowerShell）: <code>-LocalPort 8080</code> で、このパソコン側のポート番号が 8080 の物だけに絞ります。</li>
+<li><strong><code>"{0}" -f 値</code></strong>（PowerShell）: <code>"{0} と {1}" -f $a, $b</code> の <code>-f</code> は、左の文字の <code>{0}</code>・<code>{1}</code> に、右に並べた値を、0 番目から順に入れる書き方です（書式の演算子）。<code>"全体 {0:N1} GB" -f 15.6</code> → <code>全体 15.6 GB</code>。</li>
+<li><strong><code>{0:N桁}</code></strong>（PowerShell）: <code>{0:N1}</code> の <code>N1</code> は、「3 けたごとに <code>,</code> を入れ、小数点以下を 1 けた」で表示する指定です。<code>N0</code> なら小数なし（<code>1,234</code>）。</li>
+<li><strong><code>.WorkingSet64</code></strong>（PowerShell）: <code>Get-Process</code> の結果の <code>.WorkingSet64</code> は、そのプログラムが今使っているメモリの量（バイト）です。</li>
+<li><strong><code>.TotalVisibleMemorySize</code></strong>（PowerShell）: <code>Win32_OperatingSystem</code> の <code>.TotalVisibleMemorySize</code> は、パソコンのメモリの全体の大きさです（単位は KB なので、<code>/ 1MB</code> で GB になります）。</li>
+<li><strong><code>.FreePhysicalMemory</code></strong>（PowerShell）: <code>Win32_OperatingSystem</code> の <code>.FreePhysicalMemory</code> は、今空いているメモリの大きさです（単位は KB）。</li>
+<li><strong><code>.SizeRemaining</code></strong>（PowerShell）: <code>Get-Volume</code> の結果の <code>.SizeRemaining</code> は、ドライブの空き容量（バイト）です。<code>.Size</code> は全体の大きさです。</li>
+<li><strong><code>.Size</code></strong>（PowerShell）: <code>Get-Volume</code> の結果の <code>.Size</code> は、ドライブ全体の大きさ（バイト）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1697,6 +1739,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>New-NetFirewallRule -RemoteAddress</code></strong>（PowerShell）: どこから来た通信を通すかを決めるオプション。<code>-RemoteAddress 10.0.0.0/8</code> のように、社内の住所の範囲だけに絞ります。</li>
 <li><strong><code>New-NetFirewallRule -Profile</code></strong>（PowerShell）: 決まりを効かせるネットワークの種類を決めるオプション。<code>-Profile Domain</code> は、会社のドメインのネットワークの時だけ。</li>
 <li><strong><code>New-NetFirewallRule -Action</code></strong>（PowerShell）: 合った通信をどうするかを決めるオプション。<code>Allow</code> は通す、<code>Block</code> は止める。</li>
+<li><strong><code>`</code></strong>（PowerShell）: 行の最後の <code>`</code>（バッククォート。<code>Shift</code> ＋ <code>@</code> で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。<code>`</code> の後ろに空白があると続かないので、注意します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1723,6 +1766,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>Get-HotFix</code></strong>（PowerShell）: 入っている Windows の更新プログラム（番号 <code>HotFixID</code> と、入れた日 <code>InstalledOn</code>）の一覧を表示するコマンド。</li>
+<li><strong><code>.LastBootUpTime</code></strong>（PowerShell）: <code>Win32_OperatingSystem</code> の <code>.LastBootUpTime</code> は、パソコンを最後に起動した日時です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1756,6 +1800,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Get-FileHash</code></strong>（PowerShell）: ファイルの中身から、ハッシュ（指紋のような長い英数字）を計算するコマンド。中身が 1 文字でも違えば、まったく違う値になります。ダウンロードしたファイルが壊れていないか確かめる時に使います。</li>
 <li><strong><code>Get-FileHash -Algorithm</code></strong>（PowerShell）: ハッシュの計算のしかたを決めるオプション。<code>-Algorithm SHA256</code> は、配っている所が公開している SHA256 の値と比べて、ファイルが壊れていない・すりかえられていないかを確かめる時に使います。</li>
 <li><strong><code>robocopy</code></strong>（コマンド）: フォルダを丸ごとコピーする、Windows のコマンド（途中で切れても続きからやり直せる）。<code>/E</code> は中のフォルダも全部（空のフォルダも）、<code>/R:2</code> はしくじった時に 2 回までやり直す、<code>/W:5</code> はやり直す前に 5 秒待つ、<code>/NP</code> <code>/NFL</code> <code>/NDL</code> は、進み具合やファイルの名前を 1 つずつ表示しない、という意味です。終わった時の番号は、<code>0</code>〜<code>7</code> なら成功（<code>8</code> 以上が失敗）です。</li>
+<li><strong><code>robocopy /R</code></strong>（コマンド）: <code>/R:2</code> は、コピーに失敗した時に、やり直す回数です（決めないと 100 万回）。</li>
+<li><strong><code>robocopy /W</code></strong>（コマンド）: <code>/W:5</code> は、やり直すまでに待つ秒数です（決めないと 30 秒）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

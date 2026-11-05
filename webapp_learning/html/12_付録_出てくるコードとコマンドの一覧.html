@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/12_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">12 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜11 に出てくる 939 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜11 に出てくる 1414 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -220,15 +220,19 @@ li, tr { page-break-inside: avoid; }
 table th:first-child, table td:first-child { width: 25%; }
 table td:first-child code { word-break: normal; overflow-wrap: anywhere; }
 table th:last-child, table td:last-child { width: 17%; }
+/* 長い表は、ページの途中から始めて、次のページへ続ける（表全体を 1 ページに収めようとして、見出しの下を空けない） */
+table { page-break-inside: auto; }
 </style>
 
 <h1 id="12">12 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="_1">この一覧について</h2>
-<p>00〜11 の巻のコードに出てくる、<strong>HTML のタグ・CSS の項目・TypeScript と React・Python と Django・Rust と Topcoat・SQL・コマンドなど 939 個</strong>を、<strong>50 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜11 の巻のコードに出てくる、<strong>HTML のタグと属性・CSS の項目・TypeScript と React・Python と Django・Rust と Topcoat・SQL・書式・記号・設定ファイル・コマンドなど 1414 個</strong>を、<strong>59 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。HTML 版（<code>webapp_learning\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
 <li><strong>「初めて出てくる所」の列:</strong> その部品が最初に出てくる巻と章です（<code>08 前編 3. 設定を読む</code> は、08 の前編の 3 章）。そこで、実際にどう使われているかを見られます。</li>
+<li><strong>文字や記号の書き方も入っています:</strong> f 文字列の書式（<code>{amount:,.2f}</code>）・Rust の <code>{:&lt;10}</code>・<code>\n</code> のような特別な文字・正規表現・日時の書式（<code>%Y-%m-%d</code>）・記号（<code>?.</code>・<code>??</code>・<code>&amp;&amp;</code>・<code>**kwargs</code>）・HTML と JSX の属性（<code>for</code>・<code>htmlFor</code>）・Django のテンプレートの <code>{% for %}</code>・<code>package.json</code> や <code>Cargo.toml</code> の設定・コマンドのオプションも、1 つずつ説明しています。</li>
+<li><strong>やりたいことから探す時は:</strong> 次の 13 付録「逆引き」で、「一覧をしぼり込みたい」「数を 3 けたごとに区切りたい」のような、やりたいことからコードを探せます。本文に出てこない、合わせて覚えておくとよいコードも載せています。</li>
 <li><strong>同じ綴りでも、言語が違えば別の物</strong>として、それぞれの言語の分類に載せています。例えば <code>.filter()</code> は、TypeScript では配列から条件に合う物を集めるメソッド、Django ではデータベースの行を条件でしぼるメソッドです。</li>
 <li><strong>分類の並び:</strong> 学ぶ順（道具 → HTML・CSS → TypeScript・React → Python・Django → Rust・Topcoat）に並べています。「画面に出す」から後ろの分類は、主に 07〜10 の Rust・Topcoat・SQL・メールの部品です。</li>
 <li><strong>読者が自分で書く名前</strong>（<code>Request</code>・<code>list_requests</code> など、練習アプリのコードで自分で作る型や関数の名前）は、作った所の本文で説明しているので、この一覧には入れていません。ただし、作るより前に先に出てくる物（<code>Outbox</code>・<code>&lt;FormPage&gt;</code> など）は、「練習アプリで作る物」の表に、意味を載せています。</li>
@@ -249,153 +253,183 @@ table th:last-child, table td:last-child { width: 17%; }
 <tbody>
 <tr>
 <td><a href="#cat-1">PowerShell</a></td>
-<td>28</td>
-<td><a href="#cat-26">くり返し</a></td>
-<td>5</td>
-</tr>
-<tr>
-<td><a href="#cat-2">コマンド</a></td>
-<td>1</td>
-<td><a href="#cat-27">場合分け</a></td>
-<td>3</td>
-</tr>
-<tr>
-<td><a href="#cat-3">Node.js</a></td>
-<td>8</td>
-<td><a href="#cat-28">Option</a></td>
-<td>9</td>
-</tr>
-<tr>
-<td><a href="#cat-4">Python の道具</a></td>
-<td>3</td>
-<td><a href="#cat-29">エラー処理</a></td>
-<td>24</td>
-</tr>
-<tr>
-<td><a href="#cat-5">Django の道具</a></td>
-<td>3</td>
-<td><a href="#cat-30">関数</a></td>
-<td>4</td>
-</tr>
-<tr>
-<td><a href="#cat-6">Rust の道具</a></td>
-<td>2</td>
-<td><a href="#cat-31">型とメソッド</a></td>
-<td>23</td>
-</tr>
-<tr>
-<td><a href="#cat-7">cargo のコマンド</a></td>
-<td>3</td>
-<td><a href="#cat-32">モジュール</a></td>
-<td>5</td>
-</tr>
-<tr>
-<td><a href="#cat-8">HTML</a></td>
-<td>44</td>
-<td><a href="#cat-33">所有権と借用</a></td>
-<td>3</td>
-</tr>
-<tr>
-<td><a href="#cat-9">CSS</a></td>
-<td>26</td>
-<td><a href="#cat-34">イテレーター</a></td>
+<td>48</td>
+<td><a href="#cat-31">Vec（並び）</a></td>
 <td>17</td>
 </tr>
 <tr>
-<td><a href="#cat-10">JavaScript・TypeScript</a></td>
-<td>34</td>
-<td><a href="#cat-35">ファイルとフォルダ</a></td>
-<td>20</td>
-</tr>
-<tr>
-<td><a href="#cat-11">TypeScript</a></td>
-<td>74</td>
-<td><a href="#cat-36">入出力</a></td>
-<td>3</td>
-</tr>
-<tr>
-<td><a href="#cat-12">React</a></td>
-<td>37</td>
-<td><a href="#cat-37">プロセス</a></td>
-<td>5</td>
-</tr>
-<tr>
-<td><a href="#cat-13">練習アプリで作る物（TypeScript）</a></td>
-<td>12</td>
-<td><a href="#cat-38">設定</a></td>
-<td>1</td>
-</tr>
-<tr>
-<td><a href="#cat-14">Python</a></td>
-<td>130</td>
-<td><a href="#cat-39">時間</a></td>
-<td>25</td>
-</tr>
-<tr>
-<td><a href="#cat-15">Django</a></td>
-<td>65</td>
-<td><a href="#cat-40">スレッドと共有</a></td>
-<td>7</td>
-</tr>
-<tr>
-<td><a href="#cat-16">Django REST framework</a></td>
-<td>7</td>
-<td><a href="#cat-41">非同期</a></td>
-<td>7</td>
-</tr>
-<tr>
-<td><a href="#cat-17">練習アプリで作る物（Python）</a></td>
-<td>1</td>
-<td><a href="#cat-42">HTTP</a></td>
-<td>12</td>
-</tr>
-<tr>
-<td><a href="#cat-18">画面に出す</a></td>
+<td><a href="#cat-2">コマンド</a></td>
 <td>2</td>
-<td><a href="#cat-43">認証</a></td>
+<td><a href="#cat-32">HashMap（表）</a></td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="#cat-3">Node.js</a></td>
+<td>13</td>
+<td><a href="#cat-33">範囲</a></td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="#cat-4">設定ファイル（JSON）</a></td>
+<td>17</td>
+<td><a href="#cat-34">条件</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#cat-5">Python の道具</a></td>
+<td>5</td>
+<td><a href="#cat-35">くり返し</a></td>
+<td>6</td>
+</tr>
+<tr>
+<td><a href="#cat-6">Django の道具</a></td>
+<td>3</td>
+<td><a href="#cat-36">場合分け</a></td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#cat-7">psql</a></td>
+<td>2</td>
+<td><a href="#cat-37">Option</a></td>
 <td>10</td>
 </tr>
 <tr>
-<td><a href="#cat-19">変数</a></td>
-<td>4</td>
-<td><a href="#cat-44">テスト</a></td>
+<td><a href="#cat-8">Rust の道具</a></td>
+<td>3</td>
+<td><a href="#cat-38">エラー処理</a></td>
+<td>24</td>
+</tr>
+<tr>
+<td><a href="#cat-9">cargo のコマンド</a></td>
+<td>10</td>
+<td><a href="#cat-39">関数</a></td>
 <td>5</td>
 </tr>
 <tr>
-<td><a href="#cat-20">数</a></td>
-<td>4</td>
-<td><a href="#cat-45">データベース</a></td>
-<td>28</td>
-</tr>
-<tr>
-<td><a href="#cat-21">文字</a></td>
-<td>5</td>
-<td><a href="#cat-46">SQL</a></td>
-<td>62</td>
-</tr>
-<tr>
-<td><a href="#cat-22">文字列</a></td>
+<td><a href="#cat-10">設定ファイル（TOML）</a></td>
+<td>17</td>
+<td><a href="#cat-40">型とメソッド</a></td>
 <td>29</td>
-<td><a href="#cat-47">JSON</a></td>
+</tr>
+<tr>
+<td><a href="#cat-11">Rust の部品（クレート）</a></td>
+<td>13</td>
+<td><a href="#cat-41">モジュール</a></td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#cat-12">HTML</a></td>
+<td>95</td>
+<td><a href="#cat-42">所有権と借用</a></td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="#cat-13">CSS</a></td>
+<td>40</td>
+<td><a href="#cat-43">イテレーター</a></td>
+<td>17</td>
+</tr>
+<tr>
+<td><a href="#cat-14">コメント</a></td>
+<td>3</td>
+<td><a href="#cat-44">ファイルとフォルダ</a></td>
+<td>20</td>
+</tr>
+<tr>
+<td><a href="#cat-15">文字列の中の特別な書き方</a></td>
+<td>10</td>
+<td><a href="#cat-45">入出力</a></td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="#cat-16">正規表現</a></td>
+<td>27</td>
+<td><a href="#cat-46">プロセス</a></td>
 <td>5</td>
 </tr>
 <tr>
-<td><a href="#cat-23">Vec（並び）</a></td>
-<td>14</td>
-<td><a href="#cat-48">Topcoat</a></td>
-<td>63</td>
+<td><a href="#cat-17">日時の書式</a></td>
+<td>7</td>
+<td><a href="#cat-47">設定</a></td>
+<td>1</td>
 </tr>
 <tr>
-<td><a href="#cat-24">HashMap（表）</a></td>
-<td>2</td>
-<td><a href="#cat-49">練習アプリで作る物（Rust）</a></td>
+<td><a href="#cat-18">JavaScript・TypeScript</a></td>
+<td>78</td>
+<td><a href="#cat-48">時間</a></td>
+<td>25</td>
+</tr>
+<tr>
+<td><a href="#cat-19">TypeScript</a></td>
+<td>85</td>
+<td><a href="#cat-49">スレッドと共有</a></td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="#cat-20">React</a></td>
+<td>69</td>
+<td><a href="#cat-50">非同期</a></td>
+<td>7</td>
+</tr>
+<tr>
+<td><a href="#cat-21">練習アプリで作る物（TypeScript）</a></td>
+<td>5</td>
+<td><a href="#cat-51">HTTP</a></td>
+<td>12</td>
+</tr>
+<tr>
+<td><a href="#cat-22">Python</a></td>
+<td>194</td>
+<td><a href="#cat-52">認証</a></td>
+<td>10</td>
+</tr>
+<tr>
+<td><a href="#cat-23">Django</a></td>
+<td>113</td>
+<td><a href="#cat-53">テスト</a></td>
+<td>6</td>
+</tr>
+<tr>
+<td><a href="#cat-24">Django REST framework</a></td>
+<td>15</td>
+<td><a href="#cat-54">データベース</a></td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="#cat-25">練習アプリで作る物（Python）</a></td>
+<td>1</td>
+<td><a href="#cat-55">SQL</a></td>
+<td>74</td>
+</tr>
+<tr>
+<td><a href="#cat-26">画面に出す</a></td>
+<td>9</td>
+<td><a href="#cat-56">JSON</a></td>
+<td>8</td>
+</tr>
+<tr>
+<td><a href="#cat-27">変数</a></td>
+<td>5</td>
+<td><a href="#cat-57">Topcoat</a></td>
+<td>67</td>
+</tr>
+<tr>
+<td><a href="#cat-28">数</a></td>
+<td>15</td>
+<td><a href="#cat-58">練習アプリで作る物（Rust）</a></td>
 <td>34</td>
 </tr>
 <tr>
-<td><a href="#cat-25">条件</a></td>
-<td>2</td>
-<td><a href="#cat-50">メール</a></td>
+<td><a href="#cat-29">文字</a></td>
+<td>7</td>
+<td><a href="#cat-59">メール</a></td>
 <td>19</td>
+</tr>
+<tr>
+<td><a href="#cat-30">文字列</a></td>
+<td>33</td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -415,9 +449,19 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>00 6. 練習の環境を用意する</td>
 </tr>
 <tr>
+<td><code>#</code></td>
+<td><code>#</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、PowerShell は無視します。コマンドの横に、何をするかを日本語で書いておけます。コピーしてそのまま貼り付けても、問題ありません。</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
 <td><code>mkdir</code></td>
 <td>「make directory（フォルダを作る）」の略。<code>mkdir ~\Documents\my-practice\01</code> のように、途中のフォルダもまとめて作れます（<code>~</code> はホームフォルダ <code>C:\Users\you</code>）。もう同じ名前のフォルダがあると、エラーで知らせます。</td>
 <td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td><code>.\</code></td>
+<td><code>.\target\debug\practice.exe</code> の <code>.\</code> は、「今いるフォルダの中の」という意味です。PowerShell は、安全のため、今いるフォルダのプログラムでも <code>.\</code> を付けないと動かしません。</td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
 </tr>
 <tr>
 <td><code>Copy-Item</code></td>
@@ -540,6 +584,81 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
+<td><code>'…'</code></td>
+<td><code>'…'</code>（シングルクォート）で囲んだ文字は、書いたとおりの文字で、中の <code>$</code> や <code>`</code> は特別な意味になりません。正規表現（<code>'^\s*#'</code>）や、そのまま渡したい文字に使います。中に <code>'</code> を入れる時は <code>''</code> と 2 つ書きます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>"…$変数…"</code></td>
+<td><code>"…"</code>（ダブルクォート）で囲んだ文字の中の <code>$名前</code> は、変数の中身に置きかわります。<code>"こんにちは、$name さん"</code> → <code>こんにちは、太郎 さん</code>。そのまま <code>$</code> を出したい時は、<code>'…'</code>（シングルクォート）で囲みます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>$( … )</code></td>
+<td><code>"…$($t.Port)…"</code> の <code>$( )</code> は、「中の式やコマンドの結果を、文字の中に入れる」書き方です。<code>"$x.Name"</code> のように書くと <code>$x</code> だけが置きかわってしまうので、<code>.</code> の付いた物や計算は <code>$( )</code> で囲みます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>$true</code></td>
+<td><code>$true</code> は「はい（真）」を表す値です。<code>-Recurse:$true</code> のように、スイッチに値を渡す時にも使います。反対は <code>$false</code> です。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>$名前</code></td>
+<td><code>$os = …</code> のように <code>$</code> で始まる名前は「変数」（値に付けた名前）です。<code>=</code> の右の結果を覚えておき、あとで <code>$os</code> と書けば使えます。名前の大文字・小文字は区別しません。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>$ErrorActionPreference</code></td>
+<td><code>$ErrorActionPreference = "Stop"</code> は、「エラーが起きたら、そこでスクリプトを止める」という設定です。付けないと、エラーが起きても次の行へ進んでしまいます（<code>.exe</code> のコマンドの失敗は止まらないので、<code>$LASTEXITCODE</code> も調べます）。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>$PSScriptRoot</code></td>
+<td><code>$PSScriptRoot</code> は、「今動いているスクリプト（<code>.ps1</code>）が置いてあるフォルダ」の場所が入った、特別な変数です。今いるフォルダがどこでも、スクリプトの隣のファイルを <code>Join-Path $PSScriptRoot "dev.env"</code> で見つけられます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>$LASTEXITCODE</code></td>
+<td><code>$LASTEXITCODE</code> は、最後に動かしたプログラム（<code>cargo</code>・<code>git</code>・<code>psql</code> など、<code>.exe</code> のコマンド）の「終了コード」が入る、特別な変数です。<code>0</code> なら成功、<code>0</code> 以外なら失敗です。<code>if ($LASTEXITCODE -ne 0) { … }</code> で、失敗した時の処理を書けます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>[Parameter()]</code></td>
+<td><code>param( )</code> の中の <code>[Parameter(ValueFromRemainingArguments = $true)]</code> は、引数の受け取り方を決める印です。この指定なら、名前を付けずに渡した残りの引数を、全部その変数に受け取ります。<code>[Parameter(Mandatory)]</code> なら「必ず渡す」です。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>[string[]]</code></td>
+<td><code>[string[]]</code> は「文字列の並び（配列）」という型です。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td><code>&amp; "C:\Program Files\…\vswhere.exe"</code> の先頭の <code>&amp;</code> は、「この文字（や変数）が指すプログラムを動かす」という印です。場所に空白が入っていて <code>"</code> で囲んだ時や、変数に入れた場所を動かす時に必要です。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>@( … )</code></td>
+<td><code>@( … )</code> は「並び（配列）」を作る書き方です。<code>@("a", "b")</code> で 2 つの並び、<code>@()</code> で空の並び。中のコマンドの結果が 1 つでも、必ず並びとして扱えます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>@名前</code></td>
+<td><code>コマンド @CurlArgs</code> のように、<code>$</code> の代わりに <code>@</code> を付けて変数を渡すと、変数に入れた並び（や表）の中身を、引数としてばらして渡せます（スプラッティング）。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>param( … )</code></td>
+<td>スクリプトの最初に書く <code>param([string]$Base = "http://…")</code> は、「このスクリプトが受け取る引数」の決まりです。<code>.\smoke.ps1 -Base http://…</code> のように、名前を付けて渡せます。<code>=</code> の右は、渡さなかった時の値です。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td><code>$x += 1</code> は <code>$x = $x + 1</code> の短い形です。並びに <code>$names += "山田"</code> と書くと、後ろに 1 つ足した並びになります。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
 <td><code>.\dev.ps1</code></td>
 <td>今いるフォルダの <code>dev.ps1</code>（この資料で作った、設定を読んでから manage.py を動かすスクリプト）を動かす書き方。<code>.\dev.ps1 migrate</code> のように、後ろに manage.py の命令を書きます。</td>
 <td>06 前編 2. 開発の準備</td>
@@ -548,6 +667,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>.\dev_serve.ps1</code></td>
 <td>今いるフォルダの <code>dev_serve.ps1</code>（静的ファイルを集めてから、waitress でアプリを動かすスクリプト）を動かす書き方。</td>
 <td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
+<td><code>$env:名前</code></td>
+<td><code>$env:GREETING</code> のように <code>$env:</code> を付けた名前は「環境変数」（プログラムに外から渡す設定）です。<code>$env:GREETING = "おはよう"</code> で設定すると、その PowerShell の窓から動かすプログラム（<code>cargo run</code> など）が読めます。窓を閉じると消えます。</td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
+<td><code><code>&lt;/code&gt; | 行の最後の ``</code> <code>（バッククォート。`Shift` ＋ `@` で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。</code> ` `` の後ろに空白があると続かないので、注意します。</td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+<td></td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td><code>;</code> は、1 行にコマンドを 2 つ以上書く時の区切りです。<code>cargo fmt --check; $LASTEXITCODE</code> は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。</td>
+<td>09 8. 手元で、アプリから送ってみる</td>
 </tr>
 </tbody>
 </table>
@@ -564,6 +698,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>code</code></td>
 <td>VS Code を動かすコマンド。<code>code .</code> で今のフォルダを開き、<code>code --version</code> で版を確かめます。</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td><code>code --version</code></td>
+<td><code>code --version</code> は、VS Code の版を表示します。</td>
 <td>00 6. 練習の環境を用意する</td>
 </tr>
 </tbody>
@@ -584,8 +723,18 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>00 6. 練習の環境を用意する</td>
 </tr>
 <tr>
+<td><code>node --version</code></td>
+<td><code>node --version</code> は、入っている Node.js の版（<code>v24.…</code>）を表示します。</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
 <td><code>npm</code></td>
 <td>Node.js の部品を入れる・動かす道具のコマンド。<code>npm --version</code> で版を確かめ、<code>npm install</code>（部品を入れる）・<code>npm run dev</code>（<code>package.json</code> の <code>scripts</code> を動かす）のように使います。PowerShell で「スクリプトの実行が無効」と出る時は <code>npm.cmd</code> と打ちます。</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td><code>npm --version</code></td>
+<td><code>npm --version</code> は、Node.js の部品を入れる道具 npm の版を表示します。</td>
 <td>00 6. 練習の環境を用意する</td>
 </tr>
 <tr>
@@ -614,13 +763,125 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 7. サーバーとのやり取り</td>
 </tr>
 <tr>
+<td><code>createServer()</code></td>
+<td><code>createServer((req, res) =&gt; { … })</code> は、Node.js（<code>node:http</code>）で、HTTP のサーバーを作る関数です。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
 <td><code>npm run</code></td>
 <td><code>package.json</code> の <code>scripts</code> に書いたコマンドを動かすコマンド。<code>npm run dev</code> は開発用のサーバーを起動し、<code>npm run build</code> は本番用のファイルを作ります。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</td>
 <td>03 1. 動かしてみる</td>
 </tr>
+<tr>
+<td><code>.argv</code></td>
+<td><code>process.argv</code> は、プログラムを動かした時の引数の並びです。0 番目は <code>node</code> の場所、1 番目はスクリプトの場所、2 番目からが渡した引数です。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>sleep()</code></td>
+<td><code>import { setTimeout as sleep } from "node:timers/promises";</code> で、<code>setTimeout</code> を <code>sleep</code> という名前で読み込んでいます。<code>await sleep(1000)</code> で、1 秒待ちます。</td>
+<td>11 B. サンプル集</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-4">Python の道具</h2>
+<h2 id="cat-4">設定ファイル（JSON）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"name":</code></td>
+<td><code>package.json</code> の <code>"name"</code> は、このプロジェクト（パッケージ）の名前です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"private":</code></td>
+<td><code>"private": true</code> は、「このパッケージは npm に公開しない」という印です。間違って公開するのを防ぎます。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"type":</code></td>
+<td><code>"type": "module"</code> は、「<code>.js</code> のファイルを、新しい書き方（ES モジュール。<code>import</code>・<code>export</code>）として読む」という設定です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"scripts":</code></td>
+<td><code>"scripts"</code> には、<code>npm run 名前</code> で動かすコマンドを書きます。<code>"check": "tsc"</code> なら、<code>npm run check</code> で <code>tsc</code>（型の確かめ）が動きます。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"check":</code></td>
+<td><code>"scripts"</code> の中の <code>"check": "tsc"</code> は、<code>npm run check</code> という名前で、<code>tsc</code>（TypeScript の型の確かめ）を動かす登録です。名前は自分で決めます。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"devDependencies":</code></td>
+<td><code>"devDependencies"</code> には、開発の時だけ使う部品と、その版を書きます。<code>npm install</code> で入ります。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"@types/node":</code></td>
+<td><code>"@types/node"</code> は、Node.js の機能（<code>node:http</code> など）の型の説明の部品です。これが無いと、TypeScript が Node.js の関数の型を知りません。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"typescript":</code></td>
+<td><code>"typescript": "7.0.2"</code> は、TypeScript（型を確かめる道具 <code>tsc</code>）の部品と、その版です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"compilerOptions":</code></td>
+<td><code>tsconfig.json</code> の <code>"compilerOptions"</code> には、TypeScript の確かめ方の設定を書きます。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"strict":</code></td>
+<td><code>"strict": true</code> は、TypeScript の確かめを、いちばんきびしくする設定です。<code>null</code> の取り違えなど、間違いを多く見つけてくれます。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"target":</code></td>
+<td><code>"target": "es2023"</code> は、どの版の JavaScript の書き方を前提にするかです。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"module":</code></td>
+<td><code>"module": "nodenext"</code> は、<code>import</code> の読み方を、今の Node.js と同じにする設定です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"noEmit":</code></td>
+<td><code>"noEmit": true</code> は、<code>tsc</code> に、型の確かめだけをさせ、JavaScript のファイルは書き出させない設定です（動かす時は Node.js が直接 <code>.ts</code> を読みます）。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"allowImportingTsExtensions":</code></td>
+<td><code>"allowImportingTsExtensions": true</code> は、<code>import … from "./types.ts"</code> のように、<code>.ts</code> を付けて読み込むことを許す設定です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"erasableSyntaxOnly":</code></td>
+<td><code>"erasableSyntaxOnly": true</code> は、「型を消すだけで JavaScript になる書き方」だけを許す設定です。Node.js が <code>.ts</code> をそのまま動かせる書き方に、そろえられます。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"types":</code></td>
+<td><code>"types": ["node"]</code> は、使う型の説明の部品（ここでは <code>@types/node</code>）を選ぶ設定です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td><code>"include":</code></td>
+<td><code>"include": ["src/*.ts"]</code> は、確かめるファイルの範囲です。</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-5">Python の道具</h2>
 <table>
 <thead>
 <tr>
@@ -636,6 +897,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>00 6. 練習の環境を用意する</td>
 </tr>
 <tr>
+<td><code>py --version</code></td>
+<td><code>py --version</code> は、<code>py</code>（Windows の Python の起動係）が使う Python の版を表示します。</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td><code>py -m</code></td>
+<td><code>py -m venv .venv</code> の <code>-m</code> は、「Python の部品（モジュール）を、道具として動かす」指定です。<code>-m venv</code> で仮想環境を作り、<code>-m pip</code> で部品を入れます。</td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
 <td><code>.\.venv\Scripts\python.exe</code></td>
 <td>仮想環境（<code>.venv</code>）の中の Python を、場所を書いて動かす書き方。<code>.\.venv\Scripts\python.exe ファイル.py</code> でプログラムを動かし、<code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code> で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。</td>
 <td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
@@ -647,7 +918,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-5">Django の道具</h2>
+<h2 id="cat-6">Django の道具</h2>
 <table>
 <thead>
 <tr>
@@ -674,7 +945,29 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-6">Rust の道具</h2>
+<h2 id="cat-7">psql</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\password</code></td>
+<td>psql の <code>\password 名前</code> は、その利用者（ロール）のパスワードを変える命令です。打つとパスワードを 2 回聞かれ、画面には表示されません（コマンドの履歴にも残りません）。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>\echo</code></td>
+<td>psql の <code>\echo '文字'</code> は、文字を画面に表示する命令です。SQL のファイルの中で、区切りの説明を出す時に使います。</td>
+<td>10 8. SQL インジェクション</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-8">Rust の道具</h2>
 <table>
 <thead>
 <tr>
@@ -690,13 +983,18 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 1. 準備</td>
 </tr>
 <tr>
+<td><code>rustc --version</code></td>
+<td><code>rustc --version</code> は、入っている Rust のコンパイラーの版（<code>rustc 1.99.1 …</code>）を表示します。入れた直後に、ちゃんと入ったかを確かめる時に使います。</td>
+<td>07 1. 準備</td>
+</tr>
+<tr>
 <td><code>cargo</code></td>
 <td>Rust のプロジェクトをまとめて世話する道具。<code>cargo new</code>（作る）・<code>cargo run</code>（翻訳して動かす）・<code>cargo build</code>（翻訳だけ）・<code>cargo test</code>（テスト）・<code>cargo add</code>（部品を足す）のように、後ろに「何をするか」を付けて使います。<code>cargo --version</code> で版を確かめられます。</td>
 <td>07 1. 準備</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cat-7">cargo のコマンド</h2>
+<h2 id="cat-9">cargo のコマンド</h2>
 <table>
 <thead>
 <tr>
@@ -707,8 +1005,23 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
+<td><code>cargo --version</code></td>
+<td><code>cargo --version</code> は、Cargo の版を表示します。</td>
+<td>07 1. 準備</td>
+</tr>
+<tr>
 <td><code>cargo install</code></td>
 <td>Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。<code>cargo install topcoat-cli --version 0.11.0 --locked</code> は、Topcoat の道具 <code>topcoat</code> を、決まった版で入れます。</td>
+<td>07 1. 準備</td>
+</tr>
+<tr>
+<td><code>cargo install --version</code></td>
+<td><code>cargo install topcoat-cli --version 0.11.0</code> の <code>--version</code> は、入れる道具の版を指定します。付けないと、いちばん新しい版を入れます。</td>
+<td>07 1. 準備</td>
+</tr>
+<tr>
+<td><code>cargo install --locked</code></td>
+<td><code>--locked</code> は、道具を作る時に、道具に付いている <code>Cargo.lock</code> の版のまま作る指定です。部品の新しい版のせいで作れない、ということを防げます。</td>
 <td>07 1. 準備</td>
 </tr>
 <tr>
@@ -721,9 +1034,203 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</td>
 <td>07 6. async と、会社のサーバーへの持ち込み</td>
 </tr>
+<tr>
+<td><code>cargo build --release</code></td>
+<td><code>cargo build --release</code> は、時間をかけて最適化した、速い本番用の実行ファイルを作ります（動かしはしません）。できた物は <code>target\release</code> に置かれます。</td>
+<td>07 6. async と、会社のサーバーへの持ち込み</td>
+</tr>
+<tr>
+<td><code>cargo build --locked</code></td>
+<td><code>--locked</code> は、<code>Cargo.lock</code> に書いてある部品の版のまま作り、<code>Cargo.lock</code> を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。</td>
+<td>07 6. async と、会社のサーバーへの持ち込み</td>
+</tr>
+<tr>
+<td><code>cargo run --</code></td>
+<td><code>cargo run -- Rust "Web アプリ"</code> の <code>--</code> は、「ここから後ろは、Cargo ではなく、動かすプログラムに渡す」という区切りです。後ろの値は、プログラムの中で <code>std::env::args()</code> で受け取れます。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>cargo run -- --to</code></td>
+<td><code>cargo run -- send-test-mail --to 自分のアドレス</code> の <code>--to</code> は、練習アプリのコマンドに、テストのメールを送る宛先を渡すオプションです。</td>
+<td>09 8. 手元で、アプリから送ってみる</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-8">HTML</h2>
+<h2 id="cat-10">設定ファイル（TOML）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[package]</code></td>
+<td><code>Cargo.toml</code> の <code>[package]</code> の下には、このプロジェクト（パッケージ）自身のこと（名前・版・Rust の版の決まり）を書きます。<code>[ ]</code> で囲んだ行は「ここから、この組の設定」という見出し（テーブル）です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>name =</code></td>
+<td><code>name = "practice"</code> は、パッケージの名前です。<code>cargo run</code> で作られる実行ファイルの名前（<code>practice.exe</code>）にもなります。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>version =</code></td>
+<td><code>version = "0.1.0"</code> は、このパッケージの版です。直したら数を上げます（「大きな変更.機能の追加.直し」の 3 つの数）。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>edition =</code></td>
+<td><code>edition = "2024"</code> は、「Rust の書き方の決まりの、どの年の版を使うか」です。2015・2018・2021・2024 があり、新しく作る時は <code>cargo new</code> が最新を書きます。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>TOML（<code>Cargo.toml</code> などの設定ファイルの書き方）では、<code>#</code> から行の終わりまでがコメントです。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>[dependencies]</code></td>
+<td><code>[dependencies]</code> の下には、このプロジェクトが使う部品（クレート）を、<code>名前 = "版"</code> の形で 1 行ずつ書きます。<code>cargo add 名前</code> を打つと、ここに書き足されます。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>"1.0"</code></td>
+<td>部品の版の <code>"1.0.229"</code> は、「1.0.229 以上で、2.0.0 より前」を表します（新しい直しは自動で使われてよい）。<code>"=1.0.229"</code> のように <code>=</code> を付けると、「ぴったりこの版だけ」になります。実際に使う版は、<code>Cargo.lock</code> に記録されます。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>{ キー = 値 }</code></td>
+<td><code>{ version = "1.0", features = ["derive"] }</code> のように <code>{ }</code> で囲むと、1 行の中に、いくつもの設定をまとめて書けます（インラインテーブル）。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>version =</code></td>
+<td>部品の <code>{ version = "1.51.1", … }</code> の <code>version</code> は、使う部品の版です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>features =</code></td>
+<td>部品の <code>features = ["macros", "rt-multi-thread"]</code> は、その部品の、どの機能（feature）を ON にして使うかです。部品は、使わない機能を OFF にして小さくできるようになっています。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>default-features =</code></td>
+<td><code>default-features = false</code> は、部品の「既定で ON の機能」を全部 OFF にする指定です。そのうえで、要る機能だけを <code>features = […]</code> で選びます。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>[profile.dev]</code></td>
+<td><code>[profile.dev]</code> は、ふだんの <code>cargo build</code>・<code>cargo run</code>（debug）の時の、作り方の設定です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>debug =</code></td>
+<td><code>debug = "line-tables-only"</code> は、実行ファイルに入れる「調べるための情報」を、エラーの行番号が分かる分だけにする設定です。翻訳が速くなり、<code>target</code> フォルダも小さくなります。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>[profile.dev.package."*"]</code></td>
+<td><code>[profile.dev.package."*"]</code> は、「自分のコード以外の、全部の部品」の作り方の設定です。部品だけ最適化（<code>opt-level = 2</code> など）すると、自分のコードの翻訳は速いまま、動きを速くできます。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>rust-version =</code></td>
+<td><code>rust-version = "1.99"</code> は、「このパッケージを作るのに要る、いちばん古い Rust の版」です。古い Rust で作ろうとすると、分かりやすいエラーで止まります。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>description =</code></td>
+<td><code>description = "…"</code> は、パッケージの短い説明です。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>publish =</code></td>
+<td><code>publish = false</code> は、「このパッケージは crates.io（みんなで部品を共有する所）に公開しない」という印です。間違って公開するのを防ぎます。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-11">Rust の部品（クレート）</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>serde</code></td>
+<td><code>serde</code> は、Rust の値を、JSON などの形に変えたり（シリアライズ）、JSON から Rust の値を作ったり（デシリアライズ）するための部品です。<code>features = ["derive"]</code> で、<code>#[derive(Serialize, Deserialize)]</code> が使えるようになります。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>tokio</code></td>
+<td><code>tokio</code> は、Rust で非同期（待ち時間の間に、ほかの仕事を進める）のプログラムを動かすための部品です。たくさんの人の要求を、同時にさばく Web のサーバーの土台になります。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>topcoat</code></td>
+<td><code>topcoat</code> は、Rust の Web アプリを作るための部品（フレームワーク）です。画面（<code>view!</code>）・URL ごとの処理（<code>#[page]</code>）・セッションなどを用意しています。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>anyhow</code></td>
+<td><code>anyhow</code> は、いろいろな種類のエラーを、1 つの型（<code>anyhow::Error</code>）でまとめて扱い、説明を書き足せる（<code>.context(…)</code>）部品です。アプリの一番上の、エラーを表示する所で使います。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>argon2</code></td>
+<td><code>argon2</code> は、パスワードを、元に戻せない形（ハッシュ）にして保存するための部品です。わざと時間とメモリを使う計算なので、盗まれても、元のパスワードを当てにくくなります。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>csv</code></td>
+<td><code>csv</code> は、CSV（<code>,</code> で区切った表の文字）のファイルを読み書きする部品です。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>dotenvy</code></td>
+<td><code>dotenvy</code> は、<code>.env</code> のファイルに書いた <code>名前=値</code> を読み、環境変数にする部品です。開発の時の設定に使います。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>getrandom</code></td>
+<td><code>getrandom</code> は、OS から、予想できない安全な乱数を取ってくる部品です。セッションの合言葉（トークン）を作る時に使います。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>hex</code></td>
+<td><code>hex</code> は、バイトの並びを、16 進数の文字（<code>a3f0…</code>）に変えたり戻したりする部品です。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>serde_json</code></td>
+<td><code>serde_json</code> は、<code>serde</code> と組み合わせて、JSON を読み書きする部品です。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>sha2</code></td>
+<td><code>sha2</code> は、SHA-256 などの、データの指紋（ハッシュ）を計算する部品です。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>sqlx</code></td>
+<td><code>sqlx</code> は、PostgreSQL などのデータベースに、Rust からつないで SQL を送る部品です。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td><code>time</code> は、日付・時刻を扱う部品です（期限の計算や、<code>2026-11-05</code> の形への変換など）。</td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-12">HTML</h2>
 <table>
 <thead>
 <tr>
@@ -766,6 +1273,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>&lt;p&gt;</code></td>
 <td>段落（paragraph）のタグ。ひとまとまりの文を囲みます。段落と段落の間には、自動で少し間が空きます。</td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td><code>&lt;!DOCTYPE html&gt;</code></td>
+<td><code>&lt;!DOCTYPE html&gt;</code> は、「これは今の HTML（HTML5）で書いたページです」という、ページのいちばん最初に書く宣言です。大文字でも小文字（<code>&lt;!doctype html&gt;</code>）でもかまいません。</td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td><code>lang=</code></td>
+<td><code>&lt;html lang="ja"&gt;</code> の <code>lang</code> は、ページの言葉（<code>ja</code> は日本語、<code>en</code> は英語）です。読み上げソフトの読み方や、ブラウザーの翻訳の判断に使われます。</td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td><code>charset=</code></td>
+<td><code>&lt;meta charset="utf-8"&gt;</code> の <code>charset</code> は、ページの文字の符号（エンコーディング）です。いつも <code>utf-8</code> にしておくと、日本語が文字化けしません。</td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td><code>class=</code></td>
+<td><code>class</code> は、タグに付ける「グループの名前」です。CSS で <code>.note { … }</code> と書くと、<code>class="note"</code> の物全部に、同じ見た目が付きます。<code>class="note done"</code> のように、空白で区切っていくつも付けられます。</td>
 <td>01 2. HTML の基本</td>
 </tr>
 <tr>
@@ -839,6 +1366,96 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 3. フォーム: 依頼の入力画面</td>
 </tr>
 <tr>
+<td><code>name=</code></td>
+<td><code>name</code> は、入力欄（<code>&lt;input&gt;</code>・<code>&lt;textarea&gt;</code>・<code>&lt;select&gt;</code>）の名前です。フォームを送ると、<code>title=牛乳</code> のように、この名前と入れた値の組がサーバーに届きます。<code>&lt;meta name="viewport" …&gt;</code> の <code>name</code> は、設定の種類の名前です。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>content=</code></td>
+<td><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> の <code>content</code> は、その設定の値です。この <code>viewport</code> の設定は、「スマホでも、画面の幅に合わせて表示する」という意味で、いつも書いておきます。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>rel=</code></td>
+<td><code>&lt;link rel="stylesheet" …&gt;</code> の <code>rel</code> は、つなぐファイルが「何か」です。<code>stylesheet</code> は CSS のファイル、<code>icon</code> はタブの小さな絵です。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>href=</code></td>
+<td><code>href</code> は、リンク先や、読み込むファイルの場所（URL）です。<code>&lt;a href="/notes"&gt;一覧&lt;/a&gt;</code> は、押すと <code>/notes</code> へ移るリンクです。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>action=</code></td>
+<td><code>&lt;form action="/notes"&gt;</code> の <code>action</code> は、フォームの送り先の URL です。書かなければ、今のページに送ります。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>method=</code></td>
+<td><code>&lt;form method="post"&gt;</code> の <code>method</code> は、フォームの送り方です。<code>post</code> はデータを送って何かを変える時（登録・削除）、<code>get</code> は検索のように、URL の <code>?q=…</code> に入れて送る時に使います。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>enctype=</code></td>
+<td><code>&lt;form enctype="multipart/form-data"&gt;</code> の <code>enctype</code> は、フォームの送り方の形です。ファイルを送るフォームでは、必ずこの <code>multipart/form-data</code> にします。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>for=</code></td>
+<td><code>&lt;label for="q"&gt;</code> の <code>for</code> は、この説明の文字が、どの入力欄（<code>id="q"</code>）のための物かを結び付けます。文字を押しても、その欄に入力できるようになり、読み上げソフトも欄の名前を読めます。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>id=</code></td>
+<td><code>id</code> は、ページの中で 1 つだけの名前です。<code>&lt;label for="title"&gt;</code> で欄と結び付けたり、<code>#title</code> のリンクでその場所へ飛んだりできます。同じ <code>id</code> を 2 つ付けてはいけません。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>type=</code></td>
+<td><code>&lt;input type="…"&gt;</code> の <code>type</code> は、入力欄の種類です。<code>text</code>（文字）・<code>email</code>・<code>password</code>（伏せ字）・<code>number</code>・<code>date</code>・<code>checkbox</code>（チェック）・<code>file</code>（ファイル）・<code>search</code> などがあります。<code>&lt;button type="submit"&gt;</code> は、押すとフォームを送るボタンです。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>maxlength=</code></td>
+<td><code>maxlength="100"</code> は、入力できる文字の数の上限です。それより長くは打てません（サーバー側でも、必ず確かめます）。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>required</code></td>
+<td><code>required</code> は、「この欄は必ず入れる」という印です。値は書かず、名前だけで ON になります。空のまま送ろうとすると、ブラウザーが止めます。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>placeholder=</code></td>
+<td><code>placeholder</code> は、入力欄が空の時に、うすく見せる例の文字です。入力の説明の代わりにはならないので、<code>&lt;label&gt;</code> も付けます。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>rows=</code></td>
+<td><code>&lt;textarea rows="6"&gt;</code> の <code>rows</code> は、見える行の数です。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>accept=</code></td>
+<td><code>&lt;input type="file" accept=".jpg,.png,.pdf"&gt;</code> の <code>accept</code> は、選べるファイルの種類です。ファイルを選ぶ画面で、ほかの種類が見えにくくなります（ブラウザーの手助けなので、サーバー側でも必ず確かめます）。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>multiple</code></td>
+<td><code>&lt;input type="file" multiple&gt;</code> の <code>multiple</code> は、ファイルを一度にいくつも選べるようにする印です。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>aria-*=</code></td>
+<td><code>aria-label="…"</code>・<code>aria-current="page"</code> のように <code>aria-</code> で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。<code>aria-label</code> は名前、<code>aria-current="page"</code> は「今開いているページ」、<code>aria-invalid="true"</code> は「入力に間違いがある」です。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td><code>value=</code></td>
+<td><code>value</code> は、入力欄の最初の値や、選び肢（<code>&lt;option&gt;</code>）を選んだ時に送られる値です。</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
 <td><code>&lt;table&gt;</code></td>
 <td>表のタグ。中に <code>&lt;thead&gt;</code>（見出しの行）と <code>&lt;tbody&gt;</code>（中身の行）を入れ、行は <code>&lt;tr&gt;</code>、ますは <code>&lt;th&gt;</code>（見出し）か <code>&lt;td&gt;</code>（中身）で作ります。</td>
 <td>01 4. 表: 依頼の一覧</td>
@@ -889,14 +1506,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 5. 入力フォーム</td>
 </tr>
 <tr>
-<td><code>&lt;a&gt;</code></td>
-<td>リンクのタグ。<code>&lt;a href="../URL"&gt;文字&lt;/a&gt;</code> で、押すとその URL へ移ります。</td>
-<td>03 7. 画面の切りかえと、部品の組み立て</td>
-</tr>
-<tr>
 <td><code>&lt;main&gt;</code></td>
 <td>ページの「いちばん大事な中身」を表すタグ。ヘッダーやメニューを除いた本体を囲みます。</td>
 <td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
+<td><code>colspan=</code></td>
+<td><code>&lt;td colspan="4"&gt;</code> の <code>colspan</code> は、表の 1 つのマスを、横に何列分つなげるかです。</td>
+<td>05 7. HTML の画面</td>
 </tr>
 <tr>
 <td><code>&lt;h2&gt;</code></td>
@@ -914,6 +1531,31 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 6. 1 回限りの承認の URL</td>
 </tr>
 <tr>
+<td><code>viewBox=</code></td>
+<td><code>&lt;svg viewBox="0 0 400 300"&gt;</code> の <code>viewBox</code> は、SVG の絵の中の座標の範囲です（左上の x・y と、幅・高さ）。表示の大きさが変わっても、絵はこの範囲に合わせて伸び縮みします。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>x=</code></td>
+<td>SVG の <code>x</code>・<code>y</code> は、図形（<code>&lt;rect&gt;</code>・<code>&lt;text&gt;</code>）を置く位置です。左上が 0 で、右と下へ行くほど大きくなります。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>y=</code></td>
+<td>SVG の <code>y</code> は、図形を置く縦の位置です（上が 0）。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>width=</code></td>
+<td><code>width</code> は、幅です（SVG の <code>&lt;rect&gt;</code> なら四角の幅）。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>height=</code></td>
+<td><code>height</code> は、高さです。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
 <td><code>&lt;text&gt;</code></td>
 <td>SVG（線や図形で描く絵）の中に、文字を書くタグ。<code>&lt;text x="110" y="18" textAnchor="end"&gt;ラベル&lt;/text&gt;</code> は、決めた位置に、右そろえで文字を書きます。</td>
 <td>06 後編 7. グラフ</td>
@@ -922,6 +1564,106 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>DOCTYPE</code></td>
 <td><code>&lt;!DOCTYPE html&gt;</code> は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>required=</code></td>
+<td><code>required</code> は、「この欄は必ず入れる」という印です。空のまま送ろうとすると、ブラウザーが止めて知らせます（サーバー側でも、必ず確かめます）。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>&lt;ul&gt;</code></td>
+<td>順番の無い並び（点の付いた並び）のタグ。中に <code>&lt;li&gt;</code> を並べます。</td>
+<td>08 前編 7. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>&lt;li&gt;</code></td>
+<td>並び（<code>&lt;ul&gt;</code>・<code>&lt;ol&gt;</code>）の 1 つのタグ。</td>
+<td>08 前編 7. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>role=</code></td>
+<td><code>role="status"</code> は、その部分の役わりを、読み上げソフトに伝える印です。<code>status</code> は「お知らせ」で、変わった時に読み上げられます。<code>role="alert"</code> は、すぐ知らせる大事なお知らせです。</td>
+<td>08 前編 7. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>&lt;small&gt;</code></td>
+<td><code>&lt;small&gt;</code> は、補足の小さな文字（注意書き・おまけの情報）を表すタグです。</td>
+<td>08 後編 1. 画面の並び</td>
+</tr>
+<tr>
+<td><code>&lt;line&gt;</code></td>
+<td><code>&lt;line&gt;</code> は、SVG（線や図形で描く絵）の中で、直線を引くタグです。<code>x1</code>・<code>y1</code>（始まり）と <code>x2</code>・<code>y2</code>（終わり）の位置を書きます。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>x1=</code></td>
+<td>SVG の <code>&lt;line&gt;</code> の <code>x1</code>・<code>y1</code> は線の始まりの位置、<code>x2</code>・<code>y2</code> は終わりの位置です。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>y1=</code></td>
+<td>SVG の <code>&lt;line&gt;</code> の <code>y1</code> は、線の始まりの縦の位置です。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>x2=</code></td>
+<td>SVG の <code>&lt;line&gt;</code> の <code>x2</code> は、線の終わりの横の位置です。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>y2=</code></td>
+<td>SVG の <code>&lt;line&gt;</code> の <code>y2</code> は、線の終わりの縦の位置です。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>&lt;text&gt;</code></td>
+<td>SVG（線や図形で描く絵）の中に、文字を書くタグ。<code>&lt;text x="110" y="18" textAnchor="end"&gt;ラベル&lt;/text&gt;</code> は、決めた位置に、右そろえで文字を書きます。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>autocomplete=</code></td>
+<td><code>autocomplete="email"</code> は、ブラウザーに、「この欄にはメールアドレスを入れる」と伝え、覚えている値を出してもらう印です。<code>username</code>・<code>current-password</code>・<code>new-password</code> などがあります。</td>
+<td>08 後編 3. ログインの画面</td>
+</tr>
+<tr>
+<td><code>inputmode=</code></td>
+<td><code>inputmode="numeric"</code> は、スマホで入力する時に、数字のキーボードを出してもらう印です。</td>
+<td>08 後編 3. ログインの画面</td>
+</tr>
+<tr>
+<td><code>selected=</code></td>
+<td><code>&lt;option selected&gt;</code> の <code>selected</code> は、その選び肢を、最初から選んだ状態にする印です。</td>
+<td>08 後編 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>multiple=</code></td>
+<td><code>multiple</code> は、ファイル（や選び肢）を一度にいくつも選べるようにする印です。</td>
+<td>08 後編 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>&lt;script&gt;</code></td>
+<td><code>&lt;script src="../drawing.js"&gt;&lt;/script&gt;</code> は、ページで動かす JavaScript のファイルを読み込むタグです。</td>
+<td>08 後編 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>src=</code></td>
+<td><code>src</code> は、読み込むファイル（画像・スクリプト）の場所です。</td>
+<td>08 後編 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>style=</code></td>
+<td><code>style="display:inline"</code> は、そのタグだけに、直接 CSS を書く属性です。いくつもの所で使う見た目は、CSS のファイルに書きます。</td>
+<td>08 後編 7. 依頼の詳しい画面と、ボタンの操作</td>
+</tr>
+<tr>
+<td><code>&amp;lt;</code></td>
+<td><code>&amp;lt;</code> は、<code>&lt;</code> という文字そのものを表す書き方（文字参照）です。HTML では <code>&lt;</code> がタグの始まりの印なので、文字として見せたい時は <code>&amp;lt;</code> と書きます。<code>&amp;gt;</code> は <code>&gt;</code>、<code>&amp;amp;</code> は <code>&amp;</code>、<code>&amp;quot;</code> は <code>"</code> です。入力された文字をこの形に変えておくと、<code>&lt;script&gt;</code> を書かれても、ただの文字として表示されます（エスケープ）。</td>
+<td>10 6. XSS: 画面に、スクリプトを動かされる</td>
+</tr>
+<tr>
+<td><code>&amp;gt;</code></td>
+<td><code>&amp;gt;</code> は、<code>&gt;</code> という文字そのものを表す書き方（文字参照）です。</td>
+<td>10 6. XSS: 画面に、スクリプトを動かされる</td>
 </tr>
 <tr>
 <td><code>&lt;style&gt;</code></td>
@@ -939,13 +1681,33 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
-<td><code>&lt;ul&gt;</code></td>
-<td>順番の無い並び（点の付いた並び）のタグ。中に <code>&lt;li&gt;</code> を並べます。</td>
+<td><code>&lt;!-- --&gt;</code></td>
+<td>HTML では、<code>&lt;!--</code> から <code>--&gt;</code> までがコメントで、画面には出ません。</td>
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
-<td><code>&lt;li&gt;</code></td>
-<td>並び（<code>&lt;ul&gt;</code>・<code>&lt;ol&gt;</code>）の 1 つのタグ。</td>
+<td><code>min=</code></td>
+<td><code>&lt;input type="number" min="1" max="99"&gt;</code> の <code>min</code> は、入れられる一番小さな数です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>max=</code></td>
+<td><code>max</code> は、入れられる一番大きな数です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>selected</code></td>
+<td><code>selected</code> は、その選び肢（<code>&lt;option&gt;</code>）を、最初から選んだ状態にする印です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>cols=</code></td>
+<td><code>&lt;textarea cols="40"&gt;</code> の <code>cols</code> は、見える幅（だいたいの文字数）です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>checked</code></td>
+<td><code>checked</code> は、チェックボックスが最初からチェックされた状態にする印です。値は書かず、名前だけで ON になります。</td>
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
@@ -955,7 +1717,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-9">CSS</h2>
+<h2 id="cat-13">CSS</h2>
 <table>
 <thead>
 <tr>
@@ -981,6 +1743,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 5. CSS の基本</td>
 </tr>
 <tr>
+<td><code>:root</code></td>
+<td>CSS の <code>:root</code> は、ページ全体（いちばん外側の <code>&lt;html&gt;</code>）を選ぶ書き方です。ページのどこからでも使う色などの変数（<code>--color-text</code>）を、ここに書きます。</td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
+<td><code>--名前</code></td>
+<td>CSS の <code>--color-text: #0f172a;</code> のように <code>--</code> で始まる名前は、自分で決める変数（カスタムプロパティ）です。<code>color: var(--color-text);</code> で使います。色を 1 か所で決めておけば、変える時も 1 か所で済みます。</td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
+<td><code>#rrggbb</code></td>
+<td>CSS の <code>#0f172a</code> のような <code>#</code> と 6 けた（または 3 けた）の 16 進数は、色の書き方です。2 けたずつ、赤・緑・青の強さ（00〜ff）を表します。<code>#ffffff</code> は白、<code>#000000</code> は黒です。</td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
+<td><code>var()</code></td>
+<td>CSS の <code>var(--color-text)</code> は、<code>--</code> で始まる変数の値を使う書き方です。</td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
 <td><code>display:</code></td>
 <td>箱の並べ方を決める項目。<code>display: flex;</code> は「中身を横一列に並べる」、<code>display: grid;</code> は「ます目に並べる」、<code>display: none;</code> は「表示しない」です。</td>
 <td>01 7. 並べ方: flex と grid</td>
@@ -996,6 +1778,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>01 7. 並べ方: flex と grid</td>
 </tr>
 <tr>
+<td><code>/* */</code></td>
+<td>CSS では、<code>/*</code> から <code>*/</code> までがコメントです。</td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td><code>.クラス名</code></td>
+<td>CSS の <code>.note { … }</code> のように <code>.</code> で始まる名前は、「<code>class="note"</code> の付いたタグ全部」を選ぶ書き方（クラスセレクター）です。<code>{ }</code> の中の見た目が、その全部に付きます。</td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
 <td><code>grid-template-columns:</code></td>
 <td><code>display: grid</code> の、列の幅を決める項目。<code>160px 1fr</code> は「1 列目は 160px、2 列目は残り全部」。<code>fr</code> は「残りを分ける割合」です。</td>
 <td>01 7. 並べ方: flex と grid</td>
@@ -1003,6 +1795,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>gap:</code></td>
 <td><code>flex</code> や <code>grid</code> の中身どうしの間の幅を決める項目。<code>gap: 12px 16px;</code> は「行の間 12px、列の間 16px」。</td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td><code>数px</code></td>
+<td>CSS の <code>16px</code> の <code>px</code> は、画面の点（ピクセル）の数で表す大きさの単位です。</td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td><code>数fr</code></td>
+<td>CSS のグリッドの <code>1fr</code> は、「残りの場所を分ける割合」の単位です。<code>grid-template-columns: 1fr 2fr;</code> なら、残りを 1 対 2 で分けた 2 列になります。</td>
 <td>01 7. 並べ方: flex と grid</td>
 </tr>
 <tr>
@@ -1023,6 +1825,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>flex-direction:</code></td>
 <td><code>display: flex</code> の中身を並べる向きを決める項目。<code>row</code> は横（最初の値）、<code>column</code> は縦に並べます。</td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td><code>@media</code></td>
+<td>CSS の <code>@media (max-width: 640px) { … }</code> は、「画面の幅が 640px 以下の時だけ」の見た目を書く所です（メディアクエリ）。スマホでは 1 列にする、などに使います。</td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td><code>(max-width)</code></td>
+<td><code>@media</code> の <code>(max-width: 640px)</code> は、「画面の幅が 640px 以下」という条件です。<code>(min-width: …)</code> なら「以上」、<code>(prefers-color-scheme: dark)</code> なら「暗い色の設定の時」です。</td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td><code>minmax()</code></td>
+<td>CSS の <code>minmax(0, 1fr)</code> は、グリッドの列の幅を「いちばん小さくて 0、いちばん大きくて残りの 1 つ分」の範囲で決める書き方です。中身が長くても、列がはみ出さなくなります。</td>
 <td>01 8. 画面の幅に合わせる</td>
 </tr>
 <tr>
@@ -1095,9 +1912,307 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>透明さを決める項目。<code>1</code> で不透明、<code>0</code> で見えない。<code>0.85</code> は少しだけ透ける（ボタンにマウスを乗せた時の合図など）。</td>
 <td>11 B. サンプル集</td>
 </tr>
+<tr>
+<td><code>*</code></td>
+<td>CSS の <code>*</code> は、「全部のタグ」を選ぶ書き方です。<code>* { box-sizing: border-box; }</code> は、全部のタグの幅の数え方をそろえます。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>A B</code></td>
+<td>CSS の <code>.note-list li</code> のように、空白で区切って並べると、「<code>.note-list</code> の<strong>中にある</strong> <code>li</code>」を選びます（子孫セレクター）。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>:hover</code></td>
+<td>CSS の <code>button:hover</code> の <code>:hover</code> は、「マウスが乗っている間だけ」の見た目です。<code>:focus</code> は「キーボードで選ばれている間」、<code>:disabled</code> は「使えない時」です。</td>
+<td>11 B. サンプル集</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-10">JavaScript・TypeScript</h2>
+<h2 id="cat-14">コメント</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>//!</code></td>
+<td><code>//!</code> で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。<code>///</code>（すぐ下の関数や型の説明）と使い分けます。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>///</code></td>
+<td><code>///</code> で始まるコメントは、すぐ下の関数や型の「説明書」（ドキュメントコメント）です。<code>cargo doc</code> で説明のページになり、VS Code では、名前にマウスを乗せると表示されます。ふつうのコメント（<code>//</code>）とちがい、何の説明かが決まっています。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>//</code></td>
+<td><code>//</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、プログラムとしては無視されます。<code>// OS の種類を表示する</code> のように、何をしているかを日本語で書いておくと、あとで読み返す時に助かります。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-15">文字列の中の特別な書き方</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\n</code></td>
+<td>文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td><code>\\</code></td>
+<td>文字列の中に <code>\</code> そのもの（1 つ）を入れたい時は、<code>\\</code> と 2 つ書きます。<code>\</code> は、<code>\n</code> のような特別な書き方の始まりの印だからです。Windows の場所を <code>"C:\\Users"</code> と書くのも、この理由です（生の文字列 <code>r"C:\Users"</code> なら 1 つで済みます）。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>\n</code></td>
+<td>文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td><code>\x…</code></td>
+<td><code>\xff</code> のように <code>\x</code> の後ろに 16 進数を 2 けた書くと、その番号の 1 バイト（文字列なら 1 文字）を表します。<code>b"\xef\xbb\xbf"</code> は、UTF-8 のファイルの先頭に付くことがある、BOM という 3 バイトです。</td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td><code>\r</code></td>
+<td>文字列の中の <code>\r</code> は「行の頭に戻る」（CR）という、目に見えない文字です。Windows のファイルや HTTP の通信では、行の終わりを <code>\r\n</code>（CR と LF の 2 文字）で表します。</td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td><code>\n</code></td>
+<td>文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>\r</code></td>
+<td>文字列の中の <code>\r</code> は「行の頭に戻る」（CR）という、目に見えない文字です。Windows のファイルや HTTP の通信では、行の終わりを <code>\r\n</code>（CR と LF の 2 文字）で表します。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
+<td><code>\x…</code></td>
+<td><code>\xff</code> のように <code>\x</code> の後ろに 16 進数を 2 けた書くと、その番号の 1 バイト（文字列なら 1 文字）を表します。<code>b"\xef\xbb\xbf"</code> は、UTF-8 のファイルの先頭に付くことがある、BOM という 3 バイトです。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
+<td><code>\"</code></td>
+<td>文字列の中に <code>"</code> そのものを入れたい時は、<code>\"</code> と書きます。<code>"\"Rust\""</code> は、<code>"Rust"</code> という <code>"</code> 付きの文字になります。<code>\</code> を付けないと、そこで文字列が終わったと思われます。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
+<td><code>\\</code></td>
+<td>文字列の中に <code>\</code> そのもの（1 つ）を入れたい時は、<code>\\</code> と 2 つ書きます。<code>\</code> は、<code>\n</code> のような特別な書き方の始まりの印だからです。Windows の場所を <code>"C:\\Users"</code> と書くのも、この理由です（生の文字列 <code>r"C:\Users"</code> なら 1 つで済みます）。</td>
+<td>08 後編 8. 添付ファイル</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-16">正規表現</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>正規表現</code></td>
+<td>正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td><code>正規表現</code></td>
+<td>正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>\d</code></td>
+<td>正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>{n,m}</code></td>
+<td>正規表現の <code>{6}</code> は「すぐ前の物が、ちょうど 6 回」、<code>{8,12}</code> は「8 回から 12 回」を表します。<code>\d{6}</code> は「数字 6 けた」。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>正規表現</code></td>
+<td>正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>\s</code></td>
+<td>正規表現の <code>\s</code> は、「空白 1 つ」（スペース・タブ・改行など）を表します。<code>\s*</code> は「空白が 0 個以上」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>\.</code></td>
+<td>正規表現の <code>\.</code> のように、記号の前に <code>\</code> を付けると、その記号を特別な意味にせず、文字そのものとして表します。<code>\.</code> は <code>.</code>、<code>\/</code> は <code>/</code> です。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>[…]</code></td>
+<td>正規表現の <code>[ ]</code> は、「中に書いた文字の、どれか 1 つ」を表します。<code>[0-9a-zA-Z_-]</code> は「数字・英字・<code>_</code>・<code>-</code> のどれか」、<code>[.-]</code> は「<code>.</code> か <code>-</code>」。<code>-</code> で範囲を書けます。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td>正規表現の <code>.</code> は、「どんな 1 文字でも」を表します。<code>.</code> という文字そのものを表したい時は、<code>\.</code> と書きます。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>(?:…)</code></td>
+<td>正規表現の <code>(?: )</code> は、取り出さないまとまりです。<code>(?:^&#124;; )</code> は「行の頭か、<code>;</code> のどちらか」をまとめるだけで、取り出す番号には数えません。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>[^…]</code></td>
+<td>正規表現の <code>[^ ]</code> は、「中に書いた文字<strong>以外</strong>の 1 文字」を表します。<code>[^;]+</code> は「<code>;</code> 以外の文字が 1 つ以上」、<code>[^\x21-\x7E]</code> は「英数字と記号（ASCII の見える文字）以外」。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td>正規表現の <code>&#124;</code> は、「左か右のどちらか」を表します。<code>api/&#124;admin/</code> は「<code>api/</code> か <code>admin/</code>」。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>(…)</code></td>
+<td>正規表現の <code>( )</code> は、まとまり（グループ）を作ります。合った文字のうち、<code>( )</code> の中の部分だけを、あとから取り出せます（<code>m[1]</code>・<code>m.group(1)</code>・<code>$1</code> など）。<code>(…)?</code> のように、まとまりごとくり返しや省略もできます。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>(?=…)</code></td>
+<td>正規表現の <code>(?= )</code> は「この後ろに、こういう形が続く時だけ」、<code>(?! )</code> は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。<code>^(?!api/&#124;admin/).*$</code> は「<code>api/</code> や <code>admin/</code> で始まらない物、全部」。中の文字は、合わせた文字には入りません。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td>正規表現の <code>&#124;</code> は、「左か右のどちらか」を表します。<code>api/&#124;admin/</code> は「<code>api/</code> か <code>admin/</code>」。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>\d</code></td>
+<td>正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td><code>\.</code></td>
+<td>正規表現の <code>\.</code> のように、記号の前に <code>\</code> を付けると、その記号を特別な意味にせず、文字そのものとして表します。<code>\.</code> は <code>.</code>、<code>\/</code> は <code>/</code> です。</td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>正規表現の <code>?</code> は、「すぐ前の物が、あっても無くてもよい（0 回か 1 回）」を表します。<code>(\/edit)?</code> は「<code>/edit</code> があってもなくてもよい」。</td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-17">日時の書式</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>%Y</code></td>
+<td>日時の書式の <code>%Y</code> は、4 けたの年（<code>2026</code>）です。<code>strftime("%Y-%m-%d")</code> → <code>2026-11-05</code>。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>%m</code></td>
+<td>日時の書式の <code>%m</code> は、2 けたの月（<code>01</code>〜<code>12</code>）です。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>%d</code></td>
+<td>日時の書式の <code>%d</code> は、2 けたの日（<code>01</code>〜<code>31</code>）です。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>%H</code></td>
+<td>日時の書式の <code>%H</code> は、24 時間の形の時（<code>00</code>〜<code>23</code>）です。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>%M</code></td>
+<td>日時の書式の <code>%M</code>（大文字）は、2 けたの分（<code>00</code>〜<code>59</code>）です。月の <code>%m</code>（小文字）と取り違えないようにします。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>%S</code></td>
+<td>日時の書式の <code>%S</code>（大文字）は、2 けたの秒（<code>00</code>〜<code>59</code>）です。</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td><code>%f</code></td>
+<td>日時の書式の <code>%f</code> は、秒より細かい部分（Python では 6 けたのマイクロ秒）です。同じ秒に作ったファイルの名前が、重ならないようにする時に使います。</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-18">JavaScript・TypeScript</h2>
 <table>
 <thead>
 <tr>
@@ -1134,7 +2249,27 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 <tr>
 <td><code>=&gt;</code></td>
-<td>アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; \</code>…${path}`<code>は「</code>path` を受け取って文字列を返す関数」。</td>
+<td>アロー関数（短く書ける関数）の矢印。<code>(path) =&gt; `…${path}`</code> は「<code>path</code> を受け取って文字列を返す関数」。</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td><code>//</code></td>
+<td>JavaScript・TypeScript では、<code>//</code> から行の終わりまでがコメントです。</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td><code><code>${…}</code></code></td>
+<td><code>`…`</code>（バッククォートで囲んだ文字。テンプレート文字列）の中の <code>${ }</code> には、値や式を入れられます。<code>`エラー ${res.status}`</code> は、<code>res.status</code> が 404 なら <code>エラー 404</code> になります。改行も、そのまま書けます。</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td><code>条件 ? A : B</code></td>
+<td><code>条件 ? A : B</code> は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。<code>user.isAdmin ? "管理者" : "一般"</code>。<code>if</code> とちがい、値を返すので、そのまま変数や表示に使えます。</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td><code>.length</code></td>
+<td><code>.length</code> は、並びの数や、文字の数です。文字の場合は、UTF-16 という数え方なので、絵文字などは 2 と数えることがあります（<code>[...文字].length</code> なら、見た目の文字の数に近くなります）。</td>
 <td>02 2. 変数・配列・オブジェクト・関数</td>
 </tr>
 <tr>
@@ -1145,6 +2280,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>default</code></td>
 <td><code>export default</code> は、そのファイルから「いちばんの物」を 1 つ外に出す書き方。読み込む側は <code>import 名前 from "./ファイル"</code> と、好きな名前で受け取れます。</td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td><code>/* */</code></td>
+<td>JavaScript・TypeScript では、<code>/*</code> から <code>*/</code> までがコメントです。何行にもまたがって書けます。</td>
 <td>02 3. 依頼の状態を型にする</td>
 </tr>
 <tr>
@@ -1173,6 +2313,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 4. 配列の道具: 絞る・変える・まとめる</td>
 </tr>
 <tr>
+<td><code>!==</code></td>
+<td><code>a !== b</code> は、「a と b が同じではない」（型も含めて比べる）です。<code>===</code>（同じ）の反対です。</td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
 <td><code>as</code></td>
 <td>TypeScript で「この値は、この型として扱う」と伝える書き方（<code>値 as 型</code>）。</td>
 <td>02 5. 図面を JSON で保存する</td>
@@ -1185,6 +2330,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.parse()</code></td>
 <td><code>JSON.parse(文字列)</code> は、JSON の文字列を、JavaScript のオブジェクトや配列に変えます。逆は <code>JSON.stringify(値)</code> です。</td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td><code>a &amp;&amp; b</code> は、「a と b の両方が当てはまる」（かつ）です。左が当てはまらなければ、右は調べません。</td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td><code>&#124;&#124;</code></td>
+<td><code>a &#124;&#124; b</code> は、「a か b のどちらか」（または）です。<code>el.innerText &#124;&#124; el.getAttribute("name") &#124;&#124; ""</code> のように、「左が空なら右を使う」という使い方もします（<code>0</code> や <code>""</code> も「空」とみなされるので、<code>null</code>・<code>undefined</code> だけを見たい時は <code>??</code> を使います）。</td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td><code>Array</code></td>
+<td><code>Array</code> は、並び（配列）の型です。<code>Array.isArray(値)</code> で、値が並びかどうかを調べられます。</td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td><code>TextEncoder</code></td>
+<td><code>new TextEncoder().encode(文字)</code> は、文字を UTF-8 のバイトの並びにします。<code>.length</code> で、バイトの数（大きさ）が分かります。</td>
 <td>02 5. 図面を JSON で保存する</td>
 </tr>
 <tr>
@@ -1208,6 +2373,56 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 7. サーバーとのやり取り</td>
 </tr>
 <tr>
+<td><code>!</code></td>
+<td><code>!res.ok</code> のように前に付けた <code>!</code> は、「〜ではない」です。<code>if (!res.ok)</code> は「うまくいかなかったら」。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>Promise</code></td>
+<td><code>Promise</code> は、「あとで終わる処理」（サーバーの答えを待つ、時間を待つ）を表す物です。<code>await</code> を付けると、終わるまで待って、結果を受け取れます。<code>new Promise((resolve) =&gt; …)</code> で、自分で作ることもできます。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>Error</code></td>
+<td><code>new Error("説明")</code> は、エラーを作ります。<code>throw new Error(…)</code> でエラーを起こし、<code>try { … } catch (err) { … }</code> で受け止めます。<code>err.message</code> で説明の文を読めます。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>fetch()</code></td>
+<td><code>fetch(URL)</code> は、サーバーに HTTP の要求を送る関数です。<code>await fetch(…)</code> で答えを待ち、<code>res.ok</code>（うまくいったか）・<code>res.status</code>（状態コード）・<code>await res.json()</code>（JSON の中身）を読みます。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>.ok</code></td>
+<td><code>fetch</code> の答えの <code>.ok</code> は、状態コードが 200〜299（うまくいった）なら <code>true</code> です。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>({ 名前 })</code></td>
+<td>関数の引数の <code>({ status, label })</code> は、渡されたオブジェクトから、<code>status</code> と <code>label</code> を取り出して受け取る書き方です。React の部品（コンポーネント）が props を受け取る時によく使います。</td>
+<td>03 2. 部品</td>
+</tr>
+<tr>
+<td><code>const [ … ] =</code></td>
+<td><code>const [a, b] = 並び;</code> は、並びの 0 番目を <code>a</code> に、1 番目を <code>b</code> に取り出す書き方です（分割代入）。React の <code>const [count, setCount] = useState(0);</code> もこれで、「今の値」と「値を変える関数」の 2 つを受け取っています。</td>
+<td>03 3. props と state</td>
+</tr>
+<tr>
+<td><code>/…/</code></td>
+<td>JavaScript の <code>/…/</code> は、正規表現（文字の形を表す書き方）をそのまま書く形です。<code>/\d+/</code> は「数字が 1 つ以上」。<code>.match(/…/)</code>・<code>.test(…)</code>・<code>.split(/…/)</code> などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td><code>() =&gt;</code></td>
+<td><code>() =&gt; { … }</code> は、名前の無い関数（アロー関数）の書き方です。<code>( )</code> の中が引数、<code>=&gt;</code> の右が中身です。<code>(e) =&gt; setKeyword(e.target.value)</code> のように、1 つの式なら <code>{ }</code> を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td><code>.target</code></td>
+<td>イベント（<code>e</code>）の <code>.target</code> は、イベントが起きたタグ（入力欄など）です。<code>e.target.value</code> で、入力欄に今入っている文字を読めます。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
 <td><code>.trim()</code></td>
 <td>JavaScript・TypeScript で、文字列の前後の空白を取り除いたものを返すメソッド。</td>
 <td>03 5. 入力フォーム</td>
@@ -1218,9 +2433,99 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 5. 入力フォーム</td>
 </tr>
 <tr>
+<td><code>Set</code></td>
+<td><code>new Set(並び)</code> は、同じ値を 1 つにまとめた集まりを作ります。<code>new Set(chosen).size !== chosen.length</code> は、「重なりを消すと数が減る」＝「同じ人が 2 回選ばれている」の確かめです。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>.size</code></td>
+<td><code>Set</code> や <code>Map</code> の <code>.size</code> は、中の数です。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
 <td><code>.round()</code></td>
 <td><code>Math.round(x)</code> は、小数を四捨五入して整数にする関数です。</td>
 <td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>Math</code></td>
+<td><code>Math</code> は、計算の関数が集まった物です。<code>Math.round(3.6)</code> は四捨五入で <code>4</code>、<code>Math.max(1, 5)</code> は大きい方の <code>5</code> です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>.currentTarget</code></td>
+<td>イベントの <code>.currentTarget</code> は、イベントを受け取る処理（<code>onPointerDown</code> など）を付けたタグそのものです（<code>.target</code> は、中の、実際に押された物のことがあります）。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>.clientX</code></td>
+<td>マウスやペンのイベントの <code>.clientX</code>・<code>.clientY</code> は、画面の左上からの位置（ピクセル）です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>.clientY</code></td>
+<td><code>.clientY</code> は、画面の上からの位置（ピクセル）です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>defineConfig()</code></td>
+<td><code>defineConfig({ … })</code> は、設定ファイル（Vite の <code>vite.config</code> や Playwright の <code>playwright.config</code>）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。</td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
+<td><code>Object</code></td>
+<td><code>Object.values(obj)</code> は、オブジェクトの値だけを並びにします。<code>Object.keys(obj)</code> はキーだけ、<code>Object.entries(obj)</code> は <code>[キー, 値]</code> の組の並びです。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>String</code></td>
+<td><code>String(値)</code> は、値を文字にします。<code>values.map(String)</code> は、並びの全部を文字にします。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>FormData</code></td>
+<td><code>FormData</code> は、フォームの中身（ファイルも含む）を、送れる形にまとめる入れ物です。<code>fetch</code> の <code>body</code> に入れて、ファイルを送ります。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>decodeURIComponent()</code></td>
+<td><code>decodeURIComponent("%E5%B1%B1")</code> は、URL やクッキーの中で <code>%XX</code> の形にした文字を、元の文字（山）に戻します。反対は <code>encodeURIComponent()</code> です。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>.cookie</code></td>
+<td><code>document.cookie</code> は、そのページのクッキーを、<code>名前=値; 名前=値</code> の形の文字で読みます（<code>HttpOnly</code> のクッキーは読めません）。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>async () =&gt;</code></td>
+<td><code>async () =&gt; { … }</code> は、中で <code>await</code>（終わるまで待つ）を使える、名前の無い関数（アロー関数）です。</td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td><code>Number</code></td>
+<td><code>Number("42")</code> は、文字を数にします。数にできない時は <code>NaN</code>（数ではない）になります。</td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td><code>/…/g</code></td>
+<td>正規表現の後ろの <code>g</code> は、「合う所を全部」という指定（フラグ）です。<code>.replace(/a/g, "b")</code> は、全部の <code>a</code> を <code>b</code> にします（<code>g</code> が無いと、最初の 1 つだけ）。<code>i</code> は大文字・小文字を区別しない指定です。</td>
+<td>06 後編 5. 依頼を出す</td>
+</tr>
+<tr>
+<td><code>setTimeout()</code></td>
+<td><code>setTimeout(() =&gt; { … }, 3000)</code> は、3000 ミリ秒（3 秒）たってから、中の処理を 1 回動かします。返ってくる番号を <code>clearTimeout(番号)</code> に渡すと、取りやめにできます。</td>
+<td>06 後編 5. 依頼を出す</td>
+</tr>
+<tr>
+<td><code>clearTimeout()</code></td>
+<td><code>clearTimeout(timer)</code> は、<code>setTimeout</code> で予約した処理を取りやめにします。React では、部品が消える時の後片づけ（<code>useEffect</code> の <code>return () =&gt; …</code>）で呼びます。</td>
+<td>06 後編 5. 依頼を出す</td>
+</tr>
+<tr>
+<td><code>Date</code></td>
+<td><code>new Date(文字)</code> は、日時の値を作ります。<code>.toLocaleString("ja-JP")</code> で、日本の形の日時の文字になります。</td>
+<td>06 後編 6. 依頼の詳細と、操作のボタン</td>
 </tr>
 <tr>
 <td><code>.createElementNS()</code></td>
@@ -1258,6 +2563,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 後編 6. 図面</td>
 </tr>
 <tr>
+<td><code>.value</code></td>
+<td><code>.value</code> は、入力欄に今入っている文字や、クッキーなどの値です。</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td><code>.textContent</code></td>
+<td><code>.textContent</code> は、タグの中の文字です。入れた文字は、HTML としてではなく、ただの文字として表示されるので、安全です（<code>innerHTML</code> に入れると、タグとして動いてしまいます）。</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
 <td><code>.split()</code></td>
 <td>JavaScript・TypeScript で、文字列を区切りで分けて配列にするメソッド。<code>"a,b".split(",")</code> は <code>["a", "b"]</code>。正規表現（<code>/,/</code>）でも区切れます。</td>
 <td>11 B. サンプル集</td>
@@ -1268,18 +2583,38 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
+<td><code>const { … } =</code></td>
+<td><code>const { name, email } = user;</code> は、オブジェクトの中の <code>name</code> と <code>email</code> を、同じ名前の変数に取り出す書き方です（分割代入）。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
 <td><code>.now()</code></td>
 <td><code>performance.now()</code> は、ページ（プログラム）が始まってからの時間をミリ秒で返します。<code>Date.now()</code> は、1970 年 1 月 1 日からのミリ秒です。どちらも、かかった時間を計るのに使えます。</td>
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
-<td><code>.add()</code></td>
-<td><code>Set</code>（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。</td>
+<td><code>SyntaxError</code></td>
+<td><code>SyntaxError</code> は、書き方が正しくない時のエラーの種類です。<code>JSON.parse("壊れた文字")</code> は、<code>SyntaxError</code> を起こします。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td><code>sum += n</code> は <code>sum = sum + n</code> の短い形です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>Map</code></td>
+<td><code>new Map()</code> は、キーと値の組を覚えておく入れ物です。<code>.set(キー, 値)</code>・<code>.get(キー)</code>・<code>.has(キー)</code> で使います。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>Intl</code></td>
+<td><code>Intl</code> は、国や言葉に合わせた表示（数の区切り・通貨・日付）の道具が集まった物です。<code>new Intl.NumberFormat("ja-JP").format(1234567)</code> → <code>1,234,567</code>。</td>
 <td>11 B. サンプル集</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cat-11">TypeScript</h2>
+<h2 id="cat-19">TypeScript</h2>
 <table>
 <thead>
 <tr>
@@ -1292,6 +2627,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>function</code></td>
 <td>関数（ひとまとまりの処理）を作る書き方。<code>function greet(name: string): string { … }</code> は、「文字列の <code>name</code> を受け取って、文字列を返す関数 <code>greet</code>」です。</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td><code>型[]</code></td>
+<td><code>string[]</code> のように型の後ろに <code>[]</code> を付けると、「その型の並び（配列）」という型になります。<code>Array&lt;string&gt;</code> と書いても同じです。</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td><code>boolean</code> は、<code>true</code>（はい）か <code>false</code>（いいえ）の型です。</td>
 <td>02 2. 変数・配列・オブジェクト・関数</td>
 </tr>
 <tr>
@@ -1327,6 +2672,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>===</code></td>
 <td>「型も値も同じか」を比べる書き方。<code>==</code> は型を勝手にそろえてから比べて思わぬ結果になるので、ふつうは <code>===</code> を使います（違うかは <code>!==</code>）。</td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td><code>A &#124; B</code></td>
+<td><code>type RequestStatus = "下書き" &#124; "回覧中" &#124; "承認済み";</code> の <code>&#124;</code> は、「このどれか」を表す型です（ユニオン型）。決めた値以外を入れると、TypeScript がエラーで教えてくれます。<code>string &#124; null</code> は「文字か、null」です。</td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td><code>import type</code></td>
+<td><code>import type { RequestStatus } from "./types.ts";</code> は、「型だけ」を読み込む書き方です。型は動く時には消えるので、動くプログラムには何も残りません。<code>import { useState, type FormEvent }</code> のように、1 つずつ <code>type</code> を付けることもできます。</td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td><code>名前?:</code></td>
+<td><code>note?: string;</code> のように名前の後ろに <code>?</code> を付けると、「この項目は、無くてもよい」という意味になります。無い時の値は <code>undefined</code> です。</td>
 <td>02 3. 依頼の状態を型にする</td>
 </tr>
 <tr>
@@ -1385,6 +2745,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>02 5. 図面を JSON で保存する</td>
 </tr>
 <tr>
+<td><code>Record</code></td>
+<td><code>Record&lt;RequestStatus, string&gt;</code> は、「キーが <code>RequestStatus</code> の全部で、値が文字」のオブジェクトの型です。キーの書き忘れを、TypeScript が見つけてくれます。</td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
 <td><code>void</code></td>
 <td>「何も返さない」ことを表す型。<code>Promise&lt;void&gt;</code> は「終わったことだけを知らせる約束」です。</td>
 <td>02 7. サーバーとのやり取り</td>
@@ -1417,6 +2782,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.error()</code></td>
 <td><code>console.error(…)</code> は、エラーの知らせを出す関数です（<code>console.log</code> のエラー版）。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>名前&lt;型&gt;()</code></td>
+<td><code>useState&lt;RequestItem[] &#124; null&gt;(null)</code> や <code>res.json&lt;T&gt;()</code> のように、関数の名前の後ろの <code>&lt; &gt;</code> は、「どの型で扱うか」を指定する書き方です（ジェネリクス）。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>型&lt;型&gt;</code></td>
+<td><code>Promise&lt;void&gt;</code>・<code>Record&lt;string, unknown&gt;</code> のように、型の後ろの <code>&lt; &gt;</code> には、中に入る型を書きます。<code>Promise&lt;void&gt;</code> は「終わると何も返さない、あとで終わる処理」です。</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td><code>AddressInfo</code></td>
+<td><code>AddressInfo</code> は、Node.js のサーバーが待ち受けている場所（アドレスとポート番号）の型です。</td>
 <td>02 7. サーバーとのやり取り</td>
 </tr>
 <tr>
@@ -1465,6 +2845,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 7. 画面の切りかえと、部品の組み立て</td>
 </tr>
 <tr>
+<td><code>値!</code></td>
+<td><code>document.getElementById("root")!</code> の最後の <code>!</code> は、「これは null ではないと、自分が保証する」と TypeScript に伝える印です（非 null 表明）。本当に null だと、動く時にエラーになるので、確かな時だけ使います。</td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
 <td><code>class</code></td>
 <td>クラス（データと、それを扱うメソッドをまとめた設計図）を作る書き方。<code>class ApiError extends Error { … }</code>。<code>new ApiError(…)</code> で作ります。</td>
 <td>06 後編 3. サーバーとの窓口</td>
@@ -1505,6 +2890,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 後編 3. サーバーとの窓口</td>
 </tr>
 <tr>
+<td><code>RequestInit</code></td>
+<td><code>RequestInit</code> は、<code>fetch(URL, 設定)</code> の 2 つ目に渡す「設定」（<code>method</code>・<code>headers</code>・<code>body</code> など）の型です。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
 <td><code>.test()</code></td>
 <td>正規表現が、文字列に合うかを <code>true</code>・<code>false</code> で返すメソッド。<code>/.(jpe?g&#124;png&#124;pdf)$/i.test(名前)</code> は「拡張子が JPG・PNG・PDF か」。</td>
 <td>06 後編 5. 依頼を出す</td>
@@ -1527,11 +2917,6 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.ceil()</code></td>
 <td><code>Math.ceil(x)</code> は、小数を切り上げて整数にする関数です（大きさを KB で見せる時など）。</td>
-<td>06 後編 6. 依頼の詳細と、操作のボタン</td>
-</tr>
-<tr>
-<td><code>&lt;RequestDetail&gt;</code></td>
-<td><code>call&lt;RequestDetail&gt;(…)</code> の <code>&lt;RequestDetail&gt;</code> は、画面のタグではなく、型引数（この関数が返す物の型を伝える書き方）です。<code>RequestDetail</code> は <code>types.ts</code> で決める、依頼 1 件のくわしい中身の型です。</td>
 <td>06 後編 6. 依頼の詳細と、操作のボタン</td>
 </tr>
 <tr>
@@ -1615,6 +3000,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
+<td><code>as const</code></td>
+<td><code>as const</code> は、「この値は、中身も含めて変えない、決まった値」にする印です。<code>["下書き", "回覧中"] as const</code> の型は、ただの <code>string[]</code> ではなく、2 つの決まった文字の並びになります。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
 <td><code>.all()</code></td>
 <td><code>Promise.all([…])</code> は、いくつかの <code>Promise</code>（時間のかかる処理）を同時に待って、全部の結果を配列で返す関数です。1 つでも失敗すると、全体が失敗します。</td>
 <td>11 B. サンプル集</td>
@@ -1661,7 +3051,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-12">React</h2>
+<h2 id="cat-20">React</h2>
 <table>
 <thead>
 <tr>
@@ -1674,6 +3064,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>&lt;span&gt;</code></td>
 <td>文の一部分を囲む、特別な意味の無いタグ（JSX の中でも HTML と同じ）。状態の札など、一部だけ見た目を変える時に使います。</td>
+<td>03 2. 部品</td>
+</tr>
+<tr>
+<td><code>className=</code></td>
+<td>JSX では、HTML の <code>class</code> の代わりに <code>className</code> と書きます（<code>class</code> は JavaScript の言葉として使われているからです）。<code>className="btn-primary"</code>。</td>
 <td>03 2. 部品</td>
 </tr>
 <tr>
@@ -1732,6 +3127,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
 </tr>
 <tr>
+<td><code>placeholder=</code></td>
+<td><code>placeholder="件名でしぼる"</code> は、入力欄が空の時に、うすく見せる例の文字です。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td><code>value=</code></td>
+<td>入力欄の <code>value={keyword}</code> は、「入力欄に表示する値は、この変数」という結び付けです。<code>onChange</code> で変数を変えると、表示も変わります（制御されたコンポーネント）。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td><code>onChange=</code></td>
+<td><code>onChange={(e) =&gt; setKeyword(e.target.value)}</code> は、入力欄の中身が変わるたびに動く処理です。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td><code>key=</code></td>
+<td><code>key={r.id}</code> は、並びを <code>map</code> で表示する時に、1 つずつに付ける「見分けの印」です。React は、これで、どれが増えた・消えた・動いたかを見分けます。並びの中で重ならない値（番号など）にします。</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
 <td><code>.preventDefault()</code></td>
 <td>ブラウザーがふつうにする動き（フォームを送るとページを移動する など）を止めるメソッド。React でフォームを扱う時は、<code>onSubmit</code> の最初で <code>e.preventDefault()</code> を呼びます。</td>
 <td>03 5. 入力フォーム</td>
@@ -1772,6 +3187,51 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 5. 入力フォーム</td>
 </tr>
 <tr>
+<td><code>{条件 &amp;&amp; …}</code></td>
+<td>JSX の <code>{errors.length &gt; 0 &amp;&amp; &lt;ul&gt;…&lt;/ul&gt;}</code> は、「条件が合う時だけ、右を表示する」書き方です。合わない時は、何も表示しません。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>onSubmit=</code></td>
+<td><code>&lt;form onSubmit={handleSubmit}&gt;</code> は、フォームを送った時（送信ボタン・Enter）に動く処理です。中で <code>e.preventDefault()</code> を呼ぶと、ページの読み直しを止められます。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>role=</code></td>
+<td><code>role="alert"</code> は、その部分の役わりを、読み上げソフトに伝える印です。<code>alert</code> は、すぐ知らせる大事なお知らせです。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>htmlFor=</code></td>
+<td>JSX では、<code>&lt;label&gt;</code> の <code>for</code> の代わりに <code>htmlFor</code> と書きます。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>id=</code></td>
+<td><code>id</code> は、ページの中で 1 つだけの名前です。<code>&lt;label htmlFor="title"&gt;</code> と組で使います。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>rows=</code></td>
+<td><code>&lt;textarea rows={3}&gt;</code> の <code>rows</code> は、見える行の数です。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>type=</code></td>
+<td><code>&lt;input type="date"&gt;</code>・<code>&lt;button type="submit"&gt;</code> の <code>type</code> は、入力欄やボタンの種類です。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>aria-*=</code></td>
+<td><code>aria-label="…"</code> のように <code>aria-</code> で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td><code>disabled=</code></td>
+<td><code>disabled={sending}</code> は、<code>sending</code> が true の間、ボタンを押せなくします（2 回送るのを防ぎます）。</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
 <td><code>&lt;svg&gt;</code></td>
 <td>図（線や四角）を描くタグ。中に <code>&lt;rect&gt;</code>（四角）・<code>&lt;line&gt;</code>（線）などを並べます。拡大しても線がぼやけません。</td>
 <td>03 6. 図面の画面</td>
@@ -1784,6 +3244,46 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>&lt;pre&gt;</code></td>
 <td>中の文字を、空白や改行もそのまま表示するタグ。JSON を見やすく表示する時に使います。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>viewBox=</code></td>
+<td><code>&lt;svg viewBox="0 0 400 300"&gt;</code> の <code>viewBox</code> は、SVG の絵の中の座標の範囲です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>onPointerDown=</code></td>
+<td><code>onPointerDown</code> は、マウス・ペン・指で押した瞬間に動く処理です。<code>onPointerUp</code> は離した時です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>onPointerUp=</code></td>
+<td><code>onPointerUp</code> は、マウス・ペン・指を離した時に動く処理です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>x=</code></td>
+<td>SVG の <code>x</code>・<code>y</code> は、図形を置く位置です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>y=</code></td>
+<td>SVG の <code>y</code> は、図形を置く縦の位置です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>width=</code></td>
+<td><code>width</code> は、幅です。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>height=</code></td>
+<td><code>height</code> は、高さです。</td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td><code>onClick=</code></td>
+<td><code>onClick={() =&gt; …}</code> は、押された時に動く処理です。</td>
 <td>03 6. 図面の画面</td>
 </tr>
 <tr>
@@ -1802,6 +3302,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 7. 画面の切りかえと、部品の組み立て</td>
 </tr>
 <tr>
+<td><code>&lt;&gt;…&lt;/&gt;</code></td>
+<td>JSX の <code>&lt;&gt; … &lt;/&gt;</code> は、名前の無い入れ物（フラグメント）です。部品は 1 つの物を返す決まりなので、いくつも並べたい時に、余分なタグを増やさずに包みます。</td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
+<td><code>href=</code></td>
+<td><code>&lt;a href="#/"&gt;</code> の <code>href</code> は、リンク先です。<code>#/</code> で始まる場所は、ページを読み直さずに、画面の中だけで切りかえるのに使っています。</td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
 <td><code>.render()</code></td>
 <td><code>createRoot(要素).render(&lt;App /&gt;)</code> は、React の部品（ここでは <code>&lt;App /&gt;</code>）を、その要素の中に表示します。React の画面は、ここから始まります。</td>
 <td>03 7. 画面の切りかえと、部品の組み立て</td>
@@ -1812,9 +3322,29 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>03 7. 画面の切りかえと、部品の組み立て</td>
 </tr>
 <tr>
+<td><code>createRoot()</code></td>
+<td><code>createRoot(document.getElementById("root")!)</code> は、HTML の <code>&lt;div id="root"&gt;</code> の中に、React の画面を描く場所を作る関数です。<code>.render(&lt;App /&gt;)</code> で、いちばん外側の部品を描きます。</td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
+<td><code>react()</code></td>
+<td><code>react()</code> は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。</td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
 <td><code>useCallback()</code></td>
 <td>関数を覚えておき、描き直しのたびに作り直さないようにするフック。<code>useEffect</code> の見張る値に関数を入れる時などに使います。</td>
 <td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td><code>maxLength=</code></td>
+<td>JSX の <code>maxLength={100}</code> は、入力できる文字の数の上限です（HTML の <code>maxlength</code>）。</td>
+<td>06 後編 5. 依頼を出す</td>
+</tr>
+<tr>
+<td><code>accept=</code></td>
+<td><code>accept=".jpg,.jpeg,.png,.pdf"</code> は、選べるファイルの種類です（サーバー側でも必ず確かめます）。</td>
+<td>06 後編 5. 依頼を出す</td>
 </tr>
 <tr>
 <td><code>&lt;ol&gt;</code></td>
@@ -1837,9 +3367,24 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 後編 7. グラフ</td>
 </tr>
 <tr>
+<td><code>transform=</code></td>
+<td>SVG の <code>transform="translate(0 30)"</code> は、図形を動かす（ずらす）指定です。</td>
+<td>06 後編 7. グラフ</td>
+</tr>
+<tr>
+<td><code>textAnchor=</code></td>
+<td>SVG の <code>textAnchor="end"</code> は、文字を、置いた位置に右端をそろえて書く指定です（<code>middle</code> で真ん中）。</td>
+<td>06 後編 7. グラフ</td>
+</tr>
+<tr>
+<td><code>rx=</code></td>
+<td>SVG の <code>&lt;rect rx="4"&gt;</code> の <code>rx</code> は、四角の角を丸くする大きさです。</td>
+<td>06 後編 7. グラフ</td>
+</tr>
+<tr>
 <td><code>&lt;ol&gt;</code></td>
 <td>番号の付いた並びのタグ。中に <code>&lt;li&gt;</code> を並べます（回覧の順番など）。</td>
-<td>11 B. サンプル集</td>
+<td>08 後編 7. 依頼の詳しい画面と、ボタンの操作</td>
 </tr>
 <tr>
 <td><code>&lt;section&gt;</code></td>
@@ -1847,8 +3392,13 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
-<td><code>&lt;b&gt;</code></td>
-<td>文字を太くするタグ（JSX の中でも HTML と同じ）。</td>
+<td><code>{/* */}</code></td>
+<td>JSX の中のコメントは、<code>{/* … */}</code> と書きます。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>checked=</code></td>
+<td><code>checked={onlyOpen}</code> は、チェックボックスの ON・OFF を、変数と結び付けます。</td>
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
@@ -1858,7 +3408,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-13">練習アプリで作る物（TypeScript）</h2>
+<h2 id="cat-21">練習アプリで作る物（TypeScript）</h2>
 <table>
 <thead>
 <tr>
@@ -1869,28 +3419,8 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
-<td><code>.me()</code></td>
-<td><code>api.ts</code> で作る関数の 1 つで、<code>/api/me/</code>（今ログインしている人）を問い合わせます。この巻の後の方で作ります。</td>
-<td>06 後編 4. ログインと、画面の切りかえ</td>
-</tr>
-<tr>
 <td><code>.csrf()</code></td>
 <td><code>api.ts</code> で作る関数の 1 つで、<code>/api/csrf/</code> を呼んで、CSRF の札（クッキー）を先に受け取ります。</td>
-<td>06 後編 4. ログインと、画面の切りかえ</td>
-</tr>
-<tr>
-<td><code>&lt;FormPage&gt;</code></td>
-<td>依頼の作成・編集の画面の部品（コンポーネント）。この巻の後の方で作ります。</td>
-<td>06 後編 4. ログインと、画面の切りかえ</td>
-</tr>
-<tr>
-<td><code>&lt;DetailPage&gt;</code></td>
-<td>依頼 1 件のくわしい画面の部品。この巻の後の方で作ります。</td>
-<td>06 後編 4. ログインと、画面の切りかえ</td>
-</tr>
-<tr>
-<td><code>&lt;StatsPage&gt;</code></td>
-<td>集計の画面の部品（グラフを SVG で描く）。この巻の後の方で作ります。</td>
 <td>06 後編 4. ログインと、画面の切りかえ</td>
 </tr>
 <tr>
@@ -1904,23 +3434,8 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 後編 5. 依頼を出す</td>
 </tr>
 <tr>
-<td><code>.action()</code></td>
-<td><code>api.ts</code> で作る関数の 1 つで、依頼に操作（出し直し・取り下げなど）を送ります。</td>
-<td>06 後編 5. 依頼を出す</td>
-</tr>
-<tr>
 <td><code>.upload()</code></td>
 <td><code>api.ts</code> で作る関数の 1 つで、添付ファイルを 1 つ送ります。</td>
-<td>06 後編 5. 依頼を出す</td>
-</tr>
-<tr>
-<td><code>&lt;ApproverPicker&gt;</code></td>
-<td>承認する人を探して、順番に選ぶ部品。この巻の後の方で作ります。</td>
-<td>06 後編 5. 依頼を出す</td>
-</tr>
-<tr>
-<td><code>.employees()</code></td>
-<td><code>api.ts</code> で作る関数の 1 つで、名前などで社員を探します。</td>
 <td>06 後編 5. 依頼を出す</td>
 </tr>
 <tr>
@@ -1930,7 +3445,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-14">Python</h2>
+<h2 id="cat-22">Python</h2>
 <table>
 <thead>
 <tr>
@@ -2006,6 +3521,51 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 2. Python の書き方</td>
 </tr>
 <tr>
+<td><code>#</code></td>
+<td>Python では、<code>#</code> から行の終わりまでがコメントです。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>f"…{値}…"</code></td>
+<td><code>f"…"</code>（頭に <code>f</code> を付けた文字）の中の <code>{ }</code> には、変数や式を書けて、その値が入ります（f 文字列）。<code>f"環境変数 {name} がありません"</code>。<code>{ }</code> の中の <code>:</code> の後ろには、<code>{amount:,}</code> のように書式も書けます。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>[式 for 名前 in 並び]</code></td>
+<td><code>[f"http://{host}" for host in ALLOWED_HOSTS]</code> は、「並びの 1 つずつから、新しい値を作って、並び（リスト）にする」書き方です（リスト内包表記）。後ろに <code>if 条件</code> を付けると、条件に合う物だけになります。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>-&gt; 型</code></td>
+<td><code>def apply(self, action: str) -&gt; None:</code> の <code>-&gt; None</code> は、「この関数が返す物の型」の説明です（<code>None</code> は「何も返さない」）。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>名前: 型</code></td>
+<td><code>def apply(self, action: str)</code> の <code>: str</code> は、「この引数は文字」という型の説明（型ヒント）です。Python は動かす時には確かめませんが、エディターや mypy が間違いを教えてくれます。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>名前: 型 =</code></td>
+<td><code>app_name: str = "依頼・承認アプリ"</code> は、変数に型の説明を付けて、値を入れる書き方です。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>list[型]</code></td>
+<td><code>list[str]</code> は「文字の並び」、<code>dict[str, int]</code> は「キーが文字で値が整数の辞書」という型です。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td><code>a == b</code> は、「a と b が等しいか」です。<code>=</code>（1 つ）は「値を入れる」です。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td><code>名前=値</code></td>
+<td><code>open(path, encoding="utf-8")</code> の <code>encoding="utf-8"</code> のように、<code>名前=値</code> で渡す引数は「キーワード引数」です。順番に関係なく、名前で渡せます。</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
 <td><code>from</code></td>
 <td><code>from パッケージ import 名前</code> の一部で、「どこから読み込むか」を書きます。<code>from pathlib import Path</code>。</td>
 <td>04 3. 依頼の状態と、状態の移り変わり</td>
@@ -2061,6 +3621,41 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 3. 依頼の状態と、状態の移り変わり</td>
 </tr>
 <tr>
+<td><code>"""…"""</code></td>
+<td><code>"""…"""</code>（<code>"</code> を 3 つ）で囲んだ文字は、何行にもまたがって書けます。関数・クラス・ファイルのいちばん最初に書いた物は、その説明書（docstring）になり、<code>help()</code> やエディターで読めます。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td><code>self</code></td>
+<td>クラスの中の関数（メソッド）の最初の引数 <code>self</code> は、「その関数を呼んだ、その物自身」です。<code>self.amount</code> で、自分の項目を読み書きします。呼ぶ時は、<code>self</code> は書きません（<code>r.apply("submit")</code>）。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td><code>not in</code></td>
+<td><code>key not in TRANSITIONS</code> は、「<code>key</code> が <code>TRANSITIONS</code> の中に無い」です。<code>in</code> の反対です。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td><code>__name__</code></td>
+<td><code>__name__</code> は、今のファイル（モジュール）の名前が入った、特別な変数です。ファイルを直接動かした時は <code>"__main__"</code> になります。<code>type(error).__name__</code> は、エラーの種類の名前です。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td><code>__main__</code></td>
+<td><code>if __name__ == "__main__":</code> の下は、「このファイルを直接動かした時だけ」動きます。ほかのファイルから <code>import</code> された時は、動きません。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td><code>StrEnum</code></td>
+<td><code>StrEnum</code>（<code>enum</code>）は、決まった値の一覧（列挙）を、文字として扱える形で作る型です。<code>class Status(StrEnum): DRAFT = "下書き"</code>。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td><code>Exception</code></td>
+<td><code>Exception</code> は、Python のふつうのエラー全部の、元になる型です。<code>class TransitionError(Exception):</code> で、自分のエラーの種類を作れます。<code>except Exception as e:</code> は、ほとんど全部のエラーを受け止めます。</td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
 <td><code>with</code></td>
 <td>使い終わったら自動で片づける書き方。<code>with path.open(encoding="utf-8") as f:</code> の中で使ったファイルは、抜ける時に自動で閉じられます。</td>
 <td>04 5. 社員の CSV を読み込む</td>
@@ -2103,6 +3698,31 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>set()</code></td>
 <td>集合（同じ値は 1 つしか入らない入れ物）を作る関数。<code>seen = set()</code> で空の集合を作り、<code>seen.add(x)</code>・<code>x in seen</code> で使います。重複を見つける時に便利です。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>r"…"</code></td>
+<td><code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。正規表現の <code>r"\d{6}"</code> のように、<code>\</code> の多い文字をそのまま書けます。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>{値!r}</code></td>
+<td>f 文字列の <code>{no!r}</code> の <code>!r</code> は、値を <code>repr()</code> の形（プログラマー向けの形）で表示する指定です。文字なら <code>'012345'</code> のように <code>'</code> が付くので、空白や空の文字が見分けやすくなります。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>[開始:終わり]</code></td>
+<td><code>text[1:4]</code> は、1 番目から 4 番目の手前まで（1, 2, 3）を取り出します（スライス）。<code>[:3]</code> は最初から、<code>[3:]</code> は 3 番目から最後まで、<code>[::-1]</code> は逆さまです。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>Path</code></td>
+<td><code>Path</code>（<code>pathlib</code>）は、ファイルやフォルダの場所を表す型です。<code>Path("memo.txt").exists()</code>・<code>.read_text()</code>・<code>/</code> でのつなぎ（<code>BASE_DIR / "media"</code>）ができます。</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td><code>UnicodeDecodeError</code></td>
+<td><code>UnicodeDecodeError</code> は、ファイルを、決めた文字の符号（UTF-8 など）で読めなかった時のエラーです。Shift_JIS のファイルを UTF-8 として読んだ時などに起きます。</td>
 <td>04 5. 社員の CSV を読み込む</td>
 </tr>
 <tr>
@@ -2156,8 +3776,28 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>04 6. 日本時間と、承認の URL の文字列</td>
 </tr>
 <tr>
+<td><code>!=</code></td>
+<td><code>a != b</code> は、「a と b が等しくないか」です。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>ZoneInfo</code></td>
+<td><code>ZoneInfo("Asia/Tokyo")</code>（<code>zoneinfo</code>）は、時間帯（タイムゾーン）を表します。日時に付けると、日本の時刻として扱えます。</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td><code>__str__</code></td>
+<td><code>def __str__(self):</code> は、<code>str(物)</code> や <code>print(物)</code>、管理画面の一覧で表示する時の文字を決める関数です。</td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
 <td><code>date()</code></td>
 <td>日付を表す型。<code>date(2026, 11, 10)</code> のように作ります。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>{キー: 値 for …}</code></td>
+<td><code>{u.pk: u for u in users}</code> は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です（辞書内包表記）。</td>
 <td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
@@ -2206,8 +3846,43 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 3. 設定</td>
 </tr>
 <tr>
+<td><code>型 &#124; None</code></td>
+<td><code>str &#124; None</code> は、「文字か、None（何も無い）」という型です。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>__file__</code></td>
+<td><code>__file__</code> は、今のファイルの場所が入った、特別な変数です。<code>Path(__file__).resolve().parent</code> で、このファイルが置いてあるフォルダが分かります。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>RuntimeError</code></td>
+<td><code>RuntimeError</code> は、ほかの種類に当てはまらない、動いている時のエラーです。<code>raise RuntimeError("…")</code> で、説明を付けて止めます。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>.parent</code></td>
+<td><code>Path</code> の <code>.parent</code> は、1 つ上のフォルダです。<code>.parent.parent</code> で 2 つ上です。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td><code>.environ</code></td>
+<td><code>os.environ</code> は、環境変数の入れ物（辞書のような物）です。<code>os.environ.get("名前", 無い時の値)</code> で読みます。</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
 <td><code>.update()</code></td>
 <td>辞書に、別の辞書の中身をまとめて入れる（上書きする）メソッド。Django の問い合わせの <code>.update(項目=値)</code> は、合う行をまとめて書きかえる、別の意味です。</td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td><code>**kwargs</code></td>
+<td><code>def create_user(self, email, password=None, **extra):</code> の <code>**</code> は、「名前付きの引数を、いくつでも受け取り、辞書にまとめる」書き方です。</td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td><code>**辞書</code></td>
+<td><code>create_user(email, **extra)</code> のように、呼ぶ時に辞書の前に <code>**</code> を付けると、辞書の中身を、名前付きの引数としてばらして渡します。</td>
 <td>06 前編 4. モデル</td>
 </tr>
 <tr>
@@ -2218,6 +3893,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>lambda</code></td>
 <td>その場で作る小さな関数。<code>lambda: send_mail(…)</code> は「呼ばれたらメールを送る関数」。名前を付けるほどでもない、短い処理を渡す時に使います。</td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td><code>{日時:%Y-%m-%d}</code></td>
+<td>f 文字列で日時の値に <code>{now:%m/%d %H:%M}</code> のように <code>%</code> の書式を書くと、その形の文字になります（<code>11/05 09:03</code>）。<code>%Y</code>（年）・<code>%m</code>（月）・<code>%d</code>（日）・<code>%H</code>（時）・<code>%M</code>（分）。</td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td><code>total += n</code> は <code>total = total + n</code> の短い形です。</td>
 <td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
 </tr>
 <tr>
@@ -2243,6 +3928,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>any()</code></td>
 <td>並びの中に、1 つでも <code>True</code> があれば <code>True</code> を返す関数。</td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td><code>b"…"</code></td>
+<td><code>b"…"</code> は、文字ではなく「バイトの並び」（<code>bytes</code>）を作る書き方です。<code>b"\xff\xd8\xff"</code> は、JPEG の画像のファイルの、最初の 3 バイトです。</td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td><code>[-1]</code></td>
+<td><code>items[-1]</code> は、最後の 1 つです。<code>[-2]</code> は後ろから 2 つ目です。</td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td><code>A if 条件 else B</code></td>
+<td><code>a if 条件 else b</code> は、「条件が合えば a、合わなければ b」になる式です。<code>ext = name.rsplit(".", 1)[-1] if "." in name else ""</code>。</td>
 <td>06 前編 7. 図面と添付ファイルの確かめ</td>
 </tr>
 <tr>
@@ -2391,6 +4091,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>09 2. SMTP の会話を見る</td>
 </tr>
 <tr>
+<td><code>:=</code></td>
+<td><code>while (line := await recv()) is not None:</code> の <code>:=</code> は、「値を変数に入れて、その値をその場で使う」書き方です（セイウチ演算子）。</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td><code>is not</code></td>
+<td><code>x is not None</code> は、「x が None ではない」です。<code>None</code> かどうかは、<code>==</code> ではなく <code>is</code> で調べます。</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td><code>KeyboardInterrupt</code></td>
+<td><code>KeyboardInterrupt</code> は、<code>Ctrl</code> ＋ <code>C</code> で止めた時に起きる、エラーの種類です。<code>except KeyboardInterrupt:</code> で受け止めると、止める時の後片づけができます。</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
 <td><code>.set_content()</code></td>
 <td>メール（<code>EmailMessage</code>）の本文を決めるメソッド。</td>
 <td>09 2. SMTP の会話を見る</td>
@@ -2418,6 +4133,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.send_message()</code></td>
 <td>用意したメールを、SMTP のサーバーへ渡して送るメソッド。</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td><code>EmailMessage</code></td>
+<td><code>EmailMessage</code>（<code>email.message</code>）は、メール 1 通（宛先・件名・本文）を組み立てる型です。</td>
 <td>09 2. SMTP の会話を見る</td>
 </tr>
 <tr>
@@ -2466,6 +4186,66 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
+<td><code>{値:,}</code></td>
+<td>f 文字列の <code>{amount:,}</code> の <code>,</code> は、3 けたごとに <code>,</code> を入れる指定です（<code>1234567</code> → <code>1,234,567</code>）。<code>{amount:,.2f}</code> なら、区切りと小数点以下 2 けたの両方です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:.桁f}</code></td>
+<td>f 文字列の <code>{ratio:.2f}</code> の <code>.2f</code> は、「小数点の下を 2 けたにした小数」で表示する指定です（<code>3.14159</code> → <code>3.14</code>）。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:0幅}</code></td>
+<td>f 文字列の <code>{42:05d}</code> の <code>05</code> は、「5 けたになるまで、前を 0 で埋める」指定です（<code>00042</code>）。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:d}</code></td>
+<td>f 文字列の <code>{n:d}</code> の <code>d</code> は、整数として表示する指定です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:&gt;幅}</code></td>
+<td>f 文字列の <code>{'右':&gt;6}</code> の <code>&gt;</code> と数は、「6 文字分の場所に、右寄せで入れる」指定です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:&lt;幅}</code></td>
+<td>f 文字列の <code>{where:&lt;16}</code> の <code>&lt;</code> と数は、「16 文字分の場所に、左寄せで入れる」指定です。足りない分は右に空白が入り、後ろの列がそろいます。<code>&gt;</code> なら右寄せ、<code>^</code> なら中央です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:^幅}</code></td>
+<td>f 文字列の <code>{'中':^6}</code> の <code>^</code> と数は、「6 文字分の場所の、真ん中に入れる」指定です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>{値:.桁%}</code></td>
+<td>f 文字列の <code>{0.256:.1%}</code> の <code>%</code> は、100 倍して <code>%</code> を付ける指定です（<code>25.6%</code>）。<code>.1</code> は小数点の下のけたの数です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>//</code></td>
+<td>Python の <code>7 // 2</code> は、割り算の答えの小数を切り捨てた整数（<code>3</code>）です。<code>7 / 2</code> は <code>3.5</code> です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>Python の <code>2 ** 10</code> は、2 の 10 乗（<code>1024</code>）です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>Python の <code>7 % 2</code> は、割った余り（<code>1</code>）です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>ValueError</code></td>
+<td><code>ValueError</code> は、「型は合っているが、値がおかしい」時のエラーです。<code>int("abc")</code> で起きます。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
 <td><code>.insert()</code></td>
 <td>リストの、決めた位置に入れるメソッド。<code>names.insert(0, "鈴木")</code> は先頭に入れます。</td>
 <td>11 B. サンプル集</td>
@@ -2511,8 +4291,38 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
+<td><code>(式 for … in …)</code></td>
+<td><code>sum(x * 2 for x in nums)</code> のように <code>( )</code> の中に書く内包表記は、値を 1 つずつ作って渡す物（ジェネレーター）です。並びを作らないので、メモリを使いません。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>Counter</code></td>
+<td><code>Counter(並び)</code>（<code>collections</code>）は、同じ物がいくつずつあるかを数えます。<code>Counter(["a", "b", "a"])</code> → <code>{'a': 2, 'b': 1}</code>。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
 <td><code>@property</code></td>
 <td>クラスのメソッドの上に付けると、<code>()</code> 無しで値のように読めるようにする印。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>*args</code></td>
+<td><code>def f(*args):</code> の <code>*args</code> は、「いくつでも引数を受け取り、タプル（並び）にまとめる」書き方です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>*並び</code></td>
+<td><code>f(*items)</code> のように、呼ぶ時に並びの前に <code>*</code> を付けると、中身を、1 つずつの引数としてばらして渡します。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>__init__</code></td>
+<td><code>def __init__(self, …):</code> は、クラスから物を作る時（<code>Item("題", 100)</code>）に、自動で呼ばれる関数です。受け取った値を <code>self.title = title</code> のように覚えます。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>__repr__</code></td>
+<td><code>def __repr__(self):</code> は、プログラマー向けの表示（<code>repr(物)</code>）の文字を決める関数です。</td>
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
@@ -2571,6 +4381,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>11 B. サンプル集</td>
 </tr>
 <tr>
+<td><code>FileNotFoundError</code></td>
+<td><code>FileNotFoundError</code> は、無いファイルを開こうとした時のエラーです。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.suffix</code></td>
+<td><code>Path</code> の <code>.suffix</code> は、拡張子（<code>.txt</code>）です。<code>.name</code> はファイル名、<code>.stem</code> は拡張子を除いた名前です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
 <td><code>.strptime()</code></td>
 <td><code>datetime.strptime("2026/11/02 08:00", "%Y/%m/%d %H:%M")</code> は、決めた形の文字列から日時を読む関数です。</td>
 <td>11 B. サンプル集</td>
@@ -2590,9 +4410,24 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>日時を、別の時間帯（世界標準時・日本時間など）で表したものに変えるメソッド。</td>
 <td>11 B. サンプル集</td>
 </tr>
+<tr>
+<td><code>.days</code></td>
+<td>日時の差（<code>timedelta</code>）の <code>.days</code> は、日数です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.tzinfo</code></td>
+<td>日時の <code>.tzinfo</code> は、時間帯（タイムゾーン）の情報です。<code>None</code> なら、時間帯が付いていない日時です。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>.year</code></td>
+<td>日時の <code>.year</code> は年です（<code>.month</code> は月、<code>.day</code> は日）。</td>
+<td>11 B. サンプル集</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-15">Django</h2>
+<h2 id="cat-23">Django</h2>
 <table>
 <thead>
 <tr>
@@ -2635,6 +4470,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.UniqueConstraint()</code></td>
 <td>「この組み合わせの値は、表の中で重ならない」という決まりを表す物。<code>fields=["request", "order"]</code> は「同じ依頼の中で、同じ順番は 2 つ作れない」。</td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td><code>"-列の名前"</code></td>
+<td>Django の <code>ordering = ["-created_at"]</code> や <code>.order_by("-created_at")</code> の、名前の頭の <code>-</code> は、「大きい順（新しい順）に並べる」という意味です。<code>-</code> が無ければ、小さい順（古い順）です。</td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td><code>.choices</code></td>
+<td>Django の <code>Status.choices</code> は、選び肢の一覧（値と表示名の組）です。<code>CharField(choices=Status.choices)</code> で、管理画面に選ぶ欄ができます。</td>
 <td>05 3. モデル: データの設計図</td>
 </tr>
 <tr>
@@ -2713,6 +4558,36 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 6. ORM: Python でデータベースを操作する</td>
 </tr>
 <tr>
+<td><code>列__条件=</code></td>
+<td>Django の ORM の <code>filter(created_at__gte=日時)</code> のように、列の名前の後ろに <code>__</code> と条件を付けると、いろいろな比べ方ができます。<code>__gte</code>（以上）・<code>__lte</code>（以下）・<code>__gt</code>（より大きい）・<code>__in</code>（並びのどれか）・<code>__icontains</code>（大文字・小文字を区別せず、含む）・<code>__isnull</code>（空か）など。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>外の表__列=</code></td>
+<td>Django の ORM の <code>filter(requester__dept="製造")</code> のように、<code>__</code> でつなぐと、つながった別の表（外部キーの先）の列で、しぼり込めます。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Django の <code>Count("id")</code> は、ORM の集計で、数を数えます。<code>.annotate(n=Count("id"))</code> で、グループごとの件数が付きます。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>.objects</code></td>
+<td>Django の <code>Request.objects</code> は、その表の行を取り出す係（マネージャー）です。<code>.all()</code>（全部）・<code>.filter(…)</code>（しぼる）・<code>.get(…)</code>（1 つだけ）・<code>.create(…)</code>（作る）などを付けて使います。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>.pk</code></td>
+<td>Django の <code>.pk</code> は、その行の主キー（ふつうは <code>id</code>）です。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td><code>.DoesNotExist</code></td>
+<td><code>Request.DoesNotExist</code> は、<code>.get(…)</code> で、合う行が 1 つも無かった時のエラーです。<code>except Request.DoesNotExist:</code> で受け止めます。</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
 <td><code>render()</code></td>
 <td>Django で、テンプレート（HTML のひな形）に値を入れて、答え（HTML）を作る関数。<code>render(request, "テンプレート名", {"名前": 値})</code>。</td>
 <td>05 7. HTML の画面</td>
@@ -2723,6 +4598,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 7. HTML の画面</td>
 </tr>
 <tr>
+<td><code>.user</code></td>
+<td>Django の <code>request.user</code> は、今ログインしている人（していなければ「だれでもない人」）です。<code>request.user.is_authenticated</code> で、ログインしているかが分かります。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
 <td><code>path()</code></td>
 <td>URL と、それに答える画面（ビュー）を結び付ける関数。<code>path("requests/&lt;int:pk&gt;/", views.detail)</code> の <code>&lt;int:pk&gt;</code> は、URL の中の数を <code>pk</code> という名前で受け取ります。</td>
 <td>05 7. HTML の画面</td>
@@ -2730,6 +4610,56 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>include()</code></td>
 <td>URL の決まりの中で、ほかのファイル（アプリ）の URL の決まりを、まとめて取り込む関数。<code>path("api/", include("requests_app.urls"))</code> のように使います。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>.urls</code></td>
+<td><code>admin.site.urls</code> は、Django の管理画面の URL の一覧です。<code>path("admin/", admin.site.urls)</code> で、<code>/admin/</code> に管理画面を出します。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>.site</code></td>
+<td><code>admin.site</code> は、Django の管理画面そのものです。<code>admin.site.register(モデル)</code> で、モデルを管理画面に出します。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{% load %}</code></td>
+<td>Django のテンプレートの <code>{% load static %}</code> は、<code>{% static %}</code> などの道具を使えるようにする命令です。テンプレートの最初に書きます。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{% static %}</code></td>
+<td><code>{% static 'style.css' %}</code> は、静的なファイル（CSS・画像）の URL（<code>/static/style.css</code>）を作る命令です。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{% for %}</code></td>
+<td>Django のテンプレートの <code>{% for r in items %} … {% endfor %}</code> は、並びの 1 つずつについて、間の HTML をくり返します。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{% empty %}</code></td>
+<td><code>{% for %}</code> の中の <code>{% empty %}</code> の下は、並びが空の時だけ表示されます。「依頼はまだありません」のような文に使います。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{% endfor %}</code></td>
+<td><code>{% endfor %}</code> は、<code>{% for %}</code> のくり返しの終わりの印です。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{{ 値 }}</code></td>
+<td>Django のテンプレートの <code>{{ r.title }}</code> は、値をそこに表示します。中の <code>&lt;</code> などは自動で <code>&amp;lt;</code> に変わる（エスケープされる）ので、入力された文字がタグとして動くことはありません。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{{ 値&#124;default }}</code></td>
+<td><code>{{ r.note&#124;default:"なし" }}</code> の <code>&#124;default:"なし"</code> は、値が空の時に、代わりに表示する文字です（<code>&#124;</code> の後ろは「フィルター」という、値の変え方です）。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td><code>{{ 値&#124;date }}</code></td>
+<td><code>{{ r.created_at&#124;date:"Y-m-d H:i" }}</code> の <code>&#124;date</code> は、日時を、その形の文字にするフィルターです。<code>Y</code>（年）・<code>m</code>（月）・<code>d</code>（日）・<code>H</code>（時）・<code>i</code>（分）。</td>
 <td>05 7. HTML の画面</td>
 </tr>
 <tr>
@@ -2753,6 +4683,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>05 9. 自動のテスト</td>
 </tr>
 <tr>
+<td><code>.status_code</code></td>
+<td>テストの答えの <code>res.status_code</code> は、HTTP の状態コード（<code>200</code>・<code>403</code> など）です。</td>
+<td>05 9. 自動のテスト</td>
+</tr>
+<tr>
 <td><code>.set_password()</code></td>
 <td>ユーザーのパスワードを、元に戻せない形（ハッシュ）にしてから設定するメソッド。パスワードをそのまま保存しないために、必ずこれを使います。</td>
 <td>06 前編 4. モデル</td>
@@ -2770,6 +4705,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.BooleanField()</code></td>
 <td>はい・いいえ（<code>True</code>・<code>False</code>）の列を表すモデルの項目。</td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td><code>AbstractBaseUser</code></td>
+<td>Django の <code>AbstractBaseUser</code> は、ログインする人（ユーザー）のモデルを、自分で作る時の元になる型です。パスワードの保存や確かめの仕組みが入っています。</td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td><code>BaseUserManager</code></td>
+<td>Django の <code>BaseUserManager</code> は、ユーザーを作る係（<code>create_user</code>・<code>create_superuser</code>）を書く時の、元になる型です。</td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td><code>PermissionsMixin</code></td>
+<td>Django の <code>PermissionsMixin</code> は、ユーザーのモデルに、管理者かどうか・グループ・権限の項目を足す部品です。</td>
 <td>06 前編 4. モデル</td>
 </tr>
 <tr>
@@ -2838,6 +4788,56 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 6. 1 回限りの承認の URL</td>
 </tr>
 <tr>
+<td><code>.method</code></td>
+<td>Django の <code>request.method</code> は、要求の種類（<code>"GET"</code>・<code>"POST"</code>）です。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>.POST</code></td>
+<td>Django の <code>request.POST</code> は、フォームで送られた値の入れ物です。<code>request.POST.get("decision")</code> で読みます。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{% extends %}</code></td>
+<td>Django のテンプレートの <code>{% extends "workflow/base.html" %}</code> は、「土台のテンプレートを受け継ぎ、<code>{% block %}</code> の所だけを書きかえる」という宣言です。ページの共通の外枠を、1 か所にまとめられます。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{% block %}</code></td>
+<td><code>{% block title %} … {% endblock %}</code> は、土台のテンプレートの中で「ここは、ページごとに書きかえる」場所です。受け継いだテンプレートで、同じ名前の <code>block</code> を書くと、その中身に置きかわります。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{% endblock %}</code></td>
+<td><code>{% endblock %}</code> は、<code>{% block %}</code> の終わりの印です。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{% if %}</code></td>
+<td>Django のテンプレートの <code>{% if 条件 %} … {% endif %}</code> は、条件が合う時だけ、間の HTML を表示します。<code>{% else %}</code> も書けます。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{% endif %}</code></td>
+<td><code>{% endif %}</code> は、<code>{% if %}</code> の終わりの印です。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{% csrf_token %}</code></td>
+<td><code>{% csrf_token %}</code> は、フォームの中に書く、CSRF（ほかのサイトからのなりすましの送信）を防ぐための、見えない合言葉の欄を作る命令です。Django は、POST のフォームにこれが無いと、403 で断ります。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>{{ 値&#124;linebreaksbr }}</code></td>
+<td><code>{{ r.detail&#124;linebreaksbr }}</code> の <code>&#124;linebreaksbr</code> は、文の中の改行を、HTML の改行（<code>&lt;br&gt;</code>）にして表示するフィルターです。</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td><code>ValidationError</code></td>
+<td>Django の <code>ValidationError</code> は、入力の値が決まりに合わない時に起こすエラーです。フォームや DRF が受け止めて、利用者にメッセージを返します。</td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
 <td><code>.prefetch_related()</code></td>
 <td>「たくさん」の側のつながり（1 つの依頼の、何人もの承認者など）を、まとめて読んでおくメソッド。N+1 の問い合わせを防ぎます。</td>
 <td>06 前編 8. React の画面が呼ぶ API</td>
@@ -2858,6 +4858,31 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>06 前編 8. React の画面が呼ぶ API</td>
 </tr>
 <tr>
+<td><code>DjangoValidationError</code></td>
+<td><code>from django.core.exceptions import ValidationError as DjangoValidationError</code> で、Django の <code>ValidationError</code> を、DRF の同じ名前の物と取り違えないように、別の名前で読み込んでいます。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>Q</code></td>
+<td>Django の <code>Q(…)</code> は、ORM の条件を、<code>&#124;</code>（または）・<code>&amp;</code>（かつ）・<code>~</code>（ではない）で組み合わせる道具です。<code>filter(Q(requester=u) &#124; Q(approver=u))</code>。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>FileResponse</code></td>
+<td>Django の <code>FileResponse(開いたファイル)</code> は、ファイルを、少しずつ送る答えです。添付ファイルのダウンロードに使います。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>.FILES</code></td>
+<td>Django の <code>request.FILES</code> は、送られたファイルの入れ物です。<code>request.FILES.get("file")</code> で 1 つ取り出します。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>&lt;int:名前&gt;</code></td>
+<td>Django の URL の <code>"api/requests/&lt;int:pk&gt;/"</code> の <code>&lt;int:pk&gt;</code> は、「ここに来た数を、<code>pk</code> という名前で、ビューの関数に渡す」書き方です。<code>int</code> は数だけ受け付けます（<code>str</code>・<code>slug</code>・<code>uuid</code> もあります）。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
 <td><code>.atomic()</code></td>
 <td><code>with transaction.atomic():</code> の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。</td>
 <td>06 前編 9. 社員の CSV の取り込み</td>
@@ -2870,6 +4895,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>validate_email()</code></td>
 <td>メールアドレスの形として正しいかを調べ、正しくなければ <code>ValidationError</code> を起こす関数。</td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td><code>BaseCommand</code></td>
+<td>Django の <code>BaseCommand</code> は、<code>python manage.py 名前</code> で動かす、自分のコマンドを作る時の元になる型です。<code>handle(self, …)</code> に処理を書きます。</td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td><code>CommandError</code></td>
+<td>Django の <code>CommandError</code> は、自分のコマンドの中で、失敗を知らせるエラーです。</td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td><code>.stderr</code></td>
+<td><code>self.stderr.write(…)</code> は、エラーの文を出します。</td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td><code>.stdout</code></td>
+<td>Django のコマンド（<code>BaseCommand</code>）の <code>self.stdout.write(…)</code> は、画面に文を出します（<code>print</code> の代わり）。</td>
 <td>06 前編 9. 社員の CSV の取り込み</td>
 </tr>
 <tr>
@@ -2895,6 +4940,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>@ensure_csrf_cookie</code></td>
 <td>その画面を返す時に、CSRF の札（クッキー）を必ず付ける印。React の画面が、あとで送るフォームに札を付けられるようにします（10 巻の 5 章）。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>HttpResponse</code></td>
+<td>Django の <code>HttpResponse("文字")</code> は、文字（HTML など）をそのまま返す、いちばん基本の答えです。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>JsonResponse</code></td>
+<td>Django の <code>JsonResponse({"status": "ok"})</code> は、辞書を JSON にして返す答えです。</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td><code>TemplateView</code></td>
+<td>Django の <code>TemplateView</code> は、決まったテンプレート（HTML）を表示するだけのビューです。<code>template_name = "index.html"</code> を書くだけで使えます。</td>
 <td>06 後編 3. サーバーとの窓口</td>
 </tr>
 <tr>
@@ -2927,9 +4987,24 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>条件に合う行があれば取り出し、無ければ作るメソッド。<code>(物, 作ったか)</code> の組が返ります。</td>
 <td>11 B. サンプル集</td>
 </tr>
+<tr>
+<td><code>F</code></td>
+<td>Django の <code>F("amount")</code> は、ORM の中で「その行の、その列の値」を表します。<code>update(round=F("round") + 1)</code> は、データベースの中で 1 足すので、同時に 2 人が直してもずれません。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>Max</code></td>
+<td>Django の <code>Max("amount")</code> は、ORM の集計で、いちばん大きい値を求めます。</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td><code>Min</code></td>
+<td>Django の <code>Min("amount")</code> は、いちばん小さい値を求めます。</td>
+<td>11 B. サンプル集</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-16">Django REST framework</h2>
+<h2 id="cat-24">Django REST framework</h2>
 <table>
 <thead>
 <tr>
@@ -2940,6 +5015,11 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
+<td><code>DefaultRouter</code></td>
+<td>DRF の <code>DefaultRouter</code> は、ViewSet（一覧・詳細・作成・変更・削除をまとめた物）から、URL を自動で作る係です。</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
 <td><code>.ValidationError()</code></td>
 <td>Django REST framework で、入力のまちがいを知らせるエラー。<code>raise serializers.ValidationError("件名を入れてください")</code> と書くと、その文が <code>400</code> の答えに入って返ります。</td>
 <td>05 8. JSON の API</td>
@@ -2947,6 +5027,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>.force_authenticate()</code></td>
 <td>テストで、決めたユーザーとしてログインしたことにして API を呼ぶためのメソッド（DRF のテスト用のクライアント）。</td>
+<td>05 9. 自動のテスト</td>
+</tr>
+<tr>
+<td><code>APITestCase</code></td>
+<td>DRF の <code>APITestCase</code> は、API のテストを書くための元の型です。<code>self.client.get(…)</code> で要求を送り、答えを確かめます。</td>
 <td>05 9. 自動のテスト</td>
 </tr>
 <tr>
@@ -2974,9 +5059,39 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>@parser_classes([MultiPartParser])</code> を付けて、ファイル付きのフォーム（multipart）を受け付けるようにします。</td>
 <td>06 前編 8. React の画面が呼ぶ API</td>
 </tr>
+<tr>
+<td><code>PermissionDenied</code></td>
+<td>DRF の <code>PermissionDenied</code> は、「権限が無い」というエラーです。起こすと、403 の答えになります。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>MultiPartParser</code></td>
+<td>DRF の <code>MultiPartParser</code> は、ファイルの付いたフォーム（<code>multipart/form-data</code>）を読む係です。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>Response</code></td>
+<td>DRF の <code>Response(data)</code> は、API の答えです。辞書や並びを、JSON にして返します。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>.query_params</code></td>
+<td>DRF の <code>request.query_params</code> は、URL の <code>?mine=1</code> の部分の値です。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>.data</code></td>
+<td>DRF の <code>serializer.data</code> は、モデルの値を、JSON にできる形（辞書）にした物です。<code>request.data</code> は、届いた中身（JSON やフォーム）です。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td><code>.validated_data</code></td>
+<td>DRF の <code>serializer.validated_data</code> は、確かめ（<code>is_valid()</code>）を通った後の、安全な値です。</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-17">練習アプリで作る物（Python）</h2>
+<h2 id="cat-25">練習アプリで作る物（Python）</h2>
 <table>
 <thead>
 <tr>
@@ -2993,7 +5108,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-18">画面に出す</h2>
+<h2 id="cat-26">画面に出す</h2>
 <table>
 <thead>
 <tr>
@@ -3004,18 +5119,53 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
+<td><code>{}</code></td>
+<td><code>println!("{}", 値)</code> の <code>{}</code> は、「ここに値を入れる」場所の印です。後ろに <code>,</code> で並べた値が、左から順に入ります（<code>println!("{} と {}", 1, 2)</code> → <code>1 と 2</code>）。<code>{}</code> は、人が読む形（Display）で表示します。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>{:?}</code></td>
+<td><code>{:?}</code> は、値を「プログラマー向けの形」（Debug）で表示する指定です。<code>Some("main.rs")</code> のように、<code>Option</code> の <code>Some</code> や、文字列の <code>"</code> まで、そのまま見せます。<code>{}</code> では表示できない型（<code>Vec</code>・<code>Option</code> など）も、<code>{:?}</code> なら表示できます。<code>{path:?}</code> のように名前と一緒にも書けます。自分で作った構造体は、<code>#[derive(Debug)]</code> を付けると使えます。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
 <td><code>println!</code></td>
 <td>かっこの中の文字を画面に出して、最後に改行するマクロ。<code>println!("Hello, world!");</code> は <code>Hello, world!</code> と表示します。<code>{}</code> を書くと、後ろに並べた値がそこに入ります（例: <code>println!("{}点", 80);</code> → <code>80点</code>）。名前の最後の <code>!</code> は「マクロ」（コードを作り出す特別な仕組み）の印で、ふつうの関数と見分けるために付いています。</td>
 <td>07 4. 所有権と借用</td>
+</tr>
+<tr>
+<td><code>{名前}</code></td>
+<td><code>println!</code> や <code>format!</code> の文字の中に <code>{os}</code> のように <code>{ }</code> で変数の名前を書くと、その変数の中身がそこに入ります（<code>let os = "windows"; println!("OS: {os}");</code> → <code>OS: windows</code>）。<code>println!("OS: {}", os)</code> と書くのと同じ結果です。<code>{ }</code> の中に書けるのは名前だけで、<code>{a + 1}</code> や <code>{p.x}</code> のような式は書けません（その時は <code>{}</code> と、後ろに並べる値を使います）。<code>{name:&lt;22}</code> のように、名前の後ろに <code>:</code> と書式を付けることもできます。</td>
+<td>07 4. 所有権と借用</td>
+</tr>
+<tr>
+<td><code>{:0幅}</code></td>
+<td><code>{:02}</code> のように、幅の前に <code>0</code> を付けると、「この幅になるまで、前を 0 で埋める」指定になります。<code>{:02}</code> で <code>7</code> は <code>07</code>、<code>{:06}</code> で <code>42</code> は <code>000042</code>。<code>{:016x}</code> は「16 けたになるまで 0 で埋めた 16 進数」です。時刻（<code>09:05</code>）や番号（<code>000042</code>）の表示に使います。</td>
+<td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
 <td><code>eprintln!</code></td>
 <td><code>println!</code> のエラー版。「標準エラー出力」というエラー用の出口に書きます。画面ではふつうの出力と同じに見えますが、<code>&gt; ファイル</code> で結果をファイルに書き出した時も、エラーは画面に残ります。失敗の知らせを出す時に使います。</td>
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
+<tr>
+<td><code>{:#}</code></td>
+<td><code>{:#}</code> は、人が読む形（<code>{}</code>）の「もう 1 つの形」で表示する指定です。<code>anyhow</code> のエラーを <code>{:#}</code> で出すと、「書き足した説明: 元のエラー」のように、原因までを 1 行につないで表示します（<code>{}</code> だと、いちばん外側の説明だけです）。</td>
+<td>08 前編 11. ここまでの部品を 1 つにまとめる</td>
+</tr>
+<tr>
+<td><code>{:.桁}</code></td>
+<td><code>{:.1}</code> の <code>.</code> と数は、「小数点の下を何けた出すか」の指定です。<code>{:.1}</code> で <code>3.14159</code> は <code>3.1</code>、<code>{:.2}</code> で <code>3.14</code>、<code>{:.0}</code> なら <code>3</code>。けたを切りそろえて（丸めて）表示します。<code>{:.2?}</code> のように Debug（<code>?</code>）と組み合わせると、かかった時間（<code>Duration</code>）を <code>1.23ms</code> のように短く出せます。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>{:X}</code></td>
+<td><code>{:X}</code> は、整数を大文字の 16 進数（0〜9 と A〜F）で表示する指定です。<code>255</code> は <code>FF</code>、<code>'A' as u32</code>（65）は <code>41</code>。文字の番号や色の値を見る時に使います。</td>
+<td>08 後編 8. 添付ファイル</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-19">変数</h2>
+<h2 id="cat-27">変数</h2>
 <table>
 <thead>
 <tr>
@@ -3045,9 +5195,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>ずっと変わらない値（定数）に名前を付ける書き方。<code>const MAX_TITLE_CHARS: usize = 80;</code>。名前は大文字と <code>_</code> で書き、型（<code>usize</code> など）を必ず書きます。プログラムのどこからでも使えます。</td>
 <td>08 前編 4. 表</td>
 </tr>
+<tr>
+<td><code>let _ =</code></td>
+<td><code>let _ = fs::remove_file("count.txt");</code> の <code>let _ =</code> は、「結果は受け取るが、使わずに捨てる」という書き方です。<code>Result</code> を返す関数の結果を使わないと「使っていない」と警告が出るので、わざと捨てる時に書きます。ここでは「ファイルが無くて失敗しても、気にしない」という意味です。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-20">数</h2>
+<h2 id="cat-28">数</h2>
 <table>
 <thead>
 <tr>
@@ -3058,9 +5213,34 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
+<td><code>u32</code></td>
+<td>0 以上の整数の型（32 ビット。0〜約 42 億）。数を数える・番号を付ける時に使います。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
 <td><code>.max()</code></td>
 <td>2 つの数のうち、大きい方を返すメソッド。<code>page.max(1)</code> は「<code>page</code> と 1 の大きい方」なので、0 やマイナスが来ても 1 になります（下限を決める時の書き方）。イテレーターに使うと、いちばん大きい物を <code>Option</code> で返します。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>u16</code></td>
+<td>0〜65535 の整数の型（16 ビット）。ポート番号（<code>8080</code> など）はこの範囲に収まるので、<code>u16</code> で表します。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
+<td><code>i32</code></td>
+<td>マイナスもある整数の型（32 ビット。約 −21 億〜21 億）。<code>i</code> は integer（整数）の頭文字です。型を書かない整数は、ふつう <code>i32</code> になります。</td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td><code>i64</code></td>
+<td>マイナスもある整数の型（64 ビット。約 ±922 京）。データベースの整数の列や、番号（id）によく使います。</td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td><code>i16</code></td>
+<td>マイナスもある整数の型（16 ビット。−32768〜32767）。小さな数で足りる項目（何回目か、など）に使います。PostgreSQL の <code>SMALLINT</code> の列と合います。</td>
+<td>08 前編 4. 表</td>
 </tr>
 <tr>
 <td><code>as</code></td>
@@ -3073,13 +5253,43 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
+<td><code>usize</code></td>
+<td>0 以上の整数の型で、大きさはパソコンに合わせて決まります（64 ビットのパソコンなら <code>u64</code> と同じ）。並びの長さ（<code>.len()</code>）や、何番目か（<code>v[i]</code> の <code>i</code>）は、いつも <code>usize</code> です。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>u8</code></td>
+<td>0〜255 の整数の型（8 ビット＝1 バイト）。<code>u</code> は unsigned（マイナスが無い）の意味です。ファイルや通信の中身（バイトの並び <code>Vec&lt;u8&gt;</code>）は、この型の並びです。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>10u8</code></td>
+<td>数のすぐ後ろに型の名前を付けると、その型の数になります。<code>10u8</code> は <code>u8</code> 型の 10、<code>0u64</code> は <code>u64</code> 型の 0 です。型を書かないと、整数は <code>i32</code> と決まります（使い方から別の型に決まることもあります）。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td><code>total += n;</code> は <code>total = total + n;</code> を短く書いた形です。<code>total</code> は <code>let mut</code> で作った（変えられる）変数でないといけません。文字列（<code>String</code>）でも <code>s += "続き";</code> で書き足せます。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
 <td><code>.fract()</code></td>
 <td>小数の、小数点より下の部分を返すメソッド。<code>2.5_f64.fract()</code> は <code>0.5</code>。<code>v.fract() == 0.0</code> で「整数ちょうどか」を確かめています。</td>
 <td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
 </tr>
+<tr>
+<td><code>f64</code></td>
+<td>小数を入れる型（64 ビット）。<code>3.14</code> のような数です。小数は、<code>0.1 + 0.2</code> が <code>0.30000000000000004</code> になるような、わずかな誤差が出るので、お金の計算には使いません（整数の「円」で数えます）。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td><code>1.5</code></td>
+<td><code>1.08</code> のように <code>.</code> の付いた数は小数で、型を書かなければ <code>f64</code> になります。整数（<code>i32</code> など）と小数は、そのままでは足したり掛けたりできないので、<code>as f64</code> などで型をそろえます。</td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-21">文字</h2>
+<h2 id="cat-29">文字</h2>
 <table>
 <thead>
 <tr>
@@ -3090,9 +5300,19 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
+<td><code>'a'</code></td>
+<td><code>'='</code> のように 1 文字を <code>'</code>（シングルクォート）で囲むと、<code>char</code>（1 文字）の値になります。何文字でも入る文字列（<code>"…"</code>）とは別の物です。<code>split_once('=')</code> は「最初の <code>=</code> で 2 つに分ける」。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
 <td><code>.is_ascii_digit()</code></td>
 <td>その文字（バイト）が、半角の数字（<code>0</code>〜<code>9</code>）かを <code>true</code>/<code>false</code> で返すメソッド。</td>
 <td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td>1 文字を入れる型です。<code>'a'</code>・<code>'あ'</code>・<code>'😀'</code> のように <code>'</code> で囲んで書きます。日本語の文字も絵文字も、1 つの <code>char</code> です（大きさはいつも 4 バイト）。</td>
+<td>08 後編 5. 入力フォーム</td>
 </tr>
 <tr>
 <td><code>.is_control()</code></td>
@@ -3116,7 +5336,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-22">文字列</h2>
+<h2 id="cat-30">文字列</h2>
 <table>
 <thead>
 <tr>
@@ -3197,6 +5417,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
+<td><code>\</code></td>
+<td>文字列の中で、行の終わりに <code>\</code> を書くと、「次の行へ続く」という意味になります。改行と、次の行の頭の空白は、文字列に入りません。長い文字列を、見やすく何行かに分けて書く時に使います。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
 <td><code>.starts_with()</code></td>
 <td>その文字（文字列）で始まっていれば <code>true</code> を返すメソッド。<code>"report.csv".starts_with("report")</code> は <code>true</code>。終わりを調べるのは <code>.ends_with()</code>、含むかは <code>.contains()</code> です。</td>
 <td>08 前編 8. 社員の CSV と、管理のコマンド</td>
@@ -3242,6 +5467,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 8. 社員の CSV と、管理のコマンド</td>
 </tr>
 <tr>
+<td><code>b"…"</code></td>
+<td><code>b"…"</code> は、文字列ではなく「バイトの並び」（<code>&amp;[u8; N]</code>）を作る書き方です。中には英数字と記号（ASCII）だけを書けます。通信やファイルの中身を、バイトのまま扱う時に使います。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
 <td><code>.split()</code></td>
 <td>文字列を、区切り文字のたびに分けるメソッド。<code>"a,b,c".split(',')</code> は <code>a</code>・<code>b</code>・<code>c</code> の 3 つ。結果は 1 つずつ取り出せる形（イテレーター）なので、<code>Vec</code> にしたい時は <code>.collect()</code> を付けます。</td>
 <td>08 前編 13. 自動のテスト</td>
@@ -3250,6 +5480,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>.lines()</code></td>
 <td>文字列を、1 行ずつに分けて取り出せる形にするメソッド。行の終わりの改行（<code>\n</code> や <code>\r\n</code>）は含みません。<code>text.lines().count()</code> で行の数が分かります。</td>
 <td>08 前編 13. 自動のテスト</td>
+</tr>
+<tr>
+<td><code>r#"…"#</code></td>
+<td><code>r#"…"#</code> も「生の文字列」で、<code>"#</code> が来るまでを、<code>\</code> も <code>"</code> もそのまま文字にします。<code>r#"{"title": "牛乳"}"#</code> のように、<code>"</code> の多い JSON や、何行もの SQL を書く時に便利です。</td>
+<td>08 後編 6. 図面</td>
 </tr>
 <tr>
 <td><code>.rsplit()</code></td>
@@ -3267,13 +5502,18 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 後編 8. 添付ファイル</td>
 </tr>
 <tr>
+<td><code>r"…"</code></td>
+<td><code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。<code>r"C:\Users\you"</code> や、正規表現の <code>r"\d+"</code> のように <code>\</code> の多い文字を、そのまま書けます。中に <code>"</code> を入れたい時は <code>r#"…"#</code> を使います。</td>
+<td>08 後編 8. 添付ファイル</td>
+</tr>
+<tr>
 <td><code>String::from_utf8()</code></td>
 <td>バイトの並び（<code>Vec&lt;u8&gt;</code>）を、文字列（<code>String</code>）に変える関数。UTF-8 の文字として読めない時は <code>Err</code> を返します。</td>
 <td>10 13. テスト</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cat-23">Vec（並び）</h2>
+<h2 id="cat-31">Vec（並び）</h2>
 <table>
 <thead>
 <tr>
@@ -3304,9 +5544,24 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 4. 所有権と借用</td>
 </tr>
 <tr>
+<td><code>&amp;[T]</code></td>
+<td><code>&amp;[User]</code> のような <code>&amp;[型]</code> は、「並び（<code>Vec</code> や配列）の全部か一部を、借りて見る」型です（スライス）。関数の引数を <code>&amp;[User]</code> にすると、<code>Vec&lt;User&gt;</code> も配列も渡せます。</td>
+<td>07 4. 所有権と借用</td>
+</tr>
+<tr>
 <td><code>.insert()</code></td>
 <td><code>Vec</code> の、決めた位置に入れるメソッド。<code>v.insert(0, x)</code> は先頭に入れます（後ろの物は 1 つずつずれる）。<code>HashMap</code> の <code>.insert(キー, 値)</code> は「入れる（上書き）」です。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>[値; 個数]</code></td>
+<td><code>[0; 5]</code> は「0 を 5 個並べた配列」（<code>[0, 0, 0, 0, 0]</code>）を作る書き方です。型の所に書く <code>[u8; 32]</code> は、「<code>u8</code> が 32 個の配列」という型です。</td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td><code>[a, b]</code></td>
+<td><code>[ "Cargo.toml", "src/main.rs" ]</code> のように <code>[ ]</code> の中に <code>,</code> で区切って値を並べると、「配列」（決まった数の値の並び）ができます。<code>for x in 配列 { … }</code> で 1 つずつ取り出せます。あとから数を増やしたい時は、<code>vec![…]</code> で作る <code>Vec</code> を使います。</td>
+<td>08 前編 4. 表</td>
 </tr>
 <tr>
 <td><code>.len()</code></td>
@@ -3355,7 +5610,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-24">HashMap（表）</h2>
+<h2 id="cat-32">HashMap（表）</h2>
 <table>
 <thead>
 <tr>
@@ -3377,7 +5632,24 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-25">条件</h2>
+<h2 id="cat-33">範囲</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a..b</code></td>
+<td><code>0..5</code> は「0 から 5 の手前まで」（0, 1, 2, 3, 4）の範囲です。<code>for i in 0..5</code> で 5 回くり返します。5 も含めたい時は <code>0..=5</code> と書きます。<code>&amp;s[0..3]</code> のように、文字列や並びの一部を取り出す時にも使い、<code>..3</code>（最初から）・<code>2..</code>（最後まで）と片方を省けます。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-34">条件</h2>
 <table>
 <thead>
 <tr>
@@ -3393,13 +5665,48 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 4. 所有権と借用</td>
 </tr>
 <tr>
+<td><code>if let</code></td>
+<td><code>if let Some(x) = 値 { … }</code> は、「値が <code>Some</code> の形なら、中身を <code>x</code> に入れて <code>{ }</code> の中を動かす」という書き方です。<code>match</code> で 1 つの形の時だけ書きたい時の、短い形です。<code>else { … }</code> も付けられ、<code>if let Ok(n) = s.parse::&lt;i32&gt;()</code> のように <code>Result</code> にも使えます。</td>
+<td>07 4. 所有権と借用</td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td><code>a == b</code> は「a と b が等しいか」を調べ、<code>true</code> か <code>false</code> になります。<code>=</code>（1 つ）は「値を入れる」なので、比べる時は必ず 2 つ書きます。</td>
+<td>07 4. 所有権と借用</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td><code>!valid</code> のように値の前に付けた <code>!</code> は、「〜ではない」（true と false を入れかえる）です。<code>if !path.exists()</code> は「無かったら」。<code>println!</code> の <code>!</code> はマクロの印で、これとは別物です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>true</code>（はい）か <code>false</code>（いいえ）の、どちらかだけが入る型です。<code>if</code> の条件や、<code>5 &gt; 3</code> のように比べた結果は <code>bool</code> です。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td><code>a &amp;&amp; b</code> は「a と b の両方が true なら true」（かつ）です。左が false なら、右は調べません。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
 <td><code>else</code></td>
 <td><code>if</code> の条件が合わなかった時の処理を書く所。<code>else if 条件 { … }</code> で、条件をいくつも続けられます。</td>
 <td>08 前編 4. 表</td>
 </tr>
+<tr>
+<td><code>&#124;&#124;</code></td>
+<td><code>a &#124;&#124; b</code> は「a か b の、どちらかが true なら true」（または）です。<code>if n == 0 &#124;&#124; line == "\r\n"</code> は「0 か、空の行なら」。左が true なら、右は調べません。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td><code>a != b</code> は「a と b が等しくないか」を調べます。等しくなければ <code>true</code> です。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-26">くり返し</h2>
+<h2 id="cat-35">くり返し</h2>
 <table>
 <thead>
 <tr>
@@ -3425,6 +5732,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 8. 社員の CSV と、管理のコマンド</td>
 </tr>
 <tr>
+<td><code>while let</code></td>
+<td><code>while let Some(c) = cause { … }</code> は、「<code>Some</code> の形である間、中身を <code>c</code> に入れてくり返す」書き方です。<code>None</code> になったら止まります。<code>while let Some(x) = stack.pop()</code> のように、並びから 1 つずつ取り出す時によく使います。</td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
 <td><code>continue</code></td>
 <td>くり返しの「今回の残り」を飛ばして、次の回へ進む命令。<code>for</code> や <code>while</code> の中で、条件に合わない物を飛ばす時に使います。</td>
 <td>08 前編 8. 社員の CSV と、管理のコマンド</td>
@@ -3436,7 +5748,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-27">場合分け</h2>
+<h2 id="cat-36">場合分け</h2>
 <table>
 <thead>
 <tr>
@@ -3457,13 +5769,38 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
+<td><code>_ =&gt;</code></td>
+<td><code>match</code> の最後の <code>_ =&gt;</code> は、「ここまでのどれにも当てはまらない、その他すべて」を受け止める腕です。<code>_</code> は「何でもよい（名前を付けない）」という印です。<code>match</code> は、ありうる値を全部受け止めないとエラーになるので、最後によく書きます。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>A &#124; B =&gt;</code></td>
+<td><code>match</code> の腕の <code>A &#124; B =&gt;</code> は、「A か B のどちらかの形なら」という意味で、同じ処理をまとめて書けます。<code>1 &#124; 2 &#124; 3 =&gt; "小さい"</code> のように使います。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>_</code></td>
+<td><code>(0, _)</code> や <code>Err(_)</code> の <code>_</code> は、「ここの値は何でもよい・使わない」という印です。名前を付けないので、「使っていない」という警告も出ません。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
+<td><code>パターン if 条件 =&gt;</code></td>
+<td><code>match</code> の腕に <code>None if scheme == "https" =&gt;</code> のように <code>if 条件</code> を付けると、「形が合って、しかも条件も合う時だけ」その腕を選びます（マッチガード）。条件に合わなければ、次の腕を調べます。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
 <td><code>matches!</code></td>
 <td>値が、ある形（パターン）に合うかを <code>true</code>・<code>false</code> で返すマクロ。<code>matches!(filter, Filter::Active &#124; Filter::Done)</code> のように、<code>match</code> を 1 行で書けます。</td>
 <td>08 前編 4. 表</td>
 </tr>
+<tr>
+<td><code>..</code></td>
+<td><code>Point { x, .. }</code> や <code>(first, ..)</code> の <code>..</code> は、「残りの項目は何でもよい（見ない）」という印です。項目の多い構造体から、使う物だけを取り出す時に書きます。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-28">Option</h2>
+<h2 id="cat-37">Option</h2>
 <table>
 <thead>
 <tr>
@@ -3499,6 +5836,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 3. 設定を読む</td>
 </tr>
 <tr>
+<td><code>let … else</code></td>
+<td><code>let Some(x) = 値 else { return …; };</code> は、「<code>Some</code> の形なら中身を <code>x</code> に入れて先へ進み、そうでなければ <code>else</code> の中で抜ける」という書き方です。<code>else</code> の中は、必ず <code>return</code> や <code>continue</code> などで抜けます。思ったとおりでない時に早めに抜けて、残りの処理を平らに書けます。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
 <td><code>.is_some_and()</code></td>
 <td><code>Option</code> に値があり、しかもその値が条件に合う時だけ <code>true</code> を返すメソッド。<code>cookie.is_some_and(&#124;c&#124; c == "admin=yes")</code>。</td>
 <td>08 前編 6. 状態を変える処理</td>
@@ -3520,7 +5862,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-29">エラー処理</h2>
+<h2 id="cat-38">エラー処理</h2>
 <table>
 <thead>
 <tr>
@@ -3652,7 +5994,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-30">関数</h2>
+<h2 id="cat-39">関数</h2>
 <table>
 <thead>
 <tr>
@@ -3665,6 +6007,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>fn</code></td>
 <td>関数（ひとまとまりの処理に名前を付けた物）を作る書き方。<code>fn main() { … }</code> の <code>main</code> は、プログラムを動かすと最初に動く特別な関数です。<code>fn add(a: i32, b: i32) -&gt; i32 { a + b }</code> は「整数を 2 つ受け取って、整数を返す関数 <code>add</code>」。<code>{ }</code> の中が中身で、最後の <code>;</code> の無い式が戻り値になります。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>-&gt;</code></td>
+<td><code>fn main() -&gt; std::io::Result&lt;()&gt;</code> の <code>-&gt;</code> は、「この関数が返す値の型」を書く印です。<code>fn add(a: i32, b: i32) -&gt; i32</code> なら「<code>i32</code> を返す」。<code>-&gt;</code> が無い関数は、何も返しません（<code>()</code> という「空」を返します）。</td>
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
@@ -3684,7 +6031,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-31">型とメソッド</h2>
+<h2 id="cat-40">型とメソッド</h2>
 <table>
 <thead>
 <tr>
@@ -3715,7 +6062,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[derive]</code></td>
 <td>型に、よく使う機能を自動で付ける印（属性）。<code>#[derive(Debug, Clone, PartialEq)]</code> のように、付けたい機能の名前を並べます（例: <code>Debug</code> → <code>{:?}</code> で表示できる、<code>Clone</code> → <code>.clone()</code> できる）。</td>
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
@@ -3770,6 +6117,26 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 5. Topcoat の最小のアプリ</td>
 </tr>
 <tr>
+<td><code>::&lt;型&gt;</code></td>
+<td><code>"42".parse::&lt;i32&gt;()</code> の <code>::&lt;i32&gt;</code> は、「どの型にするか」をその場で指定する書き方です（形が魚に見えるので turbofish と呼ばれます）。<code>let n: i32 = "42".parse().unwrap();</code> のように、受け取る変数の型で決めても同じです。<code>collect::&lt;Vec&lt;_&gt;&gt;()</code> もよく使います。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>impl トレイト</code></td>
+<td><code>-&gt; Result&lt;impl View&gt;</code> の <code>impl View</code> は、「<code>View</code> という決まり（トレイト）を満たす、何かの型」という意味です。本当の型の名前は長くて書けないので、「<code>View</code> として使える物を返す」とだけ書きます。引数の <code>x: impl Display</code> なら、「表示できる物なら何でも受け取る」です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>&lt;_&gt;</code></td>
+<td><code>Vec&lt;_&gt;</code> の <code>_</code> は、「中の型は、Rust が使い方から決めて」という印です。<code>.collect::&lt;Vec&lt;_&gt;&gt;()</code> は「<code>Vec</code> に集めて。中身の型は任せる」という意味です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td><code>.0</code></td>
+<td><code>pair.0</code>・<code>pair.1</code> のように、タプル（<code>(1, "a")</code> のような、いくつかの値の組）は、<code>.</code> と番号（0 から数える）で中の値を取り出します。<code>struct Meters(f64);</code> のような、項目に名前の無い構造体でも <code>.0</code> を使います。</td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
 <td><code>macro_rules!</code></td>
 <td>自分でマクロ（同じ形のコードを、まとめて作り出す仕組み）を作る書き方。<code>macro_rules! 名前 { (受け取る形) =&gt; { 作るコード } }</code>。ここでは、似た enum とその変換を、まとめて作る <code>text_enum!</code> を作っています。<code>$name:ident</code> は「名前を 1 つ受け取る」、<code>$( … ),*</code> は「くり返し受け取る」という印です。</td>
 <td>08 前編 4. 表</td>
@@ -3805,13 +6172,23 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
+<td><code>&lt;T&gt;</code></td>
+<td><code>fn longest&lt;'a&gt;(…)</code> や <code>struct Wrapper&lt;T&gt;</code> の、名前のすぐ後ろの <code>&lt; &gt;</code> は、「型（やライフタイム）を、使う時に決める」ための入れ物（ジェネリクス）です。<code>T</code> は「何かの型」の仮の名前で、使う時に <code>i32</code> や <code>String</code> などに決まります。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
 <td><code>Default</code></td>
 <td>「初期値（空の値）を作れる」機能（トレイト）。<code>#[derive(Default)]</code> を付けると、数は 0、文字列は <code>""</code>、<code>bool</code> は <code>false</code> の初期値を作れます。</td>
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
+<tr>
+<td><code>..値</code></td>
+<td><code>Note { title: …, ..note }</code> の <code>..note</code> は、「書かなかった残りの項目は、<code>note</code> と同じ値にする」という書き方です（構造体の更新）。<code>..Default::default()</code> なら、残りを初期値にします。<code>..</code> の後ろの物は、いつも最後に書きます。</td>
+<td>08 後編 5. 入力フォーム</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-32">モジュール</h2>
+<h2 id="cat-41">モジュール</h2>
 <table>
 <thead>
 <tr>
@@ -3842,13 +6219,28 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
+<td><code>::*</code></td>
+<td><code>use super::*;</code> の <code>*</code> は、「その中の物を全部、短い名前で呼べるようにする」という意味です。テストの <code>mod tests</code> の中で、外側（<code>super</code>、1 つ上）の関数を全部使えるようにする時によく書きます。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>::</code></td>
+<td><code>std::env</code> の <code>::</code> は、「〜の中の」を表す区切りです。<code>std::env::args()</code> は「標準ライブラリ（<code>std</code>）の中の <code>env</code> の中の <code>args</code> 関数」という意味です。型の関数（<code>String::new()</code>）や、enum の種類（<code>Ordering::Less</code>）を指す時にも使います。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
 <td><code>crate</code></td>
 <td>「このプロジェクト（クレート）のいちばん上」を表す言葉。<code>use crate::note::Note;</code> は「このプロジェクトの <code>note</code> モジュールの <code>Note</code> を使う」という意味です。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
 </tr>
+<tr>
+<td><code>pub(crate)</code></td>
+<td><code>pub(crate)</code> は、「このクレート（このプロジェクト）の中からは使えるが、外からは使えない」という公開の範囲です。<code>pub</code> だけなら、どこからでも使えます。</td>
+<td>08 後編 7. 依頼の詳しい画面と、ボタンの操作</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-33">所有権と借用</h2>
+<h2 id="cat-42">所有権と借用</h2>
 <table>
 <thead>
 <tr>
@@ -3864,6 +6256,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
+<td><code>&amp;</code></td>
+<td>値の前の <code>&amp;</code> は「貸す（借用）」の印です。<code>fs::write(&amp;relative, …)</code> は、<code>relative</code> を手放さずに、見せるだけ貸します。型に付けた <code>&amp;str</code>・<code>&amp;Vec&lt;i32&gt;</code> は「借りた値」の型です。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>'static</code></td>
+<td><code>&amp;'static str</code> の <code>'static</code> は、「プログラムが動いている間ずっと有効」という意味のライフタイムの印です。<code>"文字"</code> のように、コードに直接書いた文字列は <code>&amp;'static str</code> です。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td><code>'_</code></td>
+<td><code>Slot&lt;'_&gt;</code> の <code>'_</code> は、「何かを借りているが、その期間（ライフタイム）は Rust に任せる」という印です。名前（<code>'a</code>）を付けずに済みます。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
 <td><code>.clone()</code></td>
 <td>値を丸ごと複製するメソッド。<code>let b = a.clone();</code> で、<code>a</code> と <code>b</code> の両方を使えるようになります。<code>clone</code> しないで <code>let b = a;</code> と書くと、中身が <code>b</code> に移り（所有権の移動）、<code>a</code> はもう使えません。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
@@ -3873,9 +6280,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>中身を借りた形に変えるメソッド。<code>Option&lt;String&gt;</code> を <code>Option&lt;&amp;String&gt;</code> にするなど、中身を移さずに覗きたい時に使います。</td>
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
+<tr>
+<td><code>*</code></td>
+<td><code>*price</code> のように、借りた値（参照）の前の <code>*</code> は「借りている先の、値そのもの」を表します。<code>*count += 1</code> は、借りた先の数を 1 増やします。かけ算の <code>*</code> とは別物です。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-34">イテレーター</h2>
+<h2 id="cat-43">イテレーター</h2>
 <table>
 <thead>
 <tr>
@@ -3972,7 +6384,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-35">ファイルとフォルダ</h2>
+<h2 id="cat-44">ファイルとフォルダ</h2>
 <table>
 <thead>
 <tr>
@@ -4084,7 +6496,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-36">入出力</h2>
+<h2 id="cat-45">入出力</h2>
 <table>
 <thead>
 <tr>
@@ -4111,7 +6523,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-37">プロセス</h2>
+<h2 id="cat-46">プロセス</h2>
 <table>
 <thead>
 <tr>
@@ -4148,7 +6560,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-38">設定</h2>
+<h2 id="cat-47">設定</h2>
 <table>
 <thead>
 <tr>
@@ -4165,7 +6577,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-39">時間</h2>
+<h2 id="cat-48">時間</h2>
 <table>
 <thead>
 <tr>
@@ -4302,7 +6714,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-40">スレッドと共有</h2>
+<h2 id="cat-49">スレッドと共有</h2>
 <table>
 <thead>
 <tr>
@@ -4349,7 +6761,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-41">非同期</h2>
+<h2 id="cat-50">非同期</h2>
 <table>
 <thead>
 <tr>
@@ -4385,7 +6797,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 9. 毎朝 8:00 の通知</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[tokio]</code></td>
 <td><code>#[tokio::main]</code> は、<code>main</code> を <code>async</code> にして、tokio（非同期の仕事を回す仕組み）の上で動かす印（属性）。<code>#[tokio::test]</code> は、テストを <code>async</code> で書けるようにする印です。</td>
 <td>08 前編 11. ここまでの部品を 1 つにまとめる</td>
 </tr>
@@ -4396,7 +6808,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-42">HTTP</h2>
+<h2 id="cat-51">HTTP</h2>
 <table>
 <thead>
 <tr>
@@ -4468,7 +6880,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-43">認証</h2>
+<h2 id="cat-52">認証</h2>
 <table>
 <thead>
 <tr>
@@ -4530,7 +6942,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-44">テスト</h2>
+<h2 id="cat-53">テスト</h2>
 <table>
 <thead>
 <tr>
@@ -4551,12 +6963,12 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[cfg]</code></td>
 <td>「この条件の時だけ、この部分を翻訳する」という印（属性）。<code>#[cfg(test)]</code> を付けた部分は、<code>cargo test</code> の時だけ翻訳され、ふつうの実行ファイルには入りません。</td>
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[test]</code></td>
 <td>「この関数はテストです」という印（属性）。<code>cargo test</code> が、この印の付いた関数を全部探して動かします。</td>
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
@@ -4565,9 +6977,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>Result</code> が <code>Err</code> の時に、そのエラーを取り出すメソッド。<code>Ok</code> だった時は止まります。テストで「ちゃんと失敗するか」を確かめる時に使います。</td>
 <td>07 2. 依頼の状態を enum で書く</td>
 </tr>
+<tr>
+<td><code>#[cfg(test)]</code></td>
+<td><code>#[cfg(test)]</code> を付けた所（ふつうは <code>mod tests { … }</code>）は、<code>cargo test</code> の時だけ翻訳されます。<code>cargo run</code> や本番の実行ファイルには入りません。テストのコードは、この中に書きます。</td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-45">データベース</h2>
+<h2 id="cat-54">データベース</h2>
 <table>
 <thead>
 <tr>
@@ -4578,7 +6995,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </thead>
 <tbody>
 <tr>
-<td>``</td>
+<td><code>#[sqlx]</code></td>
 <td><code>sqlx</code> に、列の読み方を伝える印。<code>#[sqlx(try_from = "String")]</code> は「この列は、まず文字として読み、<code>TryFrom</code> で（ここでは enum に）変える」という意味です。</td>
 <td>08 前編 4. 表</td>
 </tr>
@@ -4590,6 +7007,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>Json</code></td>
 <td><code>sqlx</code> の <code>Json&lt;型&gt;</code>（<code>sqlx::types::Json</code>）は、<code>JSONB</code> の列を、Rust の struct として読み書きするための包みです。<code>Option&lt;Json&lt;Drawing&gt;&gt;</code> は「図面が無ければ <code>None</code>」。（Topcoat にも、答えを JSON で返すための <code>Json</code> があり、名前は同じでも別の物です。）</td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td><code>#[sqlx(try_from)]</code></td>
+<td><code>#[sqlx(try_from = "String")]</code> は、データベースから読んだ値を、いったん <code>String</code> として受け取り、<code>TryFrom</code> でこの型に変える印です。決まった文字（状態の名前など）だけを受け付ける型で、データベースの列を読む時に使います。</td>
 <td>08 前編 4. 表</td>
 </tr>
 <tr>
@@ -4719,7 +7141,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-46">SQL</h2>
+<h2 id="cat-55">SQL</h2>
 <table>
 <thead>
 <tr>
@@ -4767,6 +7189,21 @@ table th:last-child, table td:last-child { width: 17%; }
 <tr>
 <td><code>TEMPLATE</code></td>
 <td><code>TEMPLATE template0</code> で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>'文字'</code></td>
+<td>SQL では、文字の値を <code>'…'</code>（シングルクォート）で囲みます（<code>'2026-11-05'</code>・<code>'山田'</code>）。<code>"…"</code>（ダブルクォート）は表や列の名前に使う物なので、文字の値には使いません。中に <code>'</code> を入れる時は <code>''</code> と 2 つ書きます。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>--</code></td>
+<td>SQL では、<code>--</code> から行の終わりまでがコメントです。</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td><code>;</code></td>
+<td>SQL の <code>;</code> は、1 つの命令（文）の終わりの印です。psql では、<code>;</code> を打つまで命令が送られません（<code>;</code> を忘れると、続きを待つ <code>practice-#</code> の表示になります）。</td>
 <td>06 前編 2. 開発の準備</td>
 </tr>
 <tr>
@@ -4910,6 +7347,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 4. 表</td>
 </tr>
 <tr>
+<td><code>char_length()</code></td>
+<td>PostgreSQL の <code>char_length(title)</code> は、文字の数を数える関数です。</td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td><code>now()</code></td>
+<td>PostgreSQL の <code>now()</code> は、今の日時を返す関数です。<code>DEFAULT now()</code> で、行を作った日時を自動で入れられます。</td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
 <td><code>ALL</code></td>
 <td><code>UNION ALL</code> は、2 つの結果を、重なりも消さずにそのままつなげる書き方です。</td>
 <td>08 前編 4. 表</td>
@@ -4935,6 +7382,41 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 5. ログインとセッション</td>
 </tr>
 <tr>
+<td><code>$1</code></td>
+<td>PostgreSQL の SQL の <code>$1</code>・<code>$2</code> は、「ここに 1 番目・2 番目の値を入れる」という、あとから値を渡す場所（プレースホルダー）です。値は SQL とは別に送られるので、入力が SQL の命令として読まれることがありません。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>INSERT</code></td>
+<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>INTO</code></td>
+<td><code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>VALUES</code></td>
+<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>表.列</code></td>
+<td>SQL の <code>n.title</code>・<code>users.email</code> のように <code>表.列</code> と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（<code>JOIN</code>）時は、同じ名前の列（<code>id</code> など）があるので、こう書きます。<code>notes AS n</code> のように、表に短い別名を付けて使います。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>UPDATE</code></td>
+<td><code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td><code>SET</code></td>
+<td><code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
 <td><code>AS</code></td>
 <td>SQL で、列や表に別の名前を付ける書き方。<code>SELECT COUNT(*) AS notes</code> は、結果の列の名前を <code>notes</code> にします。<code>FROM users AS u</code> は、表を <code>u</code> と短く呼べるようにします。</td>
 <td>08 前編 6. 状態を変える処理</td>
@@ -4945,34 +7427,44 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
-<td><code>UPDATE</code></td>
-<td><code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</td>
-<td>08 前編 6. 状態を変える処理</td>
-</tr>
-<tr>
-<td><code>SET</code></td>
-<td><code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</td>
-<td>08 前編 6. 状態を変える処理</td>
-</tr>
-<tr>
 <td><code>OF</code></td>
 <td><code>FOR UPDATE OF s, r</code> は、つないだ表（<code>JOIN</code>）のうち、鍵をかける表を名前（ここでは <code>s</code> と <code>r</code>）で選ぶ書き方です。</td>
 <td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
-<td><code>INSERT</code></td>
-<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</td>
-<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+<td><code>ANY</code></td>
+<td>PostgreSQL の <code>id = ANY($1)</code> は、「<code>id</code> が、渡した並び（<code>$1</code>）の中のどれかと同じ」という条件です。いくつもの番号を、1 回の SQL で調べられます。</td>
+<td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
-<td><code>INTO</code></td>
-<td><code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</td>
-<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+<td><code>COUNT(*)</code></td>
+<td>SQL の <code>COUNT(*)</code> は、行の数を数えます。<code>GROUP BY status</code> と組み合わせると、<code>status</code> ごとの件数になります。</td>
+<td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
-<td><code>VALUES</code></td>
-<td><code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</td>
-<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+<td><code>count()</code></td>
+<td>SQL の <code>count(*)</code> は、行の数を数える関数です（<code>COUNT(*)</code> と同じで、大文字・小文字はどちらでもかまいません）。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>RETURNING</code></td>
+<td><code>INSERT … RETURNING id</code> で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>ORDER</code></td>
+<td><code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>BY</code></td>
+<td><code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td><code>LIMIT</code></td>
+<td><code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</td>
+<td>08 前編 6. 状態を変える処理</td>
 </tr>
 <tr>
 <td><code>DO</code></td>
@@ -4985,29 +7477,14 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 8. 社員の CSV と、管理のコマンド</td>
 </tr>
 <tr>
-<td><code>RETURNING</code></td>
-<td><code>INSERT … RETURNING id</code> で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。</td>
-<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
-</tr>
-<tr>
-<td><code>ORDER</code></td>
-<td><code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</td>
-<td>08 前編 9. 毎朝 8:00 の通知</td>
-</tr>
-<tr>
-<td><code>BY</code></td>
-<td><code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</td>
-<td>08 前編 9. 毎朝 8:00 の通知</td>
-</tr>
-<tr>
 <td><code>LEFT</code></td>
 <td><code>LEFT JOIN</code> は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。</td>
 <td>08 前編 9. 毎朝 8:00 の通知</td>
 </tr>
 <tr>
-<td><code>LIMIT</code></td>
-<td><code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</td>
-<td>08 前編 10. 画面から呼ぶ、読むだけの SQL</td>
+<td><code>NOTHING</code></td>
+<td><code>ON CONFLICT DO NOTHING</code> は、「入れようとした行が、決まり（<code>UNIQUE</code> など）とぶつかったら、何もしない」という書き方です。同じ仕事を 2 回始めないようにする時などに使います。</td>
+<td>08 前編 9. 毎朝 8:00 の通知</td>
 </tr>
 <tr>
 <td><code>OR</code></td>
@@ -5030,6 +7507,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 10. 画面から呼ぶ、読むだけの SQL</td>
 </tr>
 <tr>
+<td><code>IS</code></td>
+<td>SQL で NULL かどうかを調べる時の書き方。<code>WHERE x IS NULL</code>（無い）・<code>WHERE x IS NOT NULL</code>（ある）。NULL は <code>= NULL</code> では比べられません。</td>
+<td>08 前編 13. 自動のテスト</td>
+</tr>
+<tr>
 <td><code>PREPARE</code></td>
 <td>PostgreSQL で、値を入れる場所（<code>$1</code>）付きの SQL を、名前を付けて用意する命令。値は文と別に渡るので、SQL インジェクションが起きません。</td>
 <td>10 8. SQL インジェクション</td>
@@ -5041,7 +7523,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-47">JSON</h2>
+<h2 id="cat-56">JSON</h2>
 <table>
 <thead>
 <tr>
@@ -5067,7 +7549,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 後編 5. 入力フォーム</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[serde]</code></td>
 <td><code>serde</code> の印（属性）。JSON にする時の細かい決まりを付けます。<code>#[serde(rename_all = "camelCase")]</code>（名前の書き方を変える）・<code>#[serde(default)]</code>（無い時は初期値）・<code>#[serde(skip_serializing_if = "Option::is_none")]</code>（空なら書かない）などがあります。</td>
 <td>08 後編 6. 図面</td>
 </tr>
@@ -5076,9 +7558,24 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>JSON の文字列を読んで、決めた型（struct など）に変える関数。形が合わないと <code>Err</code> を返します。</td>
 <td>08 後編 6. 図面</td>
 </tr>
+<tr>
+<td><code>#[serde(rename_all)]</code></td>
+<td><code>#[serde(rename_all = "camelCase")]</code> は、項目の名前を、JSON では別の書き方にする印です。<code>camelCase</code> なら、Rust の <code>width_mm</code> が JSON では <code>widthMm</code> になります。<code>snake_case</code>・<code>kebab-case</code>・<code>UPPERCASE</code> などもあります。</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td><code>#[serde(deny_unknown_fields)]</code></td>
+<td><code>serde</code> の印。JSON に、構造体に無い名前の項目が入っていたら、読み込みをエラーにします。項目の名前の書き間違い（<code>titel</code> など）を見逃さないために付けます。</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td><code>#[serde(tag)]</code></td>
+<td><code>#[serde(tag = "kind")]</code> は、enum を JSON にする時に、種類の名前を <code>"kind": "line"</code> のような項目として、中身と一緒に入れる指定です。読む時も、その項目を見て、どの種類かを決めます。</td>
+<td>08 後編 6. 図面</td>
+</tr>
 </tbody>
 </table>
-<h2 id="cat-48">Topcoat</h2>
+<h2 id="cat-57">Topcoat</h2>
 <table>
 <thead>
 <tr>
@@ -5092,6 +7589,16 @@ table th:last-child, table td:last-child { width: 17%; }
 <td><code>topcoat</code></td>
 <td>Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</td>
 <td>07 1. 準備</td>
+</tr>
+<tr>
+<td><code>topcoat --version</code></td>
+<td><code>topcoat --version</code> は、topcoat CLI（Topcoat の道具）の版を表示します。アプリで使う Topcoat の版と同じかを確かめます。</td>
+<td>07 1. 準備</td>
+</tr>
+<tr>
+<td><code>topcoat new --minimal</code></td>
+<td><code>topcoat new 名前 --minimal</code> の <code>--minimal</code> は、いちばん小さなひな形（1 ページだけ）でプロジェクトを作る指定です。</td>
+<td>07 5. Topcoat の最小のアプリ</td>
 </tr>
 <tr>
 <td><code>module_router!</code></td>
@@ -5114,12 +7621,12 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 5. Topcoat の最小のアプリ</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[layout]</code></td>
 <td>Topcoat の印（属性）。この関数を「どのページにも共通の外枠（HTML の骨組み・メニュー）」にします。外枠の中の、ページが入る場所を <code>slot</code> で受け取ります。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[page]</code></td>
 <td>Topcoat の印（属性）。この関数を、1 つの URL に答える「ページ」にします。<code>#[page("/")]</code> なら <code>/</code> に、<code>#[page(POST)]</code> なら送信（POST）に答えます。</td>
 <td>07 5. Topcoat の最小のアプリ</td>
 </tr>
@@ -5189,7 +7696,12 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>07 5. Topcoat の最小のアプリ</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>topcoat asset bundle --release</code></td>
+<td><code>topcoat asset bundle --release</code> は、CSS などのアセットの束を、本番用（<code>target\release\assets</code>）に作ります。<code>cargo build --release</code> と組にして使います。</td>
+<td>07 6. async と、会社のサーバーへの持ち込み</td>
+</tr>
+<tr>
+<td><code>#[memoize]</code></td>
 <td>Topcoat の印（属性）。付けた関数の結果を、<strong>1 つの要求（リクエスト）の間だけ</strong>覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます。</td>
 <td>08 前編 5. ログインとセッション</td>
 </tr>
@@ -5234,6 +7746,11 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 5. ログインとセッション</td>
 </tr>
 <tr>
+<td><code>#[memoize(as_ref)]</code></td>
+<td><code>#[memoize(as_ref)]</code> の <code>as_ref</code> は、覚えておいた結果を、複製せずに「借りる形」で返す指定です。<code>Option&lt;User&gt;</code> を返す関数なら、呼んだ側には <code>Option&lt;&amp;User&gt;</code> が返ります。付けない <code>#[memoize]</code> は <code>&amp;Option&lt;User&gt;</code> を返します。</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
 <td><code>module_param!</code></td>
 <td>Topcoat のマクロ。モジュールの区切りを「URL の変わる部品」にします。<code>mod id</code> の中に <code>module_param!(id: u64, error = not_found);</code> と書くと、URL が <code>/notes/{id}</code> になり、数として読めない時は 404 になります。</td>
 <td>08 前編 7. 1 回限りの承認の URL</td>
@@ -5244,7 +7761,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 7. 1 回限りの承認の URL</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[route]</code></td>
 <td>Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。<code>#[route(GET)]</code> のように、メソッドを必ず書きます。人が見る画面は <code>#[page]</code>、プログラムが読む答えは <code>#[route]</code> と使い分けます。</td>
 <td>08 前編 7. 1 回限りの承認の URL</td>
 </tr>
@@ -5299,7 +7816,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 前編 13. 自動のテスト</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[query_params]</code></td>
 <td>Topcoat の印（属性）。<code>?q=rust&amp;page=2</code> のようなクエリ（URL の <code>?</code> の後ろ）を読むための構造体に付けます。項目は <code>Option&lt;T&gt;</code> にしておき、無い・空の時は <code>None</code> になります。</td>
 <td>08 後編 1. 画面の並び</td>
 </tr>
@@ -5364,7 +7881,7 @@ table th:last-child, table td:last-child { width: 17%; }
 <td>08 後編 1. 画面の並び</td>
 </tr>
 <tr>
-<td>``</td>
+<td><code>#[component]</code></td>
 <td>Topcoat の印（属性）。画面の一部を作る、何度も使える部品（コンポーネント）にします。<code>view!</code> の中で <code>panel(title: "一覧", …)</code> のように、名前付きの引数で呼べます。</td>
 <td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
 </tr>
@@ -5405,7 +7922,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-49">練習アプリで作る物（Rust）</h2>
+<h2 id="cat-58">練習アプリで作る物（Rust）</h2>
 <table>
 <thead>
 <tr>
@@ -5587,7 +8104,7 @@ table th:last-child, table td:last-child { width: 17%; }
 </tr>
 </tbody>
 </table>
-<h2 id="cat-50">メール</h2>
+<h2 id="cat-59">メール</h2>
 <table>
 <thead>
 <tr>

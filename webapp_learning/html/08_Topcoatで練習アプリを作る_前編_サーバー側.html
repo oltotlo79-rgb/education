@@ -395,6 +395,28 @@ li, tr { page-break-inside: avoid; }
 <span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>rust-version =</code></strong>（設定ファイル（TOML））: <code>rust-version = "1.99"</code> は、「このパッケージを作るのに要る、いちばん古い Rust の版」です。古い Rust で作ろうとすると、分かりやすいエラーで止まります。</li>
+<li><strong><code>description =</code></strong>（設定ファイル（TOML））: <code>description = "…"</code> は、パッケージの短い説明です。</li>
+<li><strong><code>publish =</code></strong>（設定ファイル（TOML））: <code>publish = false</code> は、「このパッケージは crates.io（みんなで部品を共有する所）に公開しない」という印です。間違って公開するのを防ぎます。</li>
+<li><strong><code>anyhow</code></strong>（Rust の部品（クレート））: <code>anyhow</code> は、いろいろな種類のエラーを、1 つの型（<code>anyhow::Error</code>）でまとめて扱い、説明を書き足せる（<code>.context(…)</code>）部品です。アプリの一番上の、エラーを表示する所で使います。</li>
+<li><strong><code>argon2</code></strong>（Rust の部品（クレート））: <code>argon2</code> は、パスワードを、元に戻せない形（ハッシュ）にして保存するための部品です。わざと時間とメモリを使う計算なので、盗まれても、元のパスワードを当てにくくなります。</li>
+<li><strong><code>csv</code></strong>（Rust の部品（クレート））: <code>csv</code> は、CSV（<code>,</code> で区切った表の文字）のファイルを読み書きする部品です。</li>
+<li><strong><code>dotenvy</code></strong>（Rust の部品（クレート））: <code>dotenvy</code> は、<code>.env</code> のファイルに書いた <code>名前=値</code> を読み、環境変数にする部品です。開発の時の設定に使います。</li>
+<li><strong><code>getrandom</code></strong>（Rust の部品（クレート））: <code>getrandom</code> は、OS から、予想できない安全な乱数を取ってくる部品です。セッションの合言葉（トークン）を作る時に使います。</li>
+<li><strong><code>hex</code></strong>（Rust の部品（クレート））: <code>hex</code> は、バイトの並びを、16 進数の文字（<code>a3f0…</code>）に変えたり戻したりする部品です。</li>
+<li><strong><code>serde_json</code></strong>（Rust の部品（クレート））: <code>serde_json</code> は、<code>serde</code> と組み合わせて、JSON を読み書きする部品です。</li>
+<li><strong><code>sha2</code></strong>（Rust の部品（クレート））: <code>sha2</code> は、SHA-256 などの、データの指紋（ハッシュ）を計算する部品です。</li>
+<li><strong><code>sqlx</code></strong>（Rust の部品（クレート））: <code>sqlx</code> は、PostgreSQL などのデータベースに、Rust からつないで SQL を送る部品です。</li>
+<li><strong><code>time</code></strong>（Rust の部品（クレート））: <code>time</code> は、日付・時刻を扱う部品です（期限の計算や、<code>2026-11-05</code> の形への変換など）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -491,6 +513,16 @@ MAIL_FROM=noreply@example.com
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">--</span> <span class="n">seed-demo</span>    <span class="c"># 練習用の社員を作る</span>
 <span class="n">cargo</span> <span class="n">run</span>                 <span class="c"># サーバーとして動かす</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run --</code></strong>（cargo のコマンド）: <code>cargo run -- Rust "Web アプリ"</code> の <code>--</code> は、「ここから後ろは、Cargo ではなく、動かすプログラムに渡す」という区切りです。後ろの値は、プログラムの中で <code>std::env::args()</code> で受け取れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>実際の出力:</p>
 <div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>bundled assets into C:\…\08_topcoat_app\webapp\target\debug\assets
@@ -638,6 +670,13 @@ MAIL_FROM=noreply@example.com
 <li><strong><code>PathBuf::from()</code></strong>（ファイルとフォルダ）: 文字列から、ファイルやフォルダの場所（<code>PathBuf</code>）を作る関数。<code>PathBuf::from("files")</code>。あとで <code>.join("名前")</code> で、下の場所をつなげられます。</li>
 <li><strong><code>PathBuf</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所（パス）を、自分の物として持つ型（<code>String</code> のパス版）。<code>path.join("a")</code> で場所をつなげ、<code>.push("b")</code> で足せます。借りるだけの形は <code>&amp;Path</code> です。</li>
 <li><strong><code>None</code></strong>（Option）: <code>Option</code> の「値が無い」側。<code>Some(値)</code>（値がある）か <code>None</code>（無い）のどちらかになります。Rust には「null」が無い代わりに、無いかもしれない値は必ず <code>Option</code> で表し、<code>match</code> などで両方の場合を書きます。</li>
+<li><strong><code>'a'</code></strong>（文字）: <code>'='</code> のように 1 文字を <code>'</code>（シングルクォート）で囲むと、<code>char</code>（1 文字）の値になります。何文字でも入る文字列（<code>"…"</code>）とは別の物です。<code>split_once('=')</code> は「最初の <code>=</code> で 2 つに分ける」。</li>
+<li><strong><code>u16</code></strong>（数）: 0〜65535 の整数の型（16 ビット）。ポート番号（<code>8080</code> など）はこの範囲に収まるので、<code>u16</code> で表します。</li>
+<li><strong><code>bool</code></strong>（条件）: <code>true</code>（はい）か <code>false</code>（いいえ）の、どちらかだけが入る型です。<code>if</code> の条件や、<code>5 &gt; 3</code> のように比べた結果は <code>bool</code> です。</li>
+<li><strong><code>.0</code></strong>（型とメソッド）: <code>pair.0</code>・<code>pair.1</code> のように、タプル（<code>(1, "a")</code> のような、いくつかの値の組）は、<code>.</code> と番号（0 から数える）で中の値を取り出します。<code>struct Meters(f64);</code> のような、項目に名前の無い構造体でも <code>.0</code> を使います。</li>
+<li><strong><code>_</code></strong>（場合分け）: <code>(0, _)</code> や <code>Err(_)</code> の <code>_</code> は、「ここの値は何でもよい・使わない」という印です。名前を付けないので、「使っていない」という警告も出ません。</li>
+<li><strong><code>&amp;&amp;</code></strong>（条件）: <code>a &amp;&amp; b</code> は「a と b の両方が true なら true」（かつ）です。左が false なら、右は調べません。</li>
+<li><strong><code>パターン if 条件 =&gt;</code></strong>（場合分け）: <code>match</code> の腕に <code>None if scheme == "https" =&gt;</code> のように <code>if 条件</code> を付けると、「形が合って、しかも条件も合う時だけ」その腕を選びます（マッチガード）。条件に合わなければ、次の腕を調べます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -832,6 +871,8 @@ MAIL_FROM=noreply@example.com
 <li><strong><code>SMALLINT</code></strong>（SQL）: 小さな整数（−32768〜32767）を入れる列の型。何回目か（<code>round</code>）・何番目か（<code>step_order</code>）などに使います。Rust では <code>i16</code> で受け取ります。</li>
 <li><strong><code>INDEX</code></strong>（SQL）: <code>CREATE INDEX 名前 ON 表 (列)</code> で、表に索引（本の索引のような、速く探すための仕組み）を作る SQL の命令。よく条件や並べかえに使う列に作ります。</li>
 <li><strong><code>INTEGER</code></strong>（SQL）: SQL の列の型の 1 つで、整数を入れる列。</li>
+<li><strong><code>char_length()</code></strong>（SQL）: PostgreSQL の <code>char_length(title)</code> は、文字の数を数える関数です。</li>
+<li><strong><code>now()</code></strong>（SQL）: PostgreSQL の <code>now()</code> は、今の日時を返す関数です。<code>DEFAULT now()</code> で、行を作った日時を自動で入れられます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1073,6 +1114,12 @@ MAIL_FROM=noreply@example.com
 <li><strong><code>FromRow</code></strong>（データベース）: <code>sqlx</code> の部品で、SQL の結果の 1 行を、struct に読み込めるようにする印。<code>#[derive(sqlx::FromRow)]</code> を付けると、列の名前と同じ名前の項目に、自動で入れてくれます。</li>
 <li><strong><code>Json</code></strong>（データベース）: <code>sqlx</code> の <code>Json&lt;型&gt;</code>（<code>sqlx::types::Json</code>）は、<code>JSONB</code> の列を、Rust の struct として読み書きするための包みです。<code>Option&lt;Json&lt;Drawing&gt;&gt;</code> は「図面が無ければ <code>None</code>」。（Topcoat にも、答えを JSON で返すための <code>Json</code> があり、名前は同じでも別の物です。）</li>
 <li><strong><code>Drawing</code></strong>（練習アプリで作る物（Rust））: 依頼に付ける図面（四角や線の並び）を表す struct。後編で作り、<code>JSONB</code> の列に入れます。</li>
+<li><strong><code>#[sqlx(try_from)]</code></strong>（データベース）: <code>#[sqlx(try_from = "String")]</code> は、データベースから読んだ値を、いったん <code>String</code> として受け取り、<code>TryFrom</code> でこの型に変える印です。決まった文字（状態の名前など）だけを受け付ける型で、データベースの列を読む時に使います。</li>
+<li><strong><code>i32</code></strong>（数）: マイナスもある整数の型（32 ビット。約 −21 億〜21 億）。<code>i</code> は integer（整数）の頭文字です。型を書かない整数は、ふつう <code>i32</code> になります。</li>
+<li><strong><code>i64</code></strong>（数）: マイナスもある整数の型（64 ビット。約 ±922 京）。データベースの整数の列や、番号（id）によく使います。</li>
+<li><strong><code>i16</code></strong>（数）: マイナスもある整数の型（16 ビット。−32768〜32767）。小さな数で足りる項目（何回目か、など）に使います。PostgreSQL の <code>SMALLINT</code> の列と合います。</li>
+<li><strong><code>[値; 個数]</code></strong>（Vec（並び））: <code>[0; 5]</code> は「0 を 5 個並べた配列」（<code>[0, 0, 0, 0, 0]</code>）を作る書き方です。型の所に書く <code>[u8; 32]</code> は、「<code>u8</code> が 32 個の配列」という型です。</li>
+<li><strong><code>[a, b]</code></strong>（Vec（並び））: <code>[ "Cargo.toml", "src/main.rs" ]</code> のように <code>[ ]</code> の中に <code>,</code> で区切って値を並べると、「配列」（決まった数の値の並び）ができます。<code>for x in 配列 { … }</code> で 1 つずつ取り出せます。あとから数を増やしたい時は、<code>vec![…]</code> で作る <code>Vec</code> を使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1263,6 +1310,17 @@ MAIL_FROM=noreply@example.com
 <li><strong><code>FROM</code></strong>（SQL）: <code>SELECT … FROM 表</code> の一部で、「どの表から」取り出すかを書きます。</li>
 <li><strong><code>JOIN</code></strong>（SQL）: 2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</li>
 <li><strong><code>WHERE</code></strong>（SQL）: <code>SELECT … FROM 表 WHERE 条件</code> の、条件を書く所。<code>WHERE user_id = 1</code> は「持ち主が 1 番の行だけ」。<code>UPDATE</code>・<code>DELETE</code> で <code>WHERE</code> を忘れると、全部の行が変わる（消える）ので注意します。</li>
+<li><strong><code>$1</code></strong>（SQL）: PostgreSQL の SQL の <code>$1</code>・<code>$2</code> は、「ここに 1 番目・2 番目の値を入れる」という、あとから値を渡す場所（プレースホルダー）です。値は SQL とは別に送られるので、入力が SQL の命令として読まれることがありません。</li>
+<li><strong><code>INSERT</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</li>
+<li><strong><code>INTO</code></strong>（SQL）: <code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</li>
+<li><strong><code>VALUES</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</li>
+<li><strong><code>表.列</code></strong>（SQL）: SQL の <code>n.title</code>・<code>users.email</code> のように <code>表.列</code> と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（<code>JOIN</code>）時は、同じ名前の列（<code>id</code> など）があるので、こう書きます。<code>notes AS n</code> のように、表に短い別名を付けて使います。</li>
+<li><strong><code>UPDATE</code></strong>（SQL）: <code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</li>
+<li><strong><code>SET</code></strong>（SQL）: <code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</li>
+<li><strong><code>#[memoize(as_ref)]</code></strong>（Topcoat）: <code>#[memoize(as_ref)]</code> の <code>as_ref</code> は、覚えておいた結果を、複製せずに「借りる形」で返す指定です。<code>Option&lt;User&gt;</code> を返す関数なら、呼んだ側には <code>Option&lt;&amp;User&gt;</code> が返ります。付けない <code>#[memoize]</code> は <code>&amp;Option&lt;User&gt;</code> を返します。</li>
+<li><strong><code>let … else</code></strong>（Option）: <code>let Some(x) = 値 else { return …; };</code> は、「<code>Some</code> の形なら中身を <code>x</code> に入れて先へ進み、そうでなければ <code>else</code> の中で抜ける」という書き方です。<code>else</code> の中は、必ず <code>return</code> や <code>continue</code> などで抜けます。思ったとおりでない時に早めに抜けて、残りの処理を平らに書けます。</li>
+<li><strong><code>||</code></strong>（条件）: <code>a || b</code> は「a か b の、どちらかが true なら true」（または）です。<code>if n == 0 || line == "\r\n"</code> は「0 か、空の行なら」。左が true なら、右は調べません。</li>
+<li><strong><code>..</code></strong>（場合分け）: <code>Point { x, .. }</code> や <code>(first, ..)</code> の <code>..</code> は、「残りの項目は何でもよい（見ない）」という印です。項目の多い構造体から、使う物だけを取り出す時に書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2030,10 +2088,23 @@ set-cookie: session=（トークン）; HttpOnly; SameSite=Lax; Path=/; Max-Age=
 <li><strong><code>AS</code></strong>（SQL）: SQL で、列や表に別の名前を付ける書き方。<code>SELECT COUNT(*) AS notes</code> は、結果の列の名前を <code>notes</code> にします。<code>FROM users AS u</code> は、表を <code>u</code> と短く呼べるようにします。</li>
 <li><strong><code>AssertSqlSafe</code></strong>（データベース）: <code>sqlx</code> に「この組み立てた SQL の文は、決まった文字だけでできていると確かめた」と伝える包み。<code>sqlx::query(sqlx::AssertSqlSafe(sql))</code>。外から来た値は、必ず <code>$1</code> と <code>.bind()</code> で別に渡します（そうしないと SQL インジェクションの穴になる）。</li>
 <li><strong><code>FOR</code></strong>（SQL）: <code>SELECT … FOR UPDATE</code> は、読んだ行に鍵をかける書き方です。同じ行を、別の人が同時に変えようとしても、こちらのトランザクションが終わるまで待たせるので、「2 人が同時に承認して 2 回進む」ことを防げます。</li>
-<li><strong><code>UPDATE</code></strong>（SQL）: <code>UPDATE 表 SET 列 = 値 WHERE 条件</code> で、行の中身を書きかえる SQL の命令。<code>WHERE</code> を忘れると、全部の行が変わります。</li>
-<li><strong><code>SET</code></strong>（SQL）: <code>UPDATE</code> の中で、「どの列を、どの値にするか」を書く所。</li>
 <li><strong><code>OF</code></strong>（SQL）: <code>FOR UPDATE OF s, r</code> は、つないだ表（<code>JOIN</code>）のうち、鍵をかける表を名前（ここでは <code>s</code> と <code>r</code>）で選ぶ書き方です。</li>
 <li><strong><code>PgPool</code></strong>（データベース）: <code>sqlx</code> の、PostgreSQL への接続の集まり（プール）の型。何本かの接続を用意しておき、頼まれるたびに貸し出します。複製（<code>.clone()</code>）しても、同じ集まりを指します。</li>
+<li><strong><code>ANY</code></strong>（SQL）: PostgreSQL の <code>id = ANY($1)</code> は、「<code>id</code> が、渡した並び（<code>$1</code>）の中のどれかと同じ」という条件です。いくつもの番号を、1 回の SQL で調べられます。</li>
+<li><strong><code>COUNT(*)</code></strong>（SQL）: SQL の <code>COUNT(*)</code> は、行の数を数えます。<code>GROUP BY status</code> と組み合わせると、<code>status</code> ごとの件数になります。</li>
+<li><strong><code>count()</code></strong>（SQL）: SQL の <code>count(*)</code> は、行の数を数える関数です（<code>COUNT(*)</code> と同じで、大文字・小文字はどちらでもかまいません）。</li>
+<li><strong><code>\n</code></strong>（文字列の中の特別な書き方）: 文字列の中の <code>\n</code> は「改行」を表す書き方です。<code>\</code>（バックスラッシュ。日本語のキーボードやフォントでは <code>¥</code> に見えることがあります）と <code>n</code> の 2 文字で、改行 1 つを表します。<code>"1行目\n2行目"</code> を表示すると 2 行になります。</li>
+<li><strong><code>\</code></strong>（文字列）: 文字列の中で、行の終わりに <code>\</code> を書くと、「次の行へ続く」という意味になります。改行と、次の行の頭の空白は、文字列に入りません。長い文字列を、見やすく何行かに分けて書く時に使います。</li>
+<li><strong><code>RETURNING</code></strong>（SQL）: <code>INSERT … RETURNING id</code> で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。</li>
+<li><strong><code>ORDER</code></strong>（SQL）: <code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</li>
+<li><strong><code>BY</code></strong>（SQL）: <code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</li>
+<li><strong><code>LIMIT</code></strong>（SQL）: <code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</li>
+<li><strong><code>{:0幅}</code></strong>（画面に出す）: <code>{:02}</code> のように、幅の前に <code>0</code> を付けると、「この幅になるまで、前を 0 で埋める」指定になります。<code>{:02}</code> で <code>7</code> は <code>07</code>、<code>{:06}</code> で <code>42</code> は <code>000042</code>。<code>{:016x}</code> は「16 けたになるまで 0 で埋めた 16 進数」です。時刻（<code>09:05</code>）や番号（<code>000042</code>）の表示に使います。</li>
+<li><strong><code>usize</code></strong>（数）: 0 以上の整数の型で、大きさはパソコンに合わせて決まります（64 ビットのパソコンなら <code>u64</code> と同じ）。並びの長さ（<code>.len()</code>）や、何番目か（<code>v[i]</code> の <code>i</code>）は、いつも <code>usize</code> です。</li>
+<li><strong><code>u8</code></strong>（数）: 0〜255 の整数の型（8 ビット＝1 バイト）。<code>u</code> は unsigned（マイナスが無い）の意味です。ファイルや通信の中身（バイトの並び <code>Vec&lt;u8&gt;</code>）は、この型の並びです。</li>
+<li><strong><code>&lt;T&gt;</code></strong>（型とメソッド）: <code>fn longest&lt;'a&gt;(…)</code> や <code>struct Wrapper&lt;T&gt;</code> の、名前のすぐ後ろの <code>&lt; &gt;</code> は、「型（やライフタイム）を、使う時に決める」ための入れ物（ジェネリクス）です。<code>T</code> は「何かの型」の仮の名前で、使う時に <code>i32</code> や <code>String</code> などに決まります。</li>
+<li><strong><code>!=</code></strong>（条件）: <code>a != b</code> は「a と b が等しくないか」を調べます。等しくなければ <code>true</code> です。</li>
+<li><strong><code>10u8</code></strong>（数）: 数のすぐ後ろに型の名前を付けると、その型の数になります。<code>10u8</code> は <code>u8</code> 型の 10、<code>0u64</code> は <code>u64</code> 型の 0 です。型を書かないと、整数は <code>i32</code> と決まります（使い方から別の型に決まることもあります）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2185,6 +2256,7 @@ set-cookie: session=（トークン）; HttpOnly; SameSite=Lax; Path=/; Max-Age=
 <li><strong><code>SmtpTransport</code></strong>（メール）: SMTP（メールを送る決まり）で、メールサーバーに渡して送る係。</li>
 <li><strong><code>SmtpError</code></strong>（メール）: Topcoat の、SMTP の設定や送信で起きたエラーの型。</li>
 <li><strong><code>Default</code></strong>（型とメソッド）: 「初期値（空の値）を作れる」機能（トレイト）。<code>#[derive(Default)]</code> を付けると、数は 0、文字列は <code>""</code>、<code>bool</code> は <code>false</code> の初期値を作れます。</li>
+<li><strong><code>*</code></strong>（所有権と借用）: <code>*price</code> のように、借りた値（参照）の前の <code>*</code> は「借りている先の、値そのもの」を表します。<code>*count += 1</code> は、借りた先の数を 1 増やします。かけ算の <code>*</code> とは別物です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2434,6 +2506,9 @@ http://localhost:3000/approve/fe90f09a983f61d2fc0b2b806da0af1444421e2931f4fede8e
 <li><strong><code>OK</code></strong>（HTTP）: <code>StatusCode::OK</code> は、HTTP の答えの番号 200（成功）です。</li>
 <li><strong><code>GONE</code></strong>（HTTP）: 状態コード 410（Gone: もう無い）。<code>StatusCode::GONE</code>。ここでは、承認の URL の期限が切れた・もう使えない時に返しています（404 の「初めから無い」と区別する）。</li>
 <li><strong><code>FileId</code></strong>（Topcoat）: <code>path_param!(pub file_id: i64 …)</code> が作る型。URL の中の、添付ファイルの番号を表します。<code>FileId(a.id)</code> で URL を作り、<code>*path_param::&lt;FileId&gt;(cx)?</code> で受け取ります。</li>
+<li><strong><code>&lt;ul&gt;</code></strong>（HTML）: 順番の無い並び（点の付いた並び）のタグ。中に <code>&lt;li&gt;</code> を並べます。</li>
+<li><strong><code>&lt;li&gt;</code></strong>（HTML）: 並び（<code>&lt;ul&gt;</code>・<code>&lt;ol&gt;</code>）の 1 つのタグ。</li>
+<li><strong><code>role=</code></strong>（HTML）: <code>role="status"</code> は、その部分の役わりを、読み上げソフトに伝える印です。<code>status</code> は「お知らせ」で、変わった時に読み上げられます。<code>role="alert"</code> は、すぐ知らせる大事なお知らせです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2717,12 +2792,13 @@ http://localhost:3000/approve/fe90f09a983f61d2fc0b2b806da0af1444421e2931f4fede8e
 <li><strong><code>Context</code></strong>（エラー処理）: <code>anyhow::Context</code> は、<code>with_context</code>・<code>context</code> メソッドを使えるようにする機能（トレイト）。<code>use anyhow::Context;</code> と書いておくと、<code>Result</code> や <code>Option</code> に説明を付けられます。</li>
 <li><strong><code>AppContext</code></strong>（Topcoat）: アプリで共有する物（データベースや設定など）を、型ごとに入れておく入れ物。</li>
 <li><strong><code>AppState</code></strong>（練習アプリで作る物（Rust））: アプリ全体で共有する物（データベースのプールと設定）をまとめた struct。<code>.app_context(…)</code> でルーターに渡し、どのページからも <code>state(cx)</code> で使えるようにします。</li>
-<li><strong><code>INSERT</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> で、表に新しい行を足す SQL の命令。</li>
-<li><strong><code>INTO</code></strong>（SQL）: <code>INSERT INTO 表</code> の一部で、「この表へ」入れる、という意味。</li>
-<li><strong><code>VALUES</code></strong>（SQL）: <code>INSERT INTO 表 (列, …) VALUES (値, …)</code> の、入れる値を書く所。</li>
 <li><strong><code>CONFLICT</code></strong>（HTTP）: <code>StatusCode::CONFLICT</code> は、HTTP の答えの番号 409（「ぶつかった」）。同じメールアドレスで登録しようとした時などに返します。</li>
 <li><strong><code>DO</code></strong>（SQL）: <code>INSERT … ON CONFLICT (列) DO UPDATE SET …</code> は、「同じ値の行がもうあれば、足す代わりに、その行を変える」という書き方です（アップサート）。何もしない時は <code>DO NOTHING</code> です。</li>
 <li><strong><code>EXCLUDED</code></strong>（SQL）: <code>ON CONFLICT … DO UPDATE</code> の中で、「足そうとした（はじかれた）方の行」を指す名前。<code>SET name = EXCLUDED.name</code> は「今の行の名前を、新しく入れようとした名前に変える」です。</li>
+<li><strong><code>\r</code></strong>（文字列の中の特別な書き方）: 文字列の中の <code>\r</code> は「行の頭に戻る」（CR）という、目に見えない文字です。Windows のファイルや HTTP の通信では、行の終わりを <code>\r\n</code>（CR と LF の 2 文字）で表します。</li>
+<li><strong><code>while let</code></strong>（くり返し）: <code>while let Some(c) = cause { … }</code> は、「<code>Some</code> の形である間、中身を <code>c</code> に入れてくり返す」書き方です。<code>None</code> になったら止まります。<code>while let Some(x) = stack.pop()</code> のように、並びから 1 つずつ取り出す時によく使います。</li>
+<li><strong><code>let _ =</code></strong>（変数）: <code>let _ = fs::remove_file("count.txt");</code> の <code>let _ =</code> は、「結果は受け取るが、使わずに捨てる」という書き方です。<code>Result</code> を返す関数の結果を使わないと「使っていない」と警告が出るので、わざと捨てる時に書きます。ここでは「ファイルが無くて失敗しても、気にしない」という意味です。</li>
+<li><strong><code>a..b</code></strong>（範囲）: <code>0..5</code> は「0 から 5 の手前まで」（0, 1, 2, 3, 4）の範囲です。<code>for i in 0..5</code> で 5 回くり返します。5 も含めたい時は <code>0..=5</code> と書きます。<code>&amp;s[0..3]</code> のように、文字列や並びの一部を取り出す時にも使い、<code>..3</code>（最初から）・<code>2..</code>（最後まで）と片方を省けます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -2889,7 +2965,10 @@ http://localhost:3000/approve/fe90f09a983f61d2fc0b2b806da0af1444421e2931f4fede8e
 <li><strong><code>std::collections::HashSet::new()</code></strong>（HashMap（表））: 空の <code>HashSet</code>（同じ物を 2 回入れない入れ物）を作る関数。<code>.insert(値)</code> は、初めてなら <code>true</code>、もうあれば <code>false</code> を返すので、「同じ社員番号が 2 回出てきた」ことを見つけられます。</li>
 <li><strong><code>ReaderBuilder</code></strong>（ファイルとフォルダ）: <code>csv</code> の、CSV の読み方を組み立てる型。</li>
 <li><strong><code>HashSet</code></strong>（HashMap（表））: 同じ値は 1 つしか入らない集まり（値だけの <code>HashMap</code>）。重複を消す・「もう見たか」を覚える時に使います。<code>set.insert(x)</code> は、新しく入った時だけ <code>true</code> を返します。</li>
-<li><strong><code>RETURNING</code></strong>（SQL）: <code>INSERT … RETURNING id</code> で、入れた（変えた）行の値（作られた番号など）を、その場で返してもらう書き方。</li>
+<li><strong><code>b"…"</code></strong>（文字列）: <code>b"…"</code> は、文字列ではなく「バイトの並び」（<code>&amp;[u8; N]</code>）を作る書き方です。中には英数字と記号（ASCII）だけを書けます。通信やファイルの中身を、バイトのまま扱う時に使います。</li>
+<li><strong><code>\x…</code></strong>（文字列の中の特別な書き方）: <code>\xff</code> のように <code>\x</code> の後ろに 16 進数を 2 けた書くと、その番号の 1 バイト（文字列なら 1 文字）を表します。<code>b"\xef\xbb\xbf"</code> は、UTF-8 のファイルの先頭に付くことがある、BOM という 3 バイトです。</li>
+<li><strong><code>\"</code></strong>（文字列の中の特別な書き方）: 文字列の中に <code>"</code> そのものを入れたい時は、<code>\"</code> と書きます。<code>"\"Rust\""</code> は、<code>"Rust"</code> という <code>"</code> 付きの文字になります。<code>\</code> を付けないと、そこで文字列が終わったと思われます。</li>
+<li><strong><code>+=</code></strong>（数）: <code>total += n;</code> は <code>total = total + n;</code> を短く書いた形です。<code>total</code> は <code>let mut</code> で作った（変えられる）変数でないといけません。文字列（<code>String</code>）でも <code>s += "続き";</code> で書き足せます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3089,9 +3168,8 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <li><strong><code>tokio::spawn()</code></strong>（非同期）: 非同期の仕事を、別のタスクとしてすぐ動かし始める関数。<code>tokio::spawn(async move { … })</code>。返ってくる物（<code>JoinHandle</code>）を <code>.await</code> すると、結果を受け取れます。</li>
 <li><strong><code>tokio::time::sleep()</code></strong>（非同期）: 決めた時間だけ待つ、非同期の関数。<code>tokio::time::sleep(Duration::from_millis(300)).await</code>。待っている間、ほかの仕事は止まりません（<code>std::thread::sleep</code> はスレッドごと止めてしまうので、<code>async</code> の中では使いません）。</li>
 <li><strong><code>Time</code></strong>（時間）: <code>time</code> の、時刻（時・分・秒）を表す型。<code>time!(8:00)</code> で「8 時 0 分」を作れます。</li>
-<li><strong><code>ORDER</code></strong>（SQL）: <code>ORDER BY 列</code> で、取り出した行を並べる書き方。<code>DESC</code> を付けると大きい順（新しい順）です。</li>
-<li><strong><code>BY</code></strong>（SQL）: <code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</li>
 <li><strong><code>LEFT</code></strong>（SQL）: <code>LEFT JOIN</code> は、左の表の行は、相手が無くても全部残す JOIN。「ノートが 0 件の人も一覧に出す」時に使います。</li>
+<li><strong><code>NOTHING</code></strong>（SQL）: <code>ON CONFLICT DO NOTHING</code> は、「入れようとした行が、決まり（<code>UNIQUE</code> など）とぶつかったら、何もしない」という書き方です。同じ仕事を 2 回始めないようにする時などに使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3250,7 +3328,6 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>LIMIT</code></strong>（SQL）: <code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</li>
 <li><strong><code>OR</code></strong>（SQL）: SQL で「または」。<code>WHERE a = 1 OR b = 2</code> は、どちらかに合う行です。<code>AND</code> と混ぜる時は、<code>( )</code> で囲んで順番をはっきりさせます。</li>
 <li><strong><code>EXISTS</code></strong>（SQL）: SQL で「ある」。<code>IF NOT EXISTS</code> は「無ければ」という意味です。</li>
 <li><strong><code>DESC</code></strong>（SQL）: <code>ORDER BY 列 DESC</code> で、大きい順（新しい順）に並べます（小さい順は <code>ASC</code>）。</li>
@@ -3335,6 +3412,7 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <li><strong><code>ExitCode</code></strong>（プロセス）: <code>main</code> が返す、終了コードの型。<code>fn main() -&gt; ExitCode</code> にして、<code>ExitCode::SUCCESS</code>（0）か <code>ExitCode::FAILURE</code>（1）を返します。<code>process::exit</code> と違い、片づけをしてから終われます。</li>
 <li><strong><code>SUCCESS</code></strong>（プロセス）: <code>ExitCode::SUCCESS</code> は、終了コード 0（成功）です。</li>
 <li><strong><code>FAILURE</code></strong>（プロセス）: <code>ExitCode::FAILURE</code> は、終了コード 1（失敗）です。</li>
+<li><strong><code>{:#}</code></strong>（画面に出す）: <code>{:#}</code> は、人が読む形（<code>{}</code>）の「もう 1 つの形」で表示する指定です。<code>anyhow</code> のエラーを <code>{:#}</code> で出すと、「書き足した説明: 元のエラー」のように、原因までを 1 行につないで表示します（<code>{}</code> だと、いちばん外側の説明だけです）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -3797,6 +3875,7 @@ $ webapp.exe（APP_ENV=staging で MAIL_REDIRECT_TO なし）
 <li><strong><code>MemoryTransport</code></strong>（メール）: メールを送らずに、メモリーの中にためておく係。テストで、送ったはずのメールの宛先や本文を確かめるのに使います。</li>
 <li><strong><code>TextBody</code></strong>（メール）: メールの文字の本文を表す型。<code>TextBody::Text(文字列)</code> で中身を取り出せます。</li>
 <li><strong><code>Text</code></strong>（データベース）: <code>Value::Text(s)</code> は、データベースの値が文字列であることを表す種類です。</li>
+<li><strong><code>IS</code></strong>（SQL）: SQL で NULL かどうかを調べる時の書き方。<code>WHERE x IS NULL</code>（無い）・<code>WHERE x IS NOT NULL</code>（ある）。NULL は <code>= NULL</code> では比べられません。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

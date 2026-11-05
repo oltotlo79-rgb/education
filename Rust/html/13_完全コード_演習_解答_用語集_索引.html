@@ -927,6 +927,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 └── tempfile v3.27.0
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree --locked</code></strong>（cargo のコマンド）: <code>--locked</code> は、<code>Cargo.lock</code> の版のまま木を表示する指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>Cargo.toml</code> に書いた 10 個が、<code>Cargo.lock</code> で選ばれた版で並んでいます。<code>[dev-dependencies]</code> の下が、テストでだけ使う <code>tempfile</code> です。</li>
 <li><code>async-trait</code> の <code>(proc-macro)</code> は、「コンパイルのときにコードを書き足すマクロのクレート」という印です。<code>#[async_trait]</code> の印を付けた trait を、dyn で使える形に書き換えます（第9巻 UNIT 04）。</li>
@@ -938,6 +948,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Cargo.toml の tokio の行を version = &quot;=1.53.3&quot; に変えてから、Cargo.lock も 1.53.3 にする</span>
 <span class="n">cargo</span> <span class="n">update</span> <span class="n">-p</span> <span class="n">tokio</span> <span class="p">-</span><span class="n">-precise</span> <span class="n">1</span><span class="p">.</span><span class="n">53</span><span class="p">.</span><span class="n">3</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo update --precise</code></strong>（cargo のコマンド）: <code>cargo update -p tokio --precise 1.53.3</code> の <code>--precise</code> は、部品の版を、その版にぴったり合わせる指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    Updating crates.io index
  Downgrading tokio v1.54.1 -&gt; v1.53.3
@@ -1013,6 +1033,17 @@ warning: not updating lockfile due to dry run
 <div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>tokio v1.54.1 [bytes,default,fs,full,io-std,io-util,libc,macros,mio,net,parking_lot,process,rt,rt-multi-thread,signal,signal-hook-registry,socket2,sync,time,tokio-macros,windows-sys]
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree -p</code></strong>（cargo のコマンド）: <code>-p tokio</code> は、指定した部品を根にした木だけを表示します。</li>
+<li><strong><code>cargo tree -e</code></strong>（cargo のコマンド）: <code>-e normal</code>（edges）は、どの種類のつながりを表示するかの指定です。<code>normal</code> なら、テスト用（dev）や組み立て用（build）の部品を除きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li>RustNote の <code>Cargo.toml</code> に書いた機能は <code>rt-multi-thread</code> と <code>macros</code> の2つだけなのに、<code>fs</code>・<code>net</code>・<code>signal</code>・<code>full</code> など、たくさんの機能が有効になっています。</li>
 <li>これは、RustNote が使うほかのクレートも、tokio の機能を求めているからです。<code>cargo tree -e features -i tokio</code> で調べると、libsql が使う <code>libsql_replication</code> が tokio の <code>full</code>（ほぼ全部の機能）を、<code>topcoat</code> が <code>macros</code>・<code>net</code>・<code>signal</code> を有効にしていることが分かります（それぞれのクレートの <code>Cargo.toml</code> にも、そう書いてあります）。cargo は、1つのビルドの中の tokio を1つにまとめ、<strong>誰かが求めた機能を全部足したもの</strong>でコンパイルします。</li>
@@ -1065,11 +1096,32 @@ warning: not updating lockfile due to dry run
 <span class="p">]</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[[package]]</code></strong>（設定ファイル（TOML））: <code>Cargo.lock</code> の <code>[[package]]</code> は、使っている部品 1 つ分の記録（名前・版・どこから取ったか・指紋）です。<code>Cargo.lock</code> は Cargo が自動で書くので、手では書きかえません。</li>
+<li><strong><code>dependencies =</code></strong>（設定ファイル（TOML））: <code>Cargo.lock</code> の <code>dependencies = […]</code> は、その部品が、さらに使っている部品の一覧です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <ul>
 <li><code>"thiserror 2.0.21"</code> だけ、名前の後ろに版が付いています。<code>Cargo.lock</code> に thiserror が 1.0.69 と 2.0.21 の2つあるので、どちらかを区別するためです。</li>
 </ul>
 <div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">tree</span> <span class="p">-</span><span class="n">-locked</span> <span class="n">-i</span> <span class="n">thiserror</span><span class="nv">@1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">69</span> <span class="p">-</span><span class="n">-edges</span> <span class="n">normal</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo tree --edges</code></strong>（cargo のコマンド）: <code>--edges normal</code> は <code>-e normal</code> と同じで、ふつうの部品のつながりだけを表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>thiserror v1.0.69
 ├── libsql v0.10.0
@@ -1130,6 +1182,16 @@ DATABASE_AUTH_TOKEN=
 <p><code>rust-toolchain.toml</code> が無いフォルダで、古い Rust が既定になっている PC や、<code>cargo +1.90.0 check</code> のように版を指定して、古い Rust でビルドしようとした場合です（この PC には、古い 1.90.0 も入っています）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="p">+</span><span class="n">1</span><span class="p">.</span><span class="n">90</span><span class="p">.</span><span class="n">0</span> <span class="n">check</span> <span class="p">-</span><span class="n">-locked</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo check --locked</code></strong>（cargo のコマンド）: <code>cargo check</code> は、実行ファイルを作らずに、エラーが無いかだけを速く調べます。<code>--locked</code> は、<code>Cargo.lock</code> の版のまま調べる指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>（<code>requires rustc 1.99</code> の行が 35 行続くので、途中を省いています）</p>
 <div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>error: rustc 1.90.0 is not supported by the following packages:
@@ -1198,6 +1260,17 @@ help: to generate the lock file without accessing the network, remove the --lock
 <span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;registry+https://github.com/rust-lang/crates.io-index&quot;</span>
 <span class="n">checksum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b&quot;</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>source =</code></strong>（設定ファイル（TOML））: <code>Cargo.lock</code> の <code>source = "registry+https://github.com/rust-lang/crates.io-index"</code> は、「その部品を crates.io から取った」という記録です。</li>
+<li><strong><code>checksum =</code></strong>（設定ファイル（TOML））: <code>Cargo.lock</code> の <code>checksum</code> は、部品の中身の指紋です。取ってきた部品が、記録の時と 1 文字でもちがえば、エラーで止まります（すりかえを防ぎます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">cargo</span> <span class="n">build</span> <span class="p">-</span><span class="n">-locked</span>
 </code></pre></div></div>
@@ -1825,6 +1898,7 @@ error: could not compile `rustnote` (lib) due to 2 previous errors
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>AsRef</code></strong>（型とメソッド）: 「借りた形（<code>&amp;Path</code> など）に変えられる」機能（トレイト）。引数を <code>path: impl AsRef&lt;Path&gt;</code> にすると、<code>&amp;str</code> でも <code>String</code> でも <code>PathBuf</code> でも受け取れます。</li>
+<li><strong><code>WAL</code></strong>（SQL）: SQLite の <code>PRAGMA journal_mode = WAL</code> の <code>WAL</code> は、書き込みを、まず別のファイル（<code>-wal</code>）に書いておく方式です。読む人と書く人が、互いに待たされにくくなります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7081,6 +7155,10 @@ C 形式の違うメール: 状態 401・中央値 45 ミリ秒（7 回: 38〜76
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.canonical_reason()</code></strong>（HTTP）: HTTP の答えの番号の、決まった説明の言葉を返すメソッド（<code>404</code> なら <code>"Not Found"</code>）。</li>
+<li><strong><code>required=</code></strong>（HTML）: <code>required</code> は、「この欄は必ず入れる」という印です。空のまま送ろうとすると、ブラウザーが止めて知らせます（サーバー側でも、必ず確かめます）。</li>
+<li><strong><code>maxlength=</code></strong>（HTML）: <code>maxlength="100"</code> は、入力できる文字の数の上限です。それより長くは打てません（サーバー側でも、必ず確かめます）。</li>
+<li><strong><code>&lt;textarea&gt;</code></strong>（HTML）: <code>&lt;textarea&gt;</code> は、何行も書ける入力欄です。<code>rows="6"</code> で、見える行の数を決めます。中の初めの文字は、タグの間に書きます。</li>
+<li><strong><code>rows=</code></strong>（HTML）: <code>&lt;textarea rows="6"&gt;</code> の <code>rows</code> は、見える行の数です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -7272,6 +7350,16 @@ C 形式の違うメール: 状態 401・中央値 45 ミリ秒（7 回: 38〜76
 <span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">SignupOutcome</span><span class="p">::</span><span class="n">Registered</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>autocomplete=</code></strong>（HTML）: <code>autocomplete="email"</code> は、ブラウザーに、「この欄にはメールアドレスを入れる」と伝え、覚えている値を出してもらう印です。<code>username</code>・<code>current-password</code>・<code>new-password</code> などがあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <div class="codehilite"><div class="code-wrap" id="code-180"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! GET /login : ログインフォーム</span>
 <span class="sd">//! POST /login : メールとパスワードを確かめ、セッションを始めて 303 でノート一覧へ</span>
@@ -8087,6 +8175,18 @@ content-type: text/html; charset=utf-8
 <span class="p">}</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;details&gt;</code></strong>（HTML）: <code>&lt;details&gt;</code> は、押すと開いたり閉じたりする部分を作るタグです。中の <code>&lt;summary&gt;</code> が、いつも見える見出しになります。<code>open</code> を付けると、最初から開きます。</li>
+<li><strong><code>open=</code></strong>（HTML）: <code>&lt;details open&gt;</code> の <code>open</code> は、最初から開いた状態にする印です。</li>
+<li><strong><code>&lt;summary&gt;</code></strong>（HTML）: <code>&lt;summary&gt;</code> は、<code>&lt;details&gt;</code> の中に書く、いつも見える見出しです。押すと、残りの中身が開きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h4 id="1_9">▼ コードを1つずつ分解して解説</h4>
 <h5 id="1-url_1">解説1: URL のクエリを読む</h5>
 <ul>
@@ -8190,6 +8290,16 @@ content-type: text/html; charset=utf-8
 <span class="w">    </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&lt;article&gt;</code></strong>（HTML）: <code>&lt;article&gt;</code> は、それだけで意味がまとまった中身（ノート 1 件・記事 1 つ）を囲むタグです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <h5 id="4-id-module_param-noteid">解説4: {id} は module_param! で NoteId に</h5>
 <ul>
@@ -9404,6 +9514,14 @@ test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fin
 <li><strong><code>white-space:</code></strong>（CSS）: CSS で、空白や改行をどう表示するかを決める項目。<code>pre-wrap</code> は「改行と空白はそのまま、はみ出す所は折り返す」。</li>
 <li><strong><code>overflow-wrap:</code></strong>（CSS）: CSS で、長い単語（URL など）が箱からはみ出す時に、途中で折り返すかを決める項目。<code>anywhere</code> で、どこでも折り返せます。</li>
 <li><strong><code>text-align:</code></strong>（CSS）: CSS で、文字の左右のそろえ方を決める項目。<code>center</code> で中央。</li>
+<li><strong><code>*</code></strong>（CSS）: CSS の <code>*</code> は、「全部のタグ」を選ぶ書き方です。<code>* { box-sizing: border-box; }</code> は、全部のタグの幅の数え方をそろえます。</li>
+<li><strong><code>var()</code></strong>（CSS）: CSS の <code>var(--color-text)</code> は、<code>--</code> で始まる変数の値を使う書き方です。</li>
+<li><strong><code>.クラス名</code></strong>（CSS）: CSS の <code>.note { … }</code> のように <code>.</code> で始まる名前は、「<code>class="note"</code> の付いたタグ全部」を選ぶ書き方（クラスセレクター）です。<code>{ }</code> の中の見た目が、その全部に付きます。</li>
+<li><strong><code>数px</code></strong>（CSS）: CSS の <code>16px</code> の <code>px</code> は、画面の点（ピクセル）の数で表す大きさの単位です。</li>
+<li><strong><code>A B</code></strong>（CSS）: CSS の <code>.note-list li</code> のように、空白で区切って並べると、「<code>.note-list</code> の<strong>中にある</strong> <code>li</code>」を選びます（子孫セレクター）。</li>
+<li><strong><code>A, B</code></strong>（CSS）: CSS の <code>button, .btn { … }</code> のように <code>,</code> で区切ると、「<code>button</code> と <code>.btn</code> の両方」に、同じ見た目を付けます。</li>
+<li><strong><code>:hover</code></strong>（CSS）: CSS の <code>button:hover</code> の <code>:hover</code> は、「マウスが乗っている間だけ」の見た目です。<code>:focus</code> は「キーボードで選ばれている間」、<code>:disabled</code> は「使えない時」です。</li>
+<li><strong><code>数%</code></strong>（CSS）: CSS の <code>100%</code> は、「入れ物（親）の大きさの何パーセントか」で表す単位です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -9552,6 +9670,7 @@ content-length: 4659
 <li><strong><code>.getPropertyValue()</code></strong>（JavaScript・TypeScript）: <code>getComputedStyle(要素).getPropertyValue("white-space")</code> のように、CSS の項目の、実際に効いている値を取り出すメソッド。</li>
 <li><strong><code>.setViewportSize()</code></strong>（Playwright）: 画面の大きさ（幅・高さ）を変えるメソッド。スマホの幅で崩れないかを確かめる時に使います。</li>
 <li><strong><code>.close()</code></strong>（JavaScript・TypeScript）: Playwright で、ブラウザーを閉じるメソッド（<code>await browser.close()</code>）。</li>
+<li><strong><code>.argv</code></strong>（Node.js）: <code>process.argv</code> は、プログラムを動かした時の引数の並びです。0 番目は <code>node</code> の場所、1 番目はスクリプトの場所、2 番目からが渡した引数です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -10015,6 +10134,7 @@ content-length: 4659
 <li><strong><code>AssetConfig::hosted_at()</code></strong>（Topcoat）: アセット（CSS など）を、決めた URL の場所から配る設定を作る関数。テストで、束を作らずに CSS の URL だけを決める時に使います。</li>
 <li><strong><code>Manifest</code></strong>（Topcoat）: アセットの目録（元の名前と、ハッシュの付いた本当の名前の対応表）の型。</li>
 <li><strong><code>ManifestEntry</code></strong>（Topcoat）: アセットの目録の 1 行（1 つのファイルの情報）の型。</li>
+<li><strong><code>b'a'</code></strong>（文字）: <code>b'A'</code> は、1 文字を <code>char</code> ではなく 1 バイト（<code>u8</code>。<code>b'A'</code> は 65）として書く書き方です。<code>b'A'..=b'Z'</code> で、「バイトが A〜Z のどれか」を調べられます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

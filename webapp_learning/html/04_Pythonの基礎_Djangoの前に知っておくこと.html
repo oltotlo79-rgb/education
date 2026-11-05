@@ -248,7 +248,9 @@ li, tr { page-break-inside: avoid; }
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
+<li><strong><code>py -m</code></strong>（Python の道具）: <code>py -m venv .venv</code> の <code>-m</code> は、「Python の部品（モジュール）を、道具として動かす」指定です。<code>-m venv</code> で仮想環境を作り、<code>-m pip</code> で部品を入れます。</li>
 <li><strong><code>.\.venv\Scripts\python.exe</code></strong>（Python の道具）: 仮想環境（<code>.venv</code>）の中の Python を、場所を書いて動かす書き方。<code>.\.venv\Scripts\python.exe ファイル.py</code> でプログラムを動かし、<code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code> で、その仮想環境に部品を入れます。仮想環境を「入る」操作（Activate）をしなくても、確実にその Python が使われます。</li>
+<li><strong><code>.\</code></strong>（PowerShell）: <code>.\target\debug\practice.exe</code> の <code>.\</code> は、「今いるフォルダの中の」という意味です。PowerShell は、安全のため、今いるフォルダのプログラムでも <code>.\</code> を付けないと動かしません。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -347,6 +349,15 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>enumerate()</code></strong>（Python）: 並びを、番号つきで 1 つずつ取り出す関数。<code>for i, name in enumerate(approvers, start=1):</code> は、<code>i</code> に 1, 2, 3…、<code>name</code> に中身が入ります。</li>
 <li><strong><code>print()</code></strong>（Python）: 渡した値を画面に表示する関数。<code>print("a", 1)</code> のように、いくつも渡すと空白でつないで表示し、最後に改行します。</li>
 <li><strong><code>len()</code></strong>（Python）: 長さ（中身の数）を返す関数。<code>len("abc")</code> は 3、<code>len([1, 2])</code> は 2、<code>len(sys.argv)</code> は「渡された引数の数＋1」です。</li>
+<li><strong><code>#</code></strong>（Python）: Python では、<code>#</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>f"…{値}…"</code></strong>（Python）: <code>f"…"</code>（頭に <code>f</code> を付けた文字）の中の <code>{ }</code> には、変数や式を書けて、その値が入ります（f 文字列）。<code>f"環境変数 {name} がありません"</code>。<code>{ }</code> の中の <code>:</code> の後ろには、<code>{amount:,}</code> のように書式も書けます。</li>
+<li><strong><code>[式 for 名前 in 並び]</code></strong>（Python）: <code>[f"http://{host}" for host in ALLOWED_HOSTS]</code> は、「並びの 1 つずつから、新しい値を作って、並び（リスト）にする」書き方です（リスト内包表記）。後ろに <code>if 条件</code> を付けると、条件に合う物だけになります。</li>
+<li><strong><code>-&gt; 型</code></strong>（Python）: <code>def apply(self, action: str) -&gt; None:</code> の <code>-&gt; None</code> は、「この関数が返す物の型」の説明です（<code>None</code> は「何も返さない」）。</li>
+<li><strong><code>名前: 型</code></strong>（Python）: <code>def apply(self, action: str)</code> の <code>: str</code> は、「この引数は文字」という型の説明（型ヒント）です。Python は動かす時には確かめませんが、エディターや mypy が間違いを教えてくれます。</li>
+<li><strong><code>名前: 型 =</code></strong>（Python）: <code>app_name: str = "依頼・承認アプリ"</code> は、変数に型の説明を付けて、値を入れる書き方です。</li>
+<li><strong><code>list[型]</code></strong>（Python）: <code>list[str]</code> は「文字の並び」、<code>dict[str, int]</code> は「キーが文字で値が整数の辞書」という型です。</li>
+<li><strong><code>==</code></strong>（Python）: <code>a == b</code> は、「a と b が等しいか」です。<code>=</code>（1 つ）は「値を入れる」です。</li>
+<li><strong><code>名前=値</code></strong>（Python）: <code>open(path, encoding="utf-8")</code> の <code>encoding="utf-8"</code> のように、<code>名前=値</code> で渡す引数は「キーワード引数」です。順番に関係なく、名前で渡せます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -517,6 +528,13 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>as</code></strong>（Python）: Python で、別の名前を付ける書き方。<code>except Exception as error:</code>（起きたエラーを <code>error</code> で受け取る）・<code>import numpy as np</code>・<code>with open(…) as f:</code> のように使います。</li>
 <li><strong><code>field()</code></strong>（Python）: <code>dataclasses</code> の部品で、dataclass の項目に、細かい決まりを付ける関数。<code>tags: list[str] = field(default_factory=list)</code> は「作るたびに、新しい空のリストを入れる」。<code>= []</code> と書くと、全部で同じリストを共有してしまうので、こう書きます。</li>
 <li><strong><code>@dataclass</code></strong>（Python）: クラスの上に付ける印（デコレーター）。項目（<code>title: str</code> など）を並べるだけで、作る時の処理（<code>__init__</code>）・表示の形・<code>==</code> の比べ方を自動で作ってくれます。</li>
+<li><strong><code>"""…"""</code></strong>（Python）: <code>"""…"""</code>（<code>"</code> を 3 つ）で囲んだ文字は、何行にもまたがって書けます。関数・クラス・ファイルのいちばん最初に書いた物は、その説明書（docstring）になり、<code>help()</code> やエディターで読めます。</li>
+<li><strong><code>self</code></strong>（Python）: クラスの中の関数（メソッド）の最初の引数 <code>self</code> は、「その関数を呼んだ、その物自身」です。<code>self.amount</code> で、自分の項目を読み書きします。呼ぶ時は、<code>self</code> は書きません（<code>r.apply("submit")</code>）。</li>
+<li><strong><code>not in</code></strong>（Python）: <code>key not in TRANSITIONS</code> は、「<code>key</code> が <code>TRANSITIONS</code> の中に無い」です。<code>in</code> の反対です。</li>
+<li><strong><code>__name__</code></strong>（Python）: <code>__name__</code> は、今のファイル（モジュール）の名前が入った、特別な変数です。ファイルを直接動かした時は <code>"__main__"</code> になります。<code>type(error).__name__</code> は、エラーの種類の名前です。</li>
+<li><strong><code>__main__</code></strong>（Python）: <code>if __name__ == "__main__":</code> の下は、「このファイルを直接動かした時だけ」動きます。ほかのファイルから <code>import</code> された時は、動きません。</li>
+<li><strong><code>StrEnum</code></strong>（Python）: <code>StrEnum</code>（<code>enum</code>）は、決まった値の一覧（列挙）を、文字として扱える形で作る型です。<code>class Status(StrEnum): DRAFT = "下書き"</code>。</li>
+<li><strong><code>Exception</code></strong>（Python）: <code>Exception</code> は、Python のふつうのエラー全部の、元になる型です。<code>class TransitionError(Exception):</code> で、自分のエラーの種類を作れます。<code>except Exception as e:</code> は、ほとんど全部のエラーを受け止めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -669,6 +687,15 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.fullmatch()</code></strong>（Python）: <code>re.fullmatch(パターン, 文字列)</code> は、文字列の<strong>全体</strong>が正規表現（文字の形の決まり）に合うかを調べる関数です。<code>r"\d{6}"</code> は「数字がちょうど 6 つ」。合わなければ <code>None</code> です。</li>
 <li><strong><code>.add()</code></strong>（Python）: <code>set</code>（同じ物を 2 回入れない入れ物）に 1 つ足すメソッド。すでにあれば何もしません。<code>no in seen</code> で「もう出てきたか」を確かめられます。</li>
 <li><strong><code>set()</code></strong>（Python）: 集合（同じ値は 1 つしか入らない入れ物）を作る関数。<code>seen = set()</code> で空の集合を作り、<code>seen.add(x)</code>・<code>x in seen</code> で使います。重複を見つける時に便利です。</li>
+<li><strong><code>r"…"</code></strong>（Python）: <code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。正規表現の <code>r"\d{6}"</code> のように、<code>\</code> の多い文字をそのまま書けます。</li>
+<li><strong><code>正規表現</code></strong>（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。<code>^\s*#</code> は「行の頭から、空白がいくつかあって、<code>#</code> が来る」という形を表します。<code>-match</code>（PowerShell）・<code>re.match</code>（Python）・<code>/…/</code>（JavaScript）・<code>Regex::new</code>（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。</li>
+<li><strong><code>\d</code></strong>（正規表現）: 正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</li>
+<li><strong><code>{n,m}</code></strong>（正規表現）: 正規表現の <code>{6}</code> は「すぐ前の物が、ちょうど 6 回」、<code>{8,12}</code> は「8 回から 12 回」を表します。<code>\d{6}</code> は「数字 6 けた」。</li>
+<li><strong><code>{値!r}</code></strong>（Python）: f 文字列の <code>{no!r}</code> の <code>!r</code> は、値を <code>repr()</code> の形（プログラマー向けの形）で表示する指定です。文字なら <code>'012345'</code> のように <code>'</code> が付くので、空白や空の文字が見分けやすくなります。</li>
+<li><strong><code>[開始:終わり]</code></strong>（Python）: <code>text[1:4]</code> は、1 番目から 4 番目の手前まで（1, 2, 3）を取り出します（スライス）。<code>[:3]</code> は最初から、<code>[3:]</code> は 3 番目から最後まで、<code>[::-1]</code> は逆さまです。</li>
+<li><strong><code>Path</code></strong>（Python）: <code>Path</code>（<code>pathlib</code>）は、ファイルやフォルダの場所を表す型です。<code>Path("memo.txt").exists()</code>・<code>.read_text()</code>・<code>/</code> でのつなぎ（<code>BASE_DIR / "media"</code>）ができます。</li>
+<li><strong><code>UnicodeDecodeError</code></strong>（Python）: <code>UnicodeDecodeError</code> は、ファイルを、決めた文字の符号（UTF-8 など）で読めなかった時のエラーです。Shift_JIS のファイルを UTF-8 として読んだ時などに起きます。</li>
+<li><strong><code>.argv</code></strong>（Node.js）: <code>process.argv</code> は、プログラムを動かした時の引数の並びです。0 番目は <code>node</code> の場所、1 番目はスクリプトの場所、2 番目からが渡した引数です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -804,6 +831,13 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.compare_digest()</code></strong>（Python）: <code>hmac.compare_digest(a, b)</code> は、2 つの値が同じかを、かかる時間から中身を推測されない方法で比べる関数です。合言葉やハッシュを比べる時に使います。</li>
 <li><strong><code>datetime()</code></strong>（Python）: 日付と時刻を表す型（<code>datetime(2026, 11, 2, 8, 0)</code> のように作る）。<code>datetime.now(ZoneInfo("Asia/Tokyo"))</code> で、日本時間の今が取れます。</li>
 <li><strong><code>timedelta()</code></strong>（Python）: 時間の長さを表す型。<code>timedelta(minutes=60)</code> は 60 分。日時に足したり引いたりできます。</li>
+<li><strong><code>%Y</code></strong>（日時の書式）: 日時の書式の <code>%Y</code> は、4 けたの年（<code>2026</code>）です。<code>strftime("%Y-%m-%d")</code> → <code>2026-11-05</code>。</li>
+<li><strong><code>%m</code></strong>（日時の書式）: 日時の書式の <code>%m</code> は、2 けたの月（<code>01</code>〜<code>12</code>）です。</li>
+<li><strong><code>%d</code></strong>（日時の書式）: 日時の書式の <code>%d</code> は、2 けたの日（<code>01</code>〜<code>31</code>）です。</li>
+<li><strong><code>%H</code></strong>（日時の書式）: 日時の書式の <code>%H</code> は、24 時間の形の時（<code>00</code>〜<code>23</code>）です。</li>
+<li><strong><code>%M</code></strong>（日時の書式）: 日時の書式の <code>%M</code>（大文字）は、2 けたの分（<code>00</code>〜<code>59</code>）です。月の <code>%m</code>（小文字）と取り違えないようにします。</li>
+<li><strong><code>!=</code></strong>（Python）: <code>a != b</code> は、「a と b が等しくないか」です。</li>
+<li><strong><code>ZoneInfo</code></strong>（Python）: <code>ZoneInfo("Asia/Tokyo")</code>（<code>zoneinfo</code>）は、時間帯（タイムゾーン）を表します。日時に付けると、日本の時刻として扱えます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

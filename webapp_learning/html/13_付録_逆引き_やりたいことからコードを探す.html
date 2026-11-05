@@ -1,0 +1,3266 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>13_付録_逆引き_やりたいことからコードを探す</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/13_%E4%BB%98%E9%8C%B2_%E9%80%86%E5%BC%95%E3%81%8D_%E3%82%84%E3%82%8A%E3%81%9F%E3%81%84%E3%81%93%E3%81%A8%E3%81%8B%E3%82%89%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E6%8E%A2%E3%81%99.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">Web アプリ開発 学習資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">13 付録 — 逆引き: やりたいことからコードを探す</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">「一覧をしぼり込みたい」「数を 3 けたで区切りたい」から、書き方を 443 個引く。本文に出てくる所と、合わせて覚えるコードつき</div>
+</div>
+
+<style>
+/* 逆引きの表: 書き方の列を広めにして、コードが途中で折れにくくする */
+table th:nth-child(1), table td:nth-child(1) { width: 22%; }
+table th:nth-child(2), table td:nth-child(2) { width: 38%; }
+table td:nth-child(2) code { word-break: normal; overflow-wrap: anywhere; }
+table th:nth-child(4), table td:nth-child(4) { width: 16%; }
+/* 長い表は、ページの途中から始めて、次のページへ続ける（表全体を 1 ページに収めようとして、見出しの下を空けない） */
+table { page-break-inside: auto; }
+</style>
+
+<h1 id="13">13 付録: 逆引き — やりたいことからコードを探す</h1>
+<h2 id="_1">この逆引きについて</h2>
+<p>12 付録「出てくるコードとコマンドの一覧」は、「この <code>useEffect</code> は何だっけ？」のように、<strong>コードから意味を引く</strong>ための物です。この 13 付録は、その反対です。「<strong>一覧を条件でしぼり込みたい</strong>」「<strong>数を 3 けたごとに区切って表示したい</strong>」のような、<strong>やりたいことから、書き方を引く</strong>ための物です。</p>
+<ul>
+<li><strong>全部で 443 個</strong>の「やりたいこと」を、<strong>17 の分類</strong>に分けています。分類は、学ぶ順（道具 → HTML・CSS → TypeScript・React → Python・Django → Rust・Topcoat → SQL・メール・安全）です。下の「分類の一覧」から選ぶか、HTML 版（<code>webapp_learning\html</code>）で <code>Ctrl</code> ＋ <code>F</code> を押して、やりたいことの言葉（「しぼる」「並べかえる」「送る」など）で探してください。</li>
+<li><strong>同じやりたいことでも、言語ごとに書き方が違います。</strong> 例えば「並びから条件に合う物だけを集める」は、TypeScript では <code>items.filter(…)</code>、Python では <code>[r for r in rows if …]</code>、Django では <code>Request.objects.filter(…)</code> です。それぞれの言語の分類に載せています。</li>
+<li><strong>「書き方」の列:</strong> そのまま使える形の、短いコードです。<code>…</code> の所は、自分の場面に合わせて書きます。</li>
+<li><strong>「ひとこと」の列:</strong> 気をつけることや、結果の例です。くわしい意味は、12 付録の一覧と、本文の「▶ ここで初めて出てくるコード」の箱にあります。</li>
+<li><strong>「出てくる所」の列:</strong> その書き方が、00〜11 で初めて出てくる巻と章です（399 個）。</li>
+<li><strong>「＋ 合わせて覚える」:</strong> 本文で使った書き方と一緒に覚えておくと、すぐ役に立つ書き方です（44 個）。この付録で足しました。使う前に、12 付録の一覧や、それぞれの説明書で、くわしい使い方を確かめてください。</li>
+</ul>
+<blockquote>
+<p><strong>ヒント:</strong> 練習アプリを作っている時に「こういう時はどう書くんだっけ？」と思ったら、まずこの付録を開いてください。1 つの分類の表を上から下まで一度ながめておくと、あとで探す時に思い出しやすくなります。</p>
+</blockquote>
+<h2 id="_2">分類の一覧</h2>
+<table>
+<thead>
+<tr>
+<th>分類</th>
+<th>数</th>
+<th>分類</th>
+<th>数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#rev-1">道具を入れる・確かめる</a></td>
+<td>18</td>
+<td><a href="#rev-10">Python の文字・数・並び・辞書・ファイル・日時</a></td>
+<td>47</td>
+</tr>
+<tr>
+<td><a href="#rev-2">npm（Node.js の部品）</a></td>
+<td>15</td>
+<td><a href="#rev-11">Django（モデル・ORM）</a></td>
+<td>31</td>
+</tr>
+<tr>
+<td><a href="#rev-3">HTML（画面の中身）</a></td>
+<td>41</td>
+<td><a href="#rev-12">Django（URL・ビュー・テンプレート・管理画面・設定）</a></td>
+<td>35</td>
+</tr>
+<tr>
+<td><a href="#rev-4">CSS（画面の見た目）</a></td>
+<td>26</td>
+<td><a href="#rev-13">Django REST framework（API）</a></td>
+<td>11</td>
+</tr>
+<tr>
+<td><a href="#rev-5">TypeScript の基本</a></td>
+<td>35</td>
+<td><a href="#rev-14">Rust と Topcoat（練習アプリの Rust 版）</a></td>
+<td>24</td>
+</tr>
+<tr>
+<td><a href="#rev-6">TypeScript でよく使う道具（並び・文字・数・日付・JSON・通信）</a></td>
+<td>44</td>
+<td><a href="#rev-15">SQL と PostgreSQL</a></td>
+<td>19</td>
+</tr>
+<tr>
+<td><a href="#rev-7">React（画面を部品で作る）</a></td>
+<td>27</td>
+<td><a href="#rev-16">メールを送る（SMTP）</a></td>
+<td>5</td>
+</tr>
+<tr>
+<td><a href="#rev-8">Python の道具（venv・pip・manage.py）</a></td>
+<td>18</td>
+<td><a href="#rev-17">安全とテスト</a></td>
+<td>11</td>
+</tr>
+<tr>
+<td><a href="#rev-9">Python の基本</a></td>
+<td>36</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-1">道具を入れる・確かめる</h2>
+<p>練習アプリを作るのに使う道具の、版の確かめ方と、よく使うコマンドです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VS Code の版を見る</td>
+<td><code>code --version</code></td>
+<td></td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td>Node.js と npm の版を見る</td>
+<td><code>node --version</code><br><code>npm --version</code></td>
+<td></td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td>Python の版を見る</td>
+<td><code>py --version</code></td>
+<td>Windows では py が起動係</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td>Rust の版を見る</td>
+<td><code>rustc --version</code><br><code>cargo --version</code></td>
+<td></td>
+<td>07 1. 準備</td>
+</tr>
+<tr>
+<td>今いるフォルダを知る・移る</td>
+<td><code>pwd</code><br><code>cd webapp_learning\samples</code></td>
+<td></td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td>フォルダの中を見る</td>
+<td><code>ls</code><br><code>Get-ChildItem</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>フォルダを作る</td>
+<td><code>mkdir samples</code></td>
+<td></td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>ファイルの中を見る</td>
+<td><code>Get-Content dev.env</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>環境変数を入れる（この窓だけ）</td>
+<td><code>$env:DJANGO_DEBUG = "true"</code></td>
+<td></td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
+<td>今いるフォルダのプログラムを動かす</td>
+<td><code>.\.venv\Scripts\python.exe manage.py runserver</code></td>
+<td><code>.\</code> が要る</td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
+<td>最後のプログラムが成功したか</td>
+<td><code>$LASTEXITCODE</code></td>
+<td>0 なら成功</td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>1 行に 2 つのコマンド</td>
+<td><code>$env:SMTP_HOST = "127.0.0.1"; $env:SMTP_PORT = "1025"</code></td>
+<td></td>
+<td>09 8. 手元で、アプリから送ってみる</td>
+</tr>
+<tr>
+<td>長いコマンドを次の行へ続ける（行の最後に書く）</td>
+<td><code>&#96;</code></td>
+<td></td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
+<td>スクリプトの引数を決める</td>
+<td><code>param([string[]] $ManageArgs)</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>エラーで止めるスクリプトにする</td>
+<td><code>$ErrorActionPreference = "Stop"</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>スクリプトの隣のファイルを指す</td>
+<td><code>Join-Path $PSScriptRoot "dev.env"</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>引数をまとめて渡す</td>
+<td><code>&amp; $python manage.py @ManageArgs</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>行が形に合うか調べる</td>
+<td><code>if ($line -match '^\s*#') { continue }</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-2">npm（Node.js の部品）</h2>
+<p>TypeScript と React の部品は npm で入れます。<code>package.json</code> があるフォルダで打ちます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>package.json を作る</td>
+<td><code>npm init -y</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>部品を入れる</td>
+<td><code>npm install</code></td>
+<td>package.json の部品を全部</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td>部品を足す</td>
+<td><code>npm install react</code></td>
+<td>dependencies に入る</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td>開発の時だけの部品を足す</td>
+<td><code>npm install -D typescript</code></td>
+<td>devDependencies に入る</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>Cargo.lock のように版をそろえて入れる</td>
+<td><code>npm ci</code></td>
+<td>package-lock.json のとおり</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>登録したコマンドを動かす</td>
+<td><code>npm run check</code></td>
+<td>"scripts" に書いた物</td>
+<td>03 1. 動かしてみる</td>
+</tr>
+<tr>
+<td>開発用のサーバーを動かす</td>
+<td><code>npm run dev</code></td>
+<td>Vite が動く</td>
+<td>03 1. 動かしてみる</td>
+</tr>
+<tr>
+<td>本番用に作る</td>
+<td><code>npm run build</code></td>
+<td>dist フォルダにできる</td>
+<td>03 1. 動かしてみる</td>
+</tr>
+<tr>
+<td>型を確かめる</td>
+<td><code>npx tsc</code></td>
+<td></td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td>TypeScript を直接動かす</td>
+<td><code>node src/main.ts</code></td>
+<td>新しい Node.js は .ts を読める</td>
+<td>00 6. 練習の環境を用意する</td>
+</tr>
+<tr>
+<td>古い部品を調べる</td>
+<td><code>npm outdated</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>弱点のある部品を調べる</td>
+<td><code>npm audit</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>登録したコマンドの名前</td>
+<td><code>"scripts": { "check": "tsc" }</code></td>
+<td></td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td>開発の時だけの部品の一覧</td>
+<td><code>"devDependencies": { … }</code></td>
+<td></td>
+<td>02 1. TypeScript とは</td>
+</tr>
+<tr>
+<td>型の確かめをきびしくする</td>
+<td><code>"strict": true</code></td>
+<td>tsconfig.json</td>
+<td>02 1. TypeScript とは</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-3">HTML（画面の中身）</h2>
+<p>画面の中身と組み立てを書く HTML の、よく使うタグと属性です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ページの最初の宣言</td>
+<td><code>&lt;!doctype html&gt;</code></td>
+<td></td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>言葉と文字の符号</td>
+<td><code>&lt;html lang="ja"&gt;</code><br><code>&lt;meta charset="utf-8"&gt;</code></td>
+<td></td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>スマホの幅に合わせる</td>
+<td><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>ページの題（タブに出る）</td>
+<td><code>&lt;title&gt;依頼の一覧&lt;/title&gt;</code></td>
+<td></td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>CSS のファイルをつなぐ</td>
+<td><code>&lt;link rel="stylesheet" href="../style.css"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>JavaScript を読み込む</td>
+<td><code>&lt;script type="module" src="../main.js"&gt;&lt;/script&gt;</code></td>
+<td></td>
+<td>08 後編 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>見出し</td>
+<td><code>&lt;h1&gt;依頼の一覧&lt;/h1&gt;</code></td>
+<td>h1 はページに 1 つ</td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>段落</td>
+<td><code>&lt;p&gt;…&lt;/p&gt;</code></td>
+<td></td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>リンク</td>
+<td><code>&lt;a href="/requests"&gt;一覧へ&lt;/a&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>画像</td>
+<td><code>&lt;img src="../logo.png" alt="会社のロゴ"&gt;</code></td>
+<td>alt は読み上げの説明</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>囲み（意味なし）</td>
+<td><code>&lt;div class="card"&gt;…&lt;/div&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>文の一部を囲む</td>
+<td><code>&lt;span class="badge"&gt;回覧中&lt;/span&gt;</code></td>
+<td></td>
+<td>01 4. 表: 依頼の一覧</td>
+</tr>
+<tr>
+<td>ページの頭・主な中身・足元</td>
+<td><code>&lt;header&gt;</code><br><code>&lt;main&gt;</code><br><code>&lt;footer&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>メニュー</td>
+<td><code>&lt;nav&gt;&lt;a href="/"&gt;トップ&lt;/a&gt;&lt;/nav&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>箇条書き</td>
+<td><code>&lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;</code></td>
+<td>番号付きは <ol></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>表</td>
+<td><code>&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;件名&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;…&lt;/tbody&gt;&lt;/table&gt;</code></td>
+<td></td>
+<td>01 4. 表: 依頼の一覧</td>
+</tr>
+<tr>
+<td>表のマスを横につなぐ</td>
+<td><code>&lt;td colspan="4"&gt;</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>送信フォーム</td>
+<td><code>&lt;form action="/requests" method="post"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>ファイルを送るフォーム</td>
+<td><code>&lt;form method="post" enctype="multipart/form-data"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>入力欄</td>
+<td><code>&lt;input id="title" name="title" type="text"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>入力欄の説明（名前）</td>
+<td><code>&lt;label for="title"&gt;件名&lt;/label&gt;</code></td>
+<td>押すと欄に入れる</td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>必ず入れる欄</td>
+<td><code>&lt;input required&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>文字数の上限</td>
+<td><code>&lt;input maxlength="100"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>空の時の例の文字</td>
+<td><code>&lt;input placeholder="例: 治具の製作"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>数の欄と範囲</td>
+<td><code>&lt;input type="number" min="1" max="99"&gt;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>日付の欄</td>
+<td><code>&lt;input type="date"&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>チェックボックス</td>
+<td><code>&lt;input type="checkbox" checked&gt;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>ファイルを選ぶ欄</td>
+<td><code>&lt;input type="file" accept=".jpg,.png,.pdf" multiple&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>何行も書ける欄</td>
+<td><code>&lt;textarea rows="4"&gt;&lt;/textarea&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>選ぶ欄</td>
+<td><code>&lt;select name="kind"&gt;&lt;option value="a"&gt;A&lt;/option&gt;&lt;/select&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>最初から選んでおく</td>
+<td><code>&lt;option selected&gt;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>ボタン</td>
+<td><code>&lt;button type="submit"&gt;送る&lt;/button&gt;</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>読み上げ用の名前</td>
+<td><code>aria-label="回覧者1"</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>大事なお知らせを読み上げる</td>
+<td><code>role="alert"</code></td>
+<td></td>
+<td>08 前編 7. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>見た目のための名前</td>
+<td><code>class="note"</code></td>
+<td></td>
+<td>01 2. HTML の基本</td>
+</tr>
+<tr>
+<td>ページで 1 つだけの名前</td>
+<td><code>id="title"</code></td>
+<td></td>
+<td>01 3. フォーム: 依頼の入力画面</td>
+</tr>
+<tr>
+<td>自分で決める属性</td>
+<td><code>data-id="42"</code></td>
+<td>JavaScript から el.dataset.id</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>特別な文字を書く</td>
+<td><code>&amp;lt;</code><br><code>&amp;gt;</code><br><code>&amp;amp;</code></td>
+<td>&lt; &gt; &amp; を文字として</td>
+<td>10 6. XSS: 画面に、スクリプトを動かされる</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code>&lt;!-- メモ --&gt;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>絵を線で描く</td>
+<td><code>&lt;svg viewBox="0 0 400 300"&gt;&lt;rect x="10" y="10" width="50" height="30" /&gt;&lt;/svg&gt;</code></td>
+<td></td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>開いたり閉じたりする部分</td>
+<td><code>&lt;details&gt;&lt;summary&gt;見出し&lt;/summary&gt;…&lt;/details&gt;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-4">CSS（画面の見た目）</h2>
+<p>見た目を決める CSS の、よく使う書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>クラスで選ぶ</td>
+<td><code>.note { … }</code></td>
+<td>class="note" の物全部</td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>id で選ぶ</td>
+<td><code>#title { … }</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>中にある物を選ぶ</td>
+<td><code>.form-grid label { … }</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>いくつかに同じ見た目</td>
+<td><code>h1, h2 { … }</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>全部のタグ</td>
+<td><code>* { box-sizing: border-box; }</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>マウスを乗せた時</td>
+<td><code>button:hover { … }</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>キーボードで選ばれた時</td>
+<td><code>button:focus-visible { outline: 2px solid; }</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>色を変数にする</td>
+<td><code>:root { --navy: #1e3a5f; }</code><br><code>color: var(--navy);</code></td>
+<td></td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
+<td>色を書く</td>
+<td><code>#1e3a5f</code><br><code>rgb(30 58 95)</code></td>
+<td></td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
+<td>文字の色・背景の色</td>
+<td><code>color: #0f172a; background: #f8fafc;</code></td>
+<td></td>
+<td>01 5. CSS の基本</td>
+</tr>
+<tr>
+<td>文字の大きさ・太さ</td>
+<td><code>font-size: 1.25rem; font-weight: 700;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>行の高さ</td>
+<td><code>line-height: 1.6;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>内側の余白・外側の余白</td>
+<td><code>padding: 8px 12px; margin: 0 auto;</code></td>
+<td></td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td>枠線と角の丸み</td>
+<td><code>border: 1px solid #cbd5e1; border-radius: 6px;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>幅・高さ</td>
+<td><code>width: 100%; max-width: 960px;</code></td>
+<td></td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td>横に並べる</td>
+<td><code>display: flex; gap: 8px; align-items: center;</code></td>
+<td></td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>両端に寄せて並べる</td>
+<td><code>justify-content: space-between;</code></td>
+<td></td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>格子に並べる</td>
+<td><code>display: grid; grid-template-columns: 8em 1fr;</code></td>
+<td></td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>残りの場所を分ける</td>
+<td><code>1fr</code></td>
+<td></td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>列がはみ出さないようにする</td>
+<td><code>minmax(0, 1fr)</code></td>
+<td></td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td>画面が狭い時だけ</td>
+<td><code>@media (max-width: 640px) { … }</code></td>
+<td></td>
+<td>01 8. 画面の幅に合わせる</td>
+</tr>
+<tr>
+<td>大きさの単位</td>
+<td><code>16px</code><br><code>1rem</code><br><code>50%</code></td>
+<td>rem は文字の大きさの何倍か</td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>隠す</td>
+<td><code>display: none;</code></td>
+<td></td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+<tr>
+<td>影を付ける</td>
+<td><code>box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>文字を中央に</td>
+<td><code>text-align: center;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code>/* メモ */</code></td>
+<td></td>
+<td>01 7. 並べ方: flex と grid</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-5">TypeScript の基本</h2>
+<p>型を書いて、間違いを動かす前に見つける JavaScript です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>変数を作る（変えない）</td>
+<td><code>const name = "山田";</code></td>
+<td>ふつうはこれ</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>変数を作る（あとで変える）</td>
+<td><code>let count = 0;</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>型を書く</td>
+<td><code>const isOpen: boolean = true;</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>文字・数の型</td>
+<td><code>string</code><br><code>number</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>並びの型</td>
+<td><code>string[]</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>オブジェクトの形に名前を付ける</td>
+<td><code>type Request = { id: number; title: string };</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>オブジェクトの形（interface）</td>
+<td><code>interface User { name: string }</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>無くてもよい項目</td>
+<td><code>note?: string;</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>決まった値のどれか</td>
+<td><code>type Status = "下書き" &#124; "回覧中" &#124; "承認済み";</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>値か null</td>
+<td><code>string &#124; null</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>キーと値の表の型</td>
+<td><code>Record&lt;string, number&gt;</code></td>
+<td></td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td>変えない決まった値にする</td>
+<td><code>["a", "b"] as const</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>型だけ読み込む</td>
+<td><code>import type { Status } from "./types.ts";</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>関数を作る</td>
+<td><code>function add(a: number, b: number): number { return a + b; }</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>短い関数（アロー関数）</td>
+<td><code>const double = (x: number) =&gt; x * 2;</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>外で使えるようにする</td>
+<td><code>export function label(s: Status)</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>読み込む</td>
+<td><code>import { label } from "./status.ts";</code></td>
+<td></td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>条件で分ける</td>
+<td><code>if (a === b) { … } else { … }</code></td>
+<td>=== は型も比べる</td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>条件で値を選ぶ</td>
+<td><code>user.isAdmin ? "管理者" : "一般"</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>かつ・または・ではない</td>
+<td><code>a &amp;&amp; b</code><br><code>a &#124;&#124; b</code><br><code>!a</code></td>
+<td></td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td>null か undefined なら別の値</td>
+<td><code>name ?? "（なし）"</code></td>
+<td></td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>あれば中を見る</td>
+<td><code>user?.email</code></td>
+<td>無ければ undefined</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td>null ではないと言い切る</td>
+<td><code>document.getElementById("root")!</code></td>
+<td>確かな時だけ</td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
+<td>形で分ける</td>
+<td><code>switch (status) { case "下書き": … break; }</code></td>
+<td></td>
+<td>02 3. 依頼の状態を型にする</td>
+</tr>
+<tr>
+<td>くり返す</td>
+<td><code>for (const r of requests) { … }</code></td>
+<td></td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>文字の中に値を入れる</td>
+<td><code>&#96;${r.title} のメモ&#96;</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>オブジェクトから取り出す</td>
+<td><code>const { name, email } = user;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>並びから取り出す</td>
+<td><code>const [first, second] = items;</code></td>
+<td></td>
+<td>03 3. props と state</td>
+</tr>
+<tr>
+<td>中身を広げてコピー</td>
+<td><code>{ ...drawing, shapes: [...drawing.shapes, s] }</code></td>
+<td></td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>型を確かめて分ける</td>
+<td><code>typeof v === "number"</code></td>
+<td></td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td>エラーを起こす・受け止める</td>
+<td><code>throw new Error("…");</code><br><code>try { … } catch (err) { … }</code></td>
+<td></td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td>エラーの種類を調べる</td>
+<td><code>err instanceof Error ? err.message : "…"</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>クラスを作る</td>
+<td><code>class Counter { #count = 0; add() { this.#count++; } }</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>1 足す</td>
+<td><code>n++</code><br><code>n += 1</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code>// メモ</code><br><code>/* メモ */</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-6">TypeScript でよく使う道具（並び・文字・数・日付・JSON・通信）</h2>
+<p>配列（並び）・文字・数・日付・JSON の、よく使う書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数を数える</td>
+<td><code>items.length</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>1 つずつ変えた並びを作る</td>
+<td><code>items.map((r) =&gt; r.title)</code></td>
+<td></td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>条件に合う物だけの並び</td>
+<td><code>items.filter((r) =&gt; r.status === "回覧中")</code></td>
+<td></td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>最初に合う物</td>
+<td><code>items.find((r) =&gt; r.id === id)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>合う物があるか・全部合うか</td>
+<td><code>items.some(…)</code><br><code>items.every(…)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>1 つにまとめる</td>
+<td><code>items.reduce((sum, r) =&gt; sum + r.amount, 0)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>[...items].sort((a, b) =&gt; a.id - b.id)</code></td>
+<td>sort は元を変えるのでコピーしてから</td>
+<td>02 4. 配列の道具: 絞る・変える・まとめる</td>
+</tr>
+<tr>
+<td>含むか</td>
+<td><code>ids.includes(3)</code></td>
+<td></td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>後ろに足す</td>
+<td><code>list.push(x)</code></td>
+<td></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>区切りでつなぐ</td>
+<td><code>approvers.join("、")</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>1 つずつ処理する</td>
+<td><code>items.forEach((r) =&gt; console.log(r))</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>何番目か</td>
+<td><code>items.findIndex(…)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>並びか調べる</td>
+<td><code>Array.isArray(v)</code></td>
+<td></td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td>重なりを消す</td>
+<td><code>[...new Set(ids)]</code></td>
+<td></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>キーと値の入れ物</td>
+<td><code>new Map()</code><br><code>.set(k, v)</code><br><code>.get(k)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>オブジェクトのキー・値</td>
+<td><code>Object.keys(o)</code><br><code>Object.values(o)</code><br><code>Object.entries(o)</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>前後の空白を取る</td>
+<td><code>s.trim()</code></td>
+<td></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>区切りで分ける</td>
+<td><code>s.split(",")</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>含むか・始まるか</td>
+<td><code>s.includes("治具")</code><br><code>s.startsWith("#/")</code></td>
+<td></td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>小文字にする</td>
+<td><code>s.toLowerCase()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>置きかえる</td>
+<td><code>s.replace(/\s+/g, " ")</code></td>
+<td>g で全部</td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>形に合うか（正規表現）</td>
+<td><code>/^\d{6}$/.test(no)</code><br><code>hash.match(/(\d+)/)</code></td>
+<td></td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>前を 0 で埋める</td>
+<td><code>String(n).padStart(3, "0")</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>文字を数にする</td>
+<td><code>Number("42")</code><br><code>parseInt("42", 10)</code></td>
+<td></td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td>小数のけたを決める</td>
+<td><code>x.toFixed(2)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>数を 3 けたで区切る</td>
+<td><code>n.toLocaleString("ja-JP")</code><br><code>new Intl.NumberFormat("ja-JP").format(n)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>四捨五入・大きい方</td>
+<td><code>Math.round(x)</code><br><code>Math.max(a, b)</code></td>
+<td></td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td>日時を作る</td>
+<td><code>new Date("2026-11-05T09:00:00+09:00")</code></td>
+<td></td>
+<td>06 後編 6. 依頼の詳細と、操作のボタン</td>
+</tr>
+<tr>
+<td>日時を日本の形の文字にする</td>
+<td><code>d.toLocaleString("ja-JP", { dateStyle: "short", timeStyle: "short" })</code></td>
+<td></td>
+<td>06 後編 6. 依頼の詳細と、操作のボタン</td>
+</tr>
+<tr>
+<td>JSON の文字にする</td>
+<td><code>JSON.stringify(obj)</code></td>
+<td></td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td>JSON の文字から読む</td>
+<td><code>JSON.parse(text)</code></td>
+<td>壊れていると SyntaxError</td>
+<td>02 5. 図面を JSON で保存する</td>
+</tr>
+<tr>
+<td>サーバーに要求を送る</td>
+<td><code>const res = await fetch("/api/requests");</code></td>
+<td></td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td>答えがうまくいったか</td>
+<td><code>if (!res.ok) throw new Error(&#96;エラー ${res.status}&#96;);</code></td>
+<td></td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td>答えの JSON を読む</td>
+<td><code>const data = await res.json();</code></td>
+<td></td>
+<td>05 9. 自動のテスト</td>
+</tr>
+<tr>
+<td>POST で JSON を送る</td>
+<td><code>fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(x) })</code></td>
+<td></td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td>ファイルを送る</td>
+<td><code>const fd = new FormData(); fd.append("file", f); fetch(url, { method: "POST", body: fd })</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>あとで終わる処理を待つ</td>
+<td><code>await sleep(100)</code></td>
+<td>async の関数の中で</td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td>async の関数を作る</td>
+<td><code>async function load() { … }</code></td>
+<td></td>
+<td>02 7. サーバーとのやり取り</td>
+</tr>
+<tr>
+<td>決めた時間の後に動かす</td>
+<td><code>const t = setTimeout(() =&gt; …, 3000); clearTimeout(t);</code></td>
+<td></td>
+<td>06 後編 5. 依頼を出す</td>
+</tr>
+<tr>
+<td>URL の %XX を戻す</td>
+<td><code>decodeURIComponent(s)</code></td>
+<td>反対は encodeURIComponent</td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>クッキーを読む</td>
+<td><code>document.cookie</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>タグを探す</td>
+<td><code>document.querySelector("#title")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>タグの中の文字を変える</td>
+<td><code>el.textContent = "…"</code></td>
+<td>安全（HTML として動かない）</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td>画面に出す（調べ物）</td>
+<td><code>console.log(x)</code></td>
+<td>F12 の Console に出る</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-7">React（画面を部品で作る）</h2>
+<p>画面を部品（コンポーネント）に分けて作る React の、よく使う書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>部品を作る</td>
+<td><code>function StatusBadge({ status }: { status: Status }) { return &lt;span&gt;{status}&lt;/span&gt;; }</code></td>
+<td>名前は大文字で始める</td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>部品に値を渡す（props）</td>
+<td><code>&lt;StatusBadge status={r.status} /&gt;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>JSX に値を入れる</td>
+<td><code>&lt;h1&gt;{r.title}&lt;/h1&gt;</code></td>
+<td>{ } の中は式</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>見た目の名前</td>
+<td><code>className="btn-primary"</code></td>
+<td>class ではない</td>
+<td>03 2. 部品</td>
+</tr>
+<tr>
+<td>入力欄の説明</td>
+<td><code>&lt;label htmlFor="title"&gt;</code></td>
+<td>for ではない</td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>状態を持つ</td>
+<td><code>const [count, setCount] = useState(0);</code></td>
+<td></td>
+<td>03 3. props と state</td>
+</tr>
+<tr>
+<td>状態を変える</td>
+<td><code>setCount(count + 1)</code></td>
+<td>変えると描き直す</td>
+<td>03 3. props と state</td>
+</tr>
+<tr>
+<td>前の値から変える</td>
+<td><code>setItems((prev) =&gt; [...prev, item])</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>入力欄と状態を結ぶ</td>
+<td><code>&lt;input value={title} onChange={(e) =&gt; setTitle(e.target.value)} /&gt;</code></td>
+<td></td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>チェックと状態を結ぶ</td>
+<td><code>&lt;input type="checkbox" checked={on} onChange={(e) =&gt; setOn(e.target.checked)} /&gt;</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>押した時</td>
+<td><code>&lt;button onClick={() =&gt; setOpen(!open)}&gt;</code></td>
+<td></td>
+<td>03 6. 図面の画面</td>
+</tr>
+<tr>
+<td>フォームを送った時</td>
+<td><code>&lt;form onSubmit={handleSubmit}&gt;</code><br><code>e.preventDefault()</code></td>
+<td></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>送信中は押せなくする</td>
+<td><code>&lt;button disabled={sending}&gt;</code></td>
+<td></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>並びを表示する</td>
+<td><code>{items.map((r) =&gt; &lt;tr key={r.id}&gt;…&lt;/tr&gt;)}</code></td>
+<td>key を付ける</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>条件が合う時だけ表示</td>
+<td><code>{errors.length &gt; 0 &amp;&amp; &lt;ul&gt;…&lt;/ul&gt;}</code></td>
+<td></td>
+<td>03 5. 入力フォーム</td>
+</tr>
+<tr>
+<td>どちらかを表示</td>
+<td><code>{loading ? &lt;p&gt;読み込み中&lt;/p&gt; : &lt;List /&gt;}</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>余分なタグ無しで包む</td>
+<td><code>&lt;&gt; … &lt;/&gt;</code></td>
+<td></td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
+<td>画面が出た後に読み込む</td>
+<td><code>useEffect(() =&gt; { load(); }, []);</code></td>
+<td>[] で 1 回だけ</td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>後片づけ</td>
+<td><code>useEffect(() =&gt; { const t = setTimeout(…); return () =&gt; clearTimeout(t); }, [x]);</code></td>
+<td></td>
+<td>03 4. 一覧の画面: 読み込みと、しぼり込み</td>
+</tr>
+<tr>
+<td>関数を覚えておく</td>
+<td><code>const loadMe = useCallback(async () =&gt; { … }, []);</code></td>
+<td></td>
+<td>06 後編 4. ログインと、画面の切りかえ</td>
+</tr>
+<tr>
+<td>タグを覚えておく</td>
+<td><code>const ref = useRef&lt;HTMLInputElement&gt;(null); ref.current?.focus()</code></td>
+<td></td>
+<td>02 2. 変数・配列・オブジェクト・関数</td>
+</tr>
+<tr>
+<td>計算を覚えておく</td>
+<td><code>useMemo(() =&gt; heavy(items), [items])</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>画面を描き始める</td>
+<td><code>createRoot(document.getElementById("root")!).render(&lt;App /&gt;)</code></td>
+<td></td>
+<td>03 7. 画面の切りかえと、部品の組み立て</td>
+</tr>
+<tr>
+<td>入力の型</td>
+<td><code>(e: React.ChangeEvent&lt;HTMLInputElement&gt;)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>送信の型</td>
+<td><code>(e: FormEvent)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>JSX のコメント</td>
+<td><code>{/* メモ */}</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>Vite の設定</td>
+<td><code>export default defineConfig({ plugins: [react()] })</code></td>
+<td></td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-8">Python の道具（venv・pip・manage.py）</h2>
+<p>Python の部品を、プロジェクトごとの入れ物（仮想環境 <code>.venv</code>）に入れて使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仮想環境を作る</td>
+<td><code>py -m venv .venv</code></td>
+<td>.venv フォルダができる</td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
+<td>仮想環境の python で部品を入れる</td>
+<td><code>.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code></td>
+<td></td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
+<td>部品を 1 つ足す</td>
+<td><code>.\.venv\Scripts\python.exe -m pip install django</code></td>
+<td></td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
+<td>入っている部品の一覧</td>
+<td><code>python -m pip list</code></td>
+<td></td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
+<td>入っている部品を書き出す</td>
+<td><code>python -m pip freeze &gt; requirements.txt</code></td>
+<td></td>
+<td>04 1. 準備: 仮想環境を作って、部品を入れる</td>
+</tr>
+<tr>
+<td>Python の短いプログラムをその場で動かす</td>
+<td><code>python -c "print(1 + 2)"</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>Django のプロジェクトを作る</td>
+<td><code>django-admin startproject config .</code></td>
+<td></td>
+<td>05 2. プロジェクトとアプリを作る</td>
+</tr>
+<tr>
+<td>アプリ（機能のまとまり）を作る</td>
+<td><code>python manage.py startapp workflow</code></td>
+<td></td>
+<td>05 2. プロジェクトとアプリを作る</td>
+</tr>
+<tr>
+<td>開発用のサーバーを動かす</td>
+<td><code>python manage.py runserver</code></td>
+<td>http://127.0.0.1:8000/</td>
+<td>05 5. 管理画面</td>
+</tr>
+<tr>
+<td>表の変更を記録する</td>
+<td><code>python manage.py makemigrations</code></td>
+<td></td>
+<td>05 4. マイグレーション: テーブルを作る</td>
+</tr>
+<tr>
+<td>表を作る・変える</td>
+<td><code>python manage.py migrate</code></td>
+<td></td>
+<td>05 4. マイグレーション: テーブルを作る</td>
+</tr>
+<tr>
+<td>管理者を作る</td>
+<td><code>python manage.py createsuperuser</code></td>
+<td></td>
+<td>05 5. 管理画面</td>
+</tr>
+<tr>
+<td>Python の対話の画面（Django の設定つき）</td>
+<td><code>python manage.py shell</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>テストを動かす</td>
+<td><code>python manage.py test workflow</code></td>
+<td></td>
+<td>05 9. 自動のテスト</td>
+</tr>
+<tr>
+<td>設定の間違いを調べる</td>
+<td><code>python manage.py check --deploy</code></td>
+<td>本番の前に</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>静的ファイルを集める</td>
+<td><code>python manage.py collectstatic --noinput</code></td>
+<td></td>
+<td>06 後編 1. 開発中と、ビルドした後</td>
+</tr>
+<tr>
+<td>自分のコマンドを動かす</td>
+<td><code>python manage.py import_employees employees.csv</code></td>
+<td></td>
+<td>06 前編 1. 全体の形</td>
+</tr>
+<tr>
+<td>本番用のサーバーで動かす</td>
+<td><code>waitress-serve --listen=127.0.0.1:8081 config.wsgi:application</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-9">Python の基本</h2>
+<p>字下げ（空白 4 つ）で、まとまりを表します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>変数に入れる</td>
+<td><code>name = "山田"</code></td>
+<td>型は書かなくてよい</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>型の説明を付ける</td>
+<td><code>app_name: str = "依頼・承認アプリ"</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>関数を作る</td>
+<td><code>def add(a: int, b: int) -&gt; int: return a + b</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>引数の初めの値</td>
+<td><code>def env(name, default=None):</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>名前を付けて渡す</td>
+<td><code>open(path, encoding="utf-8")</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>いくつでも受け取る</td>
+<td><code>def f(*args, **kwargs):</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>辞書をばらして渡す</td>
+<td><code>create_user(email, **extra)</code></td>
+<td></td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td>戻り値の型の説明</td>
+<td><code>-&gt; None</code><br><code>-&gt; str &#124; None</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>条件で分ける</td>
+<td><code>if x &gt; 0: … elif x == 0: … else: …</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>条件で値を選ぶ</td>
+<td><code>a if 条件 else b</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td>かつ・または・ではない</td>
+<td><code>a and b</code><br><code>a or b</code><br><code>not a</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td>含むか・含まないか</td>
+<td><code>x in items</code><br><code>key not in d</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>None か調べる</td>
+<td><code>x is None</code><br><code>x is not None</code></td>
+<td></td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>くり返す</td>
+<td><code>for r in rows:</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>番号付きでくり返す</td>
+<td><code>for i, r in enumerate(rows, start=1):</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>決まった回数くり返す</td>
+<td><code>for i in range(3):</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>2 つを組にしてくり返す</td>
+<td><code>for a, b in zip(xs, ys):</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>条件の間くり返す</td>
+<td><code>while line := f.readline():</code></td>
+<td>:= は入れて使う</td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>抜ける・次へ</td>
+<td><code>break</code><br><code>continue</code></td>
+<td></td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>何もしない</td>
+<td><code>pass</code></td>
+<td></td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>エラーを受け止める</td>
+<td><code>try: … except ValueError as e: …</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>エラーを起こす</td>
+<td><code>raise RuntimeError("…")</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>自分のエラーの種類</td>
+<td><code>class TransitionError(Exception): pass</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>後片づけを自動で</td>
+<td><code>with open(path, encoding="utf-8") as f:</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>クラスを作る</td>
+<td><code>class Item: def __init__(self, title): self.title = title</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>表示の形を決める</td>
+<td><code>def __str__(self) -&gt; str:</code></td>
+<td></td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>項目だけ書くクラス</td>
+<td><code>@dataclass class Row: no: str; name: str</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>決まった値の一覧</td>
+<td><code>class Status(StrEnum): DRAFT = "下書き"</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>直接動かした時だけ</td>
+<td><code>if __name__ == "__main__":</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>このファイルの場所</td>
+<td><code>Path(__file__).resolve().parent</code></td>
+<td></td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>読み込む</td>
+<td><code>from pathlib import Path</code><br><code>import json</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+<tr>
+<td>名前の無い短い関数</td>
+<td><code>lambda r: r.id</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td>割り算・切り捨て・余り・べき乗</td>
+<td><code>7 / 2</code><br><code>7 // 2</code><br><code>7 % 2</code><br><code>2 ** 10</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>足して入れる</td>
+<td><code>total += n</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code># メモ</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>説明の文（docstring）</td>
+<td><code>"""この関数は…"""</code></td>
+<td></td>
+<td>04 3. 依頼の状態と、状態の移り変わり</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-10">Python の文字・数・並び・辞書・ファイル・日時</h2>
+<p>よく使う型の道具です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文字の中に値を入れる</td>
+<td><code>f"{name} さん"</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>小数 2 けたで表示</td>
+<td><code>f"{x:.2f}"</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>3 けた区切り</td>
+<td><code>f"{amount:,}"</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>前を 0 で埋める</td>
+<td><code>f"{n:05d}"</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>幅をそろえる</td>
+<td><code>f"{name:&lt;16}"</code><br><code>f"{n:&gt;6}"</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>割合で表示</td>
+<td><code>f"{0.256:.1%}"</code></td>
+<td>25.6%</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>' 付きで表示（調べ物）</td>
+<td><code>f"{no!r}"</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>名前と値を一緒に表示</td>
+<td><code>f"{x=}"</code></td>
+<td>x=42</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>日時を形を決めて表示</td>
+<td><code>f"{now:%Y-%m-%d %H:%M}"</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td><code>\</code> をそのまま書く</td>
+<td><code>r"\d{6}"</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>前後の空白を取る</td>
+<td><code>s.strip()</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>区切りで分ける</td>
+<td><code>s.split(",")</code></td>
+<td></td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>後ろから 1 回だけ分ける</td>
+<td><code>name.rsplit(".", 1)</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td>並びをつなぐ</td>
+<td><code>"、".join(names)</code></td>
+<td></td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>置きかえる</td>
+<td><code>s.replace("\r\n", "\n")</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>始まり・終わりを調べる</td>
+<td><code>s.startswith("http")</code><br><code>s.endswith(".pdf")</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td>小文字・大文字</td>
+<td><code>s.lower()</code><br><code>s.upper()</code></td>
+<td></td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>数字だけか</td>
+<td><code>s.isdigit()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>文字を数にする</td>
+<td><code>int("42")</code><br><code>float("1.5")</code></td>
+<td>数でないと ValueError</td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>長さ</td>
+<td><code>len(items)</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>並びを作る・足す</td>
+<td><code>items = []</code><br><code>items.append(x)</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>一部を取り出す</td>
+<td><code>items[1:3]</code><br><code>items[-1]</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>sorted(rows, key=lambda r: r.id)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>1 つずつ変えた並び</td>
+<td><code>[r.title for r in rows if r.open]</code></td>
+<td></td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>辞書を作る</td>
+<td><code>{u.pk: u for u in users}</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>辞書から取り出す</td>
+<td><code>d.get("name", "（なし）")</code></td>
+<td>無ければ 2 つ目</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>辞書の全部</td>
+<td><code>for k, v in d.items():</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>合計・最大・最小</td>
+<td><code>sum(xs)</code><br><code>max(xs)</code><br><code>min(xs)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>どれか・全部</td>
+<td><code>any(…)</code><br><code>all(…)</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td>数を数える</td>
+<td><code>Counter(words).most_common(3)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>無いキーに初めの値</td>
+<td><code>defaultdict(list)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>重なりを消す</td>
+<td><code>set(items)</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>ファイルを読む</td>
+<td><code>Path("a.txt").read_text(encoding="utf-8")</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>ファイルに書く</td>
+<td><code>Path("a.txt").write_text(s, encoding="utf-8")</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>あるか調べる</td>
+<td><code>Path("a.txt").exists()</code></td>
+<td></td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>場所をつなぐ</td>
+<td><code>BASE_DIR / "media"</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>名前と拡張子</td>
+<td><code>p.name</code><br><code>p.suffix</code><br><code>p.stem</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>CSV を読む</td>
+<td><code>csv.DictReader(f)</code></td>
+<td>1 行が辞書になる</td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>JSON の文字にする・読む</td>
+<td><code>json.dumps(d, ensure_ascii=False)</code><br><code>json.loads(s)</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td>環境変数を読む</td>
+<td><code>os.environ.get("DJANGO_DEBUG", "false")</code></td>
+<td></td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>引数を受け取る</td>
+<td><code>sys.argv[1:]</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>今の日時（日本）</td>
+<td><code>datetime.now(ZoneInfo("Asia/Tokyo"))</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>日時を文字にする</td>
+<td><code>d.strftime("%Y-%m-%d %H:%M")</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>日時の差</td>
+<td><code>timedelta(days=7)</code><br><code>(b - a).days</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>推測できない文字を作る</td>
+<td><code>secrets.token_urlsafe(32)</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>形に合うか（正規表現）</td>
+<td><code>re.fullmatch(r"\d{6}", no)</code></td>
+<td></td>
+<td>04 5. 社員の CSV を読み込む</td>
+</tr>
+<tr>
+<td>年月日の書き方</td>
+<td><code>%Y</code><br><code>%m</code><br><code>%d</code><br><code>%H</code><br><code>%M</code><br><code>%S</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-11">Django（モデル・ORM）</h2>
+<p>データベースの表を Python のクラス（モデル）で書き、ORM で読み書きします。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表を作る（モデル）</td>
+<td><code>class Request(models.Model): title = models.CharField(max_length=100)</code></td>
+<td></td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>文字の列</td>
+<td><code>models.CharField(max_length=100)</code></td>
+<td></td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>長い文字の列</td>
+<td><code>models.TextField(blank=True)</code></td>
+<td></td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>数の列</td>
+<td><code>models.IntegerField(default=0)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>日時の列</td>
+<td><code>models.DateTimeField(auto_now_add=True)</code></td>
+<td>作った時に自動で入る</td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>ほかの表を指す</td>
+<td><code>models.ForeignKey(User, on_delete=models.PROTECT)</code></td>
+<td></td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>選び肢</td>
+<td><code>class Status(models.TextChoices): DRAFT = "draft", "下書き"</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>選び肢を使う列</td>
+<td><code>models.CharField(choices=Status.choices)</code></td>
+<td></td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>並び順や表の名前</td>
+<td><code>class Meta: ordering = ["-created_at"]</code></td>
+<td>- は新しい順</td>
+<td>05 3. モデル: データの設計図</td>
+</tr>
+<tr>
+<td>全部</td>
+<td><code>Request.objects.all()</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>しぼる</td>
+<td><code>Request.objects.filter(status="回覧中")</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>除く</td>
+<td><code>.exclude(status="完了")</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>1 つだけ</td>
+<td><code>Request.objects.get(pk=1)</code></td>
+<td>無いと DoesNotExist</td>
+<td>04 2. Python の書き方</td>
+</tr>
+<tr>
+<td>無ければ 404</td>
+<td><code>get_object_or_404(Request, pk=pk)</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>最初の 1 つ</td>
+<td><code>.first()</code></td>
+<td>無ければ None</td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td>あるか</td>
+<td><code>.exists()</code></td>
+<td></td>
+<td>06 前編 3. 設定</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>.count()</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>並べる</td>
+<td><code>.order_by("-created_at")</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>作る</td>
+<td><code>Request.objects.create(title="…")</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>保存する</td>
+<td><code>r.save()</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>まとめて変える</td>
+<td><code>.update(status="完了")</code></td>
+<td></td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td>消す</td>
+<td><code>r.delete()</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>以上・含む・どれか</td>
+<td><code>created_at__gte=d</code><br><code>title__icontains="治具"</code><br><code>pk__in=ids</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>つながった表で しぼる</td>
+<td><code>filter(requester__dept="製造")</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>または・かつ</td>
+<td><code>Q(a=1) &#124; Q(b=2)</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>列の値を使う</td>
+<td><code>F("round") + 1</code></td>
+<td>同時に直してもずれない</td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>グループごとに数える</td>
+<td><code>.values("status").annotate(n=Count("id"))</code></td>
+<td></td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>つながった表をまとめて読む</td>
+<td><code>.select_related("requester")</code></td>
+<td>問い合わせが減る</td>
+<td>05 6. ORM: Python でデータベースを操作する</td>
+</tr>
+<tr>
+<td>まとめて成功・失敗にする</td>
+<td><code>with transaction.atomic():</code></td>
+<td></td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td>同時に変えないよう鍵をかける</td>
+<td><code>.select_for_update()</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td>入力の確かめで失敗させる</td>
+<td><code>raise ValidationError("…")</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-12">Django（URL・ビュー・テンプレート・管理画面・設定）</h2>
+<p>来た要求に答える関数（ビュー）と、画面の型紙（テンプレート）です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL と関数を結ぶ</td>
+<td><code>path("requests/", views.request_list)</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>URL から数を受け取る</td>
+<td><code>path("api/requests/&lt;int:pk&gt;/", views.detail)</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>形で URL を受ける</td>
+<td><code>re_path(r"^(?!api/).*$", views.index)</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>ほかの urls をつなぐ</td>
+<td><code>path("api/", include(router.urls))</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>要求の種類</td>
+<td><code>request.method == "POST"</code></td>
+<td></td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>フォームの値</td>
+<td><code>request.POST.get("decision")</code></td>
+<td></td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>URL の ?mine=1</td>
+<td><code>request.GET.get("mine")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>送られたファイル</td>
+<td><code>request.FILES.get("file")</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>ログインしている人</td>
+<td><code>request.user</code><br><code>request.user.is_authenticated</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>画面を返す</td>
+<td><code>render(request, "workflow/list.html", {"items": items})</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>ほかの URL へ移す</td>
+<td><code>redirect("request_detail", pk=r.pk)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>JSON を返す</td>
+<td><code>JsonResponse({"status": "ok"})</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>ファイルを返す</td>
+<td><code>FileResponse(f.open("rb"), as_attachment=True)</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>ログインが要るページ</td>
+<td><code>@login_required</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>POST だけ受け付ける</td>
+<td><code>@require_POST</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>CSRF のクッキーを渡す</td>
+<td><code>@ensure_csrf_cookie</code></td>
+<td></td>
+<td>06 後編 3. サーバーとの窓口</td>
+</tr>
+<tr>
+<td>ログイン・ログアウト</td>
+<td><code>authenticate(request, username=…, password=…)</code><br><code>login(request, user)</code><br><code>logout(request)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>テンプレートに値を出す</td>
+<td><code>{{ r.title }}</code></td>
+<td>自動でエスケープ</td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>くり返す</td>
+<td><code>{% for r in items %} … {% empty %} … {% endfor %}</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>条件</td>
+<td><code>{% if r.note %} … {% endif %}</code></td>
+<td></td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>土台を受け継ぐ</td>
+<td><code>{% extends "workflow/base.html" %}</code><br><code>{% block content %}{% endblock %}</code></td>
+<td></td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>フォームの合言葉</td>
+<td><code>{% csrf_token %}</code></td>
+<td>POST のフォームに必ず</td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>CSS などの URL</td>
+<td><code>{% load static %}</code><br><code>{% static 'style.css' %}</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>日時の形</td>
+<td><code>{{ r.created_at&#124;date:"Y-m-d H:i" }}</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>空の時の文字</td>
+<td><code>{{ r.note&#124;default:"なし" }}</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>改行を <br> に</td>
+<td><code>{{ r.detail&#124;linebreaksbr }}</code></td>
+<td></td>
+<td>06 前編 6. 1 回限りの承認の URL</td>
+</tr>
+<tr>
+<td>URL を名前から作る</td>
+<td><code>{% url 'request_detail' r.pk %}</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>管理画面に出す</td>
+<td><code>admin.site.register(Request)</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>管理画面の一覧の列</td>
+<td><code>class RequestAdmin(admin.ModelAdmin): list_display = ["id", "title"]</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>受け付けるサイトの名前</td>
+<td><code>ALLOWED_HOSTS = ["webapp-stg.example.local"]</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>CSRF で信用するサイト</td>
+<td><code>CSRF_TRUSTED_ORIGINS = ["http://…"]</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>秘密の鍵</td>
+<td><code>SECRET_KEY = env("DJANGO_SECRET_KEY")</code></td>
+<td>ソースに書かない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>自分のコマンドを作る</td>
+<td><code>class Command(BaseCommand): def handle(self, *args, **opts):</code></td>
+<td></td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td>コマンドで画面に出す</td>
+<td><code>self.stdout.write("…")</code></td>
+<td></td>
+<td>06 前編 9. 社員の CSV の取り込み</td>
+</tr>
+<tr>
+<td>ログを書く</td>
+<td><code>logger = logging.getLogger(__name__); logger.info("…")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-13">Django REST framework（API）</h2>
+<p>JSON の API を作るための Django の部品です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>モデルと JSON を変換する</td>
+<td><code>class RequestSerializer(serializers.ModelSerializer): class Meta: model = Request; fields = [...]</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>入力を確かめる</td>
+<td><code>s = RequestInputSerializer(data=request.data); s.is_valid(raise_exception=True)</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>確かめた値</td>
+<td><code>s.validated_data</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>JSON にした値</td>
+<td><code>RequestSerializer(qs, many=True).data</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>API の関数</td>
+<td><code>@api_view(["GET", "POST"])</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>API の答え</td>
+<td><code>Response(data, status=201)</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>権限が無い</td>
+<td><code>raise PermissionDenied("…")</code></td>
+<td>403</td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>URL を自動で作る</td>
+<td><code>router = DefaultRouter(); router.register("requests", RequestViewSet)</code></td>
+<td></td>
+<td>05 7. HTML の画面</td>
+</tr>
+<tr>
+<td>ファイルを受ける</td>
+<td><code>parser_classes = [MultiPartParser]</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>URL の ?…</td>
+<td><code>request.query_params.get("mine")</code></td>
+<td></td>
+<td>06 前編 8. React の画面が呼ぶ API</td>
+</tr>
+<tr>
+<td>API のテスト</td>
+<td><code>class T(APITestCase): res = self.client.get("/api/…"); self.assertEqual(res.status_code, 403)</code></td>
+<td></td>
+<td>05 9. 自動のテスト</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-14">Rust と Topcoat（練習アプリの Rust 版）</h2>
+<p>Rust の書き方と、Topcoat で画面と URL を作る書き方です。くわしくは <code>Rust/</code> の資料と、その逆引きにあります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>変数</td>
+<td><code>let mut count = 0;</code></td>
+<td></td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td>関数</td>
+<td><code>fn label(self) -&gt; &amp;'static str</code></td>
+<td></td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td>構造体</td>
+<td><code>pub struct Request { pub id: i64, pub title: String }</code></td>
+<td></td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td>種類（enum）と場合分け</td>
+<td><code>match status { Status::Draft =&gt; …, _ =&gt; … }</code></td>
+<td></td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td>あるかもしれない値</td>
+<td><code>Option&lt;&amp;Request&gt;</code><br><code>if let Some(r) = find(&amp;list, 1)</code></td>
+<td></td>
+<td>07 4. 所有権と借用</td>
+</tr>
+<tr>
+<td>失敗するかもしれない処理</td>
+<td><code>Result&lt;T, E&gt;</code><br><code>?</code></td>
+<td></td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+<tr>
+<td>文字に値を入れる</td>
+<td><code>format!("{} さん", name)</code><br><code>println!("{name}")</code></td>
+<td></td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td>幅をそろえる・0 で埋める</td>
+<td><code>format!("{:&lt;10}", s)</code><br><code>format!("{:02X}", b)</code></td>
+<td></td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td>並びから探す</td>
+<td><code>list.iter().find(&#124;r&#124; r.id == id)</code></td>
+<td></td>
+<td>11 B. サンプル集</td>
+</tr>
+<tr>
+<td>JSON にできる型</td>
+<td><code>#[derive(Serialize, Deserialize)]</code></td>
+<td></td>
+<td>08 後編 1. 画面の並び</td>
+</tr>
+<tr>
+<td>名前の書き方を変える</td>
+<td><code>#[serde(rename_all = "camelCase")]</code></td>
+<td></td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td>環境変数を読む</td>
+<td><code>std::env::var("APP_ENV")</code></td>
+<td></td>
+<td>08 前編 3. 設定を読む</td>
+</tr>
+<tr>
+<td>ページを作る</td>
+<td><code>#[page] async fn list(cx: &amp;Cx) -&gt; Result&lt;impl View&gt;</code></td>
+<td></td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td>フォームの送信を受ける</td>
+<td><code>#[page(POST)]</code></td>
+<td></td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td>画面を書く</td>
+<td><code>view! { &lt;h1&gt;"依頼の一覧"&lt;/h1&gt; }</code></td>
+<td></td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td>画面の部品</td>
+<td><code>#[component] fn status_badge(status: Status) -&gt; impl View</code></td>
+<td></td>
+<td>08 後編 2. 画面の部品と、XSS を防ぐ仕組み</td>
+</tr>
+<tr>
+<td>1 回の要求の中で覚える</td>
+<td><code>#[memoize(as_ref)]</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>SQL を送る（sqlx）</td>
+<td><code>sqlx::query_as("SELECT … WHERE id = $1").bind(id).fetch_one(&amp;pool).await?</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>まとめて成功・失敗に</td>
+<td><code>let mut tx = pool.begin().await?; … tx.commit().await?;</code></td>
+<td></td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td>Cargo.toml の部品</td>
+<td><code>[dependencies]</code><br><code>sqlx = { version = "=0.9.0", features = ["postgres"] }</code></td>
+<td></td>
+<td>07 5. Topcoat の最小のアプリ</td>
+</tr>
+<tr>
+<td>本番用に作る</td>
+<td><code>cargo build --release --locked</code></td>
+<td></td>
+<td>07 6. async と、会社のサーバーへの持ち込み</td>
+</tr>
+<tr>
+<td>CSS などの束を作る</td>
+<td><code>topcoat asset bundle --release</code></td>
+<td></td>
+<td>07 6. async と、会社のサーバーへの持ち込み</td>
+</tr>
+<tr>
+<td>アプリのコマンドを動かす</td>
+<td><code>cargo run -- seed-demo</code></td>
+<td></td>
+<td>08 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>テスト</td>
+<td><code>#[test]</code><br><code>#[tokio::test]</code><br><code>assert_eq!(a, b)</code></td>
+<td></td>
+<td>07 2. 依頼の状態を enum で書く</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-15">SQL と PostgreSQL</h2>
+<p>データベースの表を作り、読み書きする SQL です。値は、いつも <code>$1</code> などの場所に別に渡します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表を作る</td>
+<td><code>CREATE TABLE requests (id BIGSERIAL PRIMARY KEY, title TEXT NOT NULL)</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>値の決まり</td>
+<td><code>CHECK (char_length(title) BETWEEN 1 AND 100)</code></td>
+<td></td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td>作った日時を自動で</td>
+<td><code>created_at TIMESTAMPTZ NOT NULL DEFAULT now()</code></td>
+<td></td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td>ほかの表を指す</td>
+<td><code>REFERENCES employees(id)</code></td>
+<td></td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td>読む</td>
+<td><code>SELECT id, title FROM requests WHERE status = $1 ORDER BY id DESC</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>値を安全に渡す</td>
+<td><code>WHERE employee_no = $1</code></td>
+<td>文字をつながない</td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>並びのどれか</td>
+<td><code>WHERE id = ANY($1)</code></td>
+<td></td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td>入れる</td>
+<td><code>INSERT INTO requests (title) VALUES ($1) RETURNING id</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>ぶつかったら何もしない</td>
+<td><code>ON CONFLICT DO NOTHING</code></td>
+<td></td>
+<td>08 前編 9. 毎朝 8:00 の通知</td>
+</tr>
+<tr>
+<td>書きかえる</td>
+<td><code>UPDATE requests SET status = $1 WHERE id = $2</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>消す</td>
+<td><code>DELETE FROM sessions WHERE expires_at &lt; now()</code></td>
+<td></td>
+<td>08 前編 4. 表</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>SELECT count(*) FROM requests</code></td>
+<td></td>
+<td>08 前編 6. 状態を変える処理</td>
+</tr>
+<tr>
+<td>グループごとに</td>
+<td><code>GROUP BY status</code></td>
+<td></td>
+<td>08 前編 10. 画面から呼ぶ、読むだけの SQL</td>
+</tr>
+<tr>
+<td>2 つの表をつなぐ</td>
+<td><code>JOIN employees e ON e.id = r.requester_id</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>利用者（ロール）を作る</td>
+<td><code>CREATE ROLE webapp_dev_app LOGIN</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>権限を与える</td>
+<td><code>GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA public TO …</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>psql でパスワードを変える</td>
+<td><code>\password webapp_dev_app</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+<tr>
+<td>psql で文字を出す</td>
+<td><code>\echo '…'</code></td>
+<td></td>
+<td>10 8. SQL インジェクション</td>
+</tr>
+<tr>
+<td>SQL のコメント</td>
+<td><code>-- メモ</code></td>
+<td></td>
+<td>06 前編 2. 開発の準備</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-16">メールを送る（SMTP）</h2>
+<p>アプリからメールを送る書き方と、確かめ方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>メールを組み立てる（Python）</td>
+<td><code>msg = EmailMessage(); msg["To"] = to; msg["Subject"] = "…"; msg.set_content(body)</code></td>
+<td></td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>メールを送る（Django）</td>
+<td><code>send_mail(subject, body, from_addr, [to])</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+<tr>
+<td>SMTP で送る（Python）</td>
+<td><code>with smtplib.SMTP(host, 25) as s: s.starttls(); s.send_message(msg)</code></td>
+<td></td>
+<td>09 2. SMTP の会話を見る</td>
+</tr>
+<tr>
+<td>テストのメールを送る</td>
+<td><code>.\dev.ps1 send_test_mail --to 自分のアドレス</code></td>
+<td></td>
+<td>08 前編 8. 社員の CSV と、管理のコマンド</td>
+</tr>
+<tr>
+<td>送り先を検証用に変える</td>
+<td><code>f"（検証のメールです。本来の宛先: {to}）\n\n{body}"</code></td>
+<td></td>
+<td>06 前編 5. 状態を変える処理を 1 か所に集める</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-17">安全とテスト</h2>
+<p>攻められても大丈夫かを確かめる書き方です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>パスワードを安全に保存する</td>
+<td><code>user.set_password(pw)</code><br><code>user.check_password(pw)</code></td>
+<td>ハッシュにする</td>
+<td>06 前編 4. モデル</td>
+</tr>
+<tr>
+<td>推測できない合言葉</td>
+<td><code>secrets.token_urlsafe(32)</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>合言葉の指紋で保存</td>
+<td><code>hashlib.sha256(token.encode()).hexdigest()</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>時間の差を出さずに比べる</td>
+<td><code>hmac.compare_digest(a, b)</code></td>
+<td></td>
+<td>04 6. 日本時間と、承認の URL の文字列</td>
+</tr>
+<tr>
+<td>HTML として動かないようにする</td>
+<td><code>{{ r.title }}</code><br><code>el.textContent = s</code></td>
+<td>自動・安全な書き方</td>
+<td>08 後編 6. 図面</td>
+</tr>
+<tr>
+<td>SQL を安全に</td>
+<td><code>cursor.execute("… WHERE no = %s", [no])</code></td>
+<td></td>
+<td>08 前編 5. ログインとセッション</td>
+</tr>
+<tr>
+<td>ファイルの中身で種類を確かめる</td>
+<td><code>data.startswith(b"\x89PNG\r\n")</code></td>
+<td></td>
+<td>06 前編 7. 図面と添付ファイルの確かめ</td>
+</tr>
+<tr>
+<td>テストのクラス</td>
+<td><code>class T(TestCase): def test_x(self): self.assertEqual(a, b)</code></td>
+<td></td>
+<td>05 9. 自動のテスト</td>
+</tr>
+<tr>
+<td>テストで要求を送る</td>
+<td><code>self.client.post("/login/", {...})</code></td>
+<td></td>
+<td>05 9. 自動のテスト</td>
+</tr>
+<tr>
+<td>テストでログインする</td>
+<td><code>self.client.force_login(user)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>エラーになるはずを確かめる</td>
+<td><code>with self.assertRaises(ValidationError):</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

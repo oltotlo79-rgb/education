@@ -212,6 +212,7 @@ async fn home(cx: &Cx) -> Result<impl View> {
 > - **`RouterBuilderSessionExt`**（Topcoat）: ルーターに `.sessions(…)`（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に `.cookies()` も登録します。
 > - **`Serialize`**（JSON）: 「JSON などにできる」機能（トレイト。`serde` の部品）。`#[derive(Serialize)]` を付けた型は、`serde_json::to_string` で JSON にできます。
 > - **`Id`**（Topcoat）: URL の一部（`/requests/3` の `3` など）を、型として受け取るための入れ物。練習アプリでは `Id(番号)` の形で、URL の中の依頼の番号を表します。`href!(detail, Id(5))` で URL を作り、ページの関数で受け取ります。
+> - **`<small>`**（HTML）: `<small>` は、補足の小さな文字（注意書き・おまけの情報）を表すタグです。
 
 <!-- /first-use -->
 
@@ -328,6 +329,15 @@ pub async fn request_table(r: &RequestDetail) -> Result<impl View> {
 > - **`Shape`**（練習アプリで作る物（Rust））: 図面の部品（四角 `Rect`・線 `Line` など）を表す enum。後編で作ります。
 > - **`Rect`**（練習アプリで作る物（Rust））: `Shape` の値の 1 つで、四角（左上の位置 `x`・`y` と、幅 `width`・高さ `height`）。
 > - **`Line`**（練習アプリで作る物（Rust））: `Shape` の値の 1 つで、線（始まり `x1`・`y1` と、終わり `x2`・`y2`）。
+> - **`{:.桁}`**（画面に出す）: `{:.1}` の `.` と数は、「小数点の下を何けた出すか」の指定です。`{:.1}` で `3.14159` は `3.1`、`{:.2}` で `3.14`、`{:.0}` なら `3`。けたを切りそろえて（丸めて）表示します。`{:.2?}` のように Debug（`?`）と組み合わせると、かかった時間（`Duration`）を `1.23ms` のように短く出せます。
+> - **`<line>`**（HTML）: `<line>` は、SVG（線や図形で描く絵）の中で、直線を引くタグです。`x1`・`y1`（始まり）と `x2`・`y2`（終わり）の位置を書きます。
+> - **`x1=`**（HTML）: SVG の `<line>` の `x1`・`y1` は線の始まりの位置、`x2`・`y2` は終わりの位置です。
+> - **`y1=`**（HTML）: SVG の `<line>` の `y1` は、線の始まりの縦の位置です。
+> - **`x2=`**（HTML）: SVG の `<line>` の `x2` は、線の終わりの横の位置です。
+> - **`y2=`**（HTML）: SVG の `<line>` の `y2` は、線の終わりの縦の位置です。
+> - **`<text>`**（HTML）: SVG（線や図形で描く絵）の中に、文字を書くタグ。`<text x="110" y="18" textAnchor="end">ラベル</text>` は、決めた位置に、右そろえで文字を書きます。
+> - **`f64`**（数）: 小数を入れる型（64 ビット）。`3.14` のような数です。小数は、`0.1 + 0.2` が `0.30000000000000004` になるような、わずかな誤差が出るので、お金の計算には使いません（整数の「円」で数えます）。
+> - **`1.5`**（数）: `1.08` のように `.` の付いた数は小数で、型を書かなければ `f64` になります。整数（`i32` など）と小数は、そのままでは足したり掛けたりできないので、`as f64` などで型をそろえます。
 
 <!-- /first-use -->
 
@@ -406,6 +416,8 @@ async fn login_submit(cx: &Cx, Form(input): Form<LoginForm>) -> Result<impl View
 > **▶ ここで初めて出てくるコード**
 >
 > - **`UNAUTHORIZED`**（HTTP）: `StatusCode::UNAUTHORIZED` は、HTTP の答えの番号 401（「ログインしていない」）です。
+> - **`autocomplete=`**（HTML）: `autocomplete="email"` は、ブラウザーに、「この欄にはメールアドレスを入れる」と伝え、覚えている値を出してもらう印です。`username`・`current-password`・`new-password` などがあります。
+> - **`inputmode=`**（HTML）: `inputmode="numeric"` は、スマホで入力する時に、数字のキーボードを出してもらう印です。
 
 <!-- /first-use -->
 
@@ -702,6 +714,12 @@ mod tests {
 > - **`serde_json::to_string()`**（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に `Serialize` が付いている必要があります。失敗することもあるので `Result` が返ります。
 > - **`Date::parse()`**（時間）: 文字列を、決めた形（`format_description!`）で読んで、`Date` にする関数。形に合わない文字（`2026/13/40` など）だと `Err` を返します。
 > - **`Multipart`**（Topcoat）: ファイル付きのフォーム（`multipart/form-data`）を、1 項目ずつ読むための型。`while let Some(field) = multipart.next_field().await?` で、項目を順に受け取ります。
+> - **`selected=`**（HTML）: `<option selected>` の `selected` は、その選び肢を、最初から選んだ状態にする印です。
+> - **`multiple=`**（HTML）: `multiple` は、ファイル（や選び肢）を一度にいくつも選べるようにする印です。
+> - **`<script>`**（HTML）: `<script src="drawing.js"></script>` は、ページで動かす JavaScript のファイルを読み込むタグです。
+> - **`src=`**（HTML）: `src` は、読み込むファイル（画像・スクリプト）の場所です。
+> - **`char`**（文字）: 1 文字を入れる型です。`'a'`・`'あ'`・`'😀'` のように `'` で囲んで書きます。日本語の文字も絵文字も、1 つの `char` です（大きさはいつも 4 バイト）。
+> - **`..値`**（型とメソッド）: `Note { title: …, ..note }` の `..note` は、「書かなかった残りの項目は、`note` と同じ値にする」という書き方です（構造体の更新）。`..Default::default()` なら、残りを初期値にします。`..` の後ろの物は、いつも最後に書きます。
 
 <!-- /first-use -->
 
@@ -891,6 +909,10 @@ mod tests {
 >
 > - **`#[serde]`**（JSON）: `serde` の印（属性）。JSON にする時の細かい決まりを付けます。`#[serde(rename_all = "camelCase")]`（名前の書き方を変える）・`#[serde(default)]`（無い時は初期値）・`#[serde(skip_serializing_if = "Option::is_none")]`（空なら書かない）などがあります。
 > - **`serde_json::from_str()`**（JSON）: JSON の文字列を読んで、決めた型（struct など）に変える関数。形が合わないと `Err` を返します。
+> - **`r#"…"#`**（文字列）: `r#"…"#` も「生の文字列」で、`"#` が来るまでを、`\` も `"` もそのまま文字にします。`r#"{"title": "牛乳"}"#` のように、`"` の多い JSON や、何行もの SQL を書く時に便利です。
+> - **`#[serde(rename_all)]`**（JSON）: `#[serde(rename_all = "camelCase")]` は、項目の名前を、JSON では別の書き方にする印です。`camelCase` なら、Rust の `width_mm` が JSON では `widthMm` になります。`snake_case`・`kebab-case`・`UPPERCASE` などもあります。
+> - **`#[serde(deny_unknown_fields)]`**（JSON）: `serde` の印。JSON に、構造体に無い名前の項目が入っていたら、読み込みをエラーにします。項目の名前の書き間違い（`titel` など）を見逃さないために付けます。
+> - **`#[serde(tag)]`**（JSON）: `#[serde(tag = "kind")]` は、enum を JSON にする時に、種類の名前を `"kind": "line"` のような項目として、中身と一緒に入れる指定です。読む時も、その項目を見て、どの種類かを決めます。
 
 <!-- /first-use -->
 
@@ -987,6 +1009,8 @@ mod tests {
 > - **`.setPointerCapture()`**（JavaScript・TypeScript）: 押したポインター（マウスや指）の動きを、要素の外に出ても、この要素で受け取り続けるメソッド。図を描いている途中で、枠の外に出ても線が切れません。
 > - **`.pop()`**（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。
 > - **`?.`**（JavaScript・TypeScript）: `a?.b` は、`a` が `null` や `undefined` なら、そこで止めて `undefined` にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。
+> - **`.value`**（JavaScript・TypeScript）: `.value` は、入力欄に今入っている文字や、クッキーなどの値です。
+> - **`.textContent`**（JavaScript・TypeScript）: `.textContent` は、タグの中の文字です。入れた文字は、HTML としてではなく、ただの文字として表示されるので、安全です（`innerHTML` に入れると、タグとして動いてしまいます）。
 
 <!-- /first-use -->
 
@@ -1211,6 +1235,9 @@ async fn action(cx: &Cx, Form(input): Form<ActionForm>) -> Result<impl View> {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`.and_then()`**（エラー処理）: `Option` や `Result` に中身があれば、それを使って、次の `Option`・`Result` を作るメソッド（無ければ、そのまま `None`・`Err`）。失敗するかもしれない処理を、続けてつなぐ時に使います。
+> - **`<ol>`**（React）: 番号の付いた並びのタグ。中に `<li>` を並べます（回覧の順番など）。
+> - **`style=`**（HTML）: `style="display:inline"` は、そのタグだけに、直接 CSS を書く属性です。いくつもの所で使う見た目は、CSS のファイルに書きます。
+> - **`pub(crate)`**（モジュール）: `pub(crate)` は、「このクレート（このプロジェクト）の中からは使えるが、外からは使えない」という公開の範囲です。`pub` だけなら、どこからでも使えます。
 
 <!-- /first-use -->
 
@@ -1455,6 +1482,8 @@ mod tests {
 > - **`tokio::fs::write()`**（ファイルとフォルダ）: ファイルに中身を書く関数（非同期）。ファイルが無ければ作り、あれば上書きします。
 > - **`tokio::fs::remove_file()`**（ファイルとフォルダ）: ファイルを消す関数（非同期）。
 > - **`Path`**（ファイルとフォルダ）: ファイルやフォルダの場所を表す型（借りている形）。`.join()`・`.file_name()`・`.extension()`・`.exists()` などで扱います。自分の物として持つ形は `PathBuf` です。
+> - **`\\`**（文字列の中の特別な書き方）: 文字列の中に `\` そのもの（1 つ）を入れたい時は、`\\` と 2 つ書きます。`\` は、`\n` のような特別な書き方の始まりの印だからです。Windows の場所を `"C:\\Users"` と書くのも、この理由です（生の文字列 `r"C:\Users"` なら 1 つで済みます）。
+> - **`r"…"`**（文字列）: `r"…"` は「生の文字列」で、中の `\` を特別な意味にしません。`r"C:\Users\you"` や、正規表現の `r"\d+"` のように `\` の多い文字を、そのまま書けます。中に `"` を入れたい時は `r#"…"#` を使います。
 
 <!-- /first-use -->
 
@@ -1522,6 +1551,7 @@ mod tests {
 > - **`Response::builder()`**（HTTP）: 答え（レスポンス）を、少しずつ決めて組み立て始める関数。`.header(名前, 値)` で見出しを足し、`.body(…)` で本文を入れて出来上がりです。
 > - **`Body::from()`**（HTTP）: 文字列やバイトの並びから、本文（`Body`）を作る関数。
 > - **`Body`**（HTTP）: リクエストや答えの本文を表す型（`topcoat::router::Body`）。
+> - **`{:X}`**（画面に出す）: `{:X}` は、整数を大文字の 16 進数（0〜9 と A〜F）で表示する指定です。`255` は `FF`、`'A' as u32`（65）は `41`。文字の番号や色の値を見る時に使います。
 
 <!-- /first-use -->
 

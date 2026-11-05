@@ -260,9 +260,14 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>rustc</code></strong>（Rust の道具）: Rust のコンパイラー（翻訳する係）。人が書いた <code>.rs</code> のファイルを、パソコンが直接動かせる実行ファイル（<code>.exe</code>）に翻訳します。ふだんは直接打たず、<code>cargo</code> が中で呼んでくれます。<code>rustc --version</code> で版を確かめられます。</li>
+<li><strong><code>rustc --version</code></strong>（Rust の道具）: <code>rustc --version</code> は、入っている Rust のコンパイラーの版（<code>rustc 1.99.1 …</code>）を表示します。入れた直後に、ちゃんと入ったかを確かめる時に使います。</li>
 <li><strong><code>cargo</code></strong>（Rust の道具）: Rust のプロジェクトをまとめて世話する道具。<code>cargo new</code>（作る）・<code>cargo run</code>（翻訳して動かす）・<code>cargo build</code>（翻訳だけ）・<code>cargo test</code>（テスト）・<code>cargo add</code>（部品を足す）のように、後ろに「何をするか」を付けて使います。<code>cargo --version</code> で版を確かめられます。</li>
+<li><strong><code>cargo --version</code></strong>（cargo のコマンド）: <code>cargo --version</code> は、Cargo の版を表示します。</li>
 <li><strong><code>cargo install</code></strong>（cargo のコマンド）: Rust で作られた道具（コマンド）を、パソコンに入れるコマンド。<code>cargo install topcoat-cli --version 0.11.0 --locked</code> は、Topcoat の道具 <code>topcoat</code> を、決まった版で入れます。</li>
+<li><strong><code>cargo install --version</code></strong>（cargo のコマンド）: <code>cargo install topcoat-cli --version 0.11.0</code> の <code>--version</code> は、入れる道具の版を指定します。付けないと、いちばん新しい版を入れます。</li>
+<li><strong><code>cargo install --locked</code></strong>（cargo のコマンド）: <code>--locked</code> は、道具を作る時に、道具に付いている <code>Cargo.lock</code> の版のまま作る指定です。部品の新しい版のせいで作れない、ということを防げます。</li>
 <li><strong><code>topcoat</code></strong>（Topcoat）: Topcoat の道具のコマンド（<code>cargo install topcoat-cli</code> で入る）。<code>topcoat dev</code>（コードを直すと自動で作り直して読み直す開発用の起動）・<code>topcoat asset bundle</code>（CSS などの束を作る）などがあります。</li>
+<li><strong><code>topcoat --version</code></strong>（Topcoat）: <code>topcoat --version</code> は、topcoat CLI（Topcoat の道具）の版を表示します。アプリで使う Topcoat の版と同じかを確かめます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -472,6 +477,21 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>?</code></strong>（エラー処理）: <code>Result</code> や <code>Option</code> の後ろに付ける記号。「成功なら中身を取り出して先へ進む。失敗なら、その場で関数を終えて、エラーを呼び出し元へ返す」という意味です。<code>let text = fs::read_to_string("a.txt")?;</code> のように使います。<code>?</code> を使える関数は、戻り値が <code>Result</code>（または <code>Option</code>）の関数だけです。</li>
 <li><strong><code>&amp;mut</code></strong>（所有権と借用）: 「書きかえてよい」という約束で値を貸す書き方。<code>read_to_string(&amp;mut text)</code> は、関数に <code>text</code> を貸して、中身を書き込んでもらいます。貸す元の変数は <code>let mut text</code> のように <code>mut</code> が付いている必要があります。</li>
 <li><strong><code>=&gt;</code></strong>（場合分け）: <code>match</code> の中で「この形なら、→ この処理」をつなぐ矢印。<code>Some(name) =&gt; println!("{name}"),</code> は「値があったら、その名前を表示」という意味です。</li>
+<li><strong><code>//!</code></strong>（コメント）: <code>//!</code> で始まるコメントは、そのファイル（モジュール）全体の説明書です。ファイルのいちばん上に書きます。<code>///</code>（すぐ下の関数や型の説明）と使い分けます。</li>
+<li><strong><code>///</code></strong>（コメント）: <code>///</code> で始まるコメントは、すぐ下の関数や型の「説明書」（ドキュメントコメント）です。<code>cargo doc</code> で説明のページになり、VS Code では、名前にマウスを乗せると表示されます。ふつうのコメント（<code>//</code>）とちがい、何の説明かが決まっています。</li>
+<li><strong><code>//</code></strong>（コメント）: <code>//</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、プログラムとしては無視されます。<code>// OS の種類を表示する</code> のように、何をしているかを日本語で書いておくと、あとで読み返す時に助かります。</li>
+<li><strong><code>{}</code></strong>（画面に出す）: <code>println!("{}", 値)</code> の <code>{}</code> は、「ここに値を入れる」場所の印です。後ろに <code>,</code> で並べた値が、左から順に入ります（<code>println!("{} と {}", 1, 2)</code> → <code>1 と 2</code>）。<code>{}</code> は、人が読む形（Display）で表示します。</li>
+<li><strong><code>{:?}</code></strong>（画面に出す）: <code>{:?}</code> は、値を「プログラマー向けの形」（Debug）で表示する指定です。<code>Some("main.rs")</code> のように、<code>Option</code> の <code>Some</code> や、文字列の <code>"</code> まで、そのまま見せます。<code>{}</code> では表示できない型（<code>Vec</code>・<code>Option</code> など）も、<code>{:?}</code> なら表示できます。<code>{path:?}</code> のように名前と一緒にも書けます。自分で作った構造体は、<code>#[derive(Debug)]</code> を付けると使えます。</li>
+<li><strong><code>#[cfg(test)]</code></strong>（テスト）: <code>#[cfg(test)]</code> を付けた所（ふつうは <code>mod tests { … }</code>）は、<code>cargo test</code> の時だけ翻訳されます。<code>cargo run</code> や本番の実行ファイルには入りません。テストのコードは、この中に書きます。</li>
+<li><strong><code>u32</code></strong>（数）: 0 以上の整数の型（32 ビット。0〜約 42 億）。数を数える・番号を付ける時に使います。</li>
+<li><strong><code>&amp;</code></strong>（所有権と借用）: 値の前の <code>&amp;</code> は「貸す（借用）」の印です。<code>fs::write(&amp;relative, …)</code> は、<code>relative</code> を手放さずに、見せるだけ貸します。型に付けた <code>&amp;str</code>・<code>&amp;Vec&lt;i32&gt;</code> は「借りた値」の型です。</li>
+<li><strong><code>::*</code></strong>（モジュール）: <code>use super::*;</code> の <code>*</code> は、「その中の物を全部、短い名前で呼べるようにする」という意味です。テストの <code>mod tests</code> の中で、外側（<code>super</code>、1 つ上）の関数を全部使えるようにする時によく書きます。</li>
+<li><strong><code>-&gt;</code></strong>（関数）: <code>fn main() -&gt; std::io::Result&lt;()&gt;</code> の <code>-&gt;</code> は、「この関数が返す値の型」を書く印です。<code>fn add(a: i32, b: i32) -&gt; i32</code> なら「<code>i32</code> を返す」。<code>-&gt;</code> が無い関数は、何も返しません（<code>()</code> という「空」を返します）。</li>
+<li><strong><code>::</code></strong>（モジュール）: <code>std::env</code> の <code>::</code> は、「〜の中の」を表す区切りです。<code>std::env::args()</code> は「標準ライブラリ（<code>std</code>）の中の <code>env</code> の中の <code>args</code> 関数」という意味です。型の関数（<code>String::new()</code>）や、enum の種類（<code>Ordering::Less</code>）を指す時にも使います。</li>
+<li><strong><code>_ =&gt;</code></strong>（場合分け）: <code>match</code> の最後の <code>_ =&gt;</code> は、「ここまでのどれにも当てはまらない、その他すべて」を受け止める腕です。<code>_</code> は「何でもよい（名前を付けない）」という印です。<code>match</code> は、ありうる値を全部受け止めないとエラーになるので、最後によく書きます。</li>
+<li><strong><code>'static</code></strong>（所有権と借用）: <code>&amp;'static str</code> の <code>'static</code> は、「プログラムが動いている間ずっと有効」という意味のライフタイムの印です。<code>"文字"</code> のように、コードに直接書いた文字列は <code>&amp;'static str</code> です。</li>
+<li><strong><code>'_</code></strong>（所有権と借用）: <code>Slot&lt;'_&gt;</code> の <code>'_</code> は、「何かを借りているが、その期間（ライフタイム）は Rust に任せる」という印です。名前（<code>'a</code>）を付けずに済みます。</li>
+<li><strong><code>A | B =&gt;</code></strong>（場合分け）: <code>match</code> の腕の <code>A | B =&gt;</code> は、「A か B のどちらかの形なら」という意味で、同じ処理をまとめて書けます。<code>1 | 2 | 3 =&gt; "小さい"</code> のように使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -667,6 +687,10 @@ test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <li><strong><code>Option</code></strong>（Option）: 「値があるかもしれないし、無いかもしれない」を表す型。中身は <code>Some(値)</code> か <code>None</code>。<code>Option&lt;u32&gt;</code> は「整数があるかもしれない」。取り出す時は <code>match</code>・<code>if let</code>・<code>unwrap_or</code> などを使います。</li>
 <li><strong><code>Some</code></strong>（Option）: <code>Option</code>（値が「ある」か「無い」か）の、「ある」の方。<code>Some(値)</code> の形で中身を包みます。<code>match</code> で <code>Some(name) =&gt; { … }</code> と書くと、中身を <code>name</code> という名前で取り出して使えます。「無い」の方は <code>None</code> です。</li>
 <li><strong><code>|x|</code>（クロージャ）</strong>（関数）: その場で作る小さな関数（クロージャ）。<code>|x| x * 2</code> は「<code>x</code> を受け取って 2 倍を返す関数」です。<code>| |</code> の間が引数です。並べかえの基準やエラーの時の処理などを、ほかの関数に渡す時によく使います。</li>
+<li><strong><code>{名前}</code></strong>（画面に出す）: <code>println!</code> や <code>format!</code> の文字の中に <code>{os}</code> のように <code>{ }</code> で変数の名前を書くと、その変数の中身がそこに入ります（<code>let os = "windows"; println!("OS: {os}");</code> → <code>OS: windows</code>）。<code>println!("OS: {}", os)</code> と書くのと同じ結果です。<code>{ }</code> の中に書けるのは名前だけで、<code>{a + 1}</code> や <code>{p.x}</code> のような式は書けません（その時は <code>{}</code> と、後ろに並べる値を使います）。<code>{name:&lt;22}</code> のように、名前の後ろに <code>:</code> と書式を付けることもできます。</li>
+<li><strong><code>&amp;[T]</code></strong>（Vec（並び））: <code>&amp;[User]</code> のような <code>&amp;[型]</code> は、「並び（<code>Vec</code> や配列）の全部か一部を、借りて見る」型です（スライス）。関数の引数を <code>&amp;[User]</code> にすると、<code>Vec&lt;User&gt;</code> も配列も渡せます。</li>
+<li><strong><code>if let</code></strong>（条件）: <code>if let Some(x) = 値 { … }</code> は、「値が <code>Some</code> の形なら、中身を <code>x</code> に入れて <code>{ }</code> の中を動かす」という書き方です。<code>match</code> で 1 つの形の時だけ書きたい時の、短い形です。<code>else { … }</code> も付けられ、<code>if let Ok(n) = s.parse::&lt;i32&gt;()</code> のように <code>Result</code> にも使えます。</li>
+<li><strong><code>==</code></strong>（条件）: <code>a == b</code> は「a と b が等しいか」を調べ、<code>true</code> か <code>false</code> になります。<code>=</code>（1 つ）は「値を入れる」なので、比べる時は必ず 2 つ書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -771,6 +795,16 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <span class="n">topcoat</span> <span class="n">dev</span>                        <span class="c"># 開発用のサーバー（直すと自動で作り直して、画面を読み直す）</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>topcoat new --minimal</code></strong>（Topcoat）: <code>topcoat new 名前 --minimal</code> の <code>--minimal</code> は、いちばん小さなひな形（1 ページだけ）でプロジェクトを作る指定です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><code>hello/Cargo.toml</code>:</p>
 <div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">[package]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span>
@@ -789,6 +823,32 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <span class="k">[profile.dev.package.</span><span class="s2">&quot;*&quot;</span><span class="k">]</span>
 <span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>[package]</code></strong>（設定ファイル（TOML））: <code>Cargo.toml</code> の <code>[package]</code> の下には、このプロジェクト（パッケージ）自身のこと（名前・版・Rust の版の決まり）を書きます。<code>[ ]</code> で囲んだ行は「ここから、この組の設定」という見出し（テーブル）です。</li>
+<li><strong><code>name =</code></strong>（設定ファイル（TOML））: <code>name = "practice"</code> は、パッケージの名前です。<code>cargo run</code> で作られる実行ファイルの名前（<code>practice.exe</code>）にもなります。</li>
+<li><strong><code>version =</code></strong>（設定ファイル（TOML））: <code>version = "0.1.0"</code> は、このパッケージの版です。直したら数を上げます（「大きな変更.機能の追加.直し」の 3 つの数）。</li>
+<li><strong><code>edition =</code></strong>（設定ファイル（TOML））: <code>edition = "2024"</code> は、「Rust の書き方の決まりの、どの年の版を使うか」です。2015・2018・2021・2024 があり、新しく作る時は <code>cargo new</code> が最新を書きます。</li>
+<li><strong><code>#</code></strong>（設定ファイル（TOML））: TOML（<code>Cargo.toml</code> などの設定ファイルの書き方）では、<code>#</code> から行の終わりまでがコメントです。</li>
+<li><strong><code>[dependencies]</code></strong>（設定ファイル（TOML））: <code>[dependencies]</code> の下には、このプロジェクトが使う部品（クレート）を、<code>名前 = "版"</code> の形で 1 行ずつ書きます。<code>cargo add 名前</code> を打つと、ここに書き足されます。</li>
+<li><strong><code>serde</code></strong>（Rust の部品（クレート））: <code>serde</code> は、Rust の値を、JSON などの形に変えたり（シリアライズ）、JSON から Rust の値を作ったり（デシリアライズ）するための部品です。<code>features = ["derive"]</code> で、<code>#[derive(Serialize, Deserialize)]</code> が使えるようになります。</li>
+<li><strong><code>"1.0"</code></strong>（設定ファイル（TOML））: 部品の版の <code>"1.0.229"</code> は、「1.0.229 以上で、2.0.0 より前」を表します（新しい直しは自動で使われてよい）。<code>"=1.0.229"</code> のように <code>=</code> を付けると、「ぴったりこの版だけ」になります。実際に使う版は、<code>Cargo.lock</code> に記録されます。</li>
+<li><strong><code>{ キー = 値 }</code></strong>（設定ファイル（TOML））: <code>{ version = "1.0", features = ["derive"] }</code> のように <code>{ }</code> で囲むと、1 行の中に、いくつもの設定をまとめて書けます（インラインテーブル）。</li>
+<li><strong><code>version =</code></strong>（設定ファイル（TOML））: 部品の <code>{ version = "1.51.1", … }</code> の <code>version</code> は、使う部品の版です。</li>
+<li><strong><code>features =</code></strong>（設定ファイル（TOML））: 部品の <code>features = ["macros", "rt-multi-thread"]</code> は、その部品の、どの機能（feature）を ON にして使うかです。部品は、使わない機能を OFF にして小さくできるようになっています。</li>
+<li><strong><code>tokio</code></strong>（Rust の部品（クレート））: <code>tokio</code> は、Rust で非同期（待ち時間の間に、ほかの仕事を進める）のプログラムを動かすための部品です。たくさんの人の要求を、同時にさばく Web のサーバーの土台になります。</li>
+<li><strong><code>topcoat</code></strong>（Rust の部品（クレート））: <code>topcoat</code> は、Rust の Web アプリを作るための部品（フレームワーク）です。画面（<code>view!</code>）・URL ごとの処理（<code>#[page]</code>）・セッションなどを用意しています。</li>
+<li><strong><code>default-features =</code></strong>（設定ファイル（TOML））: <code>default-features = false</code> は、部品の「既定で ON の機能」を全部 OFF にする指定です。そのうえで、要る機能だけを <code>features = […]</code> で選びます。</li>
+<li><strong><code>[profile.dev]</code></strong>（設定ファイル（TOML））: <code>[profile.dev]</code> は、ふだんの <code>cargo build</code>・<code>cargo run</code>（debug）の時の、作り方の設定です。</li>
+<li><strong><code>debug =</code></strong>（設定ファイル（TOML））: <code>debug = "line-tables-only"</code> は、実行ファイルに入れる「調べるための情報」を、エラーの行番号が分かる分だけにする設定です。翻訳が速くなり、<code>target</code> フォルダも小さくなります。</li>
+<li><strong><code>[profile.dev.package."*"]</code></strong>（設定ファイル（TOML））: <code>[profile.dev.package."*"]</code> は、「自分のコード以外の、全部の部品」の作り方の設定です。部品だけ最適化（<code>opt-level = 2</code> など）すると、自分のコードの翻訳は速いまま、動きを速くできます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><code>hello/src/app.rs</code>（画面）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="sd">//! いちばん小さな依頼・承認アプリ（Topcoat 0.11）。データはメモリーに持つ（再起動で消える）</span>
@@ -935,6 +995,11 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <li><strong><code>Store</code></strong>（練習アプリで作る物（Rust））: 依頼の一覧を、メモリーの中に持っておく struct。少し後の所で作ります。</li>
 <li><strong><code>DOCTYPE</code></strong>（HTML）: <code>&lt;!DOCTYPE html&gt;</code> は、「この文書は HTML5 です」とブラウザーに伝える、HTML の先頭の決まった 1 行です。</li>
 <li><strong><code>POST</code></strong>（Topcoat）: <code>#[page(POST)]</code> の <code>POST</code> は、「フォームの送信（POST）に答えるページ」にする指定。何も書かなければ、ふつうの表示（GET）に答えます。</li>
+<li><strong><code>required=</code></strong>（HTML）: <code>required</code> は、「この欄は必ず入れる」という印です。空のまま送ろうとすると、ブラウザーが止めて知らせます（サーバー側でも、必ず確かめます）。</li>
+<li><strong><code>::&lt;型&gt;</code></strong>（型とメソッド）: <code>"42".parse::&lt;i32&gt;()</code> の <code>::&lt;i32&gt;</code> は、「どの型にするか」をその場で指定する書き方です（形が魚に見えるので turbofish と呼ばれます）。<code>let n: i32 = "42".parse().unwrap();</code> のように、受け取る変数の型で決めても同じです。<code>collect::&lt;Vec&lt;_&gt;&gt;()</code> もよく使います。</li>
+<li><strong><code>impl トレイト</code></strong>（型とメソッド）: <code>-&gt; Result&lt;impl View&gt;</code> の <code>impl View</code> は、「<code>View</code> という決まり（トレイト）を満たす、何かの型」という意味です。本当の型の名前は長くて書けないので、「<code>View</code> として使える物を返す」とだけ書きます。引数の <code>x: impl Display</code> なら、「表示できる物なら何でも受け取る」です。</li>
+<li><strong><code>&lt;_&gt;</code></strong>（型とメソッド）: <code>Vec&lt;_&gt;</code> の <code>_</code> は、「中の型は、Rust が使い方から決めて」という印です。<code>.collect::&lt;Vec&lt;_&gt;&gt;()</code> は「<code>Vec</code> に集めて。中身の型は任せる」という意味です。</li>
+<li><strong><code>!</code></strong>（条件）: <code>!valid</code> のように値の前に付けた <code>!</code> は、「〜ではない」（true と false を入れかえる）です。<code>if !path.exists()</code> は「無かったら」。<code>println!</code> の <code>!</code> はマクロの印で、これとは別物です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1134,6 +1199,9 @@ error: could not compile `mistake` (bin &quot;mistake&quot;) due to 2 previous e
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>cargo build</code></strong>（cargo のコマンド）: プログラムを翻訳（コンパイル）して実行ファイルを作るだけで、動かしはしません。でき上がった物は <code>target\debug\</code> に入ります。<code>cargo build --release</code> だと、速く動く本番用の物が <code>target\release\</code> にできます。</li>
+<li><strong><code>cargo build --release</code></strong>（cargo のコマンド）: <code>cargo build --release</code> は、時間をかけて最適化した、速い本番用の実行ファイルを作ります（動かしはしません）。できた物は <code>target\release</code> に置かれます。</li>
+<li><strong><code>cargo build --locked</code></strong>（cargo のコマンド）: <code>--locked</code> は、<code>Cargo.lock</code> に書いてある部品の版のまま作り、<code>Cargo.lock</code> を書きかえない指定です。版がずれていたらエラーで止まるので、いつ作っても同じ物ができます。本番用やテストの時に付けます。</li>
+<li><strong><code>topcoat asset bundle --release</code></strong>（Topcoat）: <code>topcoat asset bundle --release</code> は、CSS などのアセットの束を、本番用（<code>target\release\assets</code>）に作ります。<code>cargo build --release</code> と組にして使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

@@ -397,6 +397,17 @@ ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo test --test`**（cargo のコマンド）: `cargo test --test u01_three_checks` は、`tests` フォルダの中の `u01_three_checks.rs` のテストだけを動かします。
+> - **`cargo test --`**（cargo のコマンド）: `cargo test -- --nocapture` の `--` は、「ここから後ろは、Cargo ではなく、テストを動かすプログラムに渡す」という区切りです。
+> - **`cargo test -- --nocapture`**（cargo のコマンド）: `--nocapture` は、テストの中の `println!` の表示を、そのまま画面に出す指定です。ふだんは、成功したテストの表示は隠されます。
+> - **`cargo test -- --test-threads`**（cargo のコマンド）: `--test-threads=1` は、テストを 1 つずつ順番に動かす指定です。ふだんは、いくつものテストを同時に動かします。同じファイルやポートを使うテストが、ぶつからないようにする時に使います。
+
+<!-- /first-use -->
+
 #### ▼ コードを1つずつ分解して解説
 
 ##### 解説1: ① 認証が無いと、303 でログイン画面へ
@@ -497,6 +508,8 @@ async fn session_cookie_and_record() {
 > - **`.headers()`**（HTTP）: 答え（レスポンス）の見出し（ヘッダー）の一覧を返すメソッド。`.headers().get("set-cookie")` のように、名前で 1 つ取り出せます。
 > - **`.get_all()`**（HTTP）: HTTP のヘッダーで、同じ名前の物（`Set-Cookie` など）を全部取り出すメソッド。`get` だと最初の 1 つだけです。
 > - **`.trim_start_matches()`**（文字列）: 文字列の先頭から、決めた文字（文字列）をくり返し取り除いたものを返すメソッド。`pair.trim_start_matches("__Host-session=")` は、クッキーの名前の部分を取って値だけにします。
+> - **`unixepoch()`**（SQL）: SQLite の `unixepoch()` は、今の日時を、1970 年 1 月 1 日からの秒数（UNIX 時間）で返します。期限が過ぎたかを、数の比べっこで調べられます。
+> - **`count()`**（SQL）: SQL の `count(*)` は、行の数を数える関数です（`COUNT(*)` と同じで、大文字・小文字はどちらでもかまいません）。
 
 <!-- /first-use -->
 
@@ -765,6 +778,14 @@ async fn main() -> anyhow::Result<()> {
 cargo build --example e01_find_without_owner
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo build --example`**（cargo のコマンド）: `cargo build --example 名前` は、`examples` フォルダの中の 1 つだけを翻訳します（動かしません）。
+
+<!-- /first-use -->
+
 ```text
    Compiling rustnote v0.1.0 (...\rustnote)
 error[E0308]: `?` operator has incompatible types
@@ -857,6 +878,14 @@ async fn main() -> anyhow::Result<()> {
 ```powershell
 cargo run -q --example u01_idor
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo run --example`**（cargo のコマンド）: `cargo run --example u01_idor` は、`examples` フォルダの中の `u01_idor.rs` を動かします。例やエラーの見本を、本体とは別に置く時に使います。
+
+<!-- /first-use -->
 
 ```text
 ID だけで探す: 見つかった → alice の秘密のメモ
@@ -3390,6 +3419,14 @@ async fn session_life() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`substr()`**（SQL）: SQL の `substr(文字, 1, 8)` は、文字の 1 文字目から 8 文字分を取り出します。
+
+<!-- /first-use -->
+
 ```powershell
 cargo test --test u05_life -- --nocapture
 ```
@@ -3516,6 +3553,14 @@ async fn revoke_all_devices() {
     }
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`instr()`**（SQL）: SQLite の `instr(email, '@')` は、文字の中で、`@` が何文字目にあるかを返します（無ければ 0）。
+
+<!-- /first-use -->
 
 ```powershell
 cargo test --test u05_server -- --nocapture --test-threads=1
@@ -4006,15 +4051,7 @@ cargo test --test u06_policy -- --nocapture
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`<html>`**（HTML）: HTML の文書全体を包むタグ。中に `<head>`（ページの情報）と `<body>`（画面に出す中身）を入れます。
-> - **`<meta>`**（HTML）: HTML の `<head>` の中に書く、ページの情報のタグ。`<meta charset="utf-8">`（文字コード）・`<meta name="viewport" …>`（スマホでの表示の幅）などがあります。
-> - **`<title>`**（HTML）: ブラウザーのタブに出る、ページの題名のタグ。`<head>` の中に書きます。
-> - **`<h1>`**（HTML）: いちばん大きな見出しのタグ。
-> - **`<form>`**（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。`action` に送り先、`method="post"` に送り方を書きます。
-> - **`<input>`**（HTML）: 1 行の入力欄のタグ。`type` で種類（`text`・`email`・`password`・`hidden` など）を、`name` で送る時の名前を決めます。閉じタグはありません。
-> - **`<button>`**（HTML）: ボタンのタグ。`<form>` の中の `type="submit"` のボタンを押すと、フォームが送られます。
-> - **`<p>`**（HTML）: 段落のタグ。
-> - **`<a>`**（HTML）: リンクのタグ。`<a href="URL">文字</a>` で、押すとその URL へ移ります。
+> - **`id=`**（HTML）: `id` は、ページの中で 1 つだけの名前です。`<label for="title">` で欄と結び付けたり、`#title` のリンクでその場所へ飛んだりできます。同じ `id` を 2 つ付けてはいけません。
 
 <!-- /first-use -->
 
@@ -4989,8 +5026,29 @@ console.log(`sign-out → ${r.response.status}（session: ${before} 行 → ${af
 > - **`.prepare()`**（JavaScript・TypeScript）: Node.js の SQLite（`node:sqlite`）で、SQL の文を用意するメソッド。`.get()`・`.all()` で結果を受け取ります。
 > - **`.startsWith()`**（JavaScript・TypeScript）: 文字列が、その文字で始まっていれば `true` を返すメソッド（Rust の `starts_with`）。
 > - **`??`**（JavaScript・TypeScript）: `a ?? b` は、`a` が `null` か `undefined`（値が無い）なら `b` を使う、という書き方です。
-> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`(path) => \`…${path}\`` は「`path` を受け取って文字列を返す関数」。
+> - **`=>`**（JavaScript・TypeScript）: アロー関数（短く書ける関数）の矢印。`` (path) => `…${path}` `` は「`path` を受け取って文字列を返す関数」。
 > - **`...`**（JavaScript・TypeScript）: スプレッド構文。`[...a, x]` は配列 `a` の中身を広げて新しい配列を作り、`{ ...obj, k: v }` はオブジェクトの中身を写して一部だけ変えた新しいオブジェクトを作ります。
+> - **`//`**（JavaScript・TypeScript）: JavaScript・TypeScript では、`//` から行の終わりまでがコメントです。
+> - **`` `${…}` ``**（JavaScript・TypeScript）: `` `…` ``（バッククォートで囲んだ文字。テンプレート文字列）の中の `${ }` には、値や式を入れられます。`` `エラー ${res.status}` `` は、`res.status` が 404 なら `エラー 404` になります。改行も、そのまま書けます。
+> - **`/…/`**（JavaScript・TypeScript）: JavaScript の `/…/` は、正規表現（文字の形を表す書き方）をそのまま書く形です。`/\d+/` は「数字が 1 つ以上」。`.match(/…/)`・`.test(…)`・`.split(/…/)` などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`(?=…)`**（正規表現）: 正規表現の `(?= )` は「この後ろに、こういう形が続く時だけ」、`(?! )` は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。`^(?!api/|admin/).*$` は「`api/` や `admin/` で始まらない物、全部」。中の文字は、合わせた文字には入りません。
+> - **`\s`**（正規表現）: 正規表現の `\s` は、「空白 1 つ」（スペース・タブ・改行など）を表します。`\s*` は「空白が 0 個以上」。
+> - **`*`**（正規表現）: 正規表現の `*` は、「すぐ前の物が、0 回以上くり返す」を表します。`\s*` は「空白が 0 個以上」、`.*` は「何でも、何文字でも」。
+> - **`条件 ? A : B`**（JavaScript・TypeScript）: `条件 ? A : B` は、「条件が合えば A、合わなければ B」になる式です（三項演算子）。`user.isAdmin ? "管理者" : "一般"`。`if` とちがい、値を返すので、そのまま変数や表示に使えます。
+> - **`const [ … ] =`**（JavaScript・TypeScript）: `const [a, b] = 並び;` は、並びの 0 番目を `a` に、1 番目を `b` に取り出す書き方です（分割代入）。React の `const [count, setCount] = useState(0);` もこれで、「今の値」と「値を変える関数」の 2 つを受け取っています。
+> - **`++`**（JavaScript・TypeScript）: `n++` は、`n` を 1 増やします（`n += 1` と同じ）。`nextIp++` のように式の中で使うと、「今の値を使ってから、1 増やす」になります。
+> - **`DatabaseSync`**（Node.js）: `DatabaseSync` は、Node.js に付いている SQLite の部品（`node:sqlite`）で、データベースのファイルを開く型です。
+> - **`Request`**（JavaScript・TypeScript）: `Request` は、HTTP の要求（どこへ・何を）を表す、Web の決まりの型です。`new Request(URL, { method: "POST", … })` で作ります。
+> - **`Math`**（JavaScript・TypeScript）: `Math` は、計算の関数が集まった物です。`Math.round(3.6)` は四捨五入で `4`、`Math.max(1, 5)` は大きい方の `5` です。
+> - **`Set`**（JavaScript・TypeScript）: `new Set(並び)` は、同じ値を 1 つにまとめた集まりを作ります。`new Set(chosen).size !== chosen.length` は、「重なりを消すと数が減る」＝「同じ人が 2 回選ばれている」の確かめです。
+> - **`Date`**（JavaScript・TypeScript）: `new Date(文字)` は、日時の値を作ります。`.toLocaleString("ja-JP")` で、日本の形の日時の文字になります。
+> - **`rmSync()`**（Node.js）: `rmSync(場所, { force: true })` は、Node.js（`node:fs`）で、ファイルを消す関数です。`force: true` で、無くてもエラーにしません。
+> - **`betterAuth()`**（JavaScript・TypeScript）: `betterAuth({ … })` は、Better Auth（JavaScript のログインの部品）の設定を受け取って、ログインの仕組みを作る関数です。
+> - **`getMigrations()`**（JavaScript・TypeScript）: Better Auth の `getMigrations(設定)` は、ログインに要る表を、データベースに作るための準備をする関数です。
+> - **`decodeURIComponent()`**（JavaScript・TypeScript）: `decodeURIComponent("%E5%B1%B1")` は、URL やクッキーの中で `%XX` の形にした文字を、元の文字（山）に戻します。反対は `encodeURIComponent()` です。
+> - **`.headers`**（JavaScript・TypeScript）: `fetch` の答えの `.headers` は、返ってきた見出し（ヘッダー）です。`.headers.get("set-cookie")` で 1 つ読めます。
+> - **`.value`**（JavaScript・TypeScript）: `.value` は、入力欄に今入っている文字や、クッキーなどの値です。
 
 <!-- /first-use -->
 
@@ -5086,6 +5144,14 @@ console.log("作れた");
 console.log(await post(auth, "/sign-up/email", { email: "alice@example.com", password: "correct horse battery", name: "alice" }));
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`.env`**（Node.js）: `process.env` は、Node.js のプログラムが読める環境変数の入れ物です。`process.env.NODE_ENV` で 1 つ読めます。
+
+<!-- /first-use -->
+
 ```text
 ### $env:NODE_ENV = "production"; node e1_no_secret.mjs
 作れた
@@ -5127,6 +5193,14 @@ for (let n = 1; n <= 6; n++) {
   console.log(`${n} 回目 → ${result}`);
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`({ 名前 })`**（JavaScript・TypeScript）: 関数の引数の `({ status, label })` は、渡されたオブジェクトから、`status` と `label` を取り出して受け取る書き方です。React の部品（コンポーネント）が props を受け取る時によく使います。
+
+<!-- /first-use -->
 
 ```text
 ### node e2_dev_limit.mjs
@@ -5339,6 +5413,18 @@ rand = "0.10.3"
 sha1 = "0.11.0"
 sha2 = "0.11.1"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`base64`**（Rust の部品（クレート））: `base64` は、バイトの並びを、英数字と `+`・`/` だけの文字（Base64）に変えたり、戻したりする部品です。
+> - **`hmac`**（Rust の部品（クレート））: `hmac` は、秘密の鍵を使って、データに「改ざんされていない印」（HMAC）を付ける計算の部品です。
+> - **`rand`**（Rust の部品（クレート））: `rand` は、でたらめな数（乱数）を作る部品です。
+> - **`sha1`**（Rust の部品（クレート））: `sha1` は、SHA-1 という古い指紋の計算をする部品です。安全のためではなく、昔の決まり（ほかの仕組みとの比べっこ）に合わせるために使います。
+> - **`sha2`**（Rust の部品（クレート））: `sha2` は、SHA-256 などの、データの指紋（ハッシュ）を計算する部品です。
+
+<!-- /first-use -->
 
 #### 例9-1: PKCE・state・nonce を作る
 

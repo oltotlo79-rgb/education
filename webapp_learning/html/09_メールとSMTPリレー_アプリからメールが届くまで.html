@@ -467,6 +467,11 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.start_server()</code></strong>（Python）: <code>asyncio.start_server(関数, ホスト, ポート)</code> は、接続を待ち受けるサーバーを始める関数です。接続が来るたびに、渡した関数が動きます。</li>
 <li><strong><code>.serve_forever()</code></strong>（Python）: HTTP のサーバーを、止めるまでずっと動かし続けるメソッド。</li>
 <li><strong><code>.run()</code></strong>（Python）: <code>asyncio.run(main())</code> は、非同期の関数（<code>async def</code>）を動かして、終わるまで待ちます。非同期のプログラムは、ここから始まります。</li>
+<li><strong><code>%S</code></strong>（日時の書式）: 日時の書式の <code>%S</code>（大文字）は、2 けたの秒（<code>00</code>〜<code>59</code>）です。</li>
+<li><strong><code>%f</code></strong>（日時の書式）: 日時の書式の <code>%f</code> は、秒より細かい部分（Python では 6 けたのマイクロ秒）です。同じ秒に作ったファイルの名前が、重ならないようにする時に使います。</li>
+<li><strong><code>:=</code></strong>（Python）: <code>while (line := await recv()) is not None:</code> の <code>:=</code> は、「値を変数に入れて、その値をその場で使う」書き方です（セイウチ演算子）。</li>
+<li><strong><code>is not</code></strong>（Python）: <code>x is not None</code> は、「x が None ではない」です。<code>None</code> かどうかは、<code>==</code> ではなく <code>is</code> で調べます。</li>
+<li><strong><code>KeyboardInterrupt</code></strong>（Python）: <code>KeyboardInterrupt</code> は、<code>Ctrl</code> ＋ <code>C</code> で止めた時に起きる、エラーの種類です。<code>except KeyboardInterrupt:</code> で受け止めると、止める時の後片づけができます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -539,6 +544,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.ehlo()</code></strong>（Python）: SMTP のサーバーに、最初のあいさつ（EHLO）を送るメソッド。</li>
 <li><strong><code>.starttls()</code></strong>（Python）: <code>smtplib</code> で、メールサーバーとの接続を、途中から暗号化（TLS）に切りかえるメソッド。<code>smtp.starttls()</code> のあとに送る中身は、暗号化されます。</li>
 <li><strong><code>.send_message()</code></strong>（Python）: 用意したメールを、SMTP のサーバーへ渡して送るメソッド。</li>
+<li><strong><code>EmailMessage</code></strong>（Python）: <code>EmailMessage</code>（<code>email.message</code>）は、メール 1 通（宛先・件名・本文）を組み立てる型です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1086,6 +1092,17 @@ S: 250 SMTPUTF8
 <span class="n">cargo</span> <span class="n">run</span> <span class="p">--</span> <span class="nb">send-test</span><span class="n">-mail</span> <span class="p">-</span><span class="n">-to</span> <span class="n">sato</span><span class="nv">@example</span><span class="p">.</span><span class="n">com</span>
 <span class="nb">Remove-Item</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_HOST</span><span class="p">,</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_PORT</span><span class="p">,</span> <span class="n">Env</span><span class="p">:</span><span class="n">SMTP_USE_TLS</span>   <span class="c"># 終わったら消す</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cargo run -- --to</code></strong>（cargo のコマンド）: <code>cargo run -- send-test-mail --to 自分のアドレス</code> の <code>--to</code> は、練習アプリのコマンドに、テストのメールを送る宛先を渡すオプションです。</li>
+<li><strong><code>;</code></strong>（PowerShell）: <code>;</code> は、1 行にコマンドを 2 つ以上書く時の区切りです。<code>cargo fmt --check; $LASTEXITCODE</code> は、左を動かしてから右を動かします（左が失敗しても、右は動きます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p>実際の出力:</p>
 <div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>渡しました（宛先: sato@example.com・渡した先: 127.0.0.1:1025（STARTTLS: 使わない））。届いたかを、受け取る側で確かめてください。

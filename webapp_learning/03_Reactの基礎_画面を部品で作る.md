@@ -89,6 +89,8 @@ export function StatusBadge({ status }: { status: RequestStatus }) {
 > **▶ ここで初めて出てくるコード**
 >
 > - **`<span>`**（React）: 文の一部分を囲む、特別な意味の無いタグ（JSX の中でも HTML と同じ）。状態の札など、一部だけ見た目を変える時に使います。
+> - **`({ 名前 })`**（JavaScript・TypeScript）: 関数の引数の `({ status, label })` は、渡されたオブジェクトから、`status` と `label` を取り出して受け取る書き方です。React の部品（コンポーネント）が props を受け取る時によく使います。
+> - **`className=`**（React）: JSX では、HTML の `class` の代わりに `className` と書きます（`class` は JavaScript の言葉として使われているからです）。`className="btn-primary"`。
 
 <!-- /first-use -->
 
@@ -133,6 +135,7 @@ const [keyword, setKeyword] = useState("");   // 最初の値は空の文字
 > **▶ ここで初めて出てくるコード**
 >
 > - **`useState()`**（React）: React の部品に「覚えておく値」（state）を作る関数（フック）。`const [keyword, setKeyword] = useState("");` で、今の値 `keyword` と、値を変える関数 `setKeyword` ができます。`setKeyword(新しい値)` を呼ぶと、画面が描き直されます。
+> - **`const [ … ] =`**（JavaScript・TypeScript）: `const [a, b] = 並び;` は、並びの 0 番目を `a` に、1 番目を `b` に取り出す書き方です（分割代入）。React の `const [count, setCount] = useState(0);` もこれで、「今の値」と「値を変える関数」の 2 つを受け取っています。
 
 <!-- /first-use -->
 
@@ -223,6 +226,14 @@ export function RequestList() {
 > - **`<th>`**（React）: 表の見出しのますのタグ。
 > - **`<tbody>`**（React）: 表の中身の行をまとめるタグ。
 > - **`<td>`**（React）: 表の中身のますのタグ。`<td>{r.id}</td>` のように、`{ }` の中に値を書けます。
+> - **`/…/`**（JavaScript・TypeScript）: JavaScript の `/…/` は、正規表現（文字の形を表す書き方）をそのまま書く形です。`/\d+/` は「数字が 1 つ以上」。`.match(/…/)`・`.test(…)`・`.split(/…/)` などで使います。記号ごとの意味は、この一覧の「正規表現」の表にあります。
+> - **`正規表現`**（正規表現）: 正規表現は、「こういう形の文字」を表すための、小さな書き方の決まりです。`^\s*#` は「行の頭から、空白がいくつかあって、`#` が来る」という形を表します。`-match`（PowerShell）・`re.match`（Python）・`/…/`（JavaScript）・`Regex::new`（Rust）などで、文字がその形に合うかを調べたり、合う所を取り出したりします。記号ごとの意味は、この一覧の「正規表現」の表にまとめています。
+> - **`() =>`**（JavaScript・TypeScript）: `() => { … }` は、名前の無い関数（アロー関数）の書き方です。`( )` の中が引数、`=>` の右が中身です。`(e) => setKeyword(e.target.value)` のように、1 つの式なら `{ }` を省けます。ほかの関数に「あとで呼んでもらう処理」を渡す時によく使います。
+> - **`.target`**（JavaScript・TypeScript）: イベント（`e`）の `.target` は、イベントが起きたタグ（入力欄など）です。`e.target.value` で、入力欄に今入っている文字を読めます。
+> - **`placeholder=`**（React）: `placeholder="件名でしぼる"` は、入力欄が空の時に、うすく見せる例の文字です。
+> - **`value=`**（React）: 入力欄の `value={keyword}` は、「入力欄に表示する値は、この変数」という結び付けです。`onChange` で変数を変えると、表示も変わります（制御されたコンポーネント）。
+> - **`onChange=`**（React）: `onChange={(e) => setKeyword(e.target.value)}` は、入力欄の中身が変わるたびに動く処理です。
+> - **`key=`**（React）: `key={r.id}` は、並びを `map` で表示する時に、1 つずつに付ける「見分けの印」です。React は、これで、どれが増えた・消えた・動いたかを見分けます。並びの中で重ならない値（番号など）にします。
 
 <!-- /first-use -->
 
@@ -356,6 +367,17 @@ export function RequestForm({ onCreated }: Props) {
 > - **`<select>`**（React）: 選ぶ欄のタグ。React では `value` と `onChange` で、選んだ値を state と結び付けます。
 > - **`<option>`**（React）: `<select>` の中の選べる 1 つ（JSX でも HTML と同じ）。React では、選ばれている物を `<select value={…}>` の方で決めます。
 > - **`<button>`**（React）: ボタンのタグ。`onClick={() => …}` で、押した時にすることを決めます。
+> - **`Set`**（JavaScript・TypeScript）: `new Set(並び)` は、同じ値を 1 つにまとめた集まりを作ります。`new Set(chosen).size !== chosen.length` は、「重なりを消すと数が減る」＝「同じ人が 2 回選ばれている」の確かめです。
+> - **`.size`**（JavaScript・TypeScript）: `Set` や `Map` の `.size` は、中の数です。
+> - **`{条件 && …}`**（React）: JSX の `{errors.length > 0 && <ul>…</ul>}` は、「条件が合う時だけ、右を表示する」書き方です。合わない時は、何も表示しません。
+> - **`onSubmit=`**（React）: `<form onSubmit={handleSubmit}>` は、フォームを送った時（送信ボタン・Enter）に動く処理です。中で `e.preventDefault()` を呼ぶと、ページの読み直しを止められます。
+> - **`role=`**（React）: `role="alert"` は、その部分の役わりを、読み上げソフトに伝える印です。`alert` は、すぐ知らせる大事なお知らせです。
+> - **`htmlFor=`**（React）: JSX では、`<label>` の `for` の代わりに `htmlFor` と書きます。
+> - **`id=`**（React）: `id` は、ページの中で 1 つだけの名前です。`<label htmlFor="title">` と組で使います。
+> - **`rows=`**（React）: `<textarea rows={3}>` の `rows` は、見える行の数です。
+> - **`type=`**（React）: `<input type="date">`・`<button type="submit">` の `type` は、入力欄やボタンの種類です。
+> - **`aria-*=`**（React）: `aria-label="…"` のように `aria-` で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。
+> - **`disabled=`**（React）: `disabled={sending}` は、`sending` が true の間、ボタンを押せなくします（2 回送るのを防ぎます）。
 
 <!-- /first-use -->
 
@@ -479,6 +501,18 @@ export function DrawingPad() {
 > - **`<svg>`**（React）: 図（線や四角）を描くタグ。中に `<rect>`（四角）・`<line>`（線）などを並べます。拡大しても線がぼやけません。
 > - **`<h2>`**（React）: 2 番目の大きさの見出しのタグ。
 > - **`<pre>`**（React）: 中の文字を、空白や改行もそのまま表示するタグ。JSON を見やすく表示する時に使います。
+> - **`Math`**（JavaScript・TypeScript）: `Math` は、計算の関数が集まった物です。`Math.round(3.6)` は四捨五入で `4`、`Math.max(1, 5)` は大きい方の `5` です。
+> - **`.currentTarget`**（JavaScript・TypeScript）: イベントの `.currentTarget` は、イベントを受け取る処理（`onPointerDown` など）を付けたタグそのものです（`.target` は、中の、実際に押された物のことがあります）。
+> - **`.clientX`**（JavaScript・TypeScript）: マウスやペンのイベントの `.clientX`・`.clientY` は、画面の左上からの位置（ピクセル）です。
+> - **`.clientY`**（JavaScript・TypeScript）: `.clientY` は、画面の上からの位置（ピクセル）です。
+> - **`viewBox=`**（React）: `<svg viewBox="0 0 400 300">` の `viewBox` は、SVG の絵の中の座標の範囲です。
+> - **`onPointerDown=`**（React）: `onPointerDown` は、マウス・ペン・指で押した瞬間に動く処理です。`onPointerUp` は離した時です。
+> - **`onPointerUp=`**（React）: `onPointerUp` は、マウス・ペン・指を離した時に動く処理です。
+> - **`x=`**（React）: SVG の `x`・`y` は、図形を置く位置です。
+> - **`y=`**（React）: SVG の `y` は、図形を置く縦の位置です。
+> - **`width=`**（React）: `width` は、幅です。
+> - **`height=`**（React）: `height` は、高さです。
+> - **`onClick=`**（React）: `onClick={() => …}` は、押された時に動く処理です。
 
 <!-- /first-use -->
 
@@ -564,8 +598,9 @@ export function App() {
 > - **`<header>`**（React）: ページの上の帯を表すタグ（JSX の中でも HTML と同じ）。
 > - **`<strong>`**（React）: 「大事」という意味のタグ（太字）。
 > - **`<nav>`**（React）: メニューを表すタグ。
-> - **`<a>`**（HTML）: リンクのタグ。`<a href="URL">文字</a>` で、押すとその URL へ移ります。
 > - **`<main>`**（HTML）: ページの「いちばん大事な中身」を表すタグ。ヘッダーやメニューを除いた本体を囲みます。
+> - **`<>…</>`**（React）: JSX の `<> … </>` は、名前の無い入れ物（フラグメント）です。部品は 1 つの物を返す決まりなので、いくつも並べたい時に、余分なタグを増やさずに包みます。
+> - **`href=`**（React）: `<a href="#/">` の `href` は、リンク先です。`#/` で始まる場所は、ページを読み直さずに、画面の中だけで切りかえるのに使っています。
 
 <!-- /first-use -->
 
@@ -591,6 +626,8 @@ createRoot(document.getElementById("root")!).render(
 > - **`.getElementById()`**（TypeScript）: `document.getElementById("root")` は、`id="root"` のタグを探して返す関数。React は、ここに画面を描きます。最後の `!` は「必ずある」と TypeScript に伝える印です。
 > - **`.render()`**（React）: `createRoot(要素).render(<App />)` は、React の部品（ここでは `<App />`）を、その要素の中に表示します。React の画面は、ここから始まります。
 > - **`<StrictMode>`**（React）: 開発の時だけ、まちがいを見つけやすくするために、部品をわざと 2 回描いてみるなどの確かめをする、React の部品。本番の動きには影響しません。
+> - **`値!`**（TypeScript）: `document.getElementById("root")!` の最後の `!` は、「これは null ではないと、自分が保証する」と TypeScript に伝える印です（非 null 表明）。本当に null だと、動く時にエラーになるので、確かな時だけ使います。
+> - **`createRoot()`**（React）: `createRoot(document.getElementById("root")!)` は、HTML の `<div id="root">` の中に、React の画面を描く場所を作る関数です。`.render(<App />)` で、いちばん外側の部品を描きます。
 
 <!-- /first-use -->
 

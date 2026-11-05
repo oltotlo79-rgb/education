@@ -284,6 +284,17 @@ li, tr { page-break-inside: avoid; }
 <span class="p">});</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>defineConfig()</code></strong>（JavaScript・TypeScript）: <code>defineConfig({ … })</code> は、設定ファイル（Vite の <code>vite.config</code> や Playwright の <code>playwright.config</code>）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。</li>
+<li><strong><code>react()</code></strong>（React）: <code>react()</code> は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <h3 id="11">1.1 開発中の動かし方</h3>
 <p><strong>▶ 準備:</strong> 00 の 6.3（Node.js）。前編のサーバー側（Django）が動いていること。<code>npm</code> が「スクリプトの実行が無効」で止められたら、<code>npm.cmd</code> と打ちます（00 の 6.3）。</p>
 <div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 窓 1: サーバー（前編）</span>
@@ -343,6 +354,17 @@ li, tr { page-break-inside: avoid; }
     <span class="nb">Pop-Location</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>$env:名前</code></strong>（PowerShell）: <code>$env:GREETING</code> のように <code>$env:</code> を付けた名前は「環境変数」（プログラムに外から渡す設定）です。<code>$env:GREETING = "おはよう"</code> で設定すると、その PowerShell の窓から動かすプログラム（<code>cargo run</code> など）が読めます。窓を閉じると消えます。</li>
+<li><strong><code>`</code></strong>（PowerShell）: 行の最後の <code>`</code>（バッククォート。<code>Shift</code> ＋ <code>@</code> で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。<code>`</code> の後ろに空白があると続かないので、注意します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <p><strong>確かめること:</strong> <code>http://127.0.0.1:8000/health</code> が <code>{"status": "ok"}</code> を返すこと。画面の部品（<code>/static/assets/index-（指紋）.js</code>）の返事に、<code>Cache-Control: max-age=315360000, public, immutable</code> が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。</p>
 <h2 id="2">2. 画面の部品の組み立て</h2>
@@ -445,6 +467,18 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.flat()</code></strong>（TypeScript）: 配列の中の配列を、1 つの配列に平らにするメソッド。</li>
 <li><strong><code>.catch()</code></strong>（TypeScript）: <code>Promise</code> が失敗した時の代わりの処理を登録するメソッド。<code>res.json().catch(() =&gt; ({}))</code> は「JSON として読めなければ空のオブジェクト」。</li>
 <li><strong><code>.append()</code></strong>（TypeScript）: <code>FormData</code> に項目を足すメソッド。<code>form.append("file", file)</code> で、ファイル付きのフォームを組み立てます。</li>
+<li><strong><code>(?:…)</code></strong>（正規表現）: 正規表現の <code>(?: )</code> は、取り出さないまとまりです。<code>(?:^|; )</code> は「行の頭か、<code>;</code> のどちらか」をまとめるだけで、取り出す番号には数えません。</li>
+<li><strong><code>[^…]</code></strong>（正規表現）: 正規表現の <code>[^ ]</code> は、「中に書いた文字<strong>以外</strong>の 1 文字」を表します。<code>[^;]+</code> は「<code>;</code> 以外の文字が 1 つ以上」、<code>[^\x21-\x7E]</code> は「英数字と記号（ASCII の見える文字）以外」。</li>
+<li><strong><code>+</code></strong>（正規表現）: 正規表現の <code>+</code> は、「すぐ前の物が、1 回以上くり返す」を表します。<code>\d+</code> は「数字が 1 つ以上」。</li>
+<li><strong><code>^</code></strong>（正規表現）: 正規表現の <code>^</code> は、「行（文字）の頭」を表します。<code>^#</code> は「<code>#</code> で始まる」。</li>
+<li><strong><code>|</code></strong>（正規表現）: 正規表現の <code>|</code> は、「左か右のどちらか」を表します。<code>api/|admin/</code> は「<code>api/</code> か <code>admin/</code>」。</li>
+<li><strong><code>(…)</code></strong>（正規表現）: 正規表現の <code>( )</code> は、まとまり（グループ）を作ります。合った文字のうち、<code>( )</code> の中の部分だけを、あとから取り出せます（<code>m[1]</code>・<code>m.group(1)</code>・<code>$1</code> など）。<code>(…)?</code> のように、まとまりごとくり返しや省略もできます。</li>
+<li><strong><code>Object</code></strong>（JavaScript・TypeScript）: <code>Object.values(obj)</code> は、オブジェクトの値だけを並びにします。<code>Object.keys(obj)</code> はキーだけ、<code>Object.entries(obj)</code> は <code>[キー, 値]</code> の組の並びです。</li>
+<li><strong><code>String</code></strong>（JavaScript・TypeScript）: <code>String(値)</code> は、値を文字にします。<code>values.map(String)</code> は、並びの全部を文字にします。</li>
+<li><strong><code>RequestInit</code></strong>（TypeScript）: <code>RequestInit</code> は、<code>fetch(URL, 設定)</code> の 2 つ目に渡す「設定」（<code>method</code>・<code>headers</code>・<code>body</code> など）の型です。</li>
+<li><strong><code>FormData</code></strong>（JavaScript・TypeScript）: <code>FormData</code> は、フォームの中身（ファイルも含む）を、送れる形にまとめる入れ物です。<code>fetch</code> の <code>body</code> に入れて、ファイルを送ります。</li>
+<li><strong><code>decodeURIComponent()</code></strong>（JavaScript・TypeScript）: <code>decodeURIComponent("%E5%B1%B1")</code> は、URL やクッキーの中で <code>%XX</code> の形にした文字を、元の文字（山）に戻します。反対は <code>encodeURIComponent()</code> です。</li>
+<li><strong><code>.cookie</code></strong>（JavaScript・TypeScript）: <code>document.cookie</code> は、そのページのクッキーを、<code>名前=値; 名前=値</code> の形の文字で読みます（<code>HttpOnly</code> のクッキーは読めません）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -490,6 +524,9 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>method_decorator()</code></strong>（Django）: 関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。</li>
 <li><strong><code>@method_decorator</code></strong>（Django）: <code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</li>
 <li><strong><code>@ensure_csrf_cookie</code></strong>（Django）: その画面を返す時に、CSRF の札（クッキー）を必ず付ける印。React の画面が、あとで送るフォームに札を付けられるようにします（10 巻の 5 章）。</li>
+<li><strong><code>HttpResponse</code></strong>（Django）: Django の <code>HttpResponse("文字")</code> は、文字（HTML など）をそのまま返す、いちばん基本の答えです。</li>
+<li><strong><code>JsonResponse</code></strong>（Django）: Django の <code>JsonResponse({"status": "ok"})</code> は、辞書を JSON にして返す答えです。</li>
+<li><strong><code>TemplateView</code></strong>（Django）: Django の <code>TemplateView</code> は、決まったテンプレート（HTML）を表示するだけのビューです。<code>template_name = "index.html"</code> を書くだけで使えます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -505,6 +542,9 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>.as_view()</code></strong>（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。</li>
 <li><strong><code>re_path()</code></strong>（Django）: 正規表現で URL の決まりを書く関数。<code>re_path(r"^(?!api/|admin/).*$", …)</code> は「<code>api/</code>・<code>admin/</code> で始まらない URL は全部」（React の画面を返す）。</li>
+<li><strong><code>(?=…)</code></strong>（正規表現）: 正規表現の <code>(?= )</code> は「この後ろに、こういう形が続く時だけ」、<code>(?! )</code> は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。<code>^(?!api/|admin/).*$</code> は「<code>api/</code> や <code>admin/</code> で始まらない物、全部」。中の文字は、合わせた文字には入りません。</li>
+<li><strong><code>*</code></strong>（正規表現）: 正規表現の <code>*</code> は、「すぐ前の物が、0 回以上くり返す」を表します。<code>\s*</code> は「空白が 0 個以上」、<code>.*</code> は「何でも、何文字でも」。</li>
+<li><strong><code>|</code></strong>（正規表現）: 正規表現の <code>|</code> は、「左か右のどちらか」を表します。<code>api/|admin/</code> は「<code>api/</code> か <code>admin/</code>」。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -594,12 +634,14 @@ li, tr { page-break-inside: avoid; }
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>.me()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、<code>/api/me/</code>（今ログインしている人）を問い合わせます。この巻の後の方で作ります。</li>
 <li><strong><code>.csrf()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、<code>/api/csrf/</code> を呼んで、CSRF の札（クッキー）を先に受け取ります。</li>
 <li><strong><code>useCallback()</code></strong>（React）: 関数を覚えておき、描き直しのたびに作り直さないようにするフック。<code>useEffect</code> の見張る値に関数を入れる時などに使います。</li>
-<li><strong><code>&lt;FormPage&gt;</code></strong>（練習アプリで作る物（TypeScript））: 依頼の作成・編集の画面の部品（コンポーネント）。この巻の後の方で作ります。</li>
-<li><strong><code>&lt;DetailPage&gt;</code></strong>（練習アプリで作る物（TypeScript））: 依頼 1 件のくわしい画面の部品。この巻の後の方で作ります。</li>
-<li><strong><code>&lt;StatsPage&gt;</code></strong>（練習アプリで作る物（TypeScript））: 集計の画面の部品（グラフを SVG で描く）。この巻の後の方で作ります。</li>
+<li><strong><code>\d</code></strong>（正規表現）: 正規表現の <code>\d</code> は、「数字 1 つ（0〜9）」を表します。</li>
+<li><strong><code>\.</code></strong>（正規表現）: 正規表現の <code>\.</code> のように、記号の前に <code>\</code> を付けると、その記号を特別な意味にせず、文字そのものとして表します。<code>\.</code> は <code>.</code>、<code>\/</code> は <code>/</code> です。</li>
+<li><strong><code>?</code></strong>（正規表現）: 正規表現の <code>?</code> は、「すぐ前の物が、あっても無くてもよい（0 回か 1 回）」を表します。<code>(\/edit)?</code> は「<code>/edit</code> があってもなくてもよい」。</li>
+<li><strong><code>$</code></strong>（正規表現）: 正規表現の <code>$</code> は、「行（文字）の終わり」を表します。<code>\d+$</code> は「数字で終わる」。<code>^…$</code> と両方書くと、「全体がこの形か」を調べられます。</li>
+<li><strong><code>async () =&gt;</code></strong>（JavaScript・TypeScript）: <code>async () =&gt; { … }</code> は、中で <code>await</code>（終わるまで待つ）を使える、名前の無い関数（アロー関数）です。</li>
+<li><strong><code>Number</code></strong>（JavaScript・TypeScript）: <code>Number("42")</code> は、文字を数にします。数にできない時は <code>NaN</code>（数ではない）になります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -716,9 +758,10 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.request()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、依頼 1 件のくわしい中身を問い合わせます。</li>
 <li><strong><code>.test()</code></strong>（TypeScript）: 正規表現が、文字列に合うかを <code>true</code>・<code>false</code> で返すメソッド。<code>/\.(jpe?g|png|pdf)$/i.test(名前)</code> は「拡張子が JPG・PNG・PDF か」。</li>
 <li><strong><code>.create()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、新しい依頼を送って作ります。作った依頼の番号（<code>id</code>）が返ります。</li>
-<li><strong><code>.action()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、依頼に操作（出し直し・取り下げなど）を送ります。</li>
 <li><strong><code>.upload()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、添付ファイルを 1 つ送ります。</li>
-<li><strong><code>&lt;ApproverPicker&gt;</code></strong>（練習アプリで作る物（TypeScript））: 承認する人を探して、順番に選ぶ部品。この巻の後の方で作ります。</li>
+<li><strong><code>/…/g</code></strong>（JavaScript・TypeScript）: 正規表現の後ろの <code>g</code> は、「合う所を全部」という指定（フラグ）です。<code>.replace(/a/g, "b")</code> は、全部の <code>a</code> を <code>b</code> にします（<code>g</code> が無いと、最初の 1 つだけ）。<code>i</code> は大文字・小文字を区別しない指定です。</li>
+<li><strong><code>maxLength=</code></strong>（React）: JSX の <code>maxLength={100}</code> は、入力できる文字の数の上限です（HTML の <code>maxlength</code>）。</li>
+<li><strong><code>accept=</code></strong>（React）: <code>accept=".jpg,.jpeg,.png,.pdf"</code> は、選べるファイルの種類です（サーバー側でも必ず確かめます）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -779,10 +822,11 @@ li, tr { page-break-inside: avoid; }
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>.employees()</code></strong>（練習アプリで作る物（TypeScript））: <code>api.ts</code> で作る関数の 1 つで、名前などで社員を探します。</li>
 <li><strong><code>.has()</code></strong>（TypeScript）: <code>Set</code> や <code>Map</code> に、その値（キー）があれば <code>true</code> を返すメソッド。</li>
 <li><strong><code>.slice()</code></strong>（TypeScript）: 配列や文字列の一部分を切り出した、新しい物を返すメソッド。<code>list.slice(0, 5)</code> は最初の 5 つ。</li>
 <li><strong><code>&lt;ol&gt;</code></strong>（React）: 番号の付いた並びのタグ。中に <code>&lt;li&gt;</code> を並べます（回覧の順番など）。</li>
+<li><strong><code>setTimeout()</code></strong>（JavaScript・TypeScript）: <code>setTimeout(() =&gt; { … }, 3000)</code> は、3000 ミリ秒（3 秒）たってから、中の処理を 1 回動かします。返ってくる番号を <code>clearTimeout(番号)</code> に渡すと、取りやめにできます。</li>
+<li><strong><code>clearTimeout()</code></strong>（JavaScript・TypeScript）: <code>clearTimeout(timer)</code> は、<code>setTimeout</code> で予約した処理を取りやめにします。React では、部品が消える時の後片づけ（<code>useEffect</code> の <code>return () =&gt; …</code>）で呼びます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -902,7 +946,7 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>.toLocaleString()</code></strong>（TypeScript）: 日時や数を、その国の書き方の文字列にするメソッド。<code>new Date(s).toLocaleString("ja-JP", { dateStyle: "short", timeStyle: "short" })</code> は <code>2026/11/02 8:00</code> の形です。</li>
 <li><strong><code>.ceil()</code></strong>（TypeScript）: <code>Math.ceil(x)</code> は、小数を切り上げて整数にする関数です（大きさを KB で見せる時など）。</li>
-<li><strong><code>&lt;RequestDetail&gt;</code></strong>（TypeScript）: <code>call&lt;RequestDetail&gt;(…)</code> の <code>&lt;RequestDetail&gt;</code> は、画面のタグではなく、型引数（この関数が返す物の型を伝える書き方）です。<code>RequestDetail</code> は <code>types.ts</code> で決める、依頼 1 件のくわしい中身の型です。</li>
+<li><strong><code>Date</code></strong>（JavaScript・TypeScript）: <code>new Date(文字)</code> は、日時の値を作ります。<code>.toLocaleString("ja-JP")</code> で、日本の形の日時の文字になります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1002,6 +1046,9 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>&lt;figcaption&gt;</code></strong>（React）: <code>&lt;figure&gt;</code> の中の、図の説明のタグ。</li>
 <li><strong><code>&lt;g&gt;</code></strong>（React）: SVG の中で、図の部品をまとめるタグ（group）。まとめて動かしたり、色を付けたりできます。</li>
 <li><strong><code>&lt;text&gt;</code></strong>（HTML）: SVG（線や図形で描く絵）の中に、文字を書くタグ。<code>&lt;text x="110" y="18" textAnchor="end"&gt;ラベル&lt;/text&gt;</code> は、決めた位置に、右そろえで文字を書きます。</li>
+<li><strong><code>transform=</code></strong>（React）: SVG の <code>transform="translate(0 30)"</code> は、図形を動かす（ずらす）指定です。</li>
+<li><strong><code>textAnchor=</code></strong>（React）: SVG の <code>textAnchor="end"</code> は、文字を、置いた位置に右端をそろえて書く指定です（<code>middle</code> で真ん中）。</li>
+<li><strong><code>rx=</code></strong>（React）: SVG の <code>&lt;rect rx="4"&gt;</code> の <code>rx</code> は、四角の角を丸くする大きさです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

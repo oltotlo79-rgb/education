@@ -1205,6 +1205,14 @@ content-length: 228
 date: Fri, 30 Oct 2026 11:31:05 GMT
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`curl.exe -I`**（HTTP クライアント）: `-I`（大文字）は、中身を取らずに、見出しだけを取る（HEAD という種類の要求を送る）指定です。
+
+<!-- /first-use -->
+
 - 無い URL（`/nothing`）は `404 Not Found` で、本文は `not found` だけです。ページに名札を付けていない URL は、Topcoat が自動で 404 にします。自分の画面（ヘッダーやトップへのリンクの付いたもの）で 404 を出したいときは、`not_found!()` とレイアウトを使います（UNIT 03・10）。
 - `POST /` は `405 Method Not Allowed` と `allow: GET, HEAD` です。`#[page]` は GET（と HEAD）だけに答えるので、Topcoat が「使えるのは GET と HEAD です」と教えてくれました。UNIT 01 の問1で「本当は 405 と Allow を返すべき」と書いたことを、Topcoat は何も書かなくてもしてくれます。
 - `HEAD /`（`-I`）は、GET と同じヘッダー（`content-length: 228` も同じ）で、本文はありません。
@@ -1521,6 +1529,14 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<a>`**（HTML）: リンクのタグ。`<a href="URL">文字</a>` で、押すとその URL へ移ります。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u02_q1
 ```
@@ -1565,6 +1581,14 @@ cargo run --bin web_lab
 ```powershell
 curl.exe -i --compressed http://127.0.0.1:3000/about
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`curl.exe --compressed`**（HTTP クライアント）: `--compressed` は、「圧縮して送ってよい」とサーバーに伝え、受け取った物をほどいてから表示する指定です。
+
+<!-- /first-use -->
 
 ```text
 HTTP/1.1 200 OK
@@ -1791,6 +1815,9 @@ async fn main() {
 > - **`#[route]`**（Topcoat）: Topcoat の印（属性）。画面（HTML）ではなく、JSON やただの文字などを返す「ルート」にします。`#[route(GET)]` のように、メソッドを必ず書きます。人が見る画面は `#[page]`、プログラムが読む答えは `#[route]` と使い分けます。
 > - **`.is_current()`**（Topcoat）: `href!(…)` で作ったリンク先が、「今開いているページ」なら `true` を返すメソッド。メニューの今のページに印（`aria-current`）を付ける時に使います。
 > - **`.then_some()`**（Option）: `bool` が `true` なら `Some(値)`、`false` なら `None` を返すメソッド。`on_about.then_some("page")`。Topcoat の `view!` では、属性に `None` を入れると、その属性ごと書かれません。
+> - **`<nav>`**（HTML）: `<nav>` は、ほかのページへのリンク（メニュー）をまとめるタグです。
+> - **`aria-*=`**（HTML）: `aria-label="…"`・`aria-current="page"` のように `aria-` で始まる属性は、読み上げソフトなどの手助けの道具に、見た目では分からないことを伝える印です。`aria-label` は名前、`aria-current="page"` は「今開いているページ」、`aria-invalid="true"` は「入力に間違いがある」です。
+> - **`class=`**（HTML）: `class` は、タグに付ける「グループの名前」です。CSS で `.note { … }` と書くと、`class="note"` の物全部に、同じ見た目が付きます。`class="note done"` のように、空白で区切っていくつも付けられます。
 
 <!-- /first-use -->
 
@@ -1976,6 +2003,15 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<header>`**（HTML）: `<header>` は、ページや区切りの「頭の部分」（サイトの名前・メニューなど）を囲むタグです。
+> - **`<div>`**（HTML）: `<div>` は、意味を持たない、ただの「囲み」のタグです。CSS で見た目を付けるために、いくつかの物をまとめる時に使います。
+
+<!-- /first-use -->
+
 ```powershell
 cargo run --bin u03_nested
 ```
@@ -2119,6 +2155,14 @@ async fn main() {
 ```powershell
 cargo build --bin e03_href
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`cargo build --bin`**（cargo のコマンド）: `cargo build --bin e03_href` は、`src\bin` の中の 1 つだけを翻訳します。エラーの見本を、わざと翻訳して確かめる時などに使います。
+
+<!-- /first-use -->
 
 ```text
    Compiling web_lab v0.1.0 (...\web_lab)
@@ -2563,6 +2607,7 @@ async fn main() {
 > - **`#[query_params]`**（Topcoat）: Topcoat の印（属性）。`?q=rust&page=2` のようなクエリ（URL の `?` の後ろ）を読むための構造体に付けます。項目は `Option<T>` にしておき、無い・空の時は `None` になります（第6巻 UNIT 04）。
 > - **`.to_str()`**（文字列）: 値（HTTP のヘッダーの値・パスなど）を、`&str`（文字列）として読むメソッド。文字として読めないこともあるので、`Result` や `Option` で返ります。
 > - **`Name`**（Topcoat）: `module_param!(name: String)` で作られる、URL の部品の型（名前の頭を大文字にした形）。`path_param::<Name>(cx)` で、その部品の値を読みます。
+> - **`#[query_params(error)]`**（Topcoat）: `#[query_params(error = bad_request)]` の `error = …` は、クエリ（URL の `?page=abc` など）を読めなかった時に返す答えを決める指定です。`bad_request` なら 400、`not_found` なら 404 を返します。
 
 <!-- /first-use -->
 
@@ -2640,6 +2685,14 @@ content-length: 34
 ```powershell
 curl.exe -i -A "RustNote-test/1.0" http://127.0.0.1:3000/whoami
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`curl.exe -A`**（HTTP クライアント）: `-A "RustNote-test/1.0"` は、「どの道具から来た要求か」を表す見出し（`User-Agent`）を指定します。
+
+<!-- /first-use -->
 
 ```text
 ### curl.exe -i -A "RustNote-test/1.0" http://127.0.0.1:3000/whoami
@@ -3291,6 +3344,15 @@ async fn main() {
 > - **`#[default]`**（Topcoat）: コンポーネントの引数に付ける印。`#[default] child: Child<'_>` は、「名前を付けずにタグの間に書いた中身が、この引数に入る」という意味です。（`#[derive(Default)]` の中で、どの種類を初期値にするかの印にも使われます。）
 > - **`#[key]`**（Topcoat）: `view!` の中の `for` に付ける印。くり返しの 1 つずつを、何で見分けるか（ノートの番号など）を決めます。画面を部分的に描き直す時に、正しく対応させるために使います。
 > - **`Child`**（Topcoat）: コンポーネントの「中身」（タグの間に書いた物）を受け取る型。部品の中で `(child)` と書いた所に置かれます。
+> - **`<li>`**（HTML）: `<li>` は、並び（`<ul>`・`<ol>`）の中の 1 つを表すタグです。
+> - **`data-*=`**（HTML）: `data-tag="…"` のように `data-` で始まる属性は、自分で決めた名前で、タグに値を付けておける入れ物です。CSS や JavaScript から読めます。
+> - **`<section>`**（HTML）: `<section>` は、ページの中の、ひとまとまりの区切り（見出しを持つ部分）を囲むタグです。
+> - **`<h2>`**（HTML）: `<h2>` は、2 番目の大きさの見出しです。`<h1>` がページの題、`<h2>` がその下の区切りの見出し、`<h3>` がさらに下です。見た目の大きさではなく、文の組み立てで選びます。
+> - **`<ul>`**（HTML）: `<ul>` は、順番の無い並び（・で始まる箇条書き）のタグです。中に `<li>` を並べます。順番のある並びは `<ol>` です。
+> - **`<input>`**（HTML）: 1 行の入力欄のタグ。`type` で種類（`text`・`email`・`password`・`hidden` など）を、`name` で送る時の名前を決めます。閉じタグはありません。
+> - **`type=`**（HTML）: `<input type="…">` の `type` は、入力欄の種類です。`text`（文字）・`email`・`password`（伏せ字）・`number`・`date`・`checkbox`（チェック）・`file`（ファイル）・`search` などがあります。`<button type="submit">` は、押すとフォームを送るボタンです。
+> - **`checked=`**（HTML）: `checked` は、チェックボックスが最初からチェックされた状態にする印です。
+> - **`disabled=`**（HTML）: `disabled` は、入力欄やボタンを使えなく（押せなく）する印です。送信中に、2 回押されるのを防ぐ時などに使います。
 
 <!-- /first-use -->
 
@@ -3393,6 +3455,14 @@ async fn main() {
         .expect("サーバーを起動できませんでした");
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`title=`**（HTML）: `title` は、マウスを乗せた時に出る、短い説明です。
+
+<!-- /first-use -->
 
 ```powershell
 cargo run --bin u05_escape
@@ -3916,6 +3986,18 @@ async fn main() {
 }
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`<form>`**（HTML）: 入力欄とボタンをまとめて、送る（サーバーへ届ける）ためのタグ。`action` に送り先、`method="post"` に送り方を書きます。
+> - **`method=`**（HTML）: `<form method="post">` の `method` は、フォームの送り方です。`post` はデータを送って何かを変える時（登録・削除）、`get` は検索のように、URL の `?q=…` に入れて送る時に使います。
+> - **`action=`**（HTML）: `<form action="/notes">` の `action` は、フォームの送り先の URL です。書かなければ、今のページに送ります。
+> - **`value=`**（HTML）: `value` は、入力欄の最初の値や、選び肢（`<option>`）を選んだ時に送られる値です。
+> - **`<button>`**（HTML）: ボタンのタグ。`<form>` の中の `type="submit"` のボタンを押すと、フォームが送られます。
+
+<!-- /first-use -->
+
 この例から、構造体を JSON やフォームと変換する `serde` を使うので、`web_lab` に足します。
 
 ```powershell
@@ -4097,6 +4179,15 @@ content-length: 25
 
 [{"id":1,"title":"milk"}]
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`curl.exe -H`**（HTTP クライアント）: `-H "Content-Type: application/json"` は、要求に見出し（ヘッダー）を 1 つ足します。何度も書けます。
+> - **`curl.exe --data-binary`**（HTTP クライアント）: `--data-binary` は、送る中身を、改行なども変えずにそのまま送る指定です。`--data-binary "@note.json"` のように `@` を付けると、ファイルの中身を送ります。
+
+<!-- /first-use -->
 
 - 最初の `GET` は `[]`（空の配列）でした。`Json(…)` で包んで返すと、Topcoat が構造体を JSON に変え、`content-type: application/json` を付けます。`Memo` に付けた `#[derive(Serialize)]` が、構造体から JSON への変換を作ります。
 - `POST` は `201 Created` で、本文は `{"id":1,"title":"milk"}` でした。`Ok((StatusCode::CREATED, Json(memo)))` のように、**組（タプル）の最初に状態コード**を置くと、その状態コードで返ります（RustNote の `/health` も同じ形です）。
@@ -4714,6 +4805,8 @@ async fn main() {
 >
 > - **`#[memoize]`**（Topcoat）: Topcoat の印（属性）。付けた関数の結果を、**1 つの要求（リクエスト）の間だけ**覚えておきます。レイアウト・ページ・部品のどこから呼んでも、データベースを 1 回しか読まずに済みます（第6巻 UNIT 07）。
 > - **`.then()`**（Option）: `bool` が `true` の時だけ、渡した関数を動かして `Some(結果)` を返すメソッド（`false` なら `None`）。`then_some` と違い、値を作る処理が、必要な時だけ動きます。（Future の `.then` は別の物です。）
+> - **`#[memoize(as_ref)]`**（Topcoat）: `#[memoize(as_ref)]` の `as_ref` は、覚えておいた結果を、複製せずに「借りる形」で返す指定です。`Option<User>` を返す関数なら、呼んだ側には `Option<&User>` が返ります。付けない `#[memoize]` は `&Option<User>` を返します。
+> - **`<span>`**（HTML）: `<span>` は、文の中の一部を囲む、意味を持たないタグです。一部の文字だけに色を付ける時などに使います（`<div>` とちがい、改行しません）。
 
 <!-- /first-use -->
 
@@ -5173,6 +5266,9 @@ h1 {
 > - **`font-family:`**（CSS）: CSS で、文字の書体（フォント）を決める項目。`font-family: sans-serif;` は「飾りの無い書体」。
 > - **`margin:`**（CSS）: CSS で、箱の外側の余白を決める項目。`margin: 2rem;` は、上下左右に文字 2 つ分くらいの余白です。
 > - **`color:`**（CSS）: CSS で、文字の色を決める項目。`color: #1e40af;` のように、色の番号（16 進数）や名前で書きます。
+> - **`/* */`**（CSS）: CSS では、`/*` から `*/` までがコメントです。
+> - **`数rem`**（CSS）: CSS の `1.5rem` の `rem` は、「ページの基本の文字の大きさ（ふつう 16px）の何倍か」で表す単位です。利用者が文字を大きくする設定にすると、一緒に大きくなるので、読みやすさのために、文字や余白によく使います。
+> - **`#rrggbb`**（CSS）: CSS の `#0f172a` のような `#` と 6 けた（または 3 けた）の 16 進数は、色の書き方です。2 けたずつ、赤・緑・青の強さ（00〜ff）を表します。`#ffffff` は白、`#000000` は黒です。
 
 <!-- /first-use -->
 
@@ -5237,6 +5333,14 @@ async fn main() {
 topcoat asset bundle --bin u08_assets
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`topcoat asset bundle --bin`**（Topcoat）: `topcoat asset bundle --bin u08_assets` の `--bin` は、`src\bin` の中のどのプログラムのアセットを束ねるかを指定します。
+
+<!-- /first-use -->
+
 ```text
 bundled assets into ...\web_lab\target\debug\assets
 ```
@@ -5260,6 +5364,18 @@ file = "site-7becc8b6682e6054.css"
 hash = "7becc8b6682e6054d01e53b6fa67af40714b1145b9a9b5191b328ac6e4c53d2e"
 content_type = "text/css"
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`[[assets]]`**（設定ファイル（TOML））: `topcoat asset bundle` が作る目録（`manifest`）の `[[assets]]` は、束ねたアセット（CSS など）1 つ分の記録です。
+> - **`id =`**（設定ファイル（TOML））: アセットの `id` は、アセットを見分けるための番号です（中身から計算されます）。
+> - **`file =`**（設定ファイル（TOML））: アセットの `file` は、束ねた後のファイル名です。名前に中身の指紋（`7becc8b6…`）が入るので、中身が変わると名前も変わり、ブラウザーが古い物を使い続けることがありません。
+> - **`hash =`**（設定ファイル（TOML））: `hash` は、ファイルの中身から計算した指紋（長い 16 進数）です。
+> - **`content_type =`**（設定ファイル（TOML））: `content_type = "text/css"` は、そのファイルの種類です。ブラウザーに渡す時の `Content-Type` になります。
+
+<!-- /first-use -->
 
 起動して、ページと CSS を開きます。
 
@@ -5373,6 +5489,14 @@ topcoat dev --bin u08_dev
 
   ready on http://127.0.0.1:3000
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`topcoat dev --bin`**（Topcoat）: `topcoat dev --bin u08_dev` は、開発用に動かすコマンドです。ファイルを保存するたびに、作り直して動かし直します。`--bin` は、どのプログラムかを選びます。
+
+<!-- /first-use -->
 
 2つ目の窓からページを開くと、`dev.js` のスクリプトが入っています（`59039` の番号は、起動するたびに変わります）。
 
@@ -5734,6 +5858,9 @@ async fn main() {
 > - **`.runtime()`**（Topcoat）: ルーターに、ブラウザーの中で画面を変える仕組み（runtime）を登録するメソッド（第6巻 UNIT 09）。
 > - **`topcoat::runtime::script()`**（Topcoat）: ブラウザーの中で画面を変える仕組み（runtime）を使うためのスクリプトを、ページに入れる関数（第6巻 UNIT 09）。
 > - **`RouterBuilderRuntimeExt`**（Topcoat）: ルーターに `.runtime()`（ブラウザーの中で画面を変える仕組み）を登録できるようにする機能（トレイト）。
+> - **`@click=`**（Topcoat）: `view!` の中の `@click=$(|_e| …)` は、「押された時に、ブラウザーの中で動かす処理」を付ける書き方です。サーバーには送らずに、ブラウザーの中だけで動きます（`$( )` の中は JavaScript になります）。
+> - **`:hidden=`**（Topcoat）: `view!` の中の `:hidden=$(…)` は、「ブラウザーの中で、値が変わるたびに付け直す属性」の書き方です（結び付けの属性）。`$( )` の中が `true` の時は `hidden`（隠す）が付き、`false` の時は外れます。
+> - **`$( … )`**（Topcoat）: `view!` の中の `$( … )` は、「ブラウザの中でも動く式」です。サーバーが最初の画面を作る時に計算し、さらに同じ式を JavaScript にしてページに入れます。signal の値が変わるたびに、ブラウザがその式を計算し直して、画面を書きかえます。ふつうの `( … )` は、サーバーで 1 回計算するだけです。
 
 <!-- /first-use -->
 

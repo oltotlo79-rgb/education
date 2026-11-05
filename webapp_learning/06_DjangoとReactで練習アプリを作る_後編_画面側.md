@@ -55,6 +55,15 @@ export default defineConfig({
 });
 ```
 
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`defineConfig()`**（JavaScript・TypeScript）: `defineConfig({ … })` は、設定ファイル（Vite の `vite.config` や Playwright の `playwright.config`）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。
+> - **`react()`**（React）: `react()` は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。
+
+<!-- /first-use -->
+
 ### 1.1 開発中の動かし方
 
 **▶ 準備:** 00 の 6.3（Node.js）。前編のサーバー側（Django）が動いていること。`npm` が「スクリプトの実行が無効」で止められたら、`npm.cmd` と打ちます（00 の 6.3）。
@@ -119,6 +128,15 @@ try {
     Pop-Location
 }
 ```
+
+<!-- first-use -->
+
+> **▶ ここで初めて出てくるコード**
+>
+> - **`$env:名前`**（PowerShell）: `$env:GREETING` のように `$env:` を付けた名前は「環境変数」（プログラムに外から渡す設定）です。`$env:GREETING = "おはよう"` で設定すると、その PowerShell の窓から動かすプログラム（`cargo run` など）が読めます。窓を閉じると消えます。
+> - **`` ` ``**（PowerShell）: 行の最後の `` ` ``（バッククォート。`Shift` ＋ `@` で打ちます）は、「次の行へ続く」という印です。長いコマンドを、何行かに分けて書けます。`` ` `` の後ろに空白があると続かないので、注意します。
+
+<!-- /first-use -->
 
 **確かめること:** `http://127.0.0.1:8000/health` が `{"status": "ok"}` を返すこと。画面の部品（`/static/assets/index-（指紋）.js`）の返事に、`Cache-Control: max-age=315360000, public, immutable` が付くこと（試した結果、付いた。onprem の 05 の 8.4 と同じ）。
 
@@ -226,6 +244,18 @@ export const api = {
 > - **`.flat()`**（TypeScript）: 配列の中の配列を、1 つの配列に平らにするメソッド。
 > - **`.catch()`**（TypeScript）: `Promise` が失敗した時の代わりの処理を登録するメソッド。`res.json().catch(() => ({}))` は「JSON として読めなければ空のオブジェクト」。
 > - **`.append()`**（TypeScript）: `FormData` に項目を足すメソッド。`form.append("file", file)` で、ファイル付きのフォームを組み立てます。
+> - **`(?:…)`**（正規表現）: 正規表現の `(?: )` は、取り出さないまとまりです。`(?:^|; )` は「行の頭か、`; ` のどちらか」をまとめるだけで、取り出す番号には数えません。
+> - **`[^…]`**（正規表現）: 正規表現の `[^ ]` は、「中に書いた文字**以外**の 1 文字」を表します。`[^;]+` は「`;` 以外の文字が 1 つ以上」、`[^\x21-\x7E]` は「英数字と記号（ASCII の見える文字）以外」。
+> - **`+`**（正規表現）: 正規表現の `+` は、「すぐ前の物が、1 回以上くり返す」を表します。`\d+` は「数字が 1 つ以上」。
+> - **`^`**（正規表現）: 正規表現の `^` は、「行（文字）の頭」を表します。`^#` は「`#` で始まる」。
+> - **`|`**（正規表現）: 正規表現の `|` は、「左か右のどちらか」を表します。`api/|admin/` は「`api/` か `admin/`」。
+> - **`(…)`**（正規表現）: 正規表現の `( )` は、まとまり（グループ）を作ります。合った文字のうち、`( )` の中の部分だけを、あとから取り出せます（`m[1]`・`m.group(1)`・`$1` など）。`(…)?` のように、まとまりごとくり返しや省略もできます。
+> - **`Object`**（JavaScript・TypeScript）: `Object.values(obj)` は、オブジェクトの値だけを並びにします。`Object.keys(obj)` はキーだけ、`Object.entries(obj)` は `[キー, 値]` の組の並びです。
+> - **`String`**（JavaScript・TypeScript）: `String(値)` は、値を文字にします。`values.map(String)` は、並びの全部を文字にします。
+> - **`RequestInit`**（TypeScript）: `RequestInit` は、`fetch(URL, 設定)` の 2 つ目に渡す「設定」（`method`・`headers`・`body` など）の型です。
+> - **`FormData`**（JavaScript・TypeScript）: `FormData` は、フォームの中身（ファイルも含む）を、送れる形にまとめる入れ物です。`fetch` の `body` に入れて、ファイルを送ります。
+> - **`decodeURIComponent()`**（JavaScript・TypeScript）: `decodeURIComponent("%E5%B1%B1")` は、URL やクッキーの中で `%XX` の形にした文字を、元の文字（山）に戻します。反対は `encodeURIComponent()` です。
+> - **`.cookie`**（JavaScript・TypeScript）: `document.cookie` は、そのページのクッキーを、`名前=値; 名前=値` の形の文字で読みます（`HttpOnly` のクッキーは読めません）。
 
 <!-- /first-use -->
 
@@ -270,6 +300,9 @@ def health(request):
 > - **`method_decorator()`**（Django）: 関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。
 > - **`@method_decorator`**（Django）: `@method_decorator(ensure_csrf_cookie, name="dispatch")` をクラスの上に付けて、そのクラスの画面に印を付けます。
 > - **`@ensure_csrf_cookie`**（Django）: その画面を返す時に、CSRF の札（クッキー）を必ず付ける印。React の画面が、あとで送るフォームに札を付けられるようにします（10 巻の 5 章）。
+> - **`HttpResponse`**（Django）: Django の `HttpResponse("文字")` は、文字（HTML など）をそのまま返す、いちばん基本の答えです。
+> - **`JsonResponse`**（Django）: Django の `JsonResponse({"status": "ok"})` は、辞書を JSON にして返す答えです。
+> - **`TemplateView`**（Django）: Django の `TemplateView` は、決まったテンプレート（HTML）を表示するだけのビューです。`template_name = "index.html"` を書くだけで使えます。
 
 <!-- /first-use -->
 
@@ -285,6 +318,9 @@ re_path(r"^(?!api/|admin/|static/|approve/).*$", pages.IndexView.as_view()),
 >
 > - **`.as_view()`**（Django）: クラスで作った画面（ビュー）を、URL の決まりに登録できる形にするメソッド。
 > - **`re_path()`**（Django）: 正規表現で URL の決まりを書く関数。`re_path(r"^(?!api/|admin/).*$", …)` は「`api/`・`admin/` で始まらない URL は全部」（React の画面を返す）。
+> - **`(?=…)`**（正規表現）: 正規表現の `(?= )` は「この後ろに、こういう形が続く時だけ」、`(?! )` は「この後ろに、こういう形が続かない時だけ」を表します（先読み）。`^(?!api/|admin/).*$` は「`api/` や `admin/` で始まらない物、全部」。中の文字は、合わせた文字には入りません。
+> - **`*`**（正規表現）: 正規表現の `*` は、「すぐ前の物が、0 回以上くり返す」を表します。`\s*` は「空白が 0 個以上」、`.*` は「何でも、何文字でも」。
+> - **`|`**（正規表現）: 正規表現の `|` は、「左か右のどちらか」を表します。`api/|admin/` は「`api/` か `admin/`」。
 
 <!-- /first-use -->
 
@@ -375,12 +411,14 @@ export function App() {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`.me()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、`/api/me/`（今ログインしている人）を問い合わせます。この巻の後の方で作ります。
 > - **`.csrf()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、`/api/csrf/` を呼んで、CSRF の札（クッキー）を先に受け取ります。
 > - **`useCallback()`**（React）: 関数を覚えておき、描き直しのたびに作り直さないようにするフック。`useEffect` の見張る値に関数を入れる時などに使います。
-> - **`<FormPage>`**（練習アプリで作る物（TypeScript））: 依頼の作成・編集の画面の部品（コンポーネント）。この巻の後の方で作ります。
-> - **`<DetailPage>`**（練習アプリで作る物（TypeScript））: 依頼 1 件のくわしい画面の部品。この巻の後の方で作ります。
-> - **`<StatsPage>`**（練習アプリで作る物（TypeScript））: 集計の画面の部品（グラフを SVG で描く）。この巻の後の方で作ります。
+> - **`\d`**（正規表現）: 正規表現の `\d` は、「数字 1 つ（0〜9）」を表します。
+> - **`\.`**（正規表現）: 正規表現の `\.` のように、記号の前に `\` を付けると、その記号を特別な意味にせず、文字そのものとして表します。`\.` は `.`、`\/` は `/` です。
+> - **`?`**（正規表現）: 正規表現の `?` は、「すぐ前の物が、あっても無くてもよい（0 回か 1 回）」を表します。`(\/edit)?` は「`/edit` があってもなくてもよい」。
+> - **`$`**（正規表現）: 正規表現の `$` は、「行（文字）の終わり」を表します。`\d+$` は「数字で終わる」。`^…$` と両方書くと、「全体がこの形か」を調べられます。
+> - **`async () =>`**（JavaScript・TypeScript）: `async () => { … }` は、中で `await`（終わるまで待つ）を使える、名前の無い関数（アロー関数）です。
+> - **`Number`**（JavaScript・TypeScript）: `Number("42")` は、文字を数にします。数にできない時は `NaN`（数ではない）になります。
 
 <!-- /first-use -->
 
@@ -497,9 +535,10 @@ export function FormPage({ editId }: { editId?: number }) {
 > - **`.request()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、依頼 1 件のくわしい中身を問い合わせます。
 > - **`.test()`**（TypeScript）: 正規表現が、文字列に合うかを `true`・`false` で返すメソッド。`/\.(jpe?g|png|pdf)$/i.test(名前)` は「拡張子が JPG・PNG・PDF か」。
 > - **`.create()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、新しい依頼を送って作ります。作った依頼の番号（`id`）が返ります。
-> - **`.action()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、依頼に操作（出し直し・取り下げなど）を送ります。
 > - **`.upload()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、添付ファイルを 1 つ送ります。
-> - **`<ApproverPicker>`**（練習アプリで作る物（TypeScript））: 承認する人を探して、順番に選ぶ部品。この巻の後の方で作ります。
+> - **`/…/g`**（JavaScript・TypeScript）: 正規表現の後ろの `g` は、「合う所を全部」という指定（フラグ）です。`.replace(/a/g, "b")` は、全部の `a` を `b` にします（`g` が無いと、最初の 1 つだけ）。`i` は大文字・小文字を区別しない指定です。
+> - **`maxLength=`**（React）: JSX の `maxLength={100}` は、入力できる文字の数の上限です（HTML の `maxlength`）。
+> - **`accept=`**（React）: `accept=".jpg,.jpeg,.png,.pdf"` は、選べるファイルの種類です（サーバー側でも必ず確かめます）。
 
 <!-- /first-use -->
 
@@ -560,10 +599,11 @@ export function ApproverPicker({ value, onChange, max = 3 }: Props) {
 
 > **▶ ここで初めて出てくるコード**
 >
-> - **`.employees()`**（練習アプリで作る物（TypeScript））: `api.ts` で作る関数の 1 つで、名前などで社員を探します。
 > - **`.has()`**（TypeScript）: `Set` や `Map` に、その値（キー）があれば `true` を返すメソッド。
 > - **`.slice()`**（TypeScript）: 配列や文字列の一部分を切り出した、新しい物を返すメソッド。`list.slice(0, 5)` は最初の 5 つ。
 > - **`<ol>`**（React）: 番号の付いた並びのタグ。中に `<li>` を並べます（回覧の順番など）。
+> - **`setTimeout()`**（JavaScript・TypeScript）: `setTimeout(() => { … }, 3000)` は、3000 ミリ秒（3 秒）たってから、中の処理を 1 回動かします。返ってくる番号を `clearTimeout(番号)` に渡すと、取りやめにできます。
+> - **`clearTimeout()`**（JavaScript・TypeScript）: `clearTimeout(timer)` は、`setTimeout` で予約した処理を取りやめにします。React では、部品が消える時の後片づけ（`useEffect` の `return () => …`）で呼びます。
 
 <!-- /first-use -->
 
@@ -684,7 +724,7 @@ export function DetailPage({ id, me }: { id: number; me: Me }) {
 >
 > - **`.toLocaleString()`**（TypeScript）: 日時や数を、その国の書き方の文字列にするメソッド。`new Date(s).toLocaleString("ja-JP", { dateStyle: "short", timeStyle: "short" })` は `2026/11/02 8:00` の形です。
 > - **`.ceil()`**（TypeScript）: `Math.ceil(x)` は、小数を切り上げて整数にする関数です（大きさを KB で見せる時など）。
-> - **`<RequestDetail>`**（TypeScript）: `call<RequestDetail>(…)` の `<RequestDetail>` は、画面のタグではなく、型引数（この関数が返す物の型を伝える書き方）です。`RequestDetail` は `types.ts` で決める、依頼 1 件のくわしい中身の型です。
+> - **`Date`**（JavaScript・TypeScript）: `new Date(文字)` は、日時の値を作ります。`.toLocaleString("ja-JP")` で、日本の形の日時の文字になります。
 
 <!-- /first-use -->
 
@@ -790,6 +830,9 @@ export function StatsPage() {
 > - **`<figcaption>`**（React）: `<figure>` の中の、図の説明のタグ。
 > - **`<g>`**（React）: SVG の中で、図の部品をまとめるタグ（group）。まとめて動かしたり、色を付けたりできます。
 > - **`<text>`**（HTML）: SVG（線や図形で描く絵）の中に、文字を書くタグ。`<text x="110" y="18" textAnchor="end">ラベル</text>` は、決めた位置に、右そろえで文字を書きます。
+> - **`transform=`**（React）: SVG の `transform="translate(0 30)"` は、図形を動かす（ずらす）指定です。
+> - **`textAnchor=`**（React）: SVG の `textAnchor="end"` は、文字を、置いた位置に右端をそろえて書く指定です（`middle` で真ん中）。
+> - **`rx=`**（React）: SVG の `<rect rx="4">` の `rx` は、四角の角を丸くする大きさです。
 
 <!-- /first-use -->
 

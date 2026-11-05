@@ -466,6 +466,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>RouterBuilderSessionExt</code></strong>（Topcoat）: ルーターに <code>.sessions(…)</code>（セッションの仕組み）を登録できるようにする機能（トレイト）。セッションはクッキーを使うので、先に <code>.cookies()</code> も登録します。</li>
 <li><strong><code>Serialize</code></strong>（JSON）: 「JSON などにできる」機能（トレイト。<code>serde</code> の部品）。<code>#[derive(Serialize)]</code> を付けた型は、<code>serde_json::to_string</code> で JSON にできます。</li>
 <li><strong><code>Id</code></strong>（Topcoat）: URL の一部（<code>/requests/3</code> の <code>3</code> など）を、型として受け取るための入れ物。練習アプリでは <code>Id(番号)</code> の形で、URL の中の依頼の番号を表します。<code>href!(detail, Id(5))</code> で URL を作り、ページの関数で受け取ります。</li>
+<li><strong><code>&lt;small&gt;</code></strong>（HTML）: <code>&lt;small&gt;</code> は、補足の小さな文字（注意書き・おまけの情報）を表すタグです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -610,6 +611,15 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Shape</code></strong>（練習アプリで作る物（Rust））: 図面の部品（四角 <code>Rect</code>・線 <code>Line</code> など）を表す enum。後編で作ります。</li>
 <li><strong><code>Rect</code></strong>（練習アプリで作る物（Rust））: <code>Shape</code> の値の 1 つで、四角（左上の位置 <code>x</code>・<code>y</code> と、幅 <code>width</code>・高さ <code>height</code>）。</li>
 <li><strong><code>Line</code></strong>（練習アプリで作る物（Rust））: <code>Shape</code> の値の 1 つで、線（始まり <code>x1</code>・<code>y1</code> と、終わり <code>x2</code>・<code>y2</code>）。</li>
+<li><strong><code>{:.桁}</code></strong>（画面に出す）: <code>{:.1}</code> の <code>.</code> と数は、「小数点の下を何けた出すか」の指定です。<code>{:.1}</code> で <code>3.14159</code> は <code>3.1</code>、<code>{:.2}</code> で <code>3.14</code>、<code>{:.0}</code> なら <code>3</code>。けたを切りそろえて（丸めて）表示します。<code>{:.2?}</code> のように Debug（<code>?</code>）と組み合わせると、かかった時間（<code>Duration</code>）を <code>1.23ms</code> のように短く出せます。</li>
+<li><strong><code>&lt;line&gt;</code></strong>（HTML）: <code>&lt;line&gt;</code> は、SVG（線や図形で描く絵）の中で、直線を引くタグです。<code>x1</code>・<code>y1</code>（始まり）と <code>x2</code>・<code>y2</code>（終わり）の位置を書きます。</li>
+<li><strong><code>x1=</code></strong>（HTML）: SVG の <code>&lt;line&gt;</code> の <code>x1</code>・<code>y1</code> は線の始まりの位置、<code>x2</code>・<code>y2</code> は終わりの位置です。</li>
+<li><strong><code>y1=</code></strong>（HTML）: SVG の <code>&lt;line&gt;</code> の <code>y1</code> は、線の始まりの縦の位置です。</li>
+<li><strong><code>x2=</code></strong>（HTML）: SVG の <code>&lt;line&gt;</code> の <code>x2</code> は、線の終わりの横の位置です。</li>
+<li><strong><code>y2=</code></strong>（HTML）: SVG の <code>&lt;line&gt;</code> の <code>y2</code> は、線の終わりの縦の位置です。</li>
+<li><strong><code>&lt;text&gt;</code></strong>（HTML）: SVG（線や図形で描く絵）の中に、文字を書くタグ。<code>&lt;text x="110" y="18" textAnchor="end"&gt;ラベル&lt;/text&gt;</code> は、決めた位置に、右そろえで文字を書きます。</li>
+<li><strong><code>f64</code></strong>（数）: 小数を入れる型（64 ビット）。<code>3.14</code> のような数です。小数は、<code>0.1 + 0.2</code> が <code>0.30000000000000004</code> になるような、わずかな誤差が出るので、お金の計算には使いません（整数の「円」で数えます）。</li>
+<li><strong><code>1.5</code></strong>（数）: <code>1.08</code> のように <code>.</code> の付いた数は小数で、型を書かなければ <code>f64</code> になります。整数（<code>i32</code> など）と小数は、そのままでは足したり掛けたりできないので、<code>as f64</code> などで型をそろえます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -688,6 +698,8 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>UNAUTHORIZED</code></strong>（HTTP）: <code>StatusCode::UNAUTHORIZED</code> は、HTTP の答えの番号 401（「ログインしていない」）です。</li>
+<li><strong><code>autocomplete=</code></strong>（HTML）: <code>autocomplete="email"</code> は、ブラウザーに、「この欄にはメールアドレスを入れる」と伝え、覚えている値を出してもらう印です。<code>username</code>・<code>current-password</code>・<code>new-password</code> などがあります。</li>
+<li><strong><code>inputmode=</code></strong>（HTML）: <code>inputmode="numeric"</code> は、スマホで入力する時に、数字のキーボードを出してもらう印です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -975,6 +987,12 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>serde_json::to_string()</code></strong>（JSON）: Rust の値を、JSON の文字列（1 行）に変える関数。値の型に <code>Serialize</code> が付いている必要があります。失敗することもあるので <code>Result</code> が返ります。</li>
 <li><strong><code>Date::parse()</code></strong>（時間）: 文字列を、決めた形（<code>format_description!</code>）で読んで、<code>Date</code> にする関数。形に合わない文字（<code>2026/13/40</code> など）だと <code>Err</code> を返します。</li>
 <li><strong><code>Multipart</code></strong>（Topcoat）: ファイル付きのフォーム（<code>multipart/form-data</code>）を、1 項目ずつ読むための型。<code>while let Some(field) = multipart.next_field().await?</code> で、項目を順に受け取ります。</li>
+<li><strong><code>selected=</code></strong>（HTML）: <code>&lt;option selected&gt;</code> の <code>selected</code> は、その選び肢を、最初から選んだ状態にする印です。</li>
+<li><strong><code>multiple=</code></strong>（HTML）: <code>multiple</code> は、ファイル（や選び肢）を一度にいくつも選べるようにする印です。</li>
+<li><strong><code>&lt;script&gt;</code></strong>（HTML）: <code>&lt;script src="../drawing.js"&gt;&lt;/script&gt;</code> は、ページで動かす JavaScript のファイルを読み込むタグです。</li>
+<li><strong><code>src=</code></strong>（HTML）: <code>src</code> は、読み込むファイル（画像・スクリプト）の場所です。</li>
+<li><strong><code>char</code></strong>（文字）: 1 文字を入れる型です。<code>'a'</code>・<code>'あ'</code>・<code>'😀'</code> のように <code>'</code> で囲んで書きます。日本語の文字も絵文字も、1 つの <code>char</code> です（大きさはいつも 4 バイト）。</li>
+<li><strong><code>..値</code></strong>（型とメソッド）: <code>Note { title: …, ..note }</code> の <code>..note</code> は、「書かなかった残りの項目は、<code>note</code> と同じ値にする」という書き方です（構造体の更新）。<code>..Default::default()</code> なら、残りを初期値にします。<code>..</code> の後ろの物は、いつも最後に書きます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1154,6 +1172,10 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>#[serde]</code></strong>（JSON）: <code>serde</code> の印（属性）。JSON にする時の細かい決まりを付けます。<code>#[serde(rename_all = "camelCase")]</code>（名前の書き方を変える）・<code>#[serde(default)]</code>（無い時は初期値）・<code>#[serde(skip_serializing_if = "Option::is_none")]</code>（空なら書かない）などがあります。</li>
 <li><strong><code>serde_json::from_str()</code></strong>（JSON）: JSON の文字列を読んで、決めた型（struct など）に変える関数。形が合わないと <code>Err</code> を返します。</li>
+<li><strong><code>r#"…"#</code></strong>（文字列）: <code>r#"…"#</code> も「生の文字列」で、<code>"#</code> が来るまでを、<code>\</code> も <code>"</code> もそのまま文字にします。<code>r#"{"title": "牛乳"}"#</code> のように、<code>"</code> の多い JSON や、何行もの SQL を書く時に便利です。</li>
+<li><strong><code>#[serde(rename_all)]</code></strong>（JSON）: <code>#[serde(rename_all = "camelCase")]</code> は、項目の名前を、JSON では別の書き方にする印です。<code>camelCase</code> なら、Rust の <code>width_mm</code> が JSON では <code>widthMm</code> になります。<code>snake_case</code>・<code>kebab-case</code>・<code>UPPERCASE</code> などもあります。</li>
+<li><strong><code>#[serde(deny_unknown_fields)]</code></strong>（JSON）: <code>serde</code> の印。JSON に、構造体に無い名前の項目が入っていたら、読み込みをエラーにします。項目の名前の書き間違い（<code>titel</code> など）を見逃さないために付けます。</li>
+<li><strong><code>#[serde(tag)]</code></strong>（JSON）: <code>#[serde(tag = "kind")]</code> は、enum を JSON にする時に、種類の名前を <code>"kind": "line"</code> のような項目として、中身と一緒に入れる指定です。読む時も、その項目を見て、どの種類かを決めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1250,6 +1272,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>.setPointerCapture()</code></strong>（JavaScript・TypeScript）: 押したポインター（マウスや指）の動きを、要素の外に出ても、この要素で受け取り続けるメソッド。図を描いている途中で、枠の外に出ても線が切れません。</li>
 <li><strong><code>.pop()</code></strong>（JavaScript・TypeScript）: JavaScript・TypeScript で、配列の最後の 1 つを取り出すメソッド（元の配列から消える）。</li>
 <li><strong><code>?.</code></strong>（JavaScript・TypeScript）: <code>a?.b</code> は、<code>a</code> が <code>null</code> や <code>undefined</code> なら、そこで止めて <code>undefined</code> にする書き方（オプショナルチェーン）。無いかもしれない物を、エラーにせずにたどれます。</li>
+<li><strong><code>.value</code></strong>（JavaScript・TypeScript）: <code>.value</code> は、入力欄に今入っている文字や、クッキーなどの値です。</li>
+<li><strong><code>.textContent</code></strong>（JavaScript・TypeScript）: <code>.textContent</code> は、タグの中の文字です。入れた文字は、HTML としてではなく、ただの文字として表示されるので、安全です（<code>innerHTML</code> に入れると、タグとして動いてしまいます）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1473,6 +1497,9 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>.and_then()</code></strong>（エラー処理）: <code>Option</code> や <code>Result</code> に中身があれば、それを使って、次の <code>Option</code>・<code>Result</code> を作るメソッド（無ければ、そのまま <code>None</code>・<code>Err</code>）。失敗するかもしれない処理を、続けてつなぐ時に使います。</li>
+<li><strong><code>&lt;ol&gt;</code></strong>（React）: 番号の付いた並びのタグ。中に <code>&lt;li&gt;</code> を並べます（回覧の順番など）。</li>
+<li><strong><code>style=</code></strong>（HTML）: <code>style="display:inline"</code> は、そのタグだけに、直接 CSS を書く属性です。いくつもの所で使う見た目は、CSS のファイルに書きます。</li>
+<li><strong><code>pub(crate)</code></strong>（モジュール）: <code>pub(crate)</code> は、「このクレート（このプロジェクト）の中からは使えるが、外からは使えない」という公開の範囲です。<code>pub</code> だけなら、どこからでも使えます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1725,6 +1752,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>tokio::fs::write()</code></strong>（ファイルとフォルダ）: ファイルに中身を書く関数（非同期）。ファイルが無ければ作り、あれば上書きします。</li>
 <li><strong><code>tokio::fs::remove_file()</code></strong>（ファイルとフォルダ）: ファイルを消す関数（非同期）。</li>
 <li><strong><code>Path</code></strong>（ファイルとフォルダ）: ファイルやフォルダの場所を表す型（借りている形）。<code>.join()</code>・<code>.file_name()</code>・<code>.extension()</code>・<code>.exists()</code> などで扱います。自分の物として持つ形は <code>PathBuf</code> です。</li>
+<li><strong><code>\\</code></strong>（文字列の中の特別な書き方）: 文字列の中に <code>\</code> そのもの（1 つ）を入れたい時は、<code>\\</code> と 2 つ書きます。<code>\</code> は、<code>\n</code> のような特別な書き方の始まりの印だからです。Windows の場所を <code>"C:\\Users"</code> と書くのも、この理由です（生の文字列 <code>r"C:\Users"</code> なら 1 つで済みます）。</li>
+<li><strong><code>r"…"</code></strong>（文字列）: <code>r"…"</code> は「生の文字列」で、中の <code>\</code> を特別な意味にしません。<code>r"C:\Users\you"</code> や、正規表現の <code>r"\d+"</code> のように <code>\</code> の多い文字を、そのまま書けます。中に <code>"</code> を入れたい時は <code>r#"…"#</code> を使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1792,6 +1821,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Response::builder()</code></strong>（HTTP）: 答え（レスポンス）を、少しずつ決めて組み立て始める関数。<code>.header(名前, 値)</code> で見出しを足し、<code>.body(…)</code> で本文を入れて出来上がりです。</li>
 <li><strong><code>Body::from()</code></strong>（HTTP）: 文字列やバイトの並びから、本文（<code>Body</code>）を作る関数。</li>
 <li><strong><code>Body</code></strong>（HTTP）: リクエストや答えの本文を表す型（<code>topcoat::router::Body</code>）。</li>
+<li><strong><code>{:X}</code></strong>（画面に出す）: <code>{:X}</code> は、整数を大文字の 16 進数（0〜9 と A〜F）で表示する指定です。<code>255</code> は <code>FF</code>、<code>'A' as u32</code>（65）は <code>41</code>。文字の番号や色の値を見る時に使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

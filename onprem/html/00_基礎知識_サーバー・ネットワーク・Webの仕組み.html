@@ -237,7 +237,7 @@ li, tr { page-break-inside: avoid; }
 - <strong>Windows Terminal（Windows 11 のコマンド プロンプトや PowerShell の窓）で「複数の行を含むテキストを貼り付けようとしています。…続行してもよろしいですか?」と出たら:</strong> <strong>「強制的に貼り付け」</strong>を押します。毎回出したくない時は、Windows Terminal の 設定 → 操作 →「改行を貼り付ける際に警告する」で変えられますが、安全のため、そのままがおすすめです。
 - <strong>VS Code のターミナルで「3 行のテキストをターミナルに貼り付けますか?」（数は貼る行の数）と出たら:</strong> <strong>「貼り付け」</strong>を押します。「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、この資料のコードでは押さないでください。
 - <strong>コマンドは、特に書いていない限り PowerShell の物です。</strong> コマンド プロンプト（cmd）に貼ると、<code>#</code> で始まる説明の行が「'#' は、内部コマンドまたは外部コマンド、操作可能なプログラムまたはバッチ ファイルとして認識されていません。」になります。PowerShell の窓に貼ってください（<code>#</code> の行は、PowerShell では何もしない説明の行です）。
-- <strong>初めて出てくるコマンドの説明:</strong> どの資料も、初めて出てくるコマンド・オプション・SQL などのすぐ下に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で、意味と使い方を書いています。あとで「これは何だっけ？」と思ったら、<strong>09 付録「出てくるコマンドと設定の一覧」</strong>で、機能ごとの表から引けます。
+- <strong>初めて出てくるコマンドの説明:</strong> どの資料も、初めて出てくるコマンド・オプション・SQL などのすぐ下に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で、意味と使い方を書いています。あとで「これは何だっけ？」と思ったら、<strong>09 付録「出てくるコマンドと設定の一覧」</strong>で、機能ごとの表から引けます。反対に、「こういう時はどのコマンドだっけ？」と思ったら、<strong>10 付録「逆引き」</strong>で、やりたいことからコマンドを探せます。
 - <strong>読み方:</strong> 0 章は「コンピューターの中身」という、いちばん手前の話です。分かっている人は飛ばしてかまいません。図はたとえで描いているので、まず図を見て、それから文を読むと分かりやすいです。</p>
 <h3 id="_2">例にするアプリ</h3>
 <p>この資料と手順書では、次のような<strong>社内向けの業務 Web アプリ</strong>を建てる前提で説明します。</p>
@@ -334,7 +334,11 @@ li, tr { page-break-inside: avoid; }
 </tr>
 <tr>
 <td>09 付録: 出てくるコマンドと設定の一覧</td>
-<td>資料に出てくるコマンド・オプション・SQL・コードの部品の意味を、機能ごとの表で引ける一覧</td>
+<td>資料に出てくるコマンド・オプション・書き方・SQL・XML の設定・コードの部品の意味を、機能ごとの表で引ける一覧</td>
+</tr>
+<tr>
+<td>10 付録: 逆引き</td>
+<td>「サービスを止めたい」「古いバックアップを消したい」のような、やりたいことからコマンドを引ける表</td>
 </tr>
 <tr>
 <td>参考 HTTPS にする場合</td>
@@ -533,6 +537,17 @@ li, tr { page-break-inside: avoid; }
 <div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 空白が入っているので、&quot; で囲む。先頭の &amp; は「このファイルを実行して」という意味</span>
 <span class="p">&amp;</span> <span class="s2">&quot;C:\Program Files\PostgreSQL\18\bin\psql.exe&quot;</span> <span class="p">-</span><span class="n">-version</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>#</code></strong>（PowerShell）: <code>#</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、PowerShell は無視します。コマンドの横に、何をするかを日本語で書いておけます。コピーしてそのまま貼り付けても、問題ありません。</li>
+<li><strong><code>&amp;</code></strong>（PowerShell）: <code>&amp; "C:\Program Files\…\vswhere.exe"</code> の先頭の <code>&amp;</code> は、「この文字（や変数）が指すプログラムを動かす」という印です。場所に空白が入っていて <code>"</code> で囲んだ時や、変数に入れた場所を動かす時に必要です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>最初にしておくこと:</strong> エクスプローラーの「表示」メニューで、<strong>「ファイル名拡張子」</strong>と<strong>「隠しファイル」</strong>を表示する設定にします。拡張子が見えないと、<code>backup.ps1.txt</code> のような打ち間違いに気付けません。</p>
@@ -863,6 +878,7 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>Get-Service</code></strong>（PowerShell）: Windows のサービス（裏で動き続けるプログラム）の一覧と、動いているか（<code>Status</code>）を表示するコマンド。</li>
 <li><strong><code>Get-Service -Name</code></strong>（PowerShell）: <code>Get-Service</code> で、名前を決めて取り出すオプション。<code>-Name *postgres*</code> のように、<code>*</code> で「この文字を含む物」を探せます。</li>
 <li><strong><code>Select-Object</code></strong>（PowerShell）: 結果のうち、見たい列だけを選ぶコマンド。<code>… | Select-Object Name, Length</code> のように、<code>|</code>（パイプ）で前のコマンドの結果を受け取って使います。<code>-First 5</code> で最初の 5 つだけにもできます。</li>
+<li><strong><code>|</code></strong>（PowerShell）: <code>|</code>（パイプ）は、左のコマンドの結果を、右のコマンドに流して渡す記号です。<code>Get-Service | Where-Object { … } | Select-Object Name</code> のように、「取り出す → しぼる → 選ぶ」をつないで書けます。キーボードでは <code>Shift</code> ＋ <code>¥</code> で打ちます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1304,6 +1320,20 @@ li, tr { page-break-inside: avoid; }
 <span class="na">Cookie</span><span class="o">:</span> <span class="l">session=AbC123...</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>GET /… HTTP/1.1</code></strong>（HTTP のやり取り）: <code>GET /requests HTTP/1.1</code> は、ブラウザーがサーバーに送る要求（リクエスト）の 1 行目です。左から「何をしたいか（メソッド。GET は取ってきて）」「どこを（URL の場所）」「HTTP の版」です。</li>
+<li><strong><code>Host:</code></strong>（HTTP のやり取り）: <code>Host: webapp.example.local</code> は、「どの名前のサイトにアクセスしたいか」です。1 台のサーバーで、名前ごとに別のサイトを出す時に使われます。</li>
+<li><strong><code>User-Agent:</code></strong>（HTTP のやり取り）: <code>User-Agent:</code> は、「どのブラウザー（道具）から来た要求か」です。</li>
+<li><strong><code>Accept:</code></strong>（HTTP のやり取り）: <code>Accept: text/html</code> は、「こういう種類の答えがほしい」という希望です。</li>
+<li><strong><code>Cookie:</code></strong>（HTTP のやり取り）: <code>Cookie: session=AbC123...</code> は、ブラウザーが覚えていたクッキー（サイトから預かった札）を、サーバーに見せる見出しです。ログインの状態は、この札でサーバーに伝わります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <table>
 <thead>
 <tr>
@@ -1339,6 +1369,18 @@ li, tr { page-break-inside: avoid; }
 <span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;ja&quot;</span><span class="p">&gt;</span> ...（ページの中身）
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>HTTP/1.1 200 OK</code></strong>（HTTP のやり取り）: <code>HTTP/1.1 200 OK</code> は、サーバーが返す答え（レスポンス）の 1 行目です。<code>200</code> は状態コードで「うまくいった」という意味です（404 は「無い」、500 は「サーバーの中で失敗」）。</li>
+<li><strong><code>Content-Type:</code></strong>（HTTP のやり取り）: <code>Content-Type: text/html; charset=utf-8</code> は、「中身の種類と、文字の符号」です。ブラウザーは、これを見て HTML として表示します。</li>
+<li><strong><code>Content-Length:</code></strong>（HTTP のやり取り）: <code>Content-Length: 5120</code> は、中身の大きさ（バイト）です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p>1行目の <code>200 OK</code> がステータスコード（5.1 の表）、空の行より上が<strong>ヘッダー</strong>（付け札）、下が<strong>ボディ</strong>（中身）です。</p>
 <p><strong>ブラウザで本物を見る方法:</strong> Edge か Chrome で <code>F12</code> キーを押し、「ネットワーク」（Network）のタブを開いてから、ページを読み直します。並んだ行の1つをクリックすると、本物のリクエストとレスポンスのヘッダーを見られます。トラブルのときに、ステータスコードやクッキーを確かめるのに使います（06 トラブルシューティング）。</p>
 <p>PowerShell からも、HTTP のお願いを出せます。</p>
@@ -1353,6 +1395,7 @@ li, tr { page-break-inside: avoid; }
 <ul>
 <li><strong><code>Invoke-WebRequest</code></strong>（PowerShell）: URL にリクエストを送って、答え（状態コード・本文）を受け取るコマンド。<code>(Invoke-WebRequest http://…/health -UseBasicParsing).StatusCode</code> で、状態コード（200 など）だけを取り出せます。</li>
 <li><strong><code>Invoke-WebRequest -UseBasicParsing</code></strong>（PowerShell）: 答えの HTML を、Internet Explorer の部品を使わずに読むオプション。Windows Server で、IE の初めの設定が終わっていなくても動くように付けます。</li>
+<li><strong><code>.StatusCode</code></strong>（PowerShell）: <code>Invoke-WebRequest</code> の結果の <code>.StatusCode</code> は、HTTP の状態コード（<code>200</code> など）です。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1468,6 +1511,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>BY</code></strong>（SQL）: <code>ORDER BY</code>（並べる）・<code>GROUP BY</code>（まとめる）の一部で、「〜で」という意味です。</li>
 <li><strong><code>DESC</code></strong>（SQL）: <code>ORDER BY 列 DESC</code> で、大きい順（新しい順）に並べます（小さい順は <code>ASC</code>）。</li>
 <li><strong><code>LIMIT</code></strong>（SQL）: <code>LIMIT 件数</code> で、取り出す行の数の上限を決める書き方。<code>ORDER BY … LIMIT 20</code> は「並べて、先頭の 20 件だけ」。</li>
+<li><strong><code>'文字'</code></strong>（SQL）: SQL では、文字の値を <code>'…'</code>（シングルクォート）で囲みます（<code>'2026-11-05'</code>・<code>'山田'</code>）。<code>"…"</code>（ダブルクォート）は表や列の名前に使う物なので、文字の値には使いません。中に <code>'</code> を入れる時は <code>''</code> と 2 つ書きます。</li>
+<li><strong><code>--</code></strong>（SQL）: SQL では、<code>--</code> から行の終わりまでがコメントです。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->

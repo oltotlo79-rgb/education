@@ -383,6 +383,11 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>psql</code></strong>（psql）: PostgreSQL に、コマンドでつないで SQL を打つ道具。<code>psql -h 127.0.0.1 -U postgres -d データベース名</code> でつなぎます（<code>-h</code> は相手の住所、<code>-U</code> は利用者の名前、<code>-d</code> はデータベース）。<code>\q</code> で抜けます。</li>
+<li><strong><code>psql -h</code></strong>（psql）: <code>-h 127.0.0.1</code> は、つなぐ先のサーバーの場所（ホスト）です。<code>127.0.0.1</code> は「このパソコン自身」です。</li>
+<li><strong><code>psql -p</code></strong>（psql）: <code>-p 5432</code> は、つなぐ先のポート番号です。PostgreSQL は、ふつう 5432 番で待ち受けます。</li>
+<li><strong><code>psql -U</code></strong>（psql）: <code>-U postgres</code> は、どの利用者（ロール）としてつなぐかです。パスワードを聞かれたら、その利用者のパスワードを入れます。</li>
+<li><strong><code>psql -d</code></strong>（psql）: <code>-d webapp_stg</code> は、どのデータベースにつなぐかです。</li>
+<li><strong><code>+=</code></strong>（PowerShell）: <code>$x += 1</code> は <code>$x = $x + 1</code> の短い形です。並びに <code>$names += "山田"</code> と書くと、後ろに 1 つ足した並びになります。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -518,6 +523,18 @@ li, tr { page-break-inside: avoid; }
 <span class="n">psql</span> <span class="n">-h</span> <span class="n">127</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">1</span> <span class="n">-U</span> <span class="n">webapp_stg_app</span> <span class="n">-d</span> <span class="n">webapp_stg</span> <span class="n">-c</span> <span class="s2">&quot;SELECT current_user, current_database(), now();&quot;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>psql -c</code></strong>（psql）: <code>-c "SELECT …;"</code> は、つないで、その SQL を 1 回だけ動かして、すぐに終わる指定です。確かめを 1 行で済ませる時に使います。</li>
+<li><strong><code>current_database()</code></strong>（SQL）: PostgreSQL の <code>current_database()</code> は、今つないでいるデータベースの名前を返します。<code>current_user</code> は、今の利用者（ロール）の名前です。</li>
+<li><strong><code>now()</code></strong>（SQL）: PostgreSQL の <code>now()</code> は、今の日時を返す関数です。<code>DEFAULT now()</code> で、行を作った日時を自動で入れられます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <blockquote>
 <p><strong>日本語を含む SQL は、<code>-c</code> で渡さない方が安全です。</strong> 試した環境では、<code>-c</code> に日本語を書くと、文字コードの食い違いで <code>invalid byte sequence for encoding "UTF8"</code> というエラーになりました。日本語を含む SQL は、psql の中で打つか、<strong>UTF-8 で保存した <code>.sql</code> のファイル</strong>を <code>-f</code> で渡します（<code>psql ... -f D:\work\check.sql</code>）。</p>
 </blockquote>
@@ -551,6 +568,8 @@ li, tr { page-break-inside: avoid; }
 <li><strong><code>DATABASE</code></strong>（SQL）: <code>CREATE DATABASE 名前</code> で、データベースを作ります。</li>
 <li><strong><code>ENCODING</code></strong>（SQL）: <code>ENCODING 'UTF8'</code> で、データベースの文字コードを UTF-8 にします（日本語を正しく入れるため）。</li>
 <li><strong><code>TEMPLATE</code></strong>（SQL）: <code>TEMPLATE template0</code> で、何も手を加えていない元の形から、データベースを作ります（文字コードを指定する時に必要）。</li>
+<li><strong><code>\c</code></strong>（psql）: psql の <code>\c practice</code> は、つなぐデータベースを <code>practice</code> に切りかえる命令です。</li>
+<li><strong><code>;</code></strong>（SQL）: SQL の <code>;</code> は、1 つの命令（文）の終わりの印です。psql では、<code>;</code> を打つまで命令が送られません（<code>;</code> を忘れると、続きを待つ <code>practice-#</code> の表示になります）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -690,6 +709,16 @@ li, tr { page-break-inside: avoid; }
 <div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">departments</span><span class="p">;</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>SELECT *</code></strong>（SQL）: SQL の <code>SELECT *</code> の <code>*</code> は、「全部の列」という意味です。試しに中身を見る時は便利ですが、プログラムでは、使う列の名前を並べて書くほうが安全です（あとで列が増えても、読む物が変わりません）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> id |    name
 ----+------------
   1 | 設計部
@@ -794,6 +823,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>LIKE</code></strong>（SQL）: SQL のあいまい検索。<code>WHERE title LIKE '%買い物%'</code> は、<code>買い物</code> を含む行です（<code>%</code> は「何文字でも」、<code>_</code> は「どれか 1 文字」）。</li>
+<li><strong><code>%</code></strong>（SQL）: SQL の <code>LIKE '%買い物%'</code> の <code>%</code> は、「何文字でも、何でも合う」という印です（ワイルドカード）。<code>'買い物%'</code> なら「買い物で始まる」。<code>_</code> は「何でも 1 文字」です。<code>%</code> や <code>_</code> そのものを探したい時は、<code>ESCAPE</code> を使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -842,6 +872,8 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>GROUP</code></strong>（SQL）: <code>GROUP BY 列</code> で、同じ値の行をまとめて、まとめごとに数える・足す時の書き方。<code>SELECT user_id, COUNT(*) FROM notes GROUP BY user_id</code> は、人ごとのノートの数です。</li>
+<li><strong><code>COUNT(*)</code></strong>（SQL）: SQL の <code>COUNT(*)</code> は、行の数を数えます。<code>GROUP BY status</code> と組み合わせると、<code>status</code> ごとの件数になります。</li>
+<li><strong><code>count()</code></strong>（SQL）: SQL の <code>count(*)</code> は、行の数を数える関数です（<code>COUNT(*)</code> と同じで、大文字・小文字はどちらでもかまいません）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -961,6 +993,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>JOIN</code></strong>（SQL）: 2 つの表を、条件で横につないで取り出す書き方。<code>FROM notes JOIN users ON users.id = notes.user_id</code> は、ノートと、その持ち主を 1 行に並べます。</li>
+<li><strong><code>表.列</code></strong>（SQL）: SQL の <code>n.title</code>・<code>users.email</code> のように <code>表.列</code> と書くと、「どの表の列か」をはっきりさせられます。いくつもの表をつなぐ（<code>JOIN</code>）時は、同じ名前の列（<code>id</code> など）があるので、こう書きます。<code>notes AS n</code> のように、表に短い別名を付けて使います。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1311,6 +1344,7 @@ DETAIL:  Key (id)=(1) is still referenced from table &quot;employees&quot;.
 <li><strong><code>ALTER</code></strong>（SQL）: <code>ALTER TABLE 表 …</code> で、もうある表の形を変える SQL の命令（列を足す・名前を変える など）。</li>
 <li><strong><code>PRIVILEGES</code></strong>（SQL）: <code>ALTER DEFAULT PRIVILEGES … GRANT SELECT ON TABLES TO …</code> は、「これから作られる表にも、自動で同じ権限を付ける」という決まりを作る命令です。これが無いと、あとで足した表は読めません。</li>
 <li><strong><code>FOR</code></strong>（SQL）: <code>SELECT … FOR UPDATE</code> は、読んだ行に鍵をかける書き方です。同じ行を、別の人が同時に変えようとしても、こちらのトランザクションが終わるまで待たせるので、「2 人が同時に承認して 2 回進む」ことを防げます。</li>
+<li><strong><code>\password</code></strong>（psql）: psql の <code>\password 名前</code> は、その利用者（ロール）のパスワードを変える命令です。打つとパスワードを 2 回聞かれ、画面には表示されません（コマンドの履歴にも残りません）。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1459,6 +1493,9 @@ host    all             all             ::1/128                 scram-sha-256
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>pg_dump</code></strong>（psql）: PostgreSQL のデータベースの中身を、まるごと 1 つのファイルに書き出す（控えを取る）コマンド。<code>-Fc</code> はあとで <code>pg_restore</code> で戻せる形、<code>-f</code> は書き出すファイルの場所。動かしている途中でも、ある瞬間の中身がそろった形で取れます。</li>
+<li><strong><code>pg_dump -h</code></strong>（psql）: <code>-h 127.0.0.1</code> は、バックアップを取るサーバーの場所です。</li>
+<li><strong><code>pg_dump -U</code></strong>（psql）: <code>-U postgres</code> は、どの利用者としてつないで、バックアップを取るかです。</li>
+<li><strong><code>pg_dump -Fc</code></strong>（psql）: <code>-Fc</code> は、「カスタム形式」（PostgreSQL 用に圧縮した形）でバックアップを書き出す指定です。この形は <code>pg_restore</code> で戻し、戻す時に表を選ぶこともできます。<code>-f ファイル</code> で書き出す先を決めます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1510,6 +1547,10 @@ host    all             all             ::1/128                 scram-sha-256
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>pg_restore</code></strong>（psql）: <code>pg_dump -Fc</code> で取った控えを、データベースに戻すコマンド。<code>-d</code> で戻す先のデータベースを決めます。戻す練習は、本物とは別の、空のデータベースに対してします。</li>
+<li><strong><code>pg_restore -h</code></strong>（psql）: <code>-h 127.0.0.1</code> は、戻す先のサーバーの場所です。</li>
+<li><strong><code>pg_restore -U</code></strong>（psql）: <code>-U postgres</code> は、どの利用者としてつないで戻すかです。</li>
+<li><strong><code>pg_restore -d</code></strong>（psql）: <code>-d practice_restore</code> は、戻す先のデータベースです（先に作っておきます）。</li>
+<li><strong><code>pg_restore --list</code></strong>（psql）: <code>--list</code> は、戻さずに、バックアップの中身（表などの一覧）だけを表示します。バックアップが読めるかの確かめにも使えます。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1546,6 +1587,9 @@ host    all             all             ::1/128                 scram-sha-256
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
 <li><strong><code>SQL</code></strong>（SQL）: ここでは SQL の命令ではなく、<code>AS SQL</code> で列に付けた名前（見出し）です。<code>left(query, 60) AS SQL</code> は「動いている SQL の先頭 60 文字を、SQL という見出しで出す」。</li>
+<li><strong><code>pg_size_pretty()</code></strong>（SQL）: PostgreSQL の <code>pg_size_pretty(数)</code> は、バイトの数を、<code>12 MB</code> のような読みやすい形にします。</li>
+<li><strong><code>pg_database_size()</code></strong>（SQL）: PostgreSQL の <code>pg_database_size(名前)</code> は、データベースの大きさ（バイト）を返します。</li>
+<li><strong><code>pg_total_relation_size()</code></strong>（SQL）: PostgreSQL の <code>pg_total_relation_size(表)</code> は、表の大きさ（索引なども合わせたバイト）を返します。</li>
 </ul>
 </blockquote>
 <!-- /first-use -->
@@ -1562,6 +1606,16 @@ host    all             all             ::1/128                 scram-sha-256
 <span class="c1">-- つないでいるのを切る（アプリのつなぎが切れることがあるので、最後の手段）</span>
 <span class="k">SELECT</span><span class="w"> </span><span class="n">pg_terminate_backend</span><span class="p">(</span><span class="mi">12345</span><span class="p">);</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pg_terminate_backend()</code></strong>（SQL）: PostgreSQL の <code>pg_terminate_backend(番号)</code> は、その番号（PID）のつながりを、強制的に切ります。止まらない問い合わせを止める時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong>用語:</strong> VACUUM（バキューム：消したり直したりした行の、使われなくなった場所を片付ける PostgreSQL の仕組み。ふつうは自動（autovacuum）で動くので、自分で打つ必要はない）</p>
