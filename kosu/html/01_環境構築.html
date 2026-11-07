@@ -1,0 +1,2116 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>01_環境構築</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/01_%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><h1 id="第1章-環境構築--自分のpcで開発できるようにする完全版">第1章: 環境構築 ― 自分のPCで開発できるようにする（完全版）</h1>
+<blockquote>
+<p>この章では、引き継いだ「業務工数（こうすう）システム」を、<strong>あなたのWindows PCの中だけで動かせる状態</strong>（＝開発環境）にするまでを、<strong>1コマンドずつ・1行ずつ</strong> 手取り足取り進めます。</p>
+<p>プログラミングがまったく初めてでも大丈夫です。「何を入れて」「何を打って」「どう表示されれば成功で」「失敗したらどう直すか」を、<strong>実際の本アプリの設定ファイル（<code>requirements.txt</code> / <code>package.json</code> / <code>settings.py</code> / <code>.env.production</code>）の中身を本物のまま読み解きながら</strong> 進めます。</p>
+<p>この章を最後までやり切ると、あなたのPCで <code>http://localhost:3000</code>（画面）と <code>http://localhost:8000</code>（裏方のサーバー）が動き、ログイン画面が表示されます。<strong>これがゴールです。</strong></p>
+<p>長い章ですが、<strong>辞書のように使えること</strong> を目指しています。途中で詰まったら、該当ステップとトラブルシューティング表に戻ってください。</p>
+</blockquote>
+<h3 id="この章で学ぶこと">この章で学ぶこと</h3>
+<ul>
+<li><strong>開発環境とは何か</strong> — 「サーバー」「ローカル」「フロントエンド／バックエンド」という言葉の意味</li>
+<li><strong>道具をそろえる</strong> — VSCode（エディタ）／Git／Node.js v22／Python 3.12／PostgreSQL を1つずつインストールし、<code>--version</code> で確認</li>
+<li><strong>ソースコードを手元に持ってくる</strong> — <code>git clone</code> の意味と実行</li>
+<li><strong>Python側（バックエンド）の準備</strong> — <code>venv</code>（仮想環境）の作成・有効化、<code>pip install -r requirements.txt</code>、<code>requirements.txt</code> の全パッケージが何者か</li>
+<li><strong><code>.env</code> ファイルを作る</strong> — <code>SECRET_KEY</code> の生成、<code>DEBUG</code>、データベース接続情報。<code>settings.py</code> がこれをどう読むか1行ずつ</li>
+<li><strong>データベースの準備</strong> — <code>migrate</code>（テーブル作成）、<code>createsuperuser</code>（管理者作成）</li>
+<li><strong>サーバーを起動する</strong> — <code>runserver</code>、<code>qcluster</code>（非同期処理）</li>
+<li><strong>React側（フロントエンド）の準備</strong> — <code>npm install</code>、<code>frontend/.env</code> と <code>REACT_APP_API_BASE_URL</code>、<code>npm start</code></li>
+<li><strong>本番ビルド</strong> — <code>npm run build</code> が何を作るか</li>
+<li><strong>豊富なトラブルシューティング</strong> — つまずきポイントを症状別に網羅</li>
+</ul>
+<h2 id="目次">目次</h2>
+<ol start="0">
+<li><a href="#0-前提知識開発環境とは何か">前提知識：開発環境とは何か</a></li>
+<li><a href="#1-全体像これから何を入れて何を動かすのか">全体像：これから何を入れて、何を動かすのか</a></li>
+<li><a href="#2-道具をそろえるvscodeエディタ">道具をそろえる①：VSCode（エディタ）</a></li>
+<li><a href="#3-道具をそろえるgit">道具をそろえる②：Git</a></li>
+<li><a href="#4-道具をそろえるpython-312">道具をそろえる③：Python 3.12</a></li>
+<li><a href="#5-道具をそろえるnodejs-v22">道具をそろえる④：Node.js v22</a></li>
+<li><a href="#6-道具をそろえるpostgresql">道具をそろえる⑤：PostgreSQL</a></li>
+<li><a href="#7-ソースコードを手元に持ってくるgit-clone">ソースコードを手元に持ってくる（git clone）</a></li>
+<li><a href="#8-バックエンド準備仮想環境venvを作る">バックエンド準備①：仮想環境（venv）を作る</a></li>
+<li><a href="#9-バックエンド準備requirementstxt-全解説とインストール">バックエンド準備②：requirements.txt 全解説とインストール</a></li>
+<li><a href="#10-バックエンド準備env-を作るsecret_key生成含む">バックエンド準備③：.env を作る（SECRET_KEY生成含む）</a></li>
+<li><a href="#11-settingspy-を1行ずつ読むenvとの対応">settings.py を1行ずつ読む（.envとの対応）</a></li>
+<li><a href="#12-バックエンド準備データベースを作って-migrate">バックエンド準備④：データベースを作って migrate</a></li>
+<li><a href="#13-バックエンド準備管理者を作るcreatesuperuser">バックエンド準備⑤：管理者を作る（createsuperuser）</a></li>
+<li><a href="#14-バックエンドを起動するrunserver">バックエンドを起動する（runserver）</a></li>
+<li><a href="#15-非同期ワーカーを起動するqcluster">非同期ワーカーを起動する（qcluster）</a></li>
+<li><a href="#16-フロントエンド準備packagejson-全解説と-npm-install">フロントエンド準備①：package.json 全解説と npm install</a></li>
+<li><a href="#17-フロントエンド準備frontendenv-と-react_app_api_base_url">フロントエンド準備②：frontend/.env と REACT_APP_API_BASE_URL</a></li>
+<li><a href="#18-フロントエンドを起動するnpm-start">フロントエンドを起動する（npm start）</a></li>
+<li><a href="#19-本番ビルドnpm-run-build">本番ビルド（npm run build）</a></li>
+<li><a href="#20-毎日の起動手順まとめチートシート">毎日の起動手順まとめ（チートシート）</a></li>
+<li><a href="#21-トラブルシューティング">トラブルシューティング</a></li>
+<li><a href="#22-演習問題">演習問題</a></li>
+<li><a href="#23-この章のまとめ">この章のまとめ</a></li>
+</ol>
+<hr>
+<h2 id="0-前提知識開発環境とは何か">0. 前提知識：開発環境とは何か</h2>
+<p>コマンドを打ち始める前に、これから自分が何をしようとしているのかを言葉で押さえておきましょう。ここが分かると、後で出てくる用語が「ただの呪文」ではなくなります。</p>
+<h3 id="01-開発環境とは">0.1 「開発環境」とは</h3>
+<blockquote>
+<p><strong>開発環境（かいはつかんきょう）とは？</strong>
+あなたのPCの中に、アプリを「作ったり・直したり・試したり」できる状態を整えること。料理でいえば「キッチンに、まな板・包丁・コンロ・冷蔵庫を全部そろえた状態」です。この章の作業は、まさにそのキッチン作りです。</p>
+</blockquote>
+<p>本アプリを動かすには、大きく分けて <strong>2つのプログラム</strong> を自分のPCで同時に走らせます。</p>
+<table>
+<thead>
+<tr>
+<th>呼び名</th>
+<th>担当</th>
+<th>使う技術</th>
+<th>起動URL（あなたのPC内）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>フロントエンド</strong></td>
+<td>画面（見た目・操作）</td>
+<td>React / TypeScript / Node.js</td>
+<td><code>http://localhost:3000</code></td>
+</tr>
+<tr>
+<td><strong>バックエンド</strong></td>
+<td>裏方（データ・計算・保存）</td>
+<td>Python / Django / PostgreSQL</td>
+<td><code>http://localhost:8000</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>フロントエンド（front-end）とは？</strong> ユーザーが直接見て触る「お店の表（フロント）」の部分。ボタン・入力欄・表など、画面のすべて。本アプリでは React で作られています。</p>
+<p><strong>バックエンド（back-end）とは？</strong> ユーザーには見えない「お店の裏（バック）」の部分。データの保存・取り出し・計算をします。本アプリでは Python の Django で作られています。</p>
+<p>たとえ話：レストランでいうと、<strong>フロントエンド＝ホール（お客さんが座る席・メニュー）</strong>、<strong>バックエンド＝厨房（料理を作る場所）</strong>、<strong>データベース＝食材倉庫</strong>。お客さん（あなた）が画面で「工数を保存」と注文すると、ホール（React）が厨房（Django）に伝え、厨房が倉庫（PostgreSQL）に食材（データ）を出し入れします。</p>
+</blockquote>
+<h3 id="02-ローカルとサーバーlocalhost">0.2 「ローカル」と「サーバー」「localhost」</h3>
+<blockquote>
+<p><strong>ローカル（local）とは？</strong> 「あなたのPCの中」という意味。<code>localhost</code>（ローカルホスト）は「この自分のPC自身」を指す特別な住所（アドレス）です。<code>http://localhost:3000</code> は「自分のPCの中の3000番の窓口」という意味になります。</p>
+<p><strong>サーバー（server）とは？</strong> 「要求（リクエスト）を受けて、応答（レスポンス）を返すプログラム」のこと。本アプリの Django も React も、起動すると「サーバー」として動き、ブラウザからの要求に画面やデータを返します。<strong>サーバー＝特別な高性能マシン、とは限りません。</strong> あなたのPC上で動く1つのプログラムも立派なサーバーです。</p>
+<p><strong>ポート番号（port number）とは？</strong> 1台のPCの中で、複数のプログラムが同時に通信できるように割り振られた「窓口番号」。<code>3000</code> 番はReact、<code>8000</code> 番はDjango、<code>5432</code> 番はPostgreSQL……というように、プログラムごとに別々の番号を使います。郵便でいう「○○ビルの3階」「8階」のような部屋番号です。</p>
+</blockquote>
+<h3 id="03-この章のゴール先に完成形を見る">0.3 この章のゴール（先に完成形を見る）</h3>
+<p>最終的に、あなたは次の状態を作ります。</p>
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 340" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-01-1-475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="10" y="10" width="700" height="320" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="30" y="36" font-size="14" fill="#334155" text-anchor="start" font-weight="800">あなたのパソコン</text>
+<rect x="30" y="52" width="320" height="66" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="190" y="79" font-size="13" fill="#047857" text-anchor="middle" font-weight="800">ターミナル① Django（バックエンド）</text>
+<text x="190" y="101" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">http://localhost:8000</text>
+<rect x="30" y="152" width="320" height="66" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+<text x="190" y="179" font-size="13" fill="#6d28d9" text-anchor="middle" font-weight="800">ターミナル② django-q（裏で動く係）</text>
+<text x="190" y="201" font-size="12" fill="#0f172a" text-anchor="middle">時間のかかる仕事（バックアップなど）</text>
+<rect x="30" y="252" width="320" height="66" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="190" y="279" font-size="13" fill="#1e40af" text-anchor="middle" font-weight="800">ターミナル③ React（フロントエンド）</text>
+<text x="190" y="301" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">http://localhost:3000</text>
+<rect x="450" y="130" width="240" height="110" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+<text x="570" y="170" font-size="14" fill="#c2410c" text-anchor="middle" font-weight="800">ブラウザ</text>
+<text x="570" y="192" font-size="12" fill="#0f172a" text-anchor="middle">localhost:3000 を開く</text>
+<text x="570" y="211" font-size="12" fill="#0f172a" text-anchor="middle">⇒ ログイン画面が出る</text>
+<line x1="446" y1="150" x2="354" y2="96" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-01-1-475569)"/>
+<text x="456" y="120" font-size="11" fill="#475569" text-anchor="start">/api/… に頼む</text>
+<line x1="446" y1="222" x2="354" y2="276" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-01-1-475569)"/>
+<text x="456" y="258" font-size="11" fill="#475569" text-anchor="start">画面の部品をもらう</text>
+<line x1="190" y1="122" x2="190" y2="148" stroke="#475569" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar-kosu-01-1-475569)" marker-start="url(#ar-kosu-01-1-475569)"/>
+<text x="202" y="140" font-size="11" fill="#475569" text-anchor="start">仕事を渡す（データベース経由）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図1-1: 開発の時のパソコンの中。ターミナルを 3 つ開いて、それぞれでサーバーを動かし、ブラウザで localhost:3000 を開く</div>
+</div>
+
+<blockquote>
+<p><strong>ターミナル（terminal）とは？</strong> 文字でコマンドを打ってPCに命令する黒い画面（または白い画面）のこと。「コマンドプロンプト」「PowerShell（パワーシェル）」も同じ仲間です。本章では VSCode 内蔵のターミナルを使います。マウスでアイコンをクリックする代わりに、<strong>文字で命令を出す道具</strong> と思ってください。</p>
+<p>⚠️ <strong>この章を進める順番は飛ばさないでください。</strong> 「道具をそろえる→コードを取得→裏方を準備→画面を準備」という順番には意味があります。たとえばPythonを入れる前に <code>pip install</code> を打っても動きません。上から順にやれば必ずゴールにたどり着けるように作ってあります。</p>
+</blockquote>
+<hr>
+<h2 id="1-全体像これから何を入れて何を動かすのか">1. 全体像：これから何を入れて、何を動かすのか</h2>
+<p>まず、これから <strong>インストールする5つの道具</strong> を一覧で押さえましょう。それぞれ「なぜ必要か」も書きます。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>道具</th>
+<th>役割（家でたとえると）</th>
+<th>なぜ必要か</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>VSCode</strong></td>
+<td>作業机・道具箱</td>
+<td>コードを読み書きし、ターミナルも開くため</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Git</strong></td>
+<td>写真の履歴管理＋取り寄せ機</td>
+<td>ソースコードをダウンロードし、変更履歴を管理するため</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Python 3.12</strong></td>
+<td>厨房の調理器具一式（裏方の言語）</td>
+<td>Django（バックエンド）を動かすため</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Node.js v22</strong></td>
+<td>別の調理器具一式（画面側の言語）</td>
+<td>React（フロントエンド）を動かすため</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>PostgreSQL</strong></td>
+<td>食材倉庫（データベース本体）</td>
+<td>工数・人員などのデータを保存するため</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>なぜ？ Python と Node.js の両方が要るの？</strong>
+本アプリは「画面（React=Node.js製）」と「裏方（Django=Python製）」という、<strong>2つの異なる言語で書かれた2つのプログラムの合体</strong> だからです。片方だけでは動きません。これは珍しいことではなく、現代の多くのWebアプリがこの「フロント＝JavaScript系、バック＝Python/Java/PHP等」という二刀流構成です。</p>
+</blockquote>
+<h3 id="11-バージョンversionをそろえる重要性">1.1 バージョン（version）をそろえる重要性</h3>
+<blockquote>
+<p><strong>バージョン（version）とは？</strong> ソフトの「版」を表す番号。<code>Python 3.12</code>、<code>Node.js v22</code> のように書きます。新しいほど機能が増えますが、<strong>指定とずれると動かない</strong> ことがあります。</p>
+</blockquote>
+<p>本アプリで使うバージョンは次の通りです。<strong>できるだけこれに合わせてください。</strong></p>
+<ul>
+<li><strong>Python … 3.12 系</strong>（本番へ出す自動の仕組み＝GitHub Actions の設定ファイル <code>.github/workflows/master_hozen-kosu-react.yml</code> に <code>python-version: "3.12"</code> とあります）</li>
+<li><strong>Node.js … v22 系をおすすめ</strong>（<code>frontend/</code> フォルダに <code>node-v22.17.1-linux-x64.tar.xz</code> という Node.js v22.17.1 の Linux 用の一式が置いてあります。なお、GitHub Actions の画面のビルドは <code>node-version: "20"</code>、つまり v20 で行っています。v20 でも動きます）</li>
+<li><strong>PostgreSQL … 任意の新しめの版</strong>（14以降を推奨）</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>バージョン違いは初心者最大の落とし穴です。</strong> 特に Python は、3.12 と違う版（たとえば 3.8 のような古い版）だと、<code>pip install -r requirements.txt</code> で部品が入らないことがあります。Node.js は v20 か v22 を使い、それより古い v18 以前は使わないでください（v18 は 2025 年 4 月で手入れ（サポート）が終わっています）。迷ったら「v22」を選びます（§5で手順を詳述）。</p>
+</blockquote>
+<hr>
+<h2 id="2-道具をそろえるvscodeエディタ">2. 道具をそろえる①：VSCode（エディタ）</h2>
+<blockquote>
+<p><strong>VSCode（ブイエス・コード）とは？</strong> Visual Studio Code（ビジュアル・スタジオ・コード）の略。Microsoft 製の無料の <strong>コードエディタ</strong>（コードを読み書きする高機能なメモ帳）。世界で最も使われている開発用エディタで、ターミナルも内蔵しています。本章のコマンドはすべて、この中のターミナルで打ちます。</p>
+</blockquote>
+<h3 id="21-インストール手順">2.1 インストール手順</h3>
+<ol>
+<li>ブラウザで <strong><code>https://code.visualstudio.com/</code></strong> を開く。</li>
+<li>大きな青いボタン <strong>「Download for Windows」</strong> をクリック。</li>
+<li>ダウンロードされた <code>VSCodeUserSetup-x64-x.x.x.exe</code> をダブルクリック。</li>
+<li>インストーラの指示に従って進む。途中の <strong>「追加タスクの選択」</strong> 画面では、次の2つに <strong>チェックを入れる</strong> と便利です。
+   - ☑ 「PATH への追加」（これで <code>code</code> コマンドが使えるようになる）
+   - ☑ 「エクスプローラーのファイル／ディレクトリのコンテキストメニューに『Code で開く』を追加」</li>
+</ol>
+<blockquote>
+<p><strong>PATH（パス）とは？</strong> 「コマンドを打ったとき、PCがプログラムを探しに行く場所のリスト」。ここに登録されていないと、<code>python</code> や <code>git</code> と打っても「そんなコマンド知らない」と言われます。インストーラの「PATH に追加」にチェックを入れると、自動で登録してくれます。<strong>迷ったらチェックを入れる、が正解です。</strong></p>
+</blockquote>
+<h3 id="22-日本語化任意おすすめ">2.2 日本語化（任意・おすすめ）</h3>
+<p>VSCode は最初は英語です。日本語にしたい場合：</p>
+<ol>
+<li>VSCode を起動し、左端の四角が4つ並んだアイコン（<strong>拡張機能</strong>）をクリック。</li>
+<li>検索欄に <strong><code>Japanese Language Pack</code></strong> と入力。</li>
+<li>「Japanese Language Pack for Visual Studio Code」の <strong>Install</strong> を押す。</li>
+<li>右下に「再起動して言語を変更しますか？」と出たら <strong>Restart</strong>。</li>
+</ol>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> VSCode のメニューが「ファイル」「編集」「表示」…と日本語になります。</p>
+</blockquote>
+<h3 id="23-内蔵ターミナルの開き方最重要">2.3 内蔵ターミナルの開き方（最重要）</h3>
+<p>本章で何度も使うので、覚えてください。</p>
+<ul>
+<li>メニューの <strong>「ターミナル」→「新しいターミナル」</strong></li>
+<li>または ショートカット <strong><code>Ctrl + Shift + @</code></strong>（半角・全角キーの近くにある記号）</li>
+</ul>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> VSCode の下半分に黒っぽい領域が開き、<code>PS C:\...&gt;</code> のような文字（プロンプト）が出ます。ここに文字を打って <code>Enter</code> でコマンドを実行します。</p>
+<p><strong>用語: プロンプト（prompt）</strong> … ターミナルで「ここに入力してください」と待っている記号や行のこと。Windows の PowerShell では <code>PS C:\Users\あなた&gt;</code> のように表示されます。本書では入力例から <code>PS C:\...&gt;</code> の部分を省略し、<strong>打つコマンドだけ</strong> を書きます。</p>
+</blockquote>
+<hr>
+<h2 id="3-道具をそろえるgit">3. 道具をそろえる②：Git</h2>
+<blockquote>
+<p><strong>Git（ギット）とは？</strong> ソースコードの <strong>変更履歴を記録・管理</strong> する道具。「いつ・誰が・どこを・どう変えたか」を全部覚えてくれる、超高機能なセーブ機能です。さらに、GitHub などに置かれたコードを <strong>手元にダウンロード（clone）</strong> する役目も果たします。Git の詳しい使い方は次章「02_Git_GitHub.md」で扱います。この章では「インストールして、コードを1回ダウンロードできれば十分」です。</p>
+</blockquote>
+<h3 id="31-インストール手順">3.1 インストール手順</h3>
+<ol>
+<li>ブラウザで <strong><code>https://git-scm.com/download/win</code></strong> を開く。</li>
+<li>自動でダウンロードが始まる（始まらなければ「64-bit Git for Windows Setup」をクリック）。</li>
+<li><code>Git-x.xx.x-64-bit.exe</code> をダブルクリック。</li>
+<li>インストーラは設定項目が多いですが、<strong>基本はすべて既定（デフォルト）のまま「Next」を連打でOK</strong> です。初心者は迷わず既定で進めてください。</li>
+<li>最後に「Install」→「Finish」。</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>VSCode を開いたままGitをインストールした場合は、VSCode を一度閉じて開き直してください。</strong> そうしないと、VSCode のターミナルが新しく入った <code>git</code> コマンドを認識しないことがあります（PATH の読み込みは起動時に行われるため）。</p>
+</blockquote>
+<h3 id="32-インストール確認">3.2 インストール確認</h3>
+<p>VSCode のターミナルを開き、次を打って <code>Enter</code>。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> インストールされた Git の版を表示します。「ちゃんと入ったか」の確認です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># gitのバージョン（版番号）を表示する</span>
+<span class="n">git</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git</code></strong>（Git）: ファイルの変更の記録を残す道具（Git）の本体のコマンド。<code>git --version</code> で版を確かめられます。<code>git status</code>・<code>git add</code>・<code>git commit</code> のように、後ろに「何をするか」を付けて使います。</li>
+<li><strong><code>git --version</code></strong>（Git）: <code>git --version</code> は、入っている Git の版を表示します。</li>
+<li><strong><code>#</code></strong>（PowerShell）: <code>#</code> から行の終わりまでは「コメント」（人が読むためのメモ）で、PowerShell は無視します。コマンドの横に、何をするかを日本語で書いておけます。コピーしてそのまま貼り付けても、問題ありません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git version 2.45.2.windows.1
+</code></pre></div></div>
+
+<p>（数字は違ってかまいません。<code>git version ...</code> と出れば成功です。）</p>
+<p><strong><code>--version</code> とは？</strong> 多くのコマンドに付けられる共通オプションで、「そのプログラムの版を表示して終わる」という意味。<strong>「ちゃんとインストールできたか」を確認する定番の合言葉</strong> です。この章では Git・Python・Node など、入れるたびにこれで確認します。</p>
+<p><strong>▼ こう出たら失敗（未インストール／PATH未登録）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git : 用語 &#39;git&#39; は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。
+</code></pre></div></div>
+
+<p>→ §3.1のインストールをやり直すか、VSCode を再起動してください（§21トラブルシューティング参照）。</p>
+</blockquote>
+<h3 id="33-初回だけ名前とメールを登録">3.3 初回だけ：名前とメールを登録</h3>
+<p>Git は「誰が変更したか」を記録するため、名前とメールアドレスを覚えさせます。<strong>最初の1回だけ</strong> でOKです。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> これから記録する変更の「作者名」と「作者メール」を、このPC全体（<code>--global</code>）に設定します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 作者名を設定（自分の名前に置き換える）</span>
+<span class="n">git</span> <span class="n">config</span> <span class="p">-</span><span class="n">-global</span> <span class="n">user</span><span class="p">.</span><span class="n">name</span> <span class="s2">&quot;Yamada Taro&quot;</span>
+<span class="c"># 作者メールを設定（自分のメールに置き換える）</span>
+<span class="n">git</span> <span class="n">config</span> <span class="p">-</span><span class="n">-global</span> <span class="n">user</span><span class="p">.</span><span class="n">email</span> <span class="s2">&quot;you@example.com&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git config</code></strong>（Git）: Git の設定を見る・変えるコマンド。<code>git config --global user.name "名前"</code> で、記録に残す名前を決めます。<code>--list</code> で、今の設定を一覧で見られます。</li>
+<li><strong><code>git config --global</code></strong>（Git）: <code>--global</code> は、自分（このユーザー）の、全部のリポジトリに効く設定を対象にする指定です。<code>git config --global user.name "名前"</code> のように、最初に 1 回だけ設定します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<ul>
+<li><code>git config</code> … Git の設定を変えるコマンド。</li>
+<li><code>--global</code> … 「このPC全体に共通の設定」という意味（特定のプロジェクトだけでなく全体に効く）。</li>
+<li><code>user.name</code> / <code>user.email</code> … 設定する項目の名前。</li>
+</ul>
+<blockquote>
+<p><strong>▼ 確認:</strong> 次で設定が反映されたか見られます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="n">config</span> <span class="p">-</span><span class="n">-global</span> <span class="n">user</span><span class="p">.</span><span class="n">name</span>    <span class="c"># 設定した名前を表示</span>
+</code></pre></div></div>
+
+<p>あなたが入れた名前が表示されれば成功です。</p>
+</blockquote>
+<hr>
+<h2 id="4-道具をそろえるpython-312">4. 道具をそろえる③：Python 3.12</h2>
+<blockquote>
+<p><strong>Python（パイソン）とは？</strong> 読みやすさを重視したプログラミング言語。本アプリの <strong>バックエンド（裏方）</strong> は、この Python で書かれた <strong>Django（ジャンゴ）</strong> というフレームワークで作られています。</p>
+<p><strong>フレームワーク（framework）とは？</strong> 「アプリの土台・骨組みのセット」。一からすべて書かなくても、よくある機能（データベース接続・URL振り分け・管理画面など）が最初から用意された道具箱です。Django は Python 製の代表的なWebフレームワークです。</p>
+</blockquote>
+<h3 id="41-インストール手順">4.1 インストール手順</h3>
+<ol>
+<li>ブラウザで <strong><code>https://www.python.org/downloads/</code></strong> を開く。</li>
+<li><strong>3.12 系</strong> をダウンロードします。トップの大きなボタンが 3.13 など新しすぎる版になっている場合は、ページを下にスクロールし「Looking for a specific release?」一覧から <strong>Python 3.12.x</strong>（例: 3.12.7）の「Download」→ Windows の「Windows installer (64-bit)」を選びます。</li>
+<li>ダウンロードした <code>python-3.12.x-amd64.exe</code> をダブルクリック。</li>
+<li><strong>ここが最重要です。</strong> インストーラ最初の画面の一番下にある <strong>「Add python.exe to PATH」（PATHに追加）に必ずチェックを入れてください。</strong></li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>「Add python.exe to PATH」のチェックを忘れると、ターミナルで <code>python</code> と打っても動きません。</strong> 初心者が最も多くつまずく箇所です。チェックを入れ忘れてインストールしてしまったら、一度アンインストールして入れ直すのが確実です。</p>
+</blockquote>
+<ol start="5">
+<li>チェックを入れたら <strong>「Install Now」</strong> をクリック。</li>
+<li>完了画面で「Setup was successful」と出たら「Close」。</li>
+</ol>
+<h3 id="42-インストール確認">4.2 インストール確認</h3>
+<p><strong>VSCode を一度閉じて開き直し</strong>（PATH反映のため）、ターミナルで次を打ちます。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> インストールされた Python の版を表示します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Pythonのバージョンを表示</span>
+<span class="n">python</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>python</code></strong>（Python の道具）: Python を動かすコマンド。<code>python -c "…"</code> は、<code>"…"</code> の中の Python のコードを 1 回だけ動かします。</li>
+<li><strong><code>python --version</code></strong>（Python の道具）: 入っている Python の版（バージョン）を表示します。<code>Python 3.12.x</code> のように出ます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Python 3.12.7
+</code></pre></div></div>
+
+<p>（<code>3.12.</code> で始まっていればOK。末尾の数字は違ってかまいません。）</p>
+<p>⚠️ <strong>Windows特有の罠：<code>python</code> と打つと Microsoft Store が開いてしまう場合</strong>
+Windows には「<code>python</code> と打つと Store のインストール画面を開く」というダミー設定が初期から入っていることがあります。本物の Python が <code>Python 3.12.x</code> と表示されず、Store が開く場合は、§21のトラブルシューティングを参照してください（「アプリ実行エイリアス」をオフにします）。</p>
+</blockquote>
+<h3 id="43-pip-の確認">4.3 pip の確認</h3>
+<blockquote>
+<p><strong>pip（ピップ）とは？</strong> Python の <strong>パッケージ（部品ライブラリ）をインストールする道具</strong>。Python本体に付属しています。§9で <code>pip install</code> を使って Django などを一括インストールします。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># pipのバージョンを表示</span>
+<span class="n">pip</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pip</code></strong>（Python の道具）: Python の部品（ライブラリ）を入れたり消したりする道具。<code>pip install 部品の名前</code> で入れます。</li>
+<li><strong><code>pip --version</code></strong>（Python の道具）: pip の版と、どの Python の pip かを表示します。仮想環境に入っていると、表示される場所に <code>venv</code> が入ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>pip 24.0 from C:\...\Python312\lib\site-packages\pip (python 3.12)
+</code></pre></div></div>
+
+<p>末尾に <code>(python 3.12)</code> と出ていれば、3.12 用の pip が使えている証拠です。</p>
+</blockquote>
+<hr>
+<h2 id="5-道具をそろえるnodejs-v22">5. 道具をそろえる④：Node.js v22</h2>
+<blockquote>
+<p><strong>Node.js（ノード・ジェイエス）とは？</strong> 本来ブラウザの中でしか動かなかった JavaScript を、<strong>PC上（ブラウザの外）でも動かせるようにする実行環境</strong>。本アプリの <strong>フロントエンド（React）の開発</strong> には、この Node.js が必須です。React のコードを、ブラウザが分かる形に変換（ビルド）したり、開発用サーバーを動かしたりするのに使います。</p>
+<p><strong>npm（エヌ・ピー・エム）とは？</strong> Node Package Manager の略。Node.js に付属する、<strong>JavaScript のパッケージ（部品）をインストールする道具</strong>。Python の pip にあたります。§16で <code>npm install</code> を使い、React などを一括インストールします。</p>
+</blockquote>
+<h3 id="51-インストール手順v22-を選ぶ">5.1 インストール手順（v22 を選ぶ）</h3>
+<ol>
+<li>ブラウザで <strong><code>https://nodejs.org/</code></strong> を開く。</li>
+<li>2つのボタンが出ます。<strong>「22.x.x LTS」</strong> と書かれた方を選んでください。</li>
+</ol>
+<blockquote>
+<p><strong>LTS（エルティーエス）とは？</strong> Long Term Support（長期サポート）の略。「長く安定して使える、おすすめの安定版」という意味。開発では原則 LTS を選びます。本アプリは v22 系を想定しているので、<strong>「22.x.x LTS」</strong> を選びます。</p>
+</blockquote>
+<ol start="3">
+<li>もしトップに 22 系が見当たらない場合は、ページの「<strong>Other Downloads</strong>」や「<strong>Previous Releases</strong>」から <strong>v22 系</strong>（例: v22.17.1）の「Windows Installer (.msi) 64-bit」を選びます。</li>
+<li>ダウンロードした <code>node-v22.x.x-x64.msi</code> をダブルクリック。</li>
+<li>インストーラは <strong>基本すべて既定のまま「Next」でOK</strong>。「Automatically install the necessary tools...」というチェック項目が出たら、チェックは外したままで問題ありません（Visual Studio Build Tools は本アプリのインストールには必須ではありません）。</li>
+<li>「Install」→「Finish」。</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>すでに別バージョンの Node が入っている人へ:</strong> <code>node --version</code> で <code>v20.</code> で始まる番号が出るなら、そのままでも動きます（GitHub Actions のビルドも v20 です）。<code>v18.</code> 以前が出る場合は、古くて手入れが終わっているので入れ直します。複数バージョンを切り替えたい場合は「nvm-windows」というツールもありますが、初心者はまず <strong>古い方をアンインストールして v22 を入れる</strong> のが簡単です。</p>
+</blockquote>
+<h3 id="52-インストール確認">5.2 インストール確認</h3>
+<p>VSCode を再起動し、ターミナルで2つ打ちます。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> Node.js と npm の版をそれぞれ表示します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Node.jsのバージョンを表示</span>
+<span class="n">node</span> <span class="p">-</span><span class="n">-version</span>
+<span class="c"># npm（部品管理ツール）のバージョンを表示</span>
+<span class="n">npm</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>node</code></strong>（Node.js）: Node.js（パソコンの上で JavaScript を動かす道具）を動かすコマンド。<code>node --version</code> で版を表示し、<code>node ファイル名.js</code> で、そのファイルを動かします。</li>
+<li><strong><code>node --version</code></strong>（Node.js）: <code>node --version</code> は、入っている Node.js の版を表示します。このアプリでは <code>v22.…</code>（おすすめ）か <code>v20.…</code> なら大丈夫です。</li>
+<li><strong><code>npm</code></strong>（Node.js）: Node.js の部品を入れる・動かす道具のコマンド。<code>npm --version</code> で版を確かめ、<code>npm install</code>（部品を入れる）・<code>npm start</code>（開発用のサーバーを動かす）・<code>npm run build</code>（本番用に作る）のように使います。このアプリでは、<code>frontend/</code> フォルダで打ちます。</li>
+<li><strong><code>npm --version</code></strong>（Node.js）: <code>npm --version</code> は、Node.js の部品を入れる道具 npm の版を表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>v22.17.1
+10.9.2
+</code></pre></div></div>
+
+<p><code>node</code> の方が <code>v22.</code> で始まっていれば成功です。<code>npm</code> の数字は版により異なります。</p>
+<p><strong>なぜ？ npm のバージョンは気にしなくていいの？</strong> npm は Node.js に同梱され、Node のバージョンに対応した版が自動で入るためです。<code>node</code> が v22 なら、付属の npm をそのまま使えばOKです。</p>
+</blockquote>
+<hr>
+<h2 id="6-道具をそろえるpostgresql">6. 道具をそろえる⑤：PostgreSQL</h2>
+<blockquote>
+<p><strong>PostgreSQL（ポストグレス／ポストグレスキューエル）とは？</strong> 無料で高性能な <strong>データベース管理システム（DBMS）</strong>。本アプリの工数・人員・チームなどの <strong>データはすべてここに保存</strong> されます。<code>settings.py</code>（§11）でも <code>'ENGINE': 'django.db.backends.postgresql'</code> と指定されており、本アプリは PostgreSQL 専用です。</p>
+<p><strong>データベース（database）とは？</strong> データを整理して保存し、すばやく出し入れできる「巨大で賢い表計算ソフト」のようなもの。Excel の超強力版と思ってください。本アプリでは「工数の表」「人員の表」などが、この中にテーブル（表）として保存されます。</p>
+<p><strong>DBMS（ディービーエムエス）とは？</strong> Database Management System（データベース管理システム）の略。データベースを動かす本体プログラム。PostgreSQL はその一種です。</p>
+</blockquote>
+<h3 id="61-インストール手順">6.1 インストール手順</h3>
+<ol>
+<li>ブラウザで <strong><code>https://www.postgresql.org/download/windows/</code></strong> を開く。</li>
+<li>「Download the installer」をクリック（EDB社の配布ページへ飛びます）。</li>
+<li>新しめのバージョン（例: 16.x）の「Windows x86-64」の <strong>Download</strong> を押す。</li>
+<li>ダウンロードした <code>postgresql-16.x-windows-x64.exe</code> をダブルクリック。</li>
+<li>インストーラを進めます。重要な画面だけ説明します。
+   - <strong>Installation Directory</strong> … 既定のままでOK（<code>C:\Program Files\PostgreSQL\16</code>）。
+   - <strong>Select Components</strong> … 全部チェックのままでOK（「pgAdmin 4」も入れておくと、後でデータを目で見られて便利）。
+   - <strong>Data Directory</strong> … 既定のままでOK。
+   - <strong>Password</strong> … ⚠️<strong>ここで設定するパスワードは必ずメモしてください。</strong> これが、データベースの管理者（ユーザー名 <code>postgres</code>）のパスワードになります。本章の <code>.env</code>（§10）でも使います。例として本書では <code>postgres</code> と仮定して説明しますが、<strong>あなたが決めたものを使ってください。</strong>
+   - <strong>Port</strong> … 既定の <strong><code>5432</code></strong> のままにします（<code>settings.py</code> §11 も 5432 を前提）。
+   - <strong>Locale</strong> … 既定（Default locale）でOK。</li>
+<li>確認画面で「Next」→ インストール完了まで待つ。</li>
+<li>最後に「Stack Builder を起動するか」と聞かれたら、<strong>チェックを外して</strong> 「Finish」（追加コンポーネントは不要です）。</li>
+</ol>
+<blockquote>
+<p><strong>pgAdmin（ピージーアドミン）とは？</strong> PostgreSQL を <strong>マウスで操作する管理画面アプリ</strong>。テーブルの中身を目で見たり、SQL（データベースへの命令文）を試したりできます。コマンドが苦手なうちは、これでデータを覗けると安心です。</p>
+</blockquote>
+<h3 id="62-インストール確認">6.2 インストール確認</h3>
+<p>PostgreSQL のコマンド <code>psql</code>（ピーエスキューエル）は、初期状態では PATH に入っていないことがあります。確認方法を2通り示します。</p>
+<p><strong>方法A（おすすめ・確実）：pgAdmin で確認</strong>
+1. スタートメニューで「pgAdmin 4」を検索して起動。
+2. 初回はマスターパスワードを聞かれるので、任意に設定。
+3. 左の「Servers」→「PostgreSQL 16」をクリックし、<strong>インストール時に決めたパスワード</strong> を入力。
+4. 接続できて、左に「Databases」などが表示されれば、PostgreSQL は正常に動いています。</p>
+<p><strong>方法B：コマンドで確認（PATHに psql がある場合）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># PostgreSQLのクライアントバージョンを表示</span>
+<span class="n">psql</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>psql</code></strong>（psql）: PostgreSQL に、コマンドでつないで SQL を打つ道具。<code>psql -h 127.0.0.1 -U postgres -d データベース名</code> でつなぎます（<code>-h</code> は相手の住所、<code>-U</code> は利用者の名前、<code>-d</code> はデータベース）。<code>\q</code> で抜けます。</li>
+<li><strong><code>psql --version</code></strong>（psql）: <code>psql --version</code> は、psql（PostgreSQL につなぐ道具）の版を表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>psql (PostgreSQL) 16.3
+</code></pre></div></div>
+
+<p><code>psql ... が認識されません</code> と出る場合は、PATH 未登録なだけで PostgreSQL 自体は入っています。方法A（pgAdmin）で確認すれば十分です。§12で必要になったら、<code>psql</code> のフルパス（例: <code>"C:\Program Files\PostgreSQL\16\bin\psql.exe"</code>）を直接打つ方法も紹介します。</p>
+</blockquote>
+<hr>
+<h2 id="7-ソースコードを手元に持ってくるgit-clone">7. ソースコードを手元に持ってくる（git clone）</h2>
+<p>道具がそろいました。いよいよ本アプリのソースコード（プログラム本体）を、あなたのPCにダウンロードします。</p>
+<blockquote>
+<p><strong>clone（クローン）とは？</strong> 「複製する」という意味。Git の <code>git clone</code> は、GitHub などに置かれた <strong>リポジトリ（コードの倉庫）まるごと一式を、あなたのPCにコピー</strong> するコマンドです。</p>
+<p><strong>リポジトリ（repository）とは？</strong> ソースコードと、その全変更履歴をまとめて保管する「倉庫」。本アプリのコードもリポジトリとして管理されています。</p>
+</blockquote>
+<h3 id="71-置き場所フォルダを決める">7.1 置き場所（フォルダ）を決める</h3>
+<p>まず、コードを置くフォルダを作ります。本書の例では、引き継ぎ元と同じ <code>C:\Users\あなたのユーザー名\Documents\git-projects</code> を使います。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> Documents の下に <code>git-projects</code> フォルダを作り（既にあってもエラーにしない）、その中に移動します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 置き場フォルダを作成（-Force は既存でもエラーにしない）</span>
+<span class="n">mkdir</span> <span class="s2">&quot;$HOME\Documents\git-projects&quot;</span> <span class="n">-Force</span>
+<span class="c"># そのフォルダに移動</span>
+<span class="nb">cd </span><span class="s2">&quot;$HOME\Documents\git-projects&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>mkdir</code></strong>（PowerShell）: 「make directory（フォルダを作る）」の略。<code>mkdir "$HOME\Documents\git-projects"</code> のように、途中のフォルダもまとめて作れます（<code>$HOME</code> はホームフォルダ <code>C:\Users\あなたの名前</code>）。もう同じ名前のフォルダがあると、エラーで知らせます（<code>-Force</code> を付けると、知らせずに進みます）。</li>
+<li><strong><code>mkdir -Force</code></strong>（PowerShell）: <code>mkdir フォルダ -Force</code> は、フォルダを作ります。<code>-Force</code> を付けると、もう有っても赤いエラーを出さずに進みます。</li>
+<li><strong><code>"…$変数…"</code></strong>（PowerShell）: <code>"…"</code>（ダブルクォート）で囲んだ文字の中の <code>$名前</code> は、変数の中身に置きかわります。<code>"こんにちは、$name さん"</code> → <code>こんにちは、太郎 さん</code>。そのまま <code>$</code> を出したい時は、<code>'…'</code>（シングルクォート）で囲みます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<ul>
+<li><code>mkdir</code> … Make Directory。フォルダ（ディレクトリ）を作るコマンド。</li>
+<li><code>$HOME</code> … PowerShell で「自分のユーザーフォルダ（<code>C:\Users\あなた</code>）」を表す変数。</li>
+<li><code>-Force</code> … 「すでに同名フォルダがあってもエラーにしない」オプション。</li>
+<li><code>cd</code> … Change Directory。指定フォルダへ移動するコマンド。</li>
+</ul>
+<blockquote>
+<p><strong>用語: ディレクトリ（directory）</strong> … 「フォルダ」と同じ意味。コマンドの世界では「ディレクトリ」と呼ぶことが多いです。<code>cd</code> の <code>d</code> も Directory の d。</p>
+</blockquote>
+<h3 id="72-clone-する">7.2 clone する</h3>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> 本アプリのリポジトリを、今いるフォルダの中にダウンロードします。<code>&lt;リポジトリのURL&gt;</code> は、引き継ぎ元（前任者）から教わった GitHub のURLに置き換えてください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># リポジトリ一式をダウンロード（URLは前任者に確認）</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="p">&lt;</span><span class="n">リポジトリのURL</span><span class="p">&gt;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git clone</code></strong>（Git）: GitHub などにあるリポジトリ（プログラムの置き場所）を、丸ごと自分のパソコンに写してきます。<code>git clone &lt;URL&gt;</code> で、URL の最後の名前のフォルダができます。</li>
+<li><strong><code>&gt;</code></strong>（PowerShell）: <code>コマンド &gt; out.txt</code> は、画面に出るはずの文を、<code>out.txt</code> というファイルに書き込みます（前の中身は消えます）。後ろに書き足したい時は <code>&gt;&gt;</code> を使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p>例（URLはダミーです。本物に置き換えてください）：</p>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">://</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">your-company</span><span class="p">/</span><span class="n">hozen-kosu-React</span><span class="p">.</span><span class="n">git</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Cloning into &#39;hozen-kosu-React&#39;...
+remote: Enumerating objects: 1234, done.
+remote: Counting objects: 100% (1234/1234), done.
+...
+Receiving objects: 100% (1234/1234), 5.67 MiB | 3.21 MiB/s, done.
+Resolving deltas: 100% (456/456), done.
+</code></pre></div></div>
+
+<p>完了すると、今いるフォルダの中に <code>hozen-kosu-React</code> というフォルダができます。</p>
+<p>⚠️ <strong>clone 時にユーザー名・パスワードを聞かれたら？</strong> プライベート（非公開）リポジトリの場合、GitHub のログインが必要です。これは次章「02_Git_GitHub.md」で扱う「認証」の話です。とりあえずこの章では、前任者に「clone できる状態のURL（またはアクセス権）」を用意してもらってください。</p>
+</blockquote>
+<h3 id="73-プロジェクトフォルダを-vscode-で開く">7.3 プロジェクトフォルダを VSCode で開く</h3>
+<p>ダウンロードしたフォルダを VSCode で開きます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># ダウンロードしたフォルダに移動</span>
+<span class="nb">cd </span><span class="n">hozen-kosu-React</span>
+<span class="c"># 今いるフォルダをVSCodeで開く（.は「今のフォルダ」の意味）</span>
+<span class="n">code</span> <span class="p">.</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>code</code></strong>（コマンド）: VS Code を動かすコマンド。<code>code .</code> で今のフォルダを開き、<code>code --version</code> で版を確かめます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<ul>
+<li><code>code .</code> … VSCode で「今いるフォルダ」を開くコマンド。<code>.</code>（ドット）は「カレントディレクトリ（今いる場所）」を意味します。</li>
+<li>もし <code>code</code> コマンドが効かない場合は、VSCode のメニュー「ファイル」→「フォルダーを開く」から <code>hozen-kosu-React</code> を手で選んでも同じです。</li>
+</ul>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> VSCode の左の「エクスプローラー」に、<code>frontend</code>・<code>hozen_another</code>・<code>kosu</code>・<code>requirements.txt</code>・<code>manage.py</code> などのフォルダ／ファイルがずらりと並びます。これが本アプリの全ソースです。</p>
+<p><strong>用語: ルート（root）ディレクトリ</strong> … プロジェクトの一番上のフォルダのこと。本アプリでは <code>hozen-kosu-React</code>（中に <code>manage.py</code> がある階層）が「バックエンドのルート」です。<code>CLAUDE.md</code> の「from root directory」はこの場所を指します。一方、フロント側のコマンドは <code>frontend/</code> フォルダの中で打ちます。<strong>今どのフォルダにいるかを常に意識しましょう</strong>（ターミナル左端の表示で分かります）。</p>
+</blockquote>
+<hr>
+<h2 id="8-バックエンド準備仮想環境venvを作る">8. バックエンド準備①：仮想環境（venv）を作る</h2>
+<p>ここからバックエンド（Django）の準備です。まず「仮想環境」を作ります。</p>
+<blockquote>
+<p><strong>仮想環境（virtual environment / venv）とは？</strong>
+プロジェクトごとに、<strong>専用の独立した Python の作業部屋</strong> を作るしくみ。インストールした部品（Django など）を、その部屋の中だけに閉じ込めます。</p>
+<p>たとえ話：仮想環境は「プロジェクト専用の引き出し」。Aプロジェクトの引き出しには Django 4.2、Bプロジェクトの引き出しには Django 5.0……と、<strong>別々のバージョンを混ぜずに保管</strong> できます。仮想環境を使わずにPC全体（システム）に入れてしまうと、別プロジェクトと部品が衝突して、どちらも壊れることがあります。</p>
+<p><strong>なぜ？ なぜわざわざ仮想環境を作るの？</strong>
+本アプリは Django <strong>4.2.7</strong>（§9参照）という特定の版を要求します。もしあなたのPCに別プロジェクト用の Django 5.x が入っていると衝突します。仮想環境を使えば、このプロジェクトだけに Django 4.2.7 を入れられ、他に影響しません。<strong>プロの現場では仮想環境を使うのが常識です。</strong></p>
+</blockquote>
+<h3 id="81-venv-を作る">8.1 venv を作る</h3>
+<p>⚠️ 必ず <strong>プロジェクトのルート</strong>（<code>manage.py</code> がある <code>hozen-kosu-React</code> フォルダ）にいる状態で実行します。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> <code>venv</code> という名前の仮想環境（作業部屋）を、今のフォルダの中に作ります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 「venv」という名の仮想環境フォルダを作成</span>
+<span class="n">python</span> <span class="n">-m</span> <span class="n">venv</span> <span class="n">venv</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>python -m</code></strong>（Python の道具）: <code>python -m venv venv</code> の <code>-m</code> は「Python の中の道具（モジュール）を動かす」という指定。ここでは <code>venv</code>（仮想環境を作る道具）を動かして、<code>venv</code> という名前のフォルダに仮想環境を作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p>分解すると：
+- <code>python</code> … Python を起動。
+- <code>-m venv</code> … 「venv モジュール（仮想環境作成機能）を実行せよ」という指定。<code>-m</code> は「モジュールを実行」の意味。
+- 最後の <code>venv</code> … <strong>作る仮想環境のフォルダ名</strong>。慣習で <code>venv</code> という名前にします（別名でも可）。</p>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> 数秒〜十数秒、無言で待ったあと、何も表示されずにプロンプトが戻ってきます（＝エラーなし）。VSCode 左のエクスプローラーに <code>venv</code> という新しいフォルダができていれば成功です。</p>
+<p><strong>用語: モジュール（module）</strong> … Python の「機能の部品」。<code>venv</code> は Python に最初から付いている標準モジュールの1つです。</p>
+</blockquote>
+<h3 id="82-venv-を有効化activateする">8.2 venv を有効化（activate）する</h3>
+<p>作っただけでは使えません。「この部屋に入る」操作（有効化）が必要です。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> 作った仮想環境を有効化し、「以後このターミナルでは、この部屋の Python／pip を使う」状態にします。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 仮想環境を有効化（PowerShell用の有効化スクリプトを実行）</span>
+<span class="p">.\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.\venv\Scripts\Activate.ps1</code></strong>（Python の道具）: 仮想環境（このアプリ専用の Python の部品の置き場）に入る PowerShell のスクリプト。入ると、行の頭に <code>(venv)</code> と出ます。「スクリプトの実行が無効」と出たら、<code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> で許可します。</li>
+<li><strong><code>.\</code></strong>（PowerShell）: <code>.\venv\Scripts\Activate.ps1</code> の <code>.\</code> は、「今いるフォルダの中の」という意味です。PowerShell は、安全のため、今いるフォルダのプログラムやスクリプトでも <code>.\</code> を付けないと動かしません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> プロンプトの先頭に <strong><code>(venv)</code></strong> という表示が付きます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>(venv) PS C:\Users\...\hozen-kosu-React&gt;
+</code></pre></div></div>
+
+<p>この <code>(venv)</code> が、<strong>「今あなたは仮想環境の中にいますよ」</strong> という目印です。以後 <code>pip install</code> や <code>python manage.py ...</code> は、必ずこの <code>(venv)</code> が付いた状態で実行します。</p>
+<p>⚠️ <strong>「スクリプトの実行が無効になっているため…」というエラーが出たら</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.\venv\Scripts\Activate.ps1 : このシステムではスクリプトの実行が無効になっているため、ファイル ... を読み込むことができません。
+</code></pre></div></div>
+
+<p>これは PowerShell の安全設定（実行ポリシー）が厳しすぎるためです。次のコマンドで、<strong>現在のユーザーに限り</strong> スクリプト実行を許可します（安全な範囲の設定です）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">Set-ExecutionPolicy</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span> <span class="n">RemoteSigned</span>    <span class="c"># 自分のユーザーだけ、署名付き/ローカルのスクリプト実行を許可</span>
+</code></pre></div></div>
+
+<p>「実行ポリシーを変更しますか？」と聞かれたら <code>Y</code> を打って <code>Enter</code>。そのあと、もう一度 §8.2 の有効化コマンドを実行してください。</p>
+</blockquote>
+<h3 id="83-venv-を抜けるdeactivateには">8.3 venv を抜ける（deactivate）には</h3>
+<p>作業を終えて部屋から出たいときは：</p>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 仮想環境を抜ける（(venv)の表示が消える）</span>
+<span class="n">deactivate</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>deactivate</code></strong>（Python の道具）: 仮想環境から出るコマンド。行の頭の <code>(venv)</code> が消えます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<blockquote>
+<p>今は <strong>抜けないでください</strong>。<code>(venv)</code> が付いたまま、次の §9 に進みます。</p>
+</blockquote>
+<hr>
+<h2 id="9-バックエンド準備requirementstxt-全解説とインストール">9. バックエンド準備②：requirements.txt 全解説とインストール</h2>
+<p><code>(venv)</code> が付いた状態のまま、Django などの部品を一括インストールします。何を入れるのかを、本物の <code>requirements.txt</code> を1行ずつ見てから実行しましょう。</p>
+<h3 id="91-requirementstxt-とは">9.1 requirements.txt とは</h3>
+<blockquote>
+<p><strong>requirements.txt（リクワイアメンツ・テキスト）とは？</strong> 「このプロジェクトに必要な Python パッケージと、その正確なバージョン」を1行1パッケージで列挙したファイル。<code>pip install -r requirements.txt</code> で、ここに書かれた全部を <strong>一括インストール</strong> できます。「必要な部品の買い物リスト」です。</p>
+<p><strong>パッケージ（package）／ライブラリ（library）とは？</strong> 誰かが作って公開している「便利な機能の部品集」。自分でゼロから書かずに、これを取り込んで使います。<code>Django</code> も <code>pandas</code> も、すべてパッケージです。</p>
+</blockquote>
+<h3 id="92-本アプリの-requirementstxt-を1行ずつ読む">9.2 本アプリの requirements.txt を1行ずつ読む</h3>
+<blockquote>
+<p><strong>▼ これから見るファイルがやること:</strong> 本アプリのバックエンドが必要とする、24個のパッケージとその版を列挙しています。下記は <code>requirements.txt</code> の <strong>実物そのまま</strong> です。各行の右に、それが何者かを書きました。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Django==4.2.7                            # ① Web本体フレームワーク。本アプリの裏方の心臓
+django-bootstrap-datepicker-plus==5.0.5  # ② 日付選択カレンダー部品（Django管理画面/フォーム用）
+django-bootstrap4==23.3                  # ③ Bootstrap4(見た目の枠組み)をDjangoで使う部品
+django-crispy-forms==2.1                 # ④ Djangoのフォームを綺麗に表示する部品
+django-environ==0.11.2                   # ⑤ .envファイルから設定を読み込む部品（§10-11で核心）
+django-filter==23.5                      # ⑥ 一覧の絞り込み（フィルタ）機能を簡単に作る部品
+django-widget-tweaks==1.5.0              # ⑦ テンプレート内でフォーム部品の見た目を微調整する部品
+django-widgets-improved==1.5.0           # ⑧ ⑦の系統。フォーム部品の改良
+djangorestframework==3.14.0              # ⑨ REST API（フロントとデータをやり取りする窓口）を作る部品。最重要
+django-q==1.3.9                          # ⑩ 非同期タスク（裏で時間のかかる処理）の実行基盤。qclusterの正体
+gunicorn==21.2.0                         # ⑪ 本番でDjangoを動かすサーバー（ローカルでは使わない）
+openpyxl==3.1.2                          # ⑫ Excel(.xlsx)ファイルを読み書きする部品
+psycopg2-binary==2.9.9                   # ⑬ PythonからPostgreSQLに接続するためのドライバ。DB接続の必須部品
+python-dateutil==2.8.2                   # ⑭ 日付計算を便利にする部品
+python-dotenv==1.0.0                     # ⑮ .envを読む別系統の部品
+python-json-logger==2.0.7                # ⑯ ログをJSON形式で出力する部品
+xlwings==0.30.13                         # ⑰ ExcelをPythonから操作する部品
+whitenoise==6.6.0                        # ⑱ 静的ファイル(CSS/JS/画像)を配信する部品。settings.pyに登場
+beautifulsoup4==4.12.2                   # ⑲ HTMLを解析する部品（スクレイピング等）
+pandas==2.1.2                            # ⑳ 表データを高速処理する定番部品（集計・加工）
+python-Levenshtein==0.26.1               # ㉑ 文字列の似ている度合いを計算する部品
+setuptools==76.1.0                       # ㉒ パッケージのビルド/インストール補助（土台ツール）
+django-cors-headers==4.7.0               # ㉓ CORS(別オリジンからのアクセス許可)を設定する部品。settings.pyに登場
+jsonfield==3.2.0                         # ㉔ モデルにJSON型のフィールドを持たせる部品
+</code></pre></div></div>
+
+<p>特に重要な5つを補足します（後の章や <code>settings.py</code> で再登場します）。</p>
+<blockquote>
+<p><strong>用語: REST API（レスト・エーピーアイ）</strong> … フロントエンド（React）とバックエンド（Django）が <strong>データをやり取りするための窓口・約束事</strong>。<code>⑨ djangorestframework</code>（略称 DRF）がこの窓口を作ります。たとえば React が「工数データをください」と <code>/api/...</code> に頼むと、DRF が応答します。本アプリの心臓部です（<code>CLAUDE.md</code> の「REST API using Django REST Framework」に対応）。</p>
+<p><strong>用語: CORS（コアーズ）</strong> … Cross-Origin Resource Sharing。「<strong>別の住所（オリジン）から来たアクセスを許可するか</strong>」を制御するブラウザの安全機能。本アプリは React が <code>localhost:3000</code>、Django が <code>localhost:8000</code> と <strong>別の窓口（ポート）</strong> で動くため、ブラウザは「別オリジン同士の通信」とみなしてブロックしようとします。<code>㉓ django-cors-headers</code> がこれを許可する設定を可能にし、<code>settings.py</code>（§11）で実際に許可しています。</p>
+<p><strong>用語: 非同期タスク（asynchronous task）</strong> … 時間のかかる処理（バックアップ等）を、ユーザーを待たせずに <strong>裏でこっそり実行</strong> する仕組み。<code>⑩ django-q</code> がこれを担い、<code>qcluster</code>（§15）という別プロセスで動かします。<code>CLAUDE.md</code> の「Django-Q async tasks for backup/restore」に対応します。</p>
+<p><strong>用語: ドライバ（driver）</strong> … 異なるもの同士をつなぐ「変換アダプタ」。<code>⑬ psycopg2-binary</code> は、Python と PostgreSQL の間の翻訳役（DBドライバ）。これがないと Django は PostgreSQL に接続できません。</p>
+<p><strong>用語: <code>==</code> の意味</strong> … <code>Django==4.2.7</code> の <code>==</code> は「<strong>ちょうどこの版を入れる</strong>」という指定。<code>&gt;=</code>（以上）などもありますが、本アプリは全部 <code>==</code> で版を固定しています。これにより「誰の環境でも同じ版が入る＝動作が再現する」を保証しています。</p>
+</blockquote>
+<h3 id="93-一括インストールを実行する">9.3 一括インストールを実行する</h3>
+<p><code>(venv)</code> が付いていること、<code>requirements.txt</code> のあるルートフォルダにいることを確認してから実行します。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> <code>requirements.txt</code> に書かれた24パッケージを、仮想環境の中にまとめてダウンロード＆インストールします。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># requirements.txtの全部を仮想環境に一括インストール</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pip install</code></strong>（Python の道具）: Python の部品を入れます。<code>pip install 部品の名前</code> で 1 つ、<code>pip install -r requirements.txt</code> でファイルに書いた全部を入れます。</li>
+<li><strong><code>pip install -r</code></strong>（Python の道具）: <code>-r requirements.txt</code> は「このファイルに並んだ部品を全部入れる」という指定です。<code>requirements.txt</code> には <code>Django==4.2.7</code> のように、部品の名前と版が 1 行に 1 つずつ書いてあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<ul>
+<li><code>pip install</code> … パッケージをインストールするコマンド。</li>
+<li><code>-r requirements.txt</code> … <code>-r</code> は「Read（読む）」の意。指定ファイルに書かれた全部を入れる、の意味。</li>
+</ul>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> たくさんのダウンロード行が流れたあと、最後に次のような行が出ます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Successfully installed Django-4.2.7 djangorestframework-3.14.0 django-q-1.3.9 psycopg2-binary-2.9.9 pandas-2.1.2 ... (以下略)
+</code></pre></div></div>
+
+<p><code>Successfully installed ...</code> と出れば成功です。数十秒〜数分かかります（pandas など大きい部品があるため）。</p>
+<p>⚠️ <strong><code>pip</code> を新しくするよう促すメッセージが出ても無視してOK:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[notice] A new release of pip is available: 24.0 -&gt; 24.x
+</code></pre></div></div>
+
+<p>これは単なるお知らせで、エラーではありません。気になれば <code>python -m pip install --upgrade pip</code> で更新できますが、必須ではありません。</p>
+<p>⚠️ <strong><code>psycopg2</code> 関連でエラーが出た場合:</strong> 本アプリは <code>psycopg2-binary</code>（ビルド済み版）を指定しているため、通常はそのまま入ります。万一エラーが出たら §21 を参照。</p>
+</blockquote>
+<h3 id="94-インストール結果の確認">9.4 インストール結果の確認</h3>
+<p>入った主要パッケージを確認します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 仮想環境にインストール済みの全パッケージを一覧表示</span>
+<span class="n">pip</span> <span class="n">list</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pip list</code></strong>（Python の道具）: 今の Python（仮想環境の中なら、その中）に入っている部品と版を一覧にします。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> <code>Django 4.2.7</code>、<code>djangorestframework 3.14.0</code>、<code>django-q 1.3.9</code> などが一覧に並びます。<code>requirements.txt</code> の中身と見比べてみましょう。</p>
+</blockquote>
+<hr>
+<h2 id="10-バックエンド準備env-を作るsecret_key生成含む">10. バックエンド準備③：.env を作る（SECRET_KEY生成含む）</h2>
+<p>Django を動かすには、秘密情報（パスワードなど）をまとめた <code>.env</code>（ドットイーエヌブイ）ファイルが必要です。これを自分で作ります。</p>
+<blockquote>
+<p><strong><code>.env</code> ファイルとは？</strong>
+「環境変数（かんきょうへんすう）」をまとめて書いておくテキストファイル。データベースのパスワードや秘密鍵など、<strong>コードに直接書きたくない秘密情報</strong> を、ここに分けて保管します。ファイル名は拡張子なしの <code>.env</code>（ドットで始まる）です。</p>
+<p><strong>なぜ？ なぜ秘密情報をコードに直接書かないの？</strong>
+コードは Git で共有・公開されることがあります。もしパスワードをコードに書くと、<strong>全世界に秘密が漏れます</strong>。だから秘密は <code>.env</code> に分け、<code>.env</code> 自体は Git で共有しない（<code>.gitignore</code> で除外する）のが鉄則です。<code>CLAUDE.md</code> にも「Backend requires <code>.env</code> file with: SECRET_KEY, DEBUG, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST」と明記されています。</p>
+<p><strong>環境変数（environment variable）とは？</strong> 「プログラムの外側から与える設定値」。プログラムは起動時にこれを読み込んで動作を変えます。<code>.env</code> は、この環境変数をファイルにまとめたものです。</p>
+</blockquote>
+<h3 id="101-secret_key-を生成する">10.1 SECRET_KEY を生成する</h3>
+<blockquote>
+<p><strong>SECRET_KEY（シークレット・キー）とは？</strong> Django が、セッションやパスワードの暗号化・改ざん検知に使う <strong>秘密の鍵文字列</strong>。長くてランダムな文字列にする必要があり、<strong>絶対に他人に見せてはいけません</strong>。新しい環境用には、新しい鍵を自分で生成します。</p>
+</blockquote>
+<p><code>(venv)</code> が付いた状態で、次を打って鍵を1つ生成します。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> Django の鍵生成機能を呼び出し、ランダムな SECRET_KEY を1個作って画面に表示します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>python -c</code></strong>（Python の道具）: <code>python -c "…"</code> は、後ろの文字を Python のプログラムとして、その場で動かします。ファイルを作るほどでない、短い確かめに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p>分解すると：
+- <code>python -c "..."</code> … <code>-c</code> は「次の文字列を Python のプログラムとして直接実行せよ」という指定。
+- <code>from django.core.management.utils import get_random_secret_key</code> … Django の「ランダム鍵生成」機能を取り込む。
+- <code>print(get_random_secret_key())</code> … 鍵を1個作って表示する。</p>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> 次のような、長くてランダムな文字列が1行表示されます（あなたの結果は毎回違います）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>k3$9wq!2zx@7v...（中略）...8nf#p1
+</code></pre></div></div>
+
+<p>この <strong>1行を丸ごとコピー</strong> しておいてください。次の §10.2 で <code>.env</code> に貼り付けます。</p>
+</blockquote>
+<h3 id="102-env-ファイルを作って中身を書く">10.2 .env ファイルを作って中身を書く</h3>
+<p>VSCode で、<strong>プロジェクトのルート</strong>（<code>manage.py</code> がある階層）に新しいファイル <code>.env</code> を作ります。</p>
+<ol>
+<li>VSCode 左のエクスプローラーで、ルートフォルダ（<code>HOZEN-KOSU-REACT</code> など）の何もない所を右クリック →「新しいファイル」。</li>
+<li>ファイル名を <strong><code>.env</code></strong>（先頭がドット、拡張子なし）として <code>Enter</code>。</li>
+<li>開いたファイルに、次の内容を書きます。</li>
+</ol>
+<blockquote>
+<p><strong>▼ このファイルがやること:</strong> Django が起動時に読み込む秘密情報・設定をまとめます。<code>settings.py</code>（§11）がここから各値を取り出します。<code>&lt;...&gt;</code> の部分は、あなたの環境の値に置き換えてください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>SECRET_KEY=&lt;§10.1で生成した長い文字列をそのまま貼る&gt;      # Djangoの秘密鍵
+DEBUG=True                                              # 開発中はTrue（詳しいエラー画面が出る）
+DB_NAME=hozen_kosu                                      # 使うデータベース名（§12で作る）
+DB_USER=postgres                                        # PostgreSQLのユーザー名（既定はpostgres）
+DB_PASSWORD=&lt;PostgreSQLインストール時に決めたパスワード&gt;   # そのユーザーのパスワード（§6.1でメモした値）
+DB_HOST=localhost                                       # データベースの場所（自分のPC＝localhost）
+</code></pre></div></div>
+
+<p>各行の意味（<code>settings.py</code> との対応は §11 で詳説）：
+- <code>SECRET_KEY=...</code> … §10.1 で生成した鍵。<strong><code>=</code> の後に空白を入れず</strong>、鍵をそのまま貼ります。引用符（<code>"</code>）は不要です。
+- <code>DEBUG=True</code> … 開発中は <code>True</code>。エラー時に原因が画面に詳しく出ます（後述）。
+- <code>DB_NAME=hozen_kosu</code> … 接続するデータベースの名前。本書では <code>hozen_kosu</code> という名前で作ります（§12）。好きな名前でも可ですが、§12と合わせてください。
+- <code>DB_USER=postgres</code> … PostgreSQL の管理ユーザー。インストール直後の既定は <code>postgres</code> です。
+- <code>DB_PASSWORD=...</code> … §6.1 でメモした、<code>postgres</code> ユーザーのパスワード。
+- <code>DB_HOST=localhost</code> … データベースが動いている場所。自分のPC内なので <code>localhost</code>。</p>
+<ol start="4">
+<li><strong><code>Ctrl + S</code> で保存</strong> します。</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong><code>.env</code> は絶対に Git にコミット（公開）しないでください。</strong> 本アプリには通常 <code>.gitignore</code> に <code>.env</code> が登録されており、自動で除外されます。万一されていない場合は、前任者に確認してください。秘密の鍵やパスワードを含むためです。</p>
+<p>⚠️ <strong><code>DEBUG</code> の値について:</strong> <code>settings.py</code>（§11）では <code>DEBUG=env.bool('DEBUG')</code> と読み込まれます。<code>env.bool</code> は文字列 <code>True</code>/<code>False</code> を 真偽値に変換するので、<code>.env</code> には <strong><code>True</code> または <code>False</code></strong> と書きます（<code>1</code>/<code>0</code> でも可）。<strong>本番環境では必ず <code>False</code></strong> にしますが、ローカル開発では <code>True</code> にして詳しいエラーを見られるようにします。</p>
+</blockquote>
+<hr>
+<h2 id="11-settingspy-を1行ずつ読むenvとの対応">11. settings.py を1行ずつ読む（.envとの対応）</h2>
+<p>ここで、Django の中枢設定ファイル <code>hozen_another/settings.py</code> を読み、<strong>さっき作った <code>.env</code> の値が、どこでどう使われるか</strong> を確認します。これが分かると「なぜ <code>.env</code> にあの項目が必要だったのか」が腑に落ちます。</p>
+<blockquote>
+<p><strong>settings.py（セッティングス・ピーワイ）とは？</strong> Django の全設定をまとめた中枢ファイル。データベース接続・インストール済み機能・セキュリティ・言語などを決めます。<code>hozen_another/</code> フォルダの中にあります（<code>hozen_another</code> は本アプリの「プロジェクト設定」フォルダ名）。</p>
+</blockquote>
+<h3 id="111-冒頭env-を読み込む部分115行目">11.1 冒頭：.env を読み込む部分（1〜15行目）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること:</strong> 必要な道具を取り込み、<code>.env</code> ファイルを読み込んで、<code>SECRET_KEY</code> と <code>DEBUG</code> をそこから取り出します。<strong>ここが <code>.env</code> と settings.py の接続点</strong> です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ファイルパス操作の道具を取り込む</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="c1"># OS(ファイル/環境変数)操作の道具を取り込む</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1"># .envを読むための道具（requirements.txtの⑤ django-environ）</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">environ</span>
+<span class="c1"># ログ出力の道具（後半で使用）</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging.handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">RotatingFileHandler</span>
+
+<span class="c1"># プロジェクトのルートフォルダの絶対パスを計算</span>
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
+
+<span class="c1"># 環境変数を読み取る「読み取り器」を用意</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">Env</span><span class="p">()</span>
+<span class="c1"># ルートにある .env ファイルを読み込む</span>
+<span class="n">env</span><span class="o">.</span><span class="n">read_env</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;.env&#39;</span><span class="p">))</span>
+
+<span class="c1"># .envの SECRET_KEY を取り出してセット（§10.1の鍵）</span>
+<span class="n">SECRET_KEY</span><span class="o">=</span><span class="n">env</span><span class="p">(</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">)</span>
+
+<span class="c1"># .envの DEBUG を真偽値(True/False)として取り出す</span>
+<span class="n">DEBUG</span><span class="o">=</span><span class="n">env</span><span class="o">.</span><span class="n">bool</span><span class="p">(</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>1行ずつ：
+- <code>from pathlib import Path</code> … ファイルやフォルダの場所（パス）を扱う標準道具を取り込みます。
+- <code>import os</code> … OS（基本ソフト）の機能（ファイル結合・環境変数など）を取り込みます。
+- <code>import environ</code> … <code>.env</code> を読むための部品（<code>requirements.txt</code> の⑤ <code>django-environ</code>）を取り込みます。<strong>これが <code>.env</code> を読む主役です。</strong>
+- <code>BASE_DIR = Path(__file__).resolve().parent.parent</code> … <code>__file__</code>（このファイル自身の場所）から <strong>2つ上のフォルダ</strong>＝プロジェクトのルートを求めます。<code>.parent</code> が「1つ上」を意味し、2回書いて2つ上に行っています。
+- <code>env = environ.Env()</code> … 環境変数の「読み取り器」を1つ用意します。
+- <code>env.read_env(os.path.join(BASE_DIR, '.env'))</code> … ルート（<code>BASE_DIR</code>）にある <code>.env</code> を実際に読み込みます。<code>os.path.join</code> は「BASE_DIR と '.env' をつないで完全なパスを作る」道具。<strong>これで §10 で作った <code>.env</code> の内容が Django に取り込まれます。</strong>
+- <code>SECRET_KEY=env('SECRET_KEY')</code> … <code>.env</code> の <code>SECRET_KEY=...</code> の値を取り出してセット。<strong>§10.2 で書いた鍵がここに入ります。</strong>
+- <code>DEBUG=env.bool('DEBUG')</code> … <code>.env</code> の <code>DEBUG=True</code> を、文字列ではなく <strong>真偽値（True/False）</strong> として取り出します。だから §10 で <code>True</code>/<code>False</code> と書く必要がありました。</p>
+<blockquote>
+<p><strong>用語: 絶対パス（absolute path）</strong> … <code>C:\Users\...\hozen-kosu-React</code> のように、ドライブから始まる「完全な住所」。対して「今いる場所からの相対的な住所」を相対パスといいます。<code>BASE_DIR</code> は絶対パスです。</p>
+</blockquote>
+<h3 id="112-許可するホストとアプリ一覧1938行目">11.2 許可するホストとアプリ一覧（19〜38行目）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること:</strong> どのドメインからアクセスを受け付けるか（ALLOWED_HOSTS）と、Django に組み込む機能（INSTALLED_APPS）を列挙します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># 本番のドメイン</span>
+    <span class="s1">&#39;hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net&#39;</span><span class="p">,</span>
+    <span class="c1"># 自分のPC（開発用）</span>
+    <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="c1"># 自分のPCのIPアドレス表記</span>
+    <span class="s1">&#39;127.0.0.1&#39;</span>
+    <span class="p">]</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>ALLOWED_HOSTS</code> … 「このサーバーは、どの住所（ホスト名）宛のアクセスを受け付けるか」のリスト。<code>localhost</code> と <code>127.0.0.1</code> があるので、<strong>あなたのPCでの開発アクセスは許可されています</strong>（だから何も足さなくてOK）。</li>
+<li><code>127.0.0.1</code> … <code>localhost</code> と同じ「自分自身」を表す数字のIPアドレス。</li>
+</ul>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Django標準の管理画面</span>
+    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
+    <span class="c1"># 認証（ログイン）機能</span>
+    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
+    <span class="c1"># モデル種別を扱う内部機能</span>
+    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
+    <span class="c1"># セッション（ログイン状態の保持）</span>
+    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
+    <span class="c1"># メッセージ表示機能</span>
+    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
+    <span class="c1"># 静的ファイル(CSS/JS/画像)管理</span>
+    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
+    <span class="c1"># Bootstrap4部品（requirements③）</span>
+    <span class="s1">&#39;bootstrap4&#39;</span><span class="p">,</span>
+    <span class="c1"># 日付選択部品（requirements②）</span>
+    <span class="s1">&#39;bootstrap_datepicker_plus&#39;</span><span class="p">,</span>
+    <span class="c1"># 本アプリ本体！工数管理の自作アプリ</span>
+    <span class="s1">&#39;kosu&#39;</span><span class="p">,</span>
+    <span class="c1"># 非同期タスク基盤（requirements⑩）</span>
+    <span class="s1">&#39;django_q&#39;</span><span class="p">,</span>
+    <span class="c1"># REST API（requirements⑨ DRF）</span>
+    <span class="s1">&#39;rest_framework&#39;</span><span class="p">,</span>
+    <span class="c1"># CORS許可（requirements㉓）</span>
+    <span class="s1">&#39;corsheaders&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>INSTALLED_APPS</code> … Django に「使う機能（アプリ）」を登録するリスト。</li>
+<li><code>'kosu'</code> … <strong>本アプリの本体</strong>。<code>CLAUDE.md</code> の「Django app: kosu - main application」に対応する自作部分です。</li>
+<li><code>'rest_framework'</code>・<code>'django_q'</code>・<code>'corsheaders'</code> … §9で解説した重要パッケージが、ここで有効化されています。<code>requirements.txt</code>（入れる）と <code>INSTALLED_APPS</code>（使う）はセットで効きます。</li>
+</ul>
+<h3 id="113-cors設定5359行目">11.3 CORS設定（53〜59行目）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること:</strong> React（localhost:3000）から Django（localhost:8000）への「別オリジン通信」を許可します。§9.2で説明したCORSの実設定です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># すべてのオリジンからのアクセスを許可（開発向け）</span>
+<span class="n">CORS_ORIGIN_ALLOW_ALL</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># 認証情報(Cookie)付きの通信を許可（ログイン状態を保つため）</span>
+<span class="n">CORS_ALLOW_CREDENTIALS</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">CORS_ALLOW_ORIGINS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Reactの開発サーバー（フロント）</span>
+    <span class="s1">&#39;http://localhost:3000&#39;</span><span class="p">,</span>
+    <span class="c1"># Django自身</span>
+    <span class="s1">&#39;http://localhost:8000&#39;</span><span class="p">,</span>
+    <span class="c1"># Django自身（IP表記）</span>
+    <span class="s1">&#39;http://127.0.0.1:8000&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<blockquote>
+<p>ここで <code>http://localhost:3000</code>（React）が許可されているおかげで、<strong>npm start した画面から Django にデータを取りに行けます</strong>。この設定が無いと、ブラウザが通信をブロックし、画面にデータが出ません。</p>
+</blockquote>
+<h3 id="114-rest-api-のページング設定6170行目">11.4 REST API のページング設定（61〜70行目）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># ページ番号方式の分割</span>
+    <span class="s1">&#39;DEFAULT_PAGINATION_CLASS&#39;</span><span class="p">:</span> <span class="s1">&#39;rest_framework.pagination.PageNumberPagination&#39;</span><span class="p">,</span>
+    <span class="c1"># 1ページあたり20件ずつ返す</span>
+    <span class="s1">&#39;PAGE_SIZE&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s1">&#39;DEFAULT_PARSER_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="c1"># 受け取るデータはJSON形式</span>
+        <span class="s1">&#39;rest_framework.parsers.JSONParser&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s1">&#39;DEFAULT_RENDERER_CLASSES&#39;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="c1"># 返すデータもJSON形式</span>
+        <span class="s1">&#39;rest_framework.renderers.JSONRenderer&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>'PAGE_SIZE': 20</code> … 一覧データを <strong>20件ずつ</strong> に分けて返す設定。大量データを一度に返さず、ページ送りにします（フロントのページネーション <code>Components/Pagination</code> に対応）。</li>
+<li><code>JSONParser</code> / <code>JSONRenderer</code> … フロントとのやり取りは <strong>JSON</strong>（後述）形式で統一、という指定。</li>
+</ul>
+<blockquote>
+<p><strong>用語: JSON（ジェイソン）</strong> … JavaScript Object Notation。<code>{ "name": "山田", "age": 30 }</code> のような、人にもプログラムにも読みやすいデータの書き方。フロント（React）とバック（Django）は、このJSON形式でデータを交換します。</p>
+</blockquote>
+<h3 id="115-データベース設定114123行目-envと直結">11.5 データベース設定（114〜123行目）← .envと直結</h3>
+<blockquote>
+<p><strong>▼ このコードがやること:</strong> Django がどのデータベースに、どのユーザー・パスワードで接続するかを決めます。<strong>ここで §10 の <code>DB_NAME</code> など <code>.env</code> の値が使われます。</strong> この章の山場です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># 既定のデータベース接続</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="c1"># PostgreSQLを使う指定（§6で入れたもの）</span>
+        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;django.db.backends.postgresql&#39;</span><span class="p">,</span>
+        <span class="c1"># データベース名を環境変数DB_NAMEから取得</span>
+        <span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_NAME&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="c1"># ユーザー名を環境変数DB_USERから取得</span>
+        <span class="s1">&#39;USER&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_USER&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="c1"># パスワードを環境変数DB_PASSWORDから取得</span>
+        <span class="s1">&#39;PASSWORD&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_PASSWORD&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="c1"># 接続先ホストを環境変数DB_HOSTから取得</span>
+        <span class="s1">&#39;HOST&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_HOST&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+        <span class="c1"># ポート番号は5432固定（PostgreSQLの既定）</span>
+        <span class="s1">&#39;PORT&#39;</span><span class="p">:</span> <span class="s1">&#39;5432&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>1行ずつ、<code>.env</code> との対応：
+- <code>'ENGINE': 'django.db.backends.postgresql'</code> … 「PostgreSQL を使う」固定指定。§6 で入れた PostgreSQL と、§9 の <code>psycopg2-binary</code>（ドライバ）があって初めて接続できます。
+- <code>'NAME': os.getenv('DB_NAME', '')</code> … <code>os.getenv('DB_NAME', '')</code> は「環境変数 <code>DB_NAME</code> を読む。無ければ空文字 <code>''</code>」の意味。<strong>§10.2 で書いた <code>DB_NAME=hozen_kosu</code> がここに入ります。</strong>
+- <code>'USER': os.getenv('DB_USER', '')</code> … 同様に <strong><code>DB_USER=postgres</code></strong> が入る。
+- <code>'PASSWORD': os.getenv('DB_PASSWORD', '')</code> … <strong><code>DB_PASSWORD=...</code></strong>（あなたのパスワード）が入る。
+- <code>'HOST': os.getenv('DB_HOST', '')</code> … <strong><code>DB_HOST=localhost</code></strong> が入る。
+- <code>'PORT': '5432'</code> … §6.1 で既定の <code>5432</code> にしたポート。一致している必要があります。</p>
+<blockquote>
+<p>⚠️ <strong>超重要な気づき:</strong> 上の <code>'NAME'</code> などは <code>os.getenv(...)</code> を使っています。<code>os.getenv</code> は <strong>OSレベルの環境変数</strong> を読みます。<code>.env</code> ファイルの内容は §11.1 の <code>env.read_env(...)</code> によって読み込まれ環境変数として展開されるため、<code>os.getenv('DB_NAME')</code> で <code>.env</code> の値を取得できます。<strong>つまり <code>.env</code> に <code>DB_NAME</code> 等を正しく書いていないと、ここが空になり接続に失敗します。</strong> 接続エラー時はまず <code>.env</code> の綴りを疑ってください。</p>
+</blockquote>
+<h3 id="116-非同期タスクdjango-qの設定125132行目">11.6 非同期タスク（django-q）の設定（125〜132行目）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること:</strong> §15で起動する <code>qcluster</code>（非同期ワーカー）の動作を決めます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">Q_CLUSTER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># タスク情報を上のdefaultデータベースに保存する</span>
+    <span class="s1">&#39;orm&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+    <span class="c1"># 同時に働く作業者(ワーカー)を4人にする</span>
+    <span class="s1">&#39;workers&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="c1"># 2000タスクごとにワーカーを作り直す（メモリ掃除）</span>
+    <span class="s1">&#39;recycle&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="c1"># 失敗時の再試行までの秒数</span>
+    <span class="s1">&#39;retry&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="c1"># 1タスクの制限時間（1800秒=30分）</span>
+    <span class="s1">&#39;timeout&#39;</span><span class="p">:</span> <span class="mi">1800</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>'orm': 'default'</code> … 非同期タスクの記録を、上の <code>DATABASES['default']</code>（PostgreSQL）に保存。</li>
+<li><code>'workers': 4</code> … 4つの処理を同時にこなせる、の意味。</li>
+<li><code>'timeout': 1800</code> … 30分以内に終わらないタスクは打ち切り。バックアップ等の重い処理に対応した余裕ある設定です。</li>
+</ul>
+<h3 id="117-言語タイムゾーン静的ファイル149173行目">11.7 言語・タイムゾーン・静的ファイル（149〜173行目）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 表示言語を日本語に</span>
+<span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;ja&#39;</span>
+<span class="c1"># 時刻を日本時間に</span>
+<span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">&#39;Asia/Tokyo&#39;</span>
+<span class="c1"># 国際化(多言語)機能を有効に</span>
+<span class="n">USE_I18N</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># 内部の時刻をタイムゾーン付きで扱う</span>
+<span class="n">USE_TZ</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># 静的ファイル(CSS/JS/画像)のURLの先頭</span>
+<span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/&#39;</span>
+<span class="c1"># 集約された静的ファイルの保存先</span>
+<span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;staticfiles&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>LANGUAGE_CODE = 'ja'</code> / <code>TIME_ZONE = 'Asia/Tokyo'</code> … 日本語・日本時間の設定。管理画面が日本語になります。</li>
+<li><code>STATIC_URL</code> / <code>STATIC_ROOT</code> … CSS・画像などの「静的ファイル」をどこに置き、どのURLで配るかの設定。本番では <code>whitenoise</code>（§9⑱）が配信します。</li>
+</ul>
+<h3 id="118-csrfと静的ファイル保存方式163169行目">11.8 CSRFと静的ファイル保存方式（163〜169行目）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="c1"># 本番</span>
+  <span class="s1">&#39;https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net&#39;</span><span class="p">,</span>
+  <span class="c1"># ローカルDjango</span>
+  <span class="s1">&#39;http://localhost:8000&#39;</span><span class="p">,</span>
+  <span class="c1"># ローカルDjango（IP）</span>
+  <span class="s1">&#39;http://127.0.0.1:8000&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="c1"># 静的ファイルを圧縮配信</span>
+<span class="n">STATICFILES_STORAGE</span> <span class="o">=</span> <span class="s1">&#39;whitenoise.storage.CompressedManifestStaticFilesStorage&#39;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語: CSRF（シーサーフ）</strong> … Cross-Site Request Forgery（クロスサイト・リクエスト・フォージェリ）。「なりすまし送信」を防ぐ Django の安全機能。<code>CSRF_TRUSTED_ORIGINS</code> は「ここからの送信は信頼してよい」という許可リスト。ローカル開発の <code>localhost:8000</code> が含まれています。</p>
+</blockquote>
+<p>これで <code>settings.py</code> の要点を読み終えました。<strong><code>.env</code>（§10）に書いた値が、<code>settings.py</code> のどこに入るのか</strong> が見えたはずです。<code>.env</code> の項目を1つでも間違えると、対応する設定が空になって動かない——この対応関係を覚えておくと、トラブル時に必ず役立ちます。</p>
+<hr>
+<h2 id="12-バックエンド準備データベースを作って-migrate">12. バックエンド準備④：データベースを作って migrate</h2>
+<p>設定ができたので、いよいよデータベース本体を準備します。手順は2つ。<strong>(A) 空のデータベースを作る → (B) Django に表（テーブル）を自動生成させる（migrate）。</strong></p>
+<h3 id="121-a-空のデータベースを作る">12.1 (A) 空のデータベースを作る</h3>
+<p><code>.env</code> の <code>DB_NAME=hozen_kosu</code> に合わせて、<code>hozen_kosu</code> という名前の空データベースを PostgreSQL の中に作ります。pgAdmin（マウス）かコマンドの2通り。</p>
+<p><strong>方法A：pgAdmin で作る（初心者おすすめ）</strong>
+1. pgAdmin 4 を起動し、<code>PostgreSQL 16</code> に接続。
+2. 左の「Databases」を <strong>右クリック →「Create」→「Database...」</strong>。
+3. 「Database」欄に <strong><code>hozen_kosu</code></strong> と入力（<code>.env</code> の <code>DB_NAME</code> と完全一致させる）。
+4. 「Save」。左に <code>hozen_kosu</code> が追加されれば成功。</p>
+<p><strong>方法B：コマンド（psql）で作る</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># psqlにPATHが通っている場合</span>
+<span class="c"># postgresユーザーで hozen_kosu DBを作成</span>
+<span class="n">psql</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-c</span> <span class="s2">&quot;CREATE DATABASE hozen_kosu;&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>psql -U</code></strong>（psql）: <code>-U postgres</code> は、どの利用者（ロール）としてつなぐかです。パスワードを聞かれたら、その利用者のパスワードを入れます。</li>
+<li><strong><code>psql -c</code></strong>（psql）: <code>-c "SELECT …;"</code> は、つないで、その SQL を 1 回だけ動かして、すぐに終わる指定です。確かめを 1 行で済ませる時に使います。</li>
+<li><strong><code>CREATE</code></strong>（SQL）: <code>CREATE ROLE</code>（ユーザーを作る）・<code>CREATE DATABASE</code>（データベースを作る）・<code>CREATE TABLE</code>（表を作る）のように、何かを新しく作る SQL の命令です。</li>
+<li><strong><code>DATABASE</code></strong>（SQL）: <code>CREATE DATABASE 名前</code> で、データベースを作ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<ul>
+<li>パスワードを聞かれたら、§6.1 で決めた <code>postgres</code> のパスワードを入力。</li>
+<li><code>psql</code> が認識されない場合はフルパスで：</li>
+</ul>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">&amp;</span> <span class="s2">&quot;C:\Program Files\PostgreSQL\16\bin\psql.exe&quot;</span> <span class="n">-U</span> <span class="n">postgres</span> <span class="n">-c</span> <span class="s2">&quot;CREATE DATABASE hozen_kosu;&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>&amp;</code></strong>（PowerShell）: <code>&amp; "C:\Program Files\PostgreSQL\16\bin\psql.exe" …</code> の先頭の <code>&amp;</code> は、「この文字が指すプログラムを動かす」という印です。場所に空白が入っていて <code>"</code> で囲んだ時に必要です（<code>&amp;</code> が無いと、ただの文字として表示されるだけです）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>CREATE DATABASE
+</code></pre></div></div>
+
+<p>⚠️ <strong><code>database "hozen_kosu" already exists</code> と出たら</strong>、すでに作成済みです。問題ありません。次へ進んでください。</p>
+</blockquote>
+<h3 id="122-b-migrate-でテーブルを作る">12.2 (B) migrate でテーブルを作る</h3>
+<blockquote>
+<p><strong>マイグレーション（migration）とは？</strong> Django の「<strong>モデル（データの設計図）から、データベースの表を自動で作る／更新する</strong>」しくみ。<code>models.py</code>（<code>CLAUDE.md</code> の「Key Models」参照）に書かれた設計図どおりに、<code>member</code>・<code>Business_Time_graph</code> などの表を空のデータベースに作ってくれます。</p>
+</blockquote>
+<p><code>(venv)</code> が付いた状態で、ルート（<code>manage.py</code> がある場所）で実行します。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> モデルの設計図に従い、データベースに必要な全テーブルを作成します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 設計図どおりにデータベースの表を作成/更新する</span>
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">migrate</span>
+</code></pre></div></div>
+
+<ul>
+<li><code>python manage.py</code> … Django の操作コマンドを呼び出す入口。<code>manage.py</code> は Django プロジェクトの「操作受付係」です。</li>
+<li><code>migrate</code> … 「マイグレーションを実行（＝表を作る・更新する）」というサブコマンド。</li>
+</ul>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> 次のような行が次々と表示されます。</p>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, django_q, kosu, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying kosu.0001_initial... OK
+  ...
+  Applying sessions.0001_initial... OK
+</code></pre></div></div>
+
+<p>各行の末尾が <strong><code>OK</code></strong> になっていれば成功です。これでデータベースの中に、本アプリのすべての表ができました。</p>
+<p>⚠️ <strong>よくあるエラーと対処（詳しくは §21）:</strong>
+- <code>django.db.utils.OperationalError: connection ... failed</code> → <code>.env</code> の DB情報が違う、または PostgreSQL が起動していない／DBが未作成。
+- <code>password authentication failed for user "postgres"</code> → <code>.env</code> の <code>DB_PASSWORD</code> が間違っている。
+- <code>database "hozen_kosu" does not exist</code> → §12.1 のデータベース作成を忘れている。</p>
+</blockquote>
+<hr>
+<h2 id="13-バックエンド準備管理者を作るcreatesuperuser">13. バックエンド準備⑤：管理者を作る（createsuperuser）</h2>
+<p>データベースができたので、<strong>管理者ユーザー（スーパーユーザー）</strong> を1人作ります。これは Django の管理画面（<code>/admin</code>）にログインするためのアカウントです。</p>
+<blockquote>
+<p><strong>スーパーユーザー（superuser）とは？</strong> すべての操作権限を持つ「最高管理者」アカウント。Django の管理画面で、データを直接見たり編集したりできます。開発時の確認に重宝します。</p>
+<p><strong>▼ このコマンドがやること:</strong> 対話形式で質問に答えながら、管理者アカウントを1つ作成します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 管理者(スーパーユーザー)を作成する</span>
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">createsuperuser</span>
+</code></pre></div></div>
+
+<p>実行すると、順に質問されます。</p>
+<blockquote>
+<p><strong>▼ こう表示されます（対話例）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>ユーザー名 (leave blank to use &#39;yamada&#39;): admin        ← 好きな管理者名を入力（例: admin）
+メールアドレス: you@example.com                          ← メール（空でもEnterで進める）
+Password: ********                                       ← パスワード入力（画面には何も出ない）
+Password (again): ********                               ← もう一度同じパスワード
+Superuser created successfully.                          ← これが出れば成功
+</code></pre></div></div>
+
+</blockquote>
+<p>入力のコツ：
+- <strong>ユーザー名</strong> … <code>admin</code> など分かりやすいものを。
+- <strong>パスワード</strong> … 入力中、<strong>画面には何も表示されません</strong>（セキュリティのため）。打ち間違えに注意。
+- 簡単すぎるパスワードだと「This password is too common.（一般的すぎる）」と警告が出ます。<code>Bypass password validation and create user anyway? [y/N]:</code> に <code>y</code> で強行もできますが、開発でも少し複雑なものにしましょう。</p>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Superuser created successfully.
+</code></pre></div></div>
+
+<p><strong>後で使います:</strong> このユーザー名とパスワードは、§14 で管理画面 <code>http://localhost:8000/admin/</code> にログインするのに使います。忘れないようメモを。</p>
+</blockquote>
+<hr>
+<h2 id="14-バックエンドを起動するrunserver">14. バックエンドを起動する（runserver）</h2>
+<p>ついにバックエンドを起動します！</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> Django の開発用サーバーを起動し、<code>http://localhost:8000</code> で待ち受け状態にします。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># Django開発サーバーを起動（localhost:8000で待機）</span>
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">runserver</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+June 02, 2026 - 10:30:00
+Django version 4.2.7, using settings &#39;hozen_another.settings&#39;
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+</code></pre></div></div>
+
+<p>最後の <code>Starting development server at http://127.0.0.1:8000/</code> が出れば、<strong>バックエンドは起動成功</strong> です。</p>
+<p>⚠️ <strong>このターミナルは閉じないでください。</strong> <code>runserver</code> は「起動しっぱなし」で動き続けます。サーバーが動いている間、このターミナルは入力を受け付けません（プロンプトが戻りません）。これが正常です。<strong>別の作業は、新しいターミナルを開いて行います</strong>（VSCodeでターミナル右上の「＋」または分割アイコン）。</p>
+</blockquote>
+<h3 id="141-動作確認管理画面にログイン">14.1 動作確認：管理画面にログイン</h3>
+<p>ブラウザで <strong><code>http://localhost:8000/admin/</code></strong> を開きます。</p>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> Django 管理サイトのログイン画面が出ます。§13 で作ったユーザー名・パスワードでログインすると、管理画面のトップ（<code>member</code>・<code>Business_Time_graph</code> などのモデル一覧）が表示されます。<strong>ここまで来たら、バックエンドは完璧に動いています。</strong></p>
+<p><strong>用語: 開発サーバー（development server）</strong> … <code>runserver</code> が起動する、<strong>開発専用の簡易サーバー</strong>。手軽ですが本番には使いません（本番は §9⑪ の <code>gunicorn</code> 等を使う）。ローカルで試すには十分です。</p>
+</blockquote>
+<h3 id="142-サーバーを止めるには">14.2 サーバーを止めるには</h3>
+<p>そのターミナルにフォーカスを当て、<strong><code>Ctrl + C</code></strong> を押します。プロンプトが戻れば停止です。再度起動したいときは、また <code>python manage.py runserver</code> を打ちます。</p>
+<blockquote>
+<p>⚠️ <strong><code>Error: That port is already in use.</code> が出たら:</strong> すでに別の <code>runserver</code> が 8000番で動いています。古い方を止める（<code>Ctrl + C</code>）か、<code>python manage.py runserver 8001</code> のように別ポートで起動します（ただしフロントの設定とずれるので、基本は古い方を止めるのが正解）。</p>
+</blockquote>
+<hr>
+<h2 id="15-非同期ワーカーを起動するqcluster">15. 非同期ワーカーを起動する（qcluster）</h2>
+<p>本アプリは、バックアップ・復元などの <strong>時間のかかる処理を裏で実行</strong> します（<code>CLAUDE.md</code> の「Django-Q async tasks for backup/restore」）。それを担うのが <code>qcluster</code> です。</p>
+<blockquote>
+<p><strong>ワーカー（worker）とは？</strong> 「裏で黙々と仕事をこなす作業員プログラム」。<code>qcluster</code> は §11.6 の <code>Q_CLUSTER</code> 設定（ワーカー4人）に従って起動し、依頼された非同期タスクを順に処理します。</p>
+</blockquote>
+<p><strong>新しいターミナルを開き</strong>（runserver のターミナルとは別！）、<code>(venv)</code> を有効化してから実行します。</p>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># （新ターミナルなので）仮想環境を再度有効化</span>
+<span class="p">.\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+<span class="c"># 非同期タスクのワーカー(Django-Q)を起動</span>
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">qcluster</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>10:32:00 [Q] INFO Q Cluster ... starting.
+10:32:00 [Q] INFO Process ... ready for work at ...
+...
+10:32:00 [Q] INFO Q Cluster ... running.
+</code></pre></div></div>
+
+<p><code>Q Cluster ... running.</code> が出れば、非同期ワーカーが待機状態です。これも <strong>起動しっぱなし</strong> で、このターミナルは閉じません。</p>
+<p><strong>なぜ？ qcluster は必ず起動が必要？</strong>
+普段のログインや工数入力だけなら、<code>qcluster</code> がなくても動きます。ただし、<strong>バックアップ・復元など非同期タスクを使う機能</strong> を試すときは、これが起動していないとタスクが処理されずに溜まったままになります。本番同様の動作を確認するなら、<code>runserver</code> と <code>qcluster</code> の <strong>両方を起動</strong> しておくのが安全です。</p>
+<p>⚠️ ここまでで、ターミナルを <strong>2つ</strong> 使っています（①runserver、②qcluster）。次のフロントエンドで <strong>3つ目</strong> を開きます。VSCodeのターミナルは右上のドロップダウンで切り替えられます。</p>
+</blockquote>
+<hr>
+<h2 id="16-フロントエンド準備packagejson-全解説と-npm-install">16. フロントエンド準備①：package.json 全解説と npm install</h2>
+<p>ここからフロントエンド（React）の準備です。まず、必要な部品リストである <code>package.json</code> を読みます。</p>
+<blockquote>
+<p><strong>package.json（パッケージ・ジェイソン）とは？</strong> Node.js プロジェクトの <strong>設定ファイル兼・部品リスト</strong>。<code>requirements.txt</code> の Node.js 版にあたります。使う部品（dependencies）と、実行できるコマンド（scripts）が書かれています。<code>frontend/</code> フォルダの中にあります。</p>
+</blockquote>
+<h3 id="161-本アプリの-packagejson-を読む">16.1 本アプリの package.json を読む</h3>
+<blockquote>
+<p><strong>▼ このファイルがやること:</strong> フロントエンドの名前・部品（ライブラリ）・実行コマンドを定義します。下記は <code>frontend/package.json</code> の実物です。主要部を解説します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;frontend&quot;</span><span class="p">,</span><span class="w">          </span><span class="c1">// このプロジェクトの名前</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span><span class="p">,</span><span class="w">          </span><span class="c1">// バージョン</span>
+<span class="w">  </span><span class="nt">&quot;private&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">             </span><span class="c1">// 誤って公開(npm publish)しないための印</span>
+<span class="w">  </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">            </span><span class="c1">// ▼アプリ動作に必要な部品（本番でも使う）</span>
+<span class="w">    </span><span class="nt">&quot;@emotion/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.14.0&quot;</span><span class="p">,</span><span class="w">          </span><span class="c1">// MUIが内部で使うスタイル付け部品</span>
+<span class="w">    </span><span class="nt">&quot;@emotion/styled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^11.14.1&quot;</span><span class="p">,</span><span class="w">         </span><span class="c1">// 同上（スタイル付け）</span>
+<span class="w">    </span><span class="nt">&quot;@fullcalendar/daygrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1">// カレンダー表示部品(月表示)</span>
+<span class="w">    </span><span class="nt">&quot;@fullcalendar/interaction&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span><span class="c1">// カレンダー操作部品</span>
+<span class="w">    </span><span class="nt">&quot;@fullcalendar/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span><span class="w">      </span><span class="c1">// カレンダーのReact版</span>
+<span class="w">    </span><span class="nt">&quot;@fullcalendar/timegrid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.1.19&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// カレンダー(時間軸表示)</span>
+<span class="w">    </span><span class="nt">&quot;@mui/material&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.2.0&quot;</span><span class="p">,</span><span class="w">             </span><span class="c1">// Material-UI：ボタン等のUI部品集（CLAUDE.md記載）</span>
+<span class="w">    </span><span class="nt">&quot;@mui/x-date-pickers&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^8.11.2&quot;</span><span class="p">,</span><span class="w">      </span><span class="c1">// MUIの日付選択部品</span>
+<span class="w">    </span><span class="nt">&quot;@testing-library/dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^10.4.0&quot;</span><span class="p">,</span><span class="w">     </span><span class="c1">// テスト用のDOM操作部品</span>
+<span class="w">    </span><span class="nt">&quot;@types/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.7&quot;</span><span class="p">,</span><span class="w">             </span><span class="c1">// ReactのTypeScript型定義</span>
+<span class="w">    </span><span class="nt">&quot;@types/react-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.6&quot;</span><span class="p">,</span><span class="w">         </span><span class="c1">// React-DOMの型定義</span>
+<span class="w">    </span><span class="nt">&quot;axios&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.11.0&quot;</span><span class="p">,</span><span class="w">                    </span><span class="c1">// サーバーと通信する部品（API呼び出しの主役）</span>
+<span class="w">    </span><span class="nt">&quot;chart.js&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.5.0&quot;</span><span class="p">,</span><span class="w">                  </span><span class="c1">// グラフ描画ライブラリ</span>
+<span class="w">    </span><span class="nt">&quot;chartjs-plugin-datalabels&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.2.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// グラフに数値ラベルを出す拡張</span>
+<span class="w">    </span><span class="nt">&quot;date-fns&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.1.0&quot;</span><span class="p">,</span><span class="w">                  </span><span class="c1">// 日付処理ライブラリ</span>
+<span class="w">    </span><span class="nt">&quot;dayjs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^1.11.13&quot;</span><span class="p">,</span><span class="w">                   </span><span class="c1">// 軽量な日付処理ライブラリ</span>
+<span class="w">    </span><span class="nt">&quot;react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span><span class="p">,</span><span class="w">                    </span><span class="c1">// React本体！画面を作る主役（CLAUDE.md記載）</span>
+<span class="w">    </span><span class="nt">&quot;react-calendar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.0.0&quot;</span><span class="p">,</span><span class="w">            </span><span class="c1">// カレンダー部品</span>
+<span class="w">    </span><span class="nt">&quot;react-chartjs-2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^5.3.0&quot;</span><span class="p">,</span><span class="w">           </span><span class="c1">// chart.jsのReactラッパー</span>
+<span class="w">    </span><span class="nt">&quot;react-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^19.1.0&quot;</span><span class="p">,</span><span class="w">                </span><span class="c1">// ReactをブラウザDOMに描画する部品</span>
+<span class="w">    </span><span class="nt">&quot;react-router-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.11.0&quot;</span><span class="p">,</span><span class="w">         </span><span class="c1">// 画面遷移(ルーティング)の部品（CLAUDE.md記載）</span>
+<span class="w">    </span><span class="nt">&quot;react-scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.0.1&quot;</span><span class="p">,</span><span class="w">              </span><span class="c1">// Create React Appの土台ツール（start/build等を提供）</span>
+<span class="w">    </span><span class="nt">&quot;typescript&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.9.5&quot;</span><span class="p">,</span><span class="w">                </span><span class="c1">// TypeScript本体（型付きJavaScript）</span>
+<span class="w">    </span><span class="nt">&quot;web-vitals&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^2.1.4&quot;</span><span class="w">                 </span><span class="c1">// パフォーマンス計測部品</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;scripts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">                 </span><span class="c1">// ▼実行できるコマンド（npm run xxx で呼ぶ）</span>
+<span class="w">    </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts start&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// 開発サーバー起動（§18で使う）</span>
+<span class="w">    </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts build&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// 本番ビルド（§19で使う）</span>
+<span class="w">    </span><span class="nt">&quot;test&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest&quot;</span><span class="p">,</span><span class="w">                 </span><span class="c1">// テスト実行（監視モード）</span>
+<span class="w">    </span><span class="nt">&quot;test:ui&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest --ui&quot;</span><span class="p">,</span><span class="w">         </span><span class="c1">// テストをUIで実行</span>
+<span class="w">    </span><span class="nt">&quot;test:run&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vitest run&quot;</span><span class="p">,</span><span class="w">         </span><span class="c1">// テスト1回実行</span>
+<span class="w">    </span><span class="nt">&quot;eject&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;react-scripts eject&quot;</span><span class="w">    </span><span class="c1">// 設定を取り出す（通常使わない）</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;eslintConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// コードの書き方チェック(ESLint)の設定</span>
+<span class="w">  </span><span class="nt">&quot;browserslist&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// 対応ブラウザの範囲指定</span>
+<span class="w">  </span><span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">         </span><span class="c1">// ▼開発時だけ使う部品（テスト等。本番には含めない）</span>
+<span class="w">    </span><span class="nt">&quot;@testing-library/jest-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.9.1&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// テストの便利機能</span>
+<span class="w">    </span><span class="nt">&quot;@testing-library/react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^16.3.1&quot;</span><span class="p">,</span><span class="w">     </span><span class="c1">// Reactコンポーネントのテスト</span>
+<span class="w">    </span><span class="nt">&quot;@types/jest&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^30.0.0&quot;</span><span class="p">,</span><span class="w">                </span><span class="c1">// jestの型定義</span>
+<span class="w">    </span><span class="nt">&quot;@vitejs/plugin-react&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^5.1.2&quot;</span><span class="p">,</span><span class="w">        </span><span class="c1">// Vite用React対応</span>
+<span class="w">    </span><span class="nt">&quot;@vitest/coverage-v8&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.1.2&quot;</span><span class="p">,</span><span class="w">         </span><span class="c1">// テストカバレッジ計測</span>
+<span class="w">    </span><span class="nt">&quot;@vitest/ui&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.0.16&quot;</span><span class="p">,</span><span class="w">                 </span><span class="c1">// VitestのUI</span>
+<span class="w">    </span><span class="nt">&quot;eslint-config-react-app&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^7.0.1&quot;</span><span class="p">,</span><span class="w">     </span><span class="c1">// ESLint設定</span>
+<span class="w">    </span><span class="nt">&quot;jsdom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^27.3.0&quot;</span><span class="p">,</span><span class="w">                      </span><span class="c1">// テスト用の擬似ブラウザ環境</span>
+<span class="w">    </span><span class="nt">&quot;vitest&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.0.16&quot;</span><span class="p">,</span><span class="w">                     </span><span class="c1">// テスト実行ツール（CLAUDE.md記載）</span>
+<span class="w">    </span><span class="nt">&quot;webpack-bundle-analyzer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^4.10.2&quot;</span><span class="w">     </span><span class="c1">// バンドルサイズ分析ツール</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>"name":</code></strong>（設定ファイル（JSON））: <code>package.json</code> の <code>"name"</code> は、このプロジェクト（パッケージ）の名前です。</li>
+<li><strong><code>"version":</code></strong>（設定ファイル（JSON））: <code>package.json</code> の <code>"version"</code> は、このプログラム自身の版の番号です。</li>
+<li><strong><code>"private":</code></strong>（設定ファイル（JSON））: <code>"private": true</code> は、「このパッケージは npm に公開しない」という印です。間違って公開するのを防ぎます。</li>
+<li><strong><code>"dependencies":</code></strong>（設定ファイル（JSON））: <code>package.json</code> の <code>"dependencies"</code> は、アプリが動くのに必要な部品の一覧です。<code>"axios": "^1.11.0"</code> のように、部品の名前と版を書きます。<code>^</code> は「1.11.0 以上で、2.0.0 より前ならよい」という意味です。<code>npm install</code> で、ここに書いた部品が入ります。</li>
+<li><strong><code>"typescript":</code></strong>（設定ファイル（JSON））: <code>"typescript": "^4.9.5"</code> は、TypeScript（型を確かめる道具）の部品と、その版です。<code>^</code> は「4.9.5 以上で、5.0.0 より前ならよい」という意味です。</li>
+<li><strong><code>"scripts":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> には、<code>npm run 名前</code> で動かすコマンドを書きます。このアプリでは <code>"start": "react-scripts start"</code>（<code>npm start</code> で開発用のサーバー）・<code>"build": "react-scripts build"</code>（<code>npm run build</code> で本番用に作る）・<code>"test": "vitest"</code> などです。</li>
+<li><strong><code>"start":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"start"</code> は、<code>npm start</code> で動くコマンドです（ここでは <code>react-scripts start</code>＝開発用のサーバーを起動）。</li>
+<li><strong><code>"build":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"build"</code> は、<code>npm run build</code> で動くコマンドです（本番用に、画面のファイルを <code>build/</code> フォルダにまとめる）。</li>
+<li><strong><code>"test":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"test"</code> は、<code>npm test</code> で動くコマンドです（ここでは <code>vitest</code>＝ファイルを見張って、変わるたびにテストを流す）。</li>
+<li><strong><code>"test:ui":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"test:ui"</code> は、<code>npm run test:ui</code> で動くコマンドです（テストの結果をブラウザーの画面で見る）。</li>
+<li><strong><code>"test:run":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"test:run"</code> は、<code>npm run test:run</code> で動くコマンドです（テストを 1 回だけ流して終わる）。</li>
+<li><strong><code>"eject":</code></strong>（設定ファイル（JSON））: <code>"scripts"</code> の中の <code>"eject"</code> は、react-scripts が隠している設定を取り出すコマンドです。元に戻せないので、ふだんは使いません。</li>
+<li><strong><code>"eslintConfig":</code></strong>（設定ファイル（JSON））: <code>package.json</code> の <code>"eslintConfig"</code> は、ESLint（コードの書き方を調べる道具）の設定です。</li>
+<li><strong><code>"browserslist":</code></strong>（設定ファイル（JSON））: <code>package.json</code> の <code>"browserslist"</code> は、どの版のブラウザーまで動くように作るかの指定です。<code>"production"</code>（本番のビルド用）と <code>"development"</code>（開発用）に分けて書きます。</li>
+<li><strong><code>"devDependencies":</code></strong>（設定ファイル（JSON））: <code>"devDependencies"</code> には、開発の時だけ使う部品と、その版を書きます。<code>npm install</code> で入ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p>押さえるべきポイント：</p>
+<blockquote>
+<p><strong>用語: dependencies と devDependencies の違い</strong>
+- <code>dependencies</code>（依存）… <strong>アプリが動くのに必要</strong> な部品。本番でも使う（React、axios など）。
+- <code>devDependencies</code>（開発依存）… <strong>開発中だけ</strong> 使う部品。テストツールなど、本番には含めない（vitest など）。
+<code>npm install</code>（§16.2）は、<strong>両方とも</strong> インストールします。</p>
+<p><strong>用語: <code>^</code>（キャレット）の意味</strong> … <code>"react": "^19.1.0"</code> の <code>^</code> は「<strong>19.1.0 以上で、メジャー番号19の範囲内の最新</strong>」という許容指定。<code>requirements.txt</code> の <code>==</code>（完全固定）より少し緩い指定です。ただし実際に入る版は次の <code>package-lock.json</code> で固定されます。</p>
+<p><strong>用語: scripts</strong> … <code>npm run &lt;名前&gt;</code> で実行できる、登録済みコマンドの一覧。<code>start</code>・<code>build</code>・<code>test:run</code> などをこの後使います。<code>start</code> だけは慣習で <code>npm start</code>（<code>run</code> 省略可）と書けます。</p>
+<p><strong>用語: axios（アクシオス）</strong> … サーバーと通信（HTTPリクエスト）するための定番ライブラリ。React から Django の <code>/api/...</code> にデータを取りに行く、その通信を担います。<code>CLAUDE.md</code> の「Frontend makes requests to /api/ endpoints」の実行役です。</p>
+<p><strong>用語: Material-UI / MUI（エムユーアイ）</strong> … <code>@mui/material</code>。きれいなボタン・入力欄・表などの <strong>既製UI部品集</strong>。自分でCSSを書かなくても、整った見た目の部品を使えます（<code>CLAUDE.md</code> の「Material-UI 7」）。</p>
+</blockquote>
+<h3 id="162-npm-install-を実行する">16.2 npm install を実行する</h3>
+<blockquote>
+<p>⚠️ <strong>フロントのコマンドは、必ず <code>frontend/</code> フォルダの中で実行します。</strong> ルートで打つと「package.json が見つからない」と怒られます。</p>
+</blockquote>
+<p><strong>新しいターミナルを開き</strong>（3つ目）、<code>frontend</code> に移動してからインストールします。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> <code>package.json</code> に書かれた全部品を、<code>frontend/node_modules</code> フォルダにまとめてダウンロード＆インストールします。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># フロントエンドのフォルダに移動（ルートにいる前提）</span>
+<span class="nb">cd </span><span class="n">frontend</span>
+<span class="c"># package.jsonの全部品をnode_modulesにインストール</span>
+<span class="n">npm</span> <span class="n">install</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>npm install</code></strong>（Node.js）: <code>package.json</code> に書いてある部品（TypeScript など）を、まとめて入れるコマンド。入った部品は <code>node_modules</code> フォルダに入ります（Git には入れません）。最初の 1 回だけ打ちます。<code>npm install 部品の名前</code> なら、その部品を足します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong> たくさんの行が流れたあと、最後に次のように出ます（警告 <code>npm warn ...</code> は出ても問題ないことが多いです）。</p>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>added 1456 packages, and audited 1457 packages in 1m
+
+250 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+</code></pre></div></div>
+
+<p><code>added ... packages</code> と出て、<code>node_modules</code> フォルダができていれば成功です。<strong>初回は数分かかります</strong>（部品が多いため）。</p>
+<p><strong>用語: node_modules（ノード・モジュールズ）とは？</strong> <code>npm install</code> でダウンロードした全部品が入る巨大フォルダ。<strong>サイズが非常に大きく、Git では共有しません</strong>（<code>.gitignore</code> 済み）。だから clone 直後には存在せず、各自が <code>npm install</code> で作ります。これが、<code>requirements.txt</code> → <code>pip install</code> と同じ「リストから手元に部品を再現する」流れの Node 版です。</p>
+<p><strong>用語: package-lock.json とは？</strong> <code>npm install</code> 時に自動生成・更新される「実際に入れた部品の正確な版を記録したファイル」。これがあると、誰がインストールしても <strong>まったく同じ版</strong> が入り、動作が再現します。<code>requirements.txt</code> の <code>==</code> 固定と同じ役割を、Node では <code>package.json</code>（範囲指定）＋<code>package-lock.json</code>（実際の固定）で実現しています。</p>
+<p>⚠️ <strong>警告 <code>npm warn deprecated ...</code> が大量に出ても、ほとんどは無視してOK</strong> です。<code>vulnerabilities</code>（脆弱性）が出ても、<code>found 0 vulnerabilities</code> なら問題なし。数字が出ても、初心者のうちは <code>npm audit fix</code> を <strong>安易に実行しない</strong> でください（依存が壊れることがあります）。</p>
+</blockquote>
+<hr>
+<h2 id="17-フロントエンド準備frontendenv-と-react_app_api_base_url">17. フロントエンド準備②：frontend/.env と REACT_APP_API_BASE_URL</h2>
+<p>React に「<strong>バックエンド（Django）がどこにいるか</strong>」を教える設定をします。<code>CLAUDE.md</code> の「Frontend uses <code>REACT_APP_API_BASE_URL</code> for API endpoint configuration」に対応する、フロント側の最重要設定です。</p>
+<h3 id="171-envproduction-を読んで仕組みを理解する">17.1 .env.production を読んで仕組みを理解する</h3>
+<p>本アプリの <code>frontend/</code> には <code>.env.production</code>（本番用設定）があります。まずこの実物を読み、設定の書き方を学びます。</p>
+<blockquote>
+<p><strong>▼ このファイルがやること:</strong> React が通信する相手（API）のベースURLを、環境（ローカル／ステージング／本番）ごとに切り替えるための設定です。下記は <code>frontend/.env.production</code> の <strong>実物そのまま</strong> です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># ステージング環境にデプロイするときは下記を有効にしてビルド
+# REACT_APP_API_BASE_URL=https://hozen-kosu-another-c6e2gyeraydpdnhq.japaneast-01.azurewebsites.net
+
+# 本番環境にデプロイするときは下記を有効にしてビルド
+# REACT_APP_API_BASE_URL=https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net/
+
+
+# ローカル環境での動作時は下記を有効にしてビルド
+REACT_APP_API_BASE_URL=http://localhost:8000
+</code></pre></div></div>
+
+<p>1行ずつ：
+- <code># ...</code> で始まる行 … <strong>コメント（無効化された行）</strong>。<code>#</code> を付けると、その行は「メモ書き」になり設定としては効きません。ステージング・本番用のURLは、いまは <code>#</code> で無効化されています。
+- <code>REACT_APP_API_BASE_URL=http://localhost:8000</code> … <strong>唯一有効な行</strong>。React が API を呼ぶときの相手先を「<code>http://localhost:8000</code>（あなたのPCの Django）」に設定しています。</p>
+<blockquote>
+<p><strong>REACT_APP_API_BASE_URL とは？</strong> React のコードから「API（バックエンド）の住所」を読み取るための環境変数。React（Create React App）では、<strong><code>REACT_APP_</code> で始まる名前</strong> の環境変数だけがフロントのコードに渡される、というルールがあります。だからこの名前になっています。コード中では <code>process.env.REACT_APP_API_BASE_URL</code> で読み出し、axios の通信先に使います（<code>04</code>/<code>05</code>章で実コードを確認）。</p>
+<p><strong>なぜ？ なぜローカルは <code>http://localhost:8000</code> なの？</strong>
+§14 で起動した Django が <code>localhost:8000</code> で待っているからです。React（<code>localhost:3000</code>）が「工数データをください」と頼む相手＝Django の住所が、まさに <code>http://localhost:8000</code>。<strong>ここがずれると、画面は出てもデータが取れません</strong>（通信先が間違うため）。</p>
+</blockquote>
+<h3 id="172-ローカル用の-frontendenv-を用意する">17.2 ローカル用の frontend/.env を用意する</h3>
+<p>開発（<code>npm start</code>）では <code>.env</code>（または <code>.env.development</code>）が使われます。<strong>ローカル開発用に、<code>frontend/.env</code> を作成（または確認）</strong> します。</p>
+<p>VSCode で <code>frontend/</code> フォルダの中に <code>.env</code> という新しいファイルを作り、次の1行を書きます。</p>
+<blockquote>
+<p><strong>▼ このファイルがやること:</strong> ローカル開発時、React が通信する Django の住所を <code>localhost:8000</code> に設定します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>REACT_APP_API_BASE_URL=http://localhost:8000      # 開発時のAPI接続先（自分のPCのDjango）
+</code></pre></div></div>
+
+<p>保存（<code>Ctrl + S</code>）します。</p>
+<blockquote>
+<p>⚠️ <strong><code>.env</code> を編集・新規作成したら、<code>npm start</code> を再起動する必要があります。</strong> React の開発サーバーは <strong>起動時に一度だけ</strong> 環境変数を読み込むため、起動中に <code>.env</code> を変えても反映されません。すでに起動していたら、一度 <code>Ctrl + C</code> で止めて、もう一度 <code>npm start</code> してください（§18）。</p>
+<p><strong>用語: <code>.env</code> / <code>.env.development</code> / <code>.env.production</code> の使い分け（React/CRAの場合）</strong>
+- <code>.env</code> … 常に読まれる共通設定。
+- <code>.env.development</code> … <code>npm start</code>（開発）のときに追加で読まれる。
+- <code>.env.production</code> … <code>npm run build</code>（本番ビルド §19）のときに読まれる。
+ローカルで <code>npm start</code> する分には、<code>frontend/.env</code> に <code>REACT_APP_API_BASE_URL=http://localhost:8000</code> があれば十分です。</p>
+</blockquote>
+<hr>
+<h2 id="18-フロントエンドを起動するnpm-start">18. フロントエンドを起動する（npm start）</h2>
+<p>すべての準備が整いました。フロントエンドを起動します。</p>
+<blockquote>
+<p>⚠️ <strong>前提：バックエンド（§14 runserver）が起動していること。</strong> 画面だけ起動してもデータは取れません。<code>runserver</code>（ターミナル①）が動いている状態で進めてください。</p>
+</blockquote>
+<p><code>frontend/</code> フォルダにいることを確認して実行します。</p>
+<blockquote>
+<p><strong>▼ このコマンドがやること:</strong> React の開発サーバーを起動し、<code>http://localhost:3000</code> でアプリ画面を表示します。<code>package.json</code> の <code>"start": "react-scripts start"</code>（§16.1）が実行されます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># React開発サーバーを起動（localhost:3000）</span>
+<span class="n">npm</span> <span class="nb">start</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>npm start</code></strong>（Node.js）: <code>package.json</code> の <code>"scripts"</code> の <code>"start"</code> を動かします。このアプリでは、画面の開発用サーバーが起動し、ブラウザーで <code>http://localhost:3000</code> が開きます。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.x.x:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+</code></pre></div></div>
+
+<p>自動でブラウザが開き、<code>http://localhost:3000</code> に <strong>本アプリのログイン画面</strong> が表示されれば、<strong>フロントエンドの起動成功</strong> です！（自動で開かなければ、ブラウザで <code>http://localhost:3000</code> を手で開く。）</p>
+<p><strong>▼ 最終ゴール確認:</strong> ログイン画面で、業務工数システムのロゴと「従業員番号」の入力欄が見えれば、フロント・バック・DBが全部つながっています。<strong>おめでとうございます。環境構築は完了です。</strong></p>
+</blockquote>
+<h3 id="181-動作確認のチェックリスト">18.1 動作確認のチェックリスト</h3>
+<table>
+<thead>
+<tr>
+<th>確認項目</th>
+<th>OKの状態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ターミナル① runserver</td>
+<td><code>Starting development server at http://127.0.0.1:8000/</code> 表示中</td>
+</tr>
+<tr>
+<td>ターミナル② qcluster</td>
+<td><code>Q Cluster ... running.</code> 表示中</td>
+</tr>
+<tr>
+<td>ターミナル③ npm start</td>
+<td><code>Compiled successfully!</code> 表示中</td>
+</tr>
+<tr>
+<td>ブラウザ <code>localhost:3000</code></td>
+<td>ログイン画面が表示される</td>
+</tr>
+<tr>
+<td>ブラウザ <code>localhost:8000/admin/</code></td>
+<td>管理画面にログインできる</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠️ <strong>画面は出るがデータが出ない／ログインできないとき:</strong> ほぼ「フロントの API 接続先（§17）」か「CORS（§11.3）」か「バックエンド未起動（§14）」のいずれかです。ブラウザの <strong>F12 → Console / Network</strong> タブでエラーを確認します（<code>03</code>章§14、<code>07</code>章で詳説）。<code>401</code>（未認証）や <code>Network Error</code>、<code>CORS</code> の文字がヒントになります。</p>
+</blockquote>
+<h3 id="182-ホットリロード自動再読み込み">18.2 ホットリロード（自動再読み込み）</h3>
+<p><code>npm start</code> 中にコードを保存すると、ブラウザが自動で更新されます。これを <strong>ホットリロード（hot reload）</strong> といいます。いちいちブラウザを手動更新しなくても、変更が即反映される開発者にやさしい仕組みです。</p>
+<h3 id="183-止めるには">18.3 止めるには</h3>
+<p><code>npm start</code> のターミナルで <strong><code>Ctrl + C</code></strong>。「バッチ ジョブを終了しますか (Y/N)?」と出たら <code>Y</code>。</p>
+<hr>
+<h2 id="19-本番ビルドnpm-run-build">19. 本番ビルド（npm run build）</h2>
+<p>最後に、<strong>本番用の成果物を作る</strong> コマンドを紹介します（普段の開発では使いませんが、デプロイ時に必須なので仕組みを知っておきます）。</p>
+<blockquote>
+<p><strong>ビルド（build）とは？</strong> 開発用に書かれた React/TypeScript のコードを、<strong>ブラウザが効率よく読める形に変換・圧縮</strong> して、配布用ファイル一式を作ること。「材料（ソース）を、出荷できる製品（静的ファイル）に組み立てる」工程です。</p>
+<p><strong>▼ このコマンドがやること:</strong> <code>frontend/build/</code> フォルダに、本番配信用の HTML・CSS・JavaScript（圧縮済み）を生成します。<code>package.json</code> の <code>"build": "react-scripts build"</code>（§16.1）が実行されます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 本番用の静的ファイル一式を frontend/build に生成</span>
+<span class="n">npm</span> <span class="n">run</span> <span class="n">build</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>npm run</code></strong>（Node.js）: <code>package.json</code> の <code>"scripts"</code> に書いたコマンドを動かすコマンド。このアプリでは <code>npm run build</code>（本番用のファイルを <code>frontend/build/</code> に作る）・<code>npm run test:run</code>（テストを 1 回流す）などです（<code>start</code> と <code>test</code> だけは <code>run</code> を省けます）。止める時は <code>Ctrl</code> ＋ <code>C</code> です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  234.56 kB  build/static/js/main.xxxxxxx.js
+   12.34 kB  build/static/css/main.xxxxxxx.css
+  ...
+
+The build folder is ready to be deployed.
+</code></pre></div></div>
+
+<p><code>The build folder is ready to be deployed.</code> が出れば成功。<code>frontend/build/</code> に成果物ができます。</p>
+</blockquote>
+<h3 id="191-build-と-settingspy-のつながり">19.1 build と settings.py のつながり</h3>
+<p>ここで <code>settings.py</code>（§11）の次の部分を思い出してください。</p>
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># ビルドした静的ファイルの場所</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;frontend/build/static&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="c1"># Reactのbuild内のindex.htmlをテンプレートとして指定</span>
+<span class="c1"># ビルドのindex.htmlを使う</span>
+<span class="n">TEMPLATES</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;DIRS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;frontend/build&#39;</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>これが重要な設計です。</strong> 本番では、<code>npm run build</code> で作った <code>frontend/build/</code> を <strong>Django が配信</strong> します。<code>STATICFILES_DIRS</code> で <code>build/static</code>（CSS/JS）を、<code>TEMPLATES[0]['DIRS']</code> で <code>build/index.html</code> を Django に教えています。つまり <strong>本番は「Django 1つが、画面（Reactのビルド成果）もAPIも両方配信する」</strong> 構成です。ローカル開発では別々（3000と8000）に動かしますが、本番では合体する——この違いを覚えておくと、<code>08</code>章のデプロイで迷いません。</p>
+<p>⚠️ <strong>ローカル開発では <code>npm run build</code> は不要です。</strong> 普段は <code>npm start</code>（開発サーバー）で十分。<code>build</code> は「本番に出す」ときだけ実行します。</p>
+<p><strong><code>REACT_APP_API_BASE_URL</code> の切り替え（§17.1の再確認）:</strong> 本番ビルド時は <code>.env.production</code> が読まれます。本番にデプロイするなら、<code>.env.production</code> で本番用URL（<code>#</code> を外す）を有効にしてからビルドします。<strong>ローカルで動作確認するだけなら触らなくてOK</strong> です。</p>
+</blockquote>
+<hr>
+<h2 id="20-毎日の起動手順まとめチートシート">20. 毎日の起動手順まとめ（チートシート）</h2>
+<p>環境構築は1回きりですが、<strong>毎日の開発では「起動」だけを繰り返します</strong>。最短手順をまとめます。VSCodeでプロジェクトを開いたら、ターミナルを3つ開いて：</p>
+<p><strong>ターミナル①（バックエンド）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 仮想環境を有効化</span>
+<span class="p">.\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+<span class="c"># Django起動（localhost:8000）</span>
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">runserver</span>
+</code></pre></div></div>
+
+<p><strong>ターミナル②（非同期ワーカー）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 仮想環境を有効化</span>
+<span class="p">.\</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+<span class="c"># 非同期ワーカー起動</span>
+<span class="n">python</span> <span class="n">manage</span><span class="p">.</span><span class="n">py</span> <span class="n">qcluster</span>
+</code></pre></div></div>
+
+<p><strong>ターミナル③（フロントエンド）</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># フロントのフォルダへ</span>
+<span class="nb">cd </span><span class="n">frontend</span>
+<span class="c"># React起動（localhost:3000）</span>
+<span class="n">npm</span> <span class="nb">start</span>
+</code></pre></div></div>
+
+<p>→ ブラウザで <code>http://localhost:3000</code> を開く。終わるときは各ターミナルで <code>Ctrl + C</code>。</p>
+<blockquote>
+<p><strong>初回だけ必要だった作業（毎日は不要）:</strong> 各ツールのインストール（§2-6）、<code>git clone</code>（§7）、<code>python -m venv venv</code>（§8.1）、<code>pip install -r requirements.txt</code>（§9）、<code>.env</code> 作成（§10・§17）、DB作成＋<code>migrate</code>（§12）、<code>createsuperuser</code>（§13）、<code>npm install</code>（§16）。これらは原則 <strong>1回やれば再実行不要</strong> です（<code>requirements.txt</code> や <code>package.json</code> が更新されたら、再度 <code>pip install -r requirements.txt</code> / <code>npm install</code> を実行）。</p>
+</blockquote>
+<hr>
+<h2 id="21-トラブルシューティング">21. トラブルシューティング</h2>
+<p>症状から原因を引ける一覧です。多くは「PATH」「venv未有効化」「フォルダ違い」「.env の綴り」「バージョン違い」のどれかです。</p>
+<h3 id="211-ツールのインストールコマンド系">21.1 ツールのインストール・コマンド系</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>対処</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'git'/'python'/'node'/'npm' は認識されません</code></td>
+<td>PATH未登録、またはインストール後にVSCode未再起動</td>
+<td>インストール時に「Add to PATH」にチェックしたか確認。VSCodeを閉じて開き直す。直らなければ入れ直し</td>
+</tr>
+<tr>
+<td><code>python</code> と打つとMicrosoft Storeが開く</td>
+<td>Windowsのアプリ実行エイリアスが有効</td>
+<td>Windows設定→「アプリ」→「アプリ実行エイリアス」→「アプリ インストーラー python.exe / python3.exe」を <strong>オフ</strong>。VSCode再起動</td>
+</tr>
+<tr>
+<td><code>python --version</code> が 3.13 など想定外</td>
+<td>複数のPythonが入っている／別版を入れた</td>
+<td>3.12系を入れ直す。<code>py -3.12 --version</code> で3.12が呼べるか確認し、venv作成も <code>py -3.12 -m venv venv</code> に</td>
+</tr>
+<tr>
+<td><code>node --version</code> が v18 以前</td>
+<td>古いNodeが入っている</td>
+<td>古い方をアンインストールし、v22 LTSを入れ直す（v20 ならそのままで可）</td>
+</tr>
+<tr>
+<td><code>psql は認識されません</code></td>
+<td>PostgreSQLのbinがPATHにない（PostgreSQL自体は入っている）</td>
+<td>pgAdminで確認すればOK。コマンドが要るときはフルパス <code>"C:\Program Files\PostgreSQL\16\bin\psql.exe"</code> で実行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="212-仮想環境venv系">21.2 仮想環境（venv）系</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>対処</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Activate.ps1 ... スクリプトの実行が無効</code></td>
+<td>PowerShellの実行ポリシーが厳格</td>
+<td><code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> を実行し <code>Y</code>。その後 再度 activate（§8.2）</td>
+</tr>
+<tr>
+<td>プロンプトに <code>(venv)</code> が付かない</td>
+<td>有効化に失敗、または別ターミナル</td>
+<td>ルートで <code>.\venv\Scripts\Activate.ps1</code> を実行。新しいターミナルでは毎回有効化が必要</td>
+</tr>
+<tr>
+<td><code>pip install</code> したのに <code>ModuleNotFoundError</code></td>
+<td><code>(venv)</code> 無しでインストール／実行している</td>
+<td><code>(venv)</code> を付けてから <code>pip install</code> と <code>python manage.py ...</code> を実行</td>
+</tr>
+<tr>
+<td><code>python -m venv venv</code> でエラー</td>
+<td>Pythonが正しく入っていない</td>
+<td>§4を再確認。<code>python --version</code> が3.12系か確認</td>
+</tr>
+</tbody>
+</table>
+<h3 id="213-バックエンドdjango系">21.3 バックエンド（Django）系</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>対処</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KeyError: 'SECRET_KEY'</code> / <code>ImproperlyConfigured</code></td>
+<td><code>.env</code> が無い、または <code>SECRET_KEY</code> 未記入</td>
+<td>ルートに <code>.env</code> があるか、<code>SECRET_KEY=...</code> を書いたか確認（§10）</td>
+</tr>
+<tr>
+<td><code>OperationalError: connection ... failed</code></td>
+<td>PostgreSQL未起動／DB未作成／<code>.env</code>のDB情報違い</td>
+<td>サービスでPostgreSQL起動確認。<code>hozen_kosu</code> DBを作ったか（§12.1）。<code>.env</code>のDB_HOST/NAME確認</td>
+</tr>
+<tr>
+<td><code>password authentication failed for user "postgres"</code></td>
+<td><code>.env</code> の <code>DB_PASSWORD</code> が間違い</td>
+<td>§6.1で決めたパスワードを <code>.env</code> に正しく記入。pgAdminで同じパスワードで繋がるか確認</td>
+</tr>
+<tr>
+<td><code>database "hozen_kosu" does not exist</code></td>
+<td>DB未作成</td>
+<td>§12.1 でデータベースを作成</td>
+</tr>
+<tr>
+<td><code>migrate</code> で <code>No module named 'psycopg2'</code> 等</td>
+<td>DBドライバ未インストール</td>
+<td><code>(venv)</code> 有効化後 <code>pip install -r requirements.txt</code> を再実行</td>
+</tr>
+<tr>
+<td><code>runserver</code> で <code>That port is already in use</code></td>
+<td>8000番が使用中（別のrunserver）</td>
+<td>古いrunserverを <code>Ctrl+C</code>。または <code>runserver 8001</code>（基本は古い方を止める）</td>
+</tr>
+<tr>
+<td><code>createsuperuser</code> でパスワードが弱いと拒否</td>
+<td>パスワード検証</td>
+<td>少し複雑なパスワードに。または警告に <code>y</code> で強行（開発のみ）</td>
+</tr>
+<tr>
+<td>管理画面が英語</td>
+<td>（実は日本語設定済み）キャッシュ等</td>
+<td><code>LANGUAGE_CODE='ja'</code> は設定済み。ブラウザを更新／別ブラウザで確認</td>
+</tr>
+</tbody>
+</table>
+<h3 id="214-フロントエンドreact系">21.4 フロントエンド（React）系</h3>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>対処</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm install</code> で <code>package.json not found</code></td>
+<td><code>frontend/</code> 以外で実行している</td>
+<td><code>cd frontend</code> してから <code>npm install</code>（§16.2）</td>
+</tr>
+<tr>
+<td><code>npm install</code> が途中で失敗</td>
+<td>ネットワーク／キャッシュ破損／Node版違い</td>
+<td>Node が v20 か v22 か確認。<code>node_modules</code> と <code>package-lock.json</code> を削除し再 <code>npm install</code>。社内プロキシなら設定確認</td>
+</tr>
+<tr>
+<td><code>npm start</code> でブラウザは出るがデータが出ない</td>
+<td>API接続先違い／バックエンド未起動／CORS</td>
+<td><code>frontend/.env</code> の <code>REACT_APP_API_BASE_URL=http://localhost:8000</code> 確認（§17）。runserver起動確認（§14）。F12 ConsoleでCORS/Network Error確認</td>
+</tr>
+<tr>
+<td><code>.env</code> を変えたのに反映されない</td>
+<td>npm startが古い設定のまま</td>
+<td><code>Ctrl+C</code> で止めて <code>npm start</code> を再起動（§17.2）</td>
+</tr>
+<tr>
+<td><code>localhost:3000</code> でログインしても弾かれる</td>
+<td>セッション/Cookie・CORS_ALLOW_CREDENTIALS</td>
+<td>バックエンド側 §11.3 の設定は済み。ブラウザのCookieブロックやシークレットモードを疑う</td>
+</tr>
+<tr>
+<td><code>Port 3000 is already in use</code></td>
+<td>3000番が使用中（別のnpm start）</td>
+<td>古い方を止める。<code>Y</code> で別ポート起動を提案されたら従ってもよい</td>
+</tr>
+<tr>
+<td>大量の <code>npm warn deprecated</code></td>
+<td>依存の警告（多くは無害）</td>
+<td><code>found 0 vulnerabilities</code> なら無視。安易に <code>npm audit fix --force</code> しない</td>
+</tr>
+</tbody>
+</table>
+<h3 id="215-今どこにいるかが分からなくなったら">21.5 「今どこにいるか」が分からなくなったら</h3>
+<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c"># 今いるフォルダ（カレントディレクトリ）の絶対パスを表示</span>
+<span class="nb">pwd</span>
+<span class="c"># 今いるフォルダの中身一覧（manage.pyがあればルート、package.jsonがあればfrontend）</span>
+<span class="nb">ls</span>
+<span class="c"># 1つ上のフォルダへ移動</span>
+<span class="nb">cd </span><span class="p">..</span>
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ <strong>コマンドを打つ前に必ず「今いる場所」を確認する習慣を。</strong> バックエンド系（<code>python manage.py ...</code>）は <strong>ルート</strong>（<code>manage.py</code> のある所）で、フロント系（<code>npm ...</code>）は <strong><code>frontend/</code></strong> で打ちます。場所違いはエラーの最頻出原因です。</p>
+</blockquote>
+<hr>
+<h2 id="22-演習問題">22. 演習問題</h2>
+<p>手を動かすと定着します。<strong>自分のローカル環境</strong>（壊しても他に影響しない）で試してください。</p>
+<ol>
+<li>
+<p><strong>バージョン確認の練習</strong>：<code>git --version</code> / <code>python --version</code> / <code>node --version</code> / <code>npm --version</code> を順に打ち、それぞれが「Git 2.x」「Python 3.12.x」「Node v22.x（v20.x でも可）」「npm 10.x」相当になっていることを確認せよ。1つでも想定外なら、対応する §（3/4/5）に戻る。</p>
+</li>
+<li>
+<p><strong>仮想環境の出入り</strong>：<code>(venv)</code> が付いていない状態で <code>pip list</code> を実行し、付いている状態で <code>pip list</code> を実行して、表示される内容が違うことを確認せよ。<code>deactivate</code> と <code>.\venv\Scripts\Activate.ps1</code> を切り替えて、プロンプトの <code>(venv)</code> 表示が出たり消えたりするのを観察せよ。</p>
+</li>
+<li>
+<p><strong>SECRET_KEY をもう1つ生成</strong>：§10.1 のコマンドをもう一度実行し、<strong>毎回違うランダム文字列</strong> が出ることを確認せよ（※<code>.env</code> は書き換えないこと。観察のみ）。</p>
+</li>
+<li>
+<p><strong>settings.py と .env の対応を追う</strong>：<code>settings.py</code> の <code>'NAME': os.getenv('DB_NAME', '')</code>（§11.5）と、<code>.env</code> の <code>DB_NAME=hozen_kosu</code>（§10.2）が対応していることを、両ファイルを並べて目で確認せよ。<code>DB_NAME</code> を一時的に存在しない名前にして <code>python manage.py migrate</code> を実行し、<code>database "..." does not exist</code> エラーが出ることを確認したら、<strong>必ず元に戻す</strong>。</p>
+</li>
+<li>
+<p><strong>3つのターミナルでフル起動</strong>：§20 のチートシートに従い、runserver・qcluster・npm start の3つを同時に起動し、<code>localhost:3000</code> でログイン画面、<code>localhost:8000/admin/</code> で管理画面が両方開けることを確認せよ。</p>
+</li>
+<li>
+<p><strong>API接続先を壊して直す</strong>：<code>frontend/.env</code> の <code>REACT_APP_API_BASE_URL</code> を <code>http://localhost:9999</code>（存在しない）に変え、<code>npm start</code> を <strong>再起動</strong> して、ログインなどでデータが取れなくなる（エラーになる）ことをF12 Consoleで確認せよ。確認後、<code>http://localhost:8000</code> に戻して再起動し、直ることを確認せよ。</p>
+</li>
+<li>
+<p><strong>本番ビルドを覗く</strong>：<code>cd frontend</code> して <code>npm run build</code> を実行し、<code>frontend/build/</code> フォルダができることを確認せよ。<code>build/static/js/</code> の中に圧縮された <code>.js</code> ファイルが生成されているのを見て、§19.1 の「本番ではこれを Django が配信する」を実感せよ。</p>
+</li>
+</ol>
+<hr>
+<h2 id="23-この章のまとめ">23. この章のまとめ</h2>
+<ul>
+<li>本アプリは <strong>フロントエンド（React＝Node.js製、localhost:3000）</strong> と <strong>バックエンド（Django＝Python製、localhost:8000）</strong> の <strong>二刀流構成</strong>。データは <strong>PostgreSQL</strong> に保存される。</li>
+<li>必要な道具は5つ：<strong>VSCode（机）／Git（取得・履歴）／Python 3.12（裏方の言語）／Node.js v22（画面側の言語）／PostgreSQL（倉庫）</strong>。各インストール後は <code>--version</code> で確認し、<strong>「Add to PATH」のチェック</strong> を忘れない。</li>
+<li>コードは <strong><code>git clone</code></strong> で手元に取得。</li>
+<li>バックエンドは <strong><code>python -m venv venv</code> → <code>Activate.ps1</code>（<code>(venv)</code> 確認）→ <code>pip install -r requirements.txt</code></strong> の順。<code>requirements.txt</code> は <strong>Django・DRF・django-q・psycopg2・pandas</strong> など24パッケージの「買い物リスト」。</li>
+<li><strong><code>.env</code></strong> に <code>SECRET_KEY</code>（生成）・<code>DEBUG</code>・<code>DB_NAME</code>・<code>DB_USER</code>・<code>DB_PASSWORD</code>・<code>DB_HOST</code> を書く。これを <strong><code>settings.py</code></strong> が読み込み、<code>DATABASES</code> 等で使う。<strong><code>.env</code> の綴りミスは接続失敗の最頻出原因</strong>。</li>
+<li>DBは <strong>空のDBを作成 → <code>migrate</code>（表を自動生成）→ <code>createsuperuser</code>（管理者作成）</strong>。</li>
+<li>起動は <strong><code>runserver</code>（8000）</strong> ＋ <strong><code>qcluster</code>（非同期）</strong> ＋ フロントの <strong><code>npm install</code> → <code>npm start</code>（3000）</strong>。フロントの接続先は <strong><code>frontend/.env</code> の <code>REACT_APP_API_BASE_URL=http://localhost:8000</code></strong>。</li>
+<li>本番では <strong><code>npm run build</code></strong> の成果物（<code>frontend/build/</code>）を <strong>Django が配信</strong>（<code>settings.py</code> の <code>STATICFILES_DIRS</code> / <code>TEMPLATES['DIRS']</code>）。ローカル開発では build 不要。</li>
+<li>困ったら <strong>PATH／<code>(venv)</code>／今いるフォルダ／<code>.env</code>の綴り／バージョン</strong> の5点を疑う。</li>
+</ul>
+<p>次は、コードの変更履歴を安全に管理する道具、「<a href="02_Git_GitHub.html">02_Git_GitHub.md</a>」へ進みます。<code>git clone</code> で取得したこのコードを、今度は <strong>自分で変更・記録・共有</strong> できるようになりましょう。</p>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

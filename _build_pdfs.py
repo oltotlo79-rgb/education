@@ -553,11 +553,28 @@ def dedent_fences(md_text: str) -> str:
     return "\n".join(out)
 
 
+# Folders whose in-page links were written for GitHub (`[…](#17-定期メンテナンス…)`): their headings get ids
+# that keep the Japanese, like GitHub does. Other folders keep the ASCII-only ids their links point at.
+UNICODE_ID_FOLDERS = {"kosu"}
+_unicode_ids = False
+
+
+def github_slug(value: str, separator: str) -> str:
+    """The id of a heading, as the links of these documents write it: lower case, punctuation (also full-width)
+    and number signs like ① dropped, each space -> "-"."""
+    value = re.sub(r"[^\w\- ]", "", value.strip().lower())
+    value = "".join(c for c in value if unicodedata.category(c) != "No")
+    return value.replace(" ", separator)
+
+
 def render_body(md_text: str) -> str:
+    configs = dict(EXTENSION_CONFIGS)
+    if _unicode_ids:
+        configs["toc"] = {"slugify": github_slug}
     return markdown.markdown(
         dedent_fences(md_text),
         extensions=EXTENSIONS,
-        extension_configs=EXTENSION_CONFIGS,
+        extension_configs=configs,
         output_format="html5",
     )
 
@@ -1082,7 +1099,9 @@ def relink(md_path: Path) -> None:
 
 
 def main(targets: list[Path], html_only: bool = False, relink_only: bool = False) -> None:
+    global _unicode_ids
     for md in targets:
+        _unicode_ids = md.parent.name in UNICODE_ID_FOLDERS
         if relink_only:
             print(f"Relinking: {md.relative_to(ROOT)}")
             relink(md)
@@ -1091,6 +1110,7 @@ def main(targets: list[Path], html_only: bool = False, relink_only: bool = False
         convert_html_only(md) if html_only else convert(md)
     if not relink_only:
         for folder in sorted({md.parent for md in targets}):
+            _unicode_ids = folder.name in UNICODE_ID_FOLDERS
             write_web_index(folder)
     print("Done.")
 

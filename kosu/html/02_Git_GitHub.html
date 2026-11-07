@@ -1,0 +1,2016 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>02_Git_GitHub</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/02_Git_GitHub.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><h1 id="第2章-git-と-github--コードを安全に管理する完全版">第2章: Git と GitHub ― コードを安全に管理する（完全版）</h1>
+<blockquote>
+<p>この章では、本アプリ「業務工数システム」のソースコードを <strong>壊さず・失わず・安全に</strong> 育てていくための道具、<strong>Git（ギット）</strong> と <strong>GitHub（ギットハブ）</strong> を、プログラミング完全初心者の目線で、<strong>実際にこのプロジェクトで打つコマンドと、その実行結果の見え方</strong> をひとつ残らず追いながら学びます。</p>
+<p>プログラミングの世界で最も怖いのは「動いていたものが、いつのまにか動かなくなり、しかも元に戻せない」状態です。Git はこの恐怖から後任者を守る <strong>タイムマシン</strong> であり、<strong>作業記録ノート</strong> であり、<strong>やり直しボタン</strong> です。この章を読み終えると、あなたは「いつでも昨日の状態に戻せる」「自分が何を変えたか説明できる」「他人の変更と自分の変更を安全に合流させられる」ようになります。</p>
+<p>⚠️ この章には <strong>絶対に守ってほしい運用ルール</strong> があります。それは「<strong><code>commit</code>（コミット）・<code>push</code>（プッシュ）は、引き継ぎ担当者から明示的な指示があるまで実行しない</strong>」というものです。理由は本文§16で詳しく説明します。まずは「見るだけのコマンド（<code>status</code>/<code>diff</code>/<code>log</code>）」で Git に慣れてください。</p>
+<p>この章は長いですが、<strong>辞書のように使えること</strong> を目指しています。実務で「あのコマンド何だっけ」と思ったら、ここに戻って該当箇所を引いてください。</p>
+</blockquote>
+<h3 id="この章で学ぶこと">この章で学ぶこと</h3>
+<ul>
+<li><strong>バージョン管理とは何か</strong> — なぜ「保存」だけでは足りないのか、Git が解決する具体的な困りごと</li>
+<li><strong>Git と GitHub の違い</strong> — 「手元の道具」と「ネット上の倉庫」、混同しやすい2つをはっきり区別する</li>
+<li><strong>3つの場所（作業ツリー／ステージング／リポジトリ）</strong> — Git の心臓部を図で完全に理解する</li>
+<li><strong>見るコマンド</strong> — <code>git status</code> / <code>git diff</code> / <code>git log</code> を実行結果つきで読む</li>
+<li><strong>記録するコマンド</strong> — <code>git add</code> / <code>git commit</code>（※指示があるまで実行しない、しくみだけ学ぶ）</li>
+<li><strong>同期するコマンド</strong> — <code>git push</code> / <code>git pull</code> / <code>git fetch</code>（※同上）</li>
+<li><strong>ブランチと merge（マージ）</strong> — 並行作業を安全にする枝分かれと合流</li>
+<li><strong>コンフリクト（衝突）の解決</strong> — 実際の画面表示を1行ずつ追って手で直す</li>
+<li><strong>プルリクエスト（Pull Request）の流れ</strong> — GitHub 上でのレビュー文化</li>
+<li><strong><code>.gitignore</code></strong> — 本アプリの実ファイルを読み、<code>.env</code> を除外する重大な理由を理解する</li>
+<li><strong>トークン認証</strong> — パスワードではなくトークンで GitHub に繋ぐ現代の作法</li>
+<li><strong>復旧コマンド</strong> — <code>git restore</code> / <code>git reset</code> で「やってしまった」を元に戻す</li>
+<li><strong>1日の作業テンプレート</strong> — 毎朝・作業中・帰る前にやることのチェックリスト</li>
+</ul>
+<h2 id="目次">目次</h2>
+<ol start="0">
+<li><a href="#0-前提知識なぜバージョン管理が必要なのか">前提知識：なぜバージョン管理が必要なのか</a></li>
+<li><a href="#1-git-と-github-の違い">Git と GitHub の違い</a></li>
+<li><a href="#2-git-の3つの場所最重要概念">Git の3つの場所（最重要概念）</a></li>
+<li><a href="#3-このプロジェクトの-git-の状態を見てみる">このプロジェクトの Git の状態を見てみる</a></li>
+<li><a href="#4-git-status--今どうなっているか">git status ― 今どうなっているか</a></li>
+<li><a href="#5-git-diff--何をどう変えたか">git diff ― 何をどう変えたか</a></li>
+<li><a href="#6-git-add--記録の準備ステージング">git add ― 記録の準備（ステージング）</a></li>
+<li><a href="#7-git-commit--記録を確定する">git commit ― 記録を確定する</a></li>
+<li><a href="#8-git-log--過去の記録を読む">git log ― 過去の記録を読む</a></li>
+<li><a href="#9-リモートとの同期push--pull--fetch">リモートとの同期：push / pull / fetch</a></li>
+<li><a href="#10-ブランチ--作業の枝分かれ">ブランチ ― 作業の枝分かれ</a></li>
+<li><a href="#11-mergeマージ-枝を合流させる">merge（マージ）― 枝を合流させる</a></li>
+<li><a href="#12-コンフリクト衝突の解決">コンフリクト（衝突）の解決</a></li>
+<li><a href="#13-プルリクエストpull-requestの流れ">プルリクエスト（Pull Request）の流れ</a></li>
+<li><a href="#14-gitignore--追跡しないファイルの指定">.gitignore ― 追跡しないファイルの指定</a></li>
+<li><a href="#15-トークン認証--github-への安全なログイン">トークン認証 ― GitHub への安全なログイン</a></li>
+<li><a href="#16-復旧コマンドとやってしまった対処集">復旧コマンドと「やってしまった」対処集</a></li>
+<li><a href="#17-1日の作業テンプレート">1日の作業テンプレート</a></li>
+<li><a href="#18-トラブルシューティング">トラブルシューティング</a></li>
+<li><a href="#19-演習問題">演習問題</a></li>
+<li><a href="#20-この章のまとめ">この章のまとめ</a></li>
+</ol>
+<hr>
+<h2 id="0-前提知識なぜバージョン管理が必要なのか">0. 前提知識：なぜバージョン管理が必要なのか</h2>
+<blockquote>
+<p><strong>バージョン管理（version control）とは？</strong>
+ソフトウェアの「いつ・誰が・どこを・どう変えたか」を <strong>記録し、いつでも好きな時点に戻せる</strong> ように管理するしくみのこと。「バージョン」は「版」、つまり「ある時点のソースコードの姿」のことです。</p>
+</blockquote>
+<h3 id="01-保存だけでは足りない">0.1 「保存」だけでは足りない</h3>
+<p>ワープロや表計算なら、こまめに「上書き保存」していれば、たいてい安心です。ところがプログラムは、たった1文字の打ち間違いで全体が動かなくなり、しかも <strong>どこを直したか自分でも分からなくなる</strong> という事故が日常的に起きます。</p>
+<p>初心者がよくやってしまう自己流の「バージョン管理」を見てみましょう。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>業務工数システム_最新.zip
+業務工数システム_最新_本物.zip
+業務工数システム_最新_本物_これが正解.zip
+業務工数システム_バックアップ_20260530.zip
+業務工数システム_動いてたやつ.zip
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ これは <strong>アンチパターン</strong>（やってはいけない典型例）です。次のような困りごとがすべて起きます。
+- どれが本当に最新か、ファイル名からは分からない
+- 2つのzipの「どこが違うか」を人間の目で探すのは事実上不可能
+- ディスクが zip だらけになる
+- 「3日前のあの状態だけ戻したい」が叶わない（全部か無か）</p>
+</blockquote>
+<h3 id="02-git-が解決してくれること">0.2 Git が解決してくれること</h3>
+<p>Git を使うと、上の悩みがすべて消えます。Git はあなたの代わりに、次のことを自動でやってくれます。</p>
+<table>
+<thead>
+<tr>
+<th>困りごと</th>
+<th>Git なしの世界</th>
+<th>Git ありの世界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>元に戻したい</td>
+<td>zip を漁る</td>
+<td><code>git log</code> で時点を選んで一発で戻す</td>
+</tr>
+<tr>
+<td>どこを変えたか知りたい</td>
+<td>目で比較</td>
+<td><code>git diff</code> が変更行だけ色付き表示</td>
+</tr>
+<tr>
+<td>誰が変えたか知りたい</td>
+<td>分からない</td>
+<td><code>git log</code> に名前と日時が残る</td>
+</tr>
+<tr>
+<td>複数人で同時に作業</td>
+<td>zip の取り合い</td>
+<td>ブランチで並行作業し、後で合流</td>
+</tr>
+<tr>
+<td>なぜ変えたか思い出したい</td>
+<td>記憶頼み</td>
+<td>コミットメッセージに理由が残る</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>なぜ？ なぜ Git は変更を「行単位」で覚えられるのか</strong>
+Git は、保存のたびにファイル全体をコピーするのではなく、「前回と比べてどの行がどう変わったか（差分）」を計算して効率よく記録します。だから何百回コミットしても容量が爆発せず、しかも「3日前のこの1行だけ」を取り出せるのです。</p>
+</blockquote>
+<h3 id="03-本アプリでの実例--コミットメッセージが語る歴史">0.3 本アプリでの実例 ― コミットメッセージが語る歴史</h3>
+<p>本アプリ（業務工数システム）の実際の作業履歴を見てみましょう。これは作り話ではなく、このリポジトリに本当に残っている記録です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>30d45e7 人員一覧で異動・退社を後ろに変更
+3de6e62 人員データ取り扱い修正
+9156f15 休憩変更時の工数消去バグ修正
+4d2469a 通知誤削除修正
+43d02de 履歴に氏名追加
+e414b68 工数合計追加
+2816d8d 翌日チェック廃止
+b5495cc 新アプリ移行に伴う大改修
+</code></pre></div></div>
+
+<p>左の <code>30d45e7</code> のような英数字は <strong>コミットID（ハッシュ）</strong>、右の日本語は <strong>コミットメッセージ</strong>（その変更の説明）です。これを読むだけで「このアプリがどう育ってきたか」が物語のように分かります。たとえば <code>9156f15 休憩変更時の工数消去バグ修正</code> は「休憩時間を変更したときに工数が消えてしまうバグを直した」回です。もし将来また同じあたりで不具合が出たら、この時点のコードを見れば「前回どう直したか」が分かります。</p>
+<blockquote>
+<p><strong>これが Git の真価です。</strong> コードそのものだけでなく、「<strong>なぜそう変えたのか</strong>」という意図が後任者に引き継がれます。だから本章では「良いコミットメッセージの書き方」も後で扱います。</p>
+</blockquote>
+<hr>
+<h2 id="1-git-と-github-の違い">1. Git と GitHub の違い</h2>
+<p>初心者が最初につまずくのが、<strong>Git</strong> と <strong>GitHub</strong> の混同です。名前が似ていますが、まったくの別物です。</p>
+<h3 id="11-ひとことで言うと">1.1 ひとことで言うと</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Git</th>
+<th>GitHub</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正体</td>
+<td>あなたのPCで動く <strong>ソフト（道具）</strong></td>
+<td>インターネット上の <strong>サービス（倉庫）</strong></td>
+</tr>
+<tr>
+<td>場所</td>
+<td>手元（ローカル）</td>
+<td>ネットの向こう（リモート）</td>
+</tr>
+<tr>
+<td>作った人</td>
+<td>Linus Torvalds（リーナス・トーバルズ）</td>
+<td>GitHub社（現Microsoft）</td>
+</tr>
+<tr>
+<td>必要か</td>
+<td><strong>必須</strong>（これがないと始まらない）</td>
+<td>あると便利（共有・バックアップ用）</td>
+</tr>
+<tr>
+<td>たとえ</td>
+<td>手元のノートとペン</td>
+<td>みんなで使う図書館・貸金庫</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>用語: ローカル（local）とリモート（remote）</strong>
+「ローカル」はあなたの目の前のPCの中。「リモート」はネットワークの向こう側にあるサーバー。本アプリのリモートは GitHub 上の <code>https://github.com/nomura-shokki/hozen-kosu-React.git</code> です（§9で確認します）。</p>
+</blockquote>
+<h3 id="12-たとえ話研究ノートと図書館">1.2 たとえ話：研究ノートと図書館</h3>
+<p>イメージしやすいように、研究者にたとえます。</p>
+<ul>
+<li><strong>Git</strong> は、あなたの机の上の「研究ノート」です。実験のたびに「いつ・何をやって・どうなったか」を書き込みます。これは <strong>あなたのPCの中だけ</strong> で完結します。ネットがなくても使えます。</li>
+<li><strong>GitHub</strong> は、そのノートのコピーを預けておく「中央図書館」です。机が火事になってもノートは図書館に残ります。また、同僚も図書館に行けばあなたの最新ノートを読めますし、自分のノートを預けられます。</li>
+</ul>
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 190" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-02-1-475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="30" y="30" width="220" height="110" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="140" y="70" font-size="14" fill="#1e40af" text-anchor="middle" font-weight="800">あなたのパソコン</text>
+<text x="140" y="92" font-size="12" fill="#0f172a" text-anchor="middle">（ローカル）</text>
+<text x="140" y="111" font-size="12" fill="#0f172a" text-anchor="middle">Git で記録する</text>
+<rect x="470" y="30" width="220" height="110" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+<text x="580" y="70" font-size="14" fill="#6d28d9" text-anchor="middle" font-weight="800">GitHub</text>
+<text x="580" y="92" font-size="12" fill="#0f172a" text-anchor="middle">（リモート＝みんなの倉庫）</text>
+<text x="580" y="111" font-size="12" fill="#0f172a" text-anchor="middle">みんなで共有する</text>
+<line x1="254" y1="66" x2="466" y2="66" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-1-475569)"/>
+<text x="360" y="59" font-size="11" fill="#475569" text-anchor="middle" font-weight="700">push（預ける）</text>
+<line x1="466" y1="106" x2="254" y2="106" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-1-475569)"/>
+<text x="360" y="126" font-size="11" fill="#475569" text-anchor="middle" font-weight="700">pull（取り寄せる）</text>
+<text x="360" y="176" font-size="12" fill="#475569" text-anchor="middle">毎日の作業は、パソコンで記録 ⇒ まとめて GitHub に push、の順</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図2-1: あなたのパソコンと GitHub。記録を GitHub に預ける（push）・GitHub から取り寄せる（pull）</div>
+</div>
+
+<blockquote>
+<p><strong>なぜ？ GitHub がなくても Git は使える</strong>
+Git は完全に手元で完結する道具です。極端な話、一度もネットに繋がず、自分一人で Git のメリット（タイムマシン・差分記録）を全部享受できます。GitHub は「そのノートを安全な場所にも置き、他人と共有するため」の追加のしくみにすぎません。ただし本アプリはチーム開発でありバックアップも兼ねているので、GitHub と同期して使います。</p>
+</blockquote>
+<h3 id="13-github-の代わりになるサービス">1.3 GitHub の代わりになるサービス</h3>
+<p>GitHub は最も有名ですが、同種のサービスは他にもあります（GitLab、Bitbucket など）。どれも「Git のリモート倉庫」という役割は同じです。本アプリは <strong>GitHub</strong> を使っているので、本章では GitHub を前提に説明します。</p>
+<hr>
+<h2 id="2-git-の3つの場所最重要概念">2. Git の3つの場所（最重要概念）</h2>
+<p>ここが本章で <strong>いちばん大事</strong> な節です。Git を理解できるかどうかは、この「3つの場所」を腹落ちさせられるかにかかっています。ゆっくり読んでください。</p>
+<h3 id="21-全体像の図">2.1 全体像の図</h3>
+<p>Git では、あなたのファイルは次の <strong>3つの場所</strong> を移動しながら記録されていきます。</p>
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 230" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-02-2-475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="16" y="30" width="200" height="140" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="116" y="75" font-size="14" fill="#1e40af" text-anchor="middle" font-weight="800">① 作業ツリー</text>
+<text x="116" y="97" font-size="12" fill="#0f172a" text-anchor="middle">Working Tree</text>
+<text x="116" y="116" font-size="12" fill="#0f172a" text-anchor="middle">実際に編集する</text>
+<text x="116" y="135" font-size="12" fill="#0f172a" text-anchor="middle">ファイル（Help.tsx など）</text>
+<rect x="260" y="30" width="200" height="140" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="2"/>
+<text x="360" y="75" font-size="14" fill="#a16207" text-anchor="middle" font-weight="800">② ステージング</text>
+<text x="360" y="97" font-size="12" fill="#0f172a" text-anchor="middle">Staging Area</text>
+<text x="360" y="116" font-size="12" fill="#0f172a" text-anchor="middle">次のコミットに入れる物を</text>
+<text x="360" y="135" font-size="12" fill="#0f172a" text-anchor="middle">選んで置く台（仮置き場）</text>
+<rect x="504" y="30" width="200" height="140" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="604" y="75" font-size="14" fill="#047857" text-anchor="middle" font-weight="800">③ リポジトリ</text>
+<text x="604" y="97" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">.git</text>
+<text x="604" y="116" font-size="12" fill="#0f172a" text-anchor="middle">確定した記録の保管庫</text>
+<text x="604" y="135" font-size="12" fill="#0f172a" text-anchor="middle">ここに入ると歴史に残る</text>
+<line x1="220" y1="100" x2="256" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-2-475569)"/>
+<line x1="464" y1="100" x2="500" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-2-475569)"/>
+<text x="238" y="196" font-size="12" fill="#0f172a" text-anchor="middle" font-weight="700" font-family="Consolas, DefCode, monospace">git add</text>
+<text x="238" y="214" font-size="11" fill="#475569" text-anchor="middle">（台に載せる）</text>
+<text x="482" y="196" font-size="12" fill="#0f172a" text-anchor="middle" font-weight="700" font-family="Consolas, DefCode, monospace">git commit</text>
+<text x="482" y="214" font-size="11" fill="#475569" text-anchor="middle">（封をして保管）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図2-2: Git の 3 つの場所。編集したファイルを git add で台に載せ、git commit で記録に封をする</div>
+</div>
+
+<p>ひとつずつ、たとえ話で説明します。</p>
+<h3 id="22--作業ツリーworking-tree">2.2 ① 作業ツリー（Working Tree）</h3>
+<blockquote>
+<p><strong>作業ツリー（working tree：作業ツリー）とは？</strong>
+あなたが実際にエディタで開いて <strong>編集している、今この瞬間のファイルたち</strong> が置かれている場所。本アプリでいえば、<code>frontend/src/MainPage/Help.tsx</code> を開いて文字を打ち替えたら、その変更はまず「作業ツリー」に存在します。</p>
+</blockquote>
+<p><strong>たとえ:</strong> 料理でいう「まな板の上」。今まさに切ったり混ぜたりしている状態です。</p>
+<p>この時点では、Git はまだ「変更を記録した」とは考えていません。「あなたが何かいじっているな」と気づいているだけです。</p>
+<h3 id="23--ステージングstaging-area--index">2.3 ② ステージング（Staging Area / Index）</h3>
+<blockquote>
+<p><strong>ステージング（staging area：ステージングエリア、別名 index）とは？</strong>
+「次の記録（コミット）に <strong>含める変更</strong> はこれですよ」と Git に教えるための <strong>仮置き場（中継台）</strong>。<code>git add</code> というコマンドで、作業ツリーの変更をこの台に載せます。</p>
+</blockquote>
+<p><strong>たとえ:</strong> 料理でいう「お皿に盛りつける直前の、トレーの上」。まな板の上のもの全部ではなく、「今回の一皿に使うものだけ」を選んでトレーに載せます。</p>
+<blockquote>
+<p><strong>なぜ？ なぜわざわざ「仮置き場」を経由するのか</strong>
+一度にたくさんのファイルを編集したとき、「この3ファイルは "バグ修正" として記録、残り2ファイルは "別の作業" として後で記録」のように、<strong>変更を意味のあるまとまりに分けて記録できる</strong> ようにするためです。トレー（ステージング）があるおかげで、「今回の記録に入れるもの」を自由に選べます。最初は難しく感じますが、「記録の下書き台」だと思えばOKです。</p>
+</blockquote>
+<h3 id="24--リポジトリrepository">2.4 ③ リポジトリ（Repository）</h3>
+<blockquote>
+<p><strong>リポジトリ（repository：レポジトリ、意味は「貯蔵庫」）とは？</strong>
+確定した変更の記録（コミット）が <strong>歴史として永久に積み重なっていく保管庫</strong>。あなたのPCの、プロジェクトフォルダ内にある <strong><code>.git</code></strong> という隠しフォルダの中身がこれです。<code>git commit</code> というコマンドで、ステージングのトレーに載せたものを「一皿」として封印し、ここに収めます。</p>
+</blockquote>
+<p><strong>たとえ:</strong> 料理でいう「完成して出した皿の写真アルバム」。一度アルバムに貼った写真（コミット）は、後から「あの時の料理どうだったかな」と何度でも見返せますし、その時点に戻ることもできます。</p>
+<blockquote>
+<p><strong>用語: コミット（commit：意味は「確定する・約束する」）</strong>
+ステージングに載せた変更を「ひとつの記録単位」として確定する操作、またはその記録1個そのもの。コミット1個には「変更内容」「日時」「作者」「メッセージ（理由）」が含まれます。§0.3で見た <code>30d45e7 人員一覧で異動・退社を後ろに変更</code> の1行が、コミット1個に対応します。</p>
+</blockquote>
+<h3 id="25-3つの場所と6つのコマンドの関係まとめ図">2.5 3つの場所と6つのコマンドの関係（まとめ図）</h3>
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 320" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-02-3-475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="16" y="30" width="170" height="80" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="101" y="64" font-size="14" fill="#1e40af" text-anchor="middle" font-weight="800">作業ツリー</text>
+<text x="101" y="86" font-size="12" fill="#0f172a" text-anchor="middle">編集する</text>
+<rect x="275" y="30" width="170" height="80" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="2"/>
+<text x="360" y="64" font-size="14" fill="#a16207" text-anchor="middle" font-weight="800">ステージング</text>
+<text x="360" y="86" font-size="12" fill="#0f172a" text-anchor="middle">載せる</text>
+<rect x="534" y="30" width="170" height="80" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="619" y="64" font-size="13" fill="#047857" text-anchor="middle" font-weight="800">ローカルのリポジトリ</text>
+<text x="619" y="86" font-size="12" fill="#0f172a" text-anchor="middle">確定して歴史に残す</text>
+<rect x="534" y="200" width="170" height="80" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+<text x="619" y="234" font-size="13" fill="#6d28d9" text-anchor="middle" font-weight="800">GitHub のリポジトリ</text>
+<text x="619" y="256" font-size="12" fill="#0f172a" text-anchor="middle">リモート＝みんなの倉庫</text>
+<line x1="190" y1="70" x2="271" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-3-475569)"/>
+<text x="230" y="63" font-size="11" fill="#475569" text-anchor="middle" font-weight="700" font-family="Consolas, DefCode, monospace">git add</text>
+<line x1="449" y1="70" x2="530" y2="70" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-3-475569)"/>
+<text x="490" y="63" font-size="11" fill="#475569" text-anchor="middle" font-weight="700" font-family="Consolas, DefCode, monospace">git commit</text>
+<line x1="619" y1="114" x2="619" y2="196" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-3-475569)"/>
+<text x="631" y="155" font-size="11" fill="#475569" text-anchor="start" font-weight="700" font-family="Consolas, DefCode, monospace">git push</text>
+<text x="631" y="172" font-size="11" fill="#475569" text-anchor="start">（預ける）</text>
+<path d="M530,240 L101,240 L101,114" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-02-3-475569)"/>
+<text x="316" y="232" font-size="12" fill="#475569" text-anchor="middle" font-weight="700">git pull（取り寄せる）⇒ 作業ツリーに反映</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図2-3: 毎日の流れ。編集 → git add → git commit → git push で GitHub に預け、git pull で取り寄せて作業ツリーに反映する</div>
+</div>
+
+<p>この図を頭に焼き付けてください。本章のコマンドはすべて、この図のどこかの矢印に対応しています。</p>
+<table>
+<thead>
+<tr>
+<th>コマンド</th>
+<th>図のどの矢印か</th>
+<th>ひとことで</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git add</code></td>
+<td>作業ツリー → ステージング</td>
+<td>「次の記録に含める」と選ぶ</td>
+</tr>
+<tr>
+<td><code>git commit</code></td>
+<td>ステージング → ローカルリポジトリ</td>
+<td>記録を確定する</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>ローカル → GitHub</td>
+<td>GitHub に預ける</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>GitHub → 作業ツリー</td>
+<td>GitHub から取り寄せる</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>（全体を見る）</td>
+<td>今どの場所に何があるか確認</td>
+</tr>
+<tr>
+<td><code>git diff</code></td>
+<td>（作業ツリーを見る）</td>
+<td>何をどう変えたか確認</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-このプロジェクトの-git-の状態を見てみる">3. このプロジェクトの Git の状態を見てみる</h2>
+<p>ここからは、本アプリのフォルダで実際にコマンドを打ちます。<strong>安全のため、まずは「見るだけ」のコマンドから始めます。</strong> 見るだけのコマンドは、何も壊しません。何度打っても安全です。</p>
+<blockquote>
+<p><strong>前提:</strong> ターミナル（コマンドを打つ黒い画面）の開き方は <code>01</code> 章で扱いました。本アプリのフォルダ <code>hozen-kosu-React</code> を開いた状態で進めます。Windows では PowerShell、VS Code なら統合ターミナルです。</p>
+</blockquote>
+<h3 id="31-ここが-git-管理下かを確認する">3.1 ここが Git 管理下かを確認する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 今いるフォルダが Git で管理されているか（<code>.git</code> フォルダがあるか）をざっくり確認します。<code>git status</code> がエラーなく動けば管理下です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 今の状態を表示する。エラーが出なければ、ここは Git 管理下</span>
+git<span class="w"> </span>status
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git status</code></strong>（Git）: 今の状態（変わったファイル・記録に入れる予定のファイル・Git がまだ知らないファイル）を表示します。迷ったら、まずこれを打ちます。</li>
+<li><strong><code>#</code></strong>（WSL・bash）: bash では、<code>#</code> から行の終わりまでがコメントです（1 行目の <code>#!</code> だけは特別です）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>On branch master
+...（変更ファイルの一覧など）
+</code></pre></div></div>
+
+<p>冒頭に <code>On branch master</code>（master ブランチにいます）と出れば、ここは正しく Git 管理下です。</p>
+<p>⚠️ もし <code>fatal: not a git repository</code>（致命的：ここは Git リポジトリではない）と出たら、フォルダを間違えています。<code>hozen-kosu-React</code> フォルダの中にいるか確認してください。</p>
+</blockquote>
+<h3 id="32-リモートgithub-の場所を確認する">3.2 リモート（GitHub の場所）を確認する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> このプロジェクトが「どの GitHub の倉庫」と繋がっているかを表示します。<code>-v</code>（verbose：詳しく）を付けると URL まで見えます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># remote=リモート倉庫の一覧、-v=URLも表示</span>
+git<span class="w"> </span>remote<span class="w"> </span>-v
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git remote</code></strong>（Git）: つながっている GitHub など（リモート）の名前を表示します。ふつうは <code>origin</code> だけです。</li>
+<li><strong><code>git remote -v</code></strong>（Git）: リモートの名前と、その URL を表示します（<code>-v</code> は「くわしく」）。取ってくる先（fetch）と送る先（push）の 2 行が出ます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功（本アプリの実際の出力）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>origin  https://github.com/nomura-shokki/hozen-kosu-React.git (fetch)
+origin  https://github.com/nomura-shokki/hozen-kosu-React.git (push)
+</code></pre></div></div>
+
+</blockquote>
+<p>読み解きます。</p>
+<ul>
+<li><code>origin</code>（オリジン）… リモート倉庫に付けられた <strong>あだ名</strong>。Git の慣習で、メインのリモートは <code>origin</code> と呼びます。「<code>origin</code> ＝ GitHub の本アプリ倉庫」と覚えればOK。</li>
+<li><code>https://github.com/nomura-shokki/hozen-kosu-React.git</code> … 実際の倉庫の住所（URL）。<code>nomura-shokki</code> というアカウントの <code>hozen-kosu-React</code> というリポジトリです。</li>
+<li><code>(fetch)</code> … 取り寄せ用の住所。<code>(push)</code> … 預け入れ用の住所。今回は同じです。</li>
+</ul>
+<h3 id="33-今いるブランチを確認する">3.3 今いるブランチを確認する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 自分が今どの「ブランチ（作業の枝）」にいるか、どんなブランチが存在するかを一覧します。<code>-a</code>（all）でリモートの枝も含めて全部表示します。ブランチの詳しい説明は§10です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># branch=枝の一覧、-a=リモートも含めて全部</span>
+git<span class="w"> </span>branch<span class="w"> </span>-a
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git branch</code></strong>（Git）: ブランチ（作業の枝）の一覧を出します。今いるブランチには <code>*</code> が付きます。<code>git branch 名前</code> で新しいブランチを作ります。</li>
+<li><strong><code>git branch -a</code></strong>（Git）: 自分のパソコンのブランチに加えて、GitHub 側のブランチ（<code>remotes/origin/…</code>）も全部表示します（<code>-a</code> は all）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功（本アプリの実際の出力）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-8"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>* master
+  remotes/origin/HEAD -&gt; origin/master
+  remotes/origin/master
+</code></pre></div></div>
+
+</blockquote>
+<p>読み解きます。</p>
+<ul>
+<li><code>* master</code> … 先頭の <code>*</code>（アスタリスク）が「<strong>今ここにいます</strong>」の印。本アプリのメインブランチは <strong><code>master</code></strong>（マスター）です。</li>
+<li><code>remotes/origin/master</code> … GitHub 側にある <code>master</code> ブランチ。</li>
+<li><code>remotes/origin/HEAD -&gt; origin/master</code> … リモートの既定の枝が <code>master</code> であることを示します。</li>
+</ul>
+<blockquote>
+<p><strong>用語: master（マスター）と main（メイン）</strong>
+Git のメインの枝は、歴史的に <strong><code>master</code></strong> と名付けられてきました。近年の GitHub では新規リポジトリの既定名が <code>main</code> に変わりましたが、<strong>本アプリは <code>master</code></strong> です。本章では一貫して <code>master</code> と書きます。あなたが将来別のプロジェクトを触ると <code>main</code> のこともあるので、「メインの枝の名前」だと理解しておけば大丈夫です。</p>
+</blockquote>
+<hr>
+<h2 id="4-git-status--今どうなっているか">4. git status ― 今どうなっているか</h2>
+<p><code>git status</code>（ギット・ステータス）は、本章で <strong>最も頻繁に打つコマンド</strong> です。「今、3つの場所がどうなっているか」をいつでも教えてくれる、Git の健康診断です。困ったらまず <code>git status</code>。これが鉄則です。</p>
+<h3 id="41-基本">4.1 基本</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 今いるブランチ名、変更したけれどまだステージングしていないファイル、ステージング済みのファイル、Git がまだ追跡していない新規ファイルを、色分けして一覧します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-9"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># status=状態。今の3つの場所の状態をまとめて表示</span>
+git<span class="w"> </span>status
+</code></pre></div></div>
+
+<h3 id="42-本アプリでの実際の出力を読む">4.2 本アプリでの実際の出力を読む</h3>
+<p>本アプリで <code>git status</code> を打つと、たとえば次のように出ます（実際の状態から抜粋・簡略化したもの）。</p>
+<blockquote>
+<p><strong>▼ こう表示されます:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-10"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>On branch master
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        modified:   frontend/src/MainPage/Help.tsx
+        modified:   hozen_another/settings.py
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre></div></div>
+
+</blockquote>
+<p>1行ずつ読み解きます。</p>
+<ul>
+<li><code>On branch master</code> … 今 <code>master</code> ブランチにいます（§3.3で見たとおり）。</li>
+<li><code>Changes not staged for commit:</code> … 「<strong>コミット用にステージングされていない変更</strong>」の見出し。つまり「<strong>作業ツリー</strong> で変更したが、まだ <strong>ステージング</strong> に載せていない」ファイルたち。</li>
+<li><code>(use "git add &lt;file&gt;..." to update ...)</code> … Git が親切に教えてくれるヒント。「これらをコミットに含めたいなら <code>git add ファイル名</code> してね」。</li>
+<li><code>(use "git restore &lt;file&gt;..." to discard ...)</code> … 「変更を <strong>捨てたい</strong> なら <code>git restore ファイル名</code> してね」。<code>restore</code> は§16で詳しく扱う「やり直しボタン」です。</li>
+<li><code>modified:   frontend/src/MainPage/Help.tsx</code> … <code>Help.tsx</code>（ヘルプ画面のファイル）を <strong>変更（modified）した</strong> という意味。</li>
+<li><code>modified:   hozen_another/settings.py</code> … Django の設定ファイル <code>settings.py</code> も変更した。</li>
+<li><code>no changes added to commit</code> … 「コミットに追加された変更はまだない」＝ステージングは空っぽ。</li>
+</ul>
+<blockquote>
+<p><strong>用語の早見表（status に出てくる英単語）:</strong>
+| 英語 | 意味 | どの場所の話か |
+|---|---|---|
+| <code>modified</code> | 既存ファイルを変更した | 作業ツリー or ステージング |
+| <code>new file</code> | 新しく作って add 済み | ステージング |
+| <code>deleted</code> | ファイルを削除した | 作業ツリー or ステージング |
+| <code>Untracked files</code> | Git がまだ追跡していない新規ファイル | 作業ツリーのみ |
+| <code>Changes to be committed</code> | コミットに含まれる予定（add 済み） | ステージング |
+| <code>Changes not staged for commit</code> | 変更したがまだ add していない | 作業ツリー |</p>
+</blockquote>
+<h3 id="43-色の意味vs-code-やターミナル">4.3 色の意味（VS Code やターミナル）</h3>
+<p>多くの環境では色が付きます。</p>
+<ul>
+<li><strong>赤</strong> … 作業ツリーにあるが、まだステージングされていない変更。</li>
+<li><strong>緑</strong> … ステージング済み（<code>git add</code> した）変更。次の <code>git commit</code> で記録される。</li>
+</ul>
+<blockquote>
+<p><strong>なぜ？ 赤と緑を見れば「あとどれを add すればいいか」が一目で分かる</strong>
+「全部緑になった＝コミットに含めたいものが全部ステージングに載った」状態です。コミット前に <code>git status</code> で緑を確認するのが安全な習慣です。</p>
+</blockquote>
+<h3 id="44-短縮表示">4.4 短縮表示</h3>
+<p>たくさんファイルがある時は、<code>-s</code>（short：短く）が便利です。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 状態を1ファイル1行のコンパクトな形式で表示します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-11"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -s=short。記号で簡潔に表示</span>
+git<span class="w"> </span>status<span class="w"> </span>-s
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git status -s</code></strong>（Git）: <code>git status</code> を短く（short）表示します。1 行に 1 つのファイルで、頭の <code>M</code> は変更、<code>??</code> はまだ Git が知らないファイル、<code>A</code> は追加の予約済みです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されます（本アプリの章冒頭の状態に近い実例）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-12"><button type="button" class="copy-btn">コピー</button><pre><span></span><code> M frontend/src/MainPage/Help.tsx
+ M hozen_another/settings.py
+ M frontend/.env.production
+?? newfile.txt
+</code></pre></div></div>
+
+<p>行頭の記号: <code>M</code>=変更（modified）、<code>A</code>=追加（added）、<code>D</code>=削除（deleted）、<code>??</code>=未追跡（untracked）。左の桁がステージング、右の桁が作業ツリーの状態を表します。</p>
+</blockquote>
+<hr>
+<h2 id="5-git-diff--何をどう変えたか">5. git diff ― 何をどう変えたか</h2>
+<p><code>git status</code> は「どのファイルを変えたか」を教えてくれますが、「<strong>そのファイルの中身を、具体的にどう変えたか</strong>」までは教えてくれません。それを見せてくれるのが <code>git diff</code>（ギット・ディフ、diff＝difference＝差分）です。</p>
+<h3 id="51-作業ツリーの変更を見る最頻出">5.1 作業ツリーの変更を見る（最頻出）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> まだステージングしていない（赤い）変更について、「変更前のどの行が、変更後どうなったか」を行単位で色付き表示します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-13"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ステージング前の変更を、行単位で表示</span>
+git<span class="w"> </span>diff
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git diff</code></strong>（Git）: まだ記録していない変更の中身を見るコマンド。<code>-</code> で始まる行が前の内容、<code>+</code> で始まる行が新しい内容です。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されます（例：Help.tsx の一部を変えた場合。※表示形式を示すための説明用の例）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-14"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="gh">diff --git a/frontend/src/MainPage/Help.tsx b/frontend/src/MainPage/Help.tsx</span>
+<span class="gh">index 1a2b3c4..5d6e7f8 100644</span>
+<span class="gd">--- a/frontend/src/MainPage/Help.tsx</span>
+<span class="gi">+++ b/frontend/src/MainPage/Help.tsx</span>
+<span class="gu">@@ -42,7 +42,7 @@</span>
+<span class="w"> </span>        &lt;h2&gt;ヘルプ&lt;/h2&gt;
+<span class="gd">-        &lt;p&gt;このページでは使い方を説明します。&lt;/p&gt;</span>
+<span class="gi">+        &lt;p&gt;このページでは工数システムの使い方を説明します。&lt;/p&gt;</span>
+<span class="w"> </span>        &lt;ul&gt;
+</code></pre></div></div>
+
+</blockquote>
+<p>1行ずつ読み解きます。これは初心者がいちばん戸惑う表示なので、丁寧にいきます。</p>
+<ul>
+<li><code>diff --git a/... b/...</code> … 「<code>a</code>（変更前）と <code>b</code>（変更後）を比べます」の宣言行。</li>
+<li><code>index 1a2b3c4..5d6e7f8 100644</code> … Git 内部のID。気にしなくてOK。</li>
+<li><code>--- a/frontend/src/MainPage/Help.tsx</code> … <code>---</code> で始まる行は <strong>変更前</strong> の側。</li>
+<li><code>+++ b/frontend/src/MainPage/Help.tsx</code> … <code>+++</code> で始まる行は <strong>変更後</strong> の側。</li>
+<li><code>@@ -42,7 +42,7 @@</code> … 「<strong>42行目から7行分</strong> を表示しています」という位置案内（ハンク・ヘッダと呼びます）。</li>
+<li><code>&lt;h2&gt;ヘルプ&lt;/h2&gt;</code> … 行頭に記号なし＝<strong>変わっていない行</strong>（前後の状況を見せるために表示）。</li>
+<li><code>- &lt;p&gt;このページでは使い方を説明します。&lt;/p&gt;</code> … 行頭が <strong><code>-</code>（マイナス、赤）</strong> ＝ <strong>削除された行</strong>（変更前の姿）。</li>
+<li><code>+ &lt;p&gt;このページでは工数システムの使い方を説明します。&lt;/p&gt;</code> … 行頭が <strong><code>+</code>（プラス、緑）</strong> ＝ <strong>追加された行</strong>（変更後の姿）。</li>
+</ul>
+<blockquote>
+<p><strong>覚え方:</strong> <strong><code>-</code> は引いた（消した）行、<code>+</code> は足した（書いた）行。</strong> 行を「書き換えた」場合は、古い行が <code>-</code> で消え、新しい行が <code>+</code> で足された、という2行ペアで表示されます。</p>
+</blockquote>
+<h3 id="52-ステージング済みの変更を見る">5.2 ステージング済みの変更を見る</h3>
+<p><code>git add</code> 済み（緑）の変更を見たいときは <code>--staged</code>（または <code>--cached</code>）を付けます。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ステージングに載せた変更だけを差分表示します。コミット直前に「これから記録される内容」を最終確認するのに使います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-15"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ステージング済み（add 後）の差分を表示</span>
+git<span class="w"> </span>diff<span class="w"> </span>--staged
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git diff --staged</code></strong>（Git）: <code>git add</code> で「次のコミットに入れる」と予約した変更の中身を表示します。コミットする前の最後の確かめに使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>なぜ？ コミット前に <code>git diff --staged</code> を打つと事故が減る</strong>
+「記録するつもりのなかったデバッグ用の1行」や「うっかり消してしまった行」を、確定（commit）する前に発見できます。本章の運用では commit 自体を勝手に行いませんが、しくみとして知っておくと、後でレビューが速くなります。</p>
+</blockquote>
+<h3 id="53-特定ファイルだけ見る">5.3 特定ファイルだけ見る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ファイル名を後ろに付けると、そのファイルの差分だけを表示します。変更ファイルが多いときに便利です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-16"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このファイルの差分だけ見る</span>
+git<span class="w"> </span>diff<span class="w"> </span>frontend/src/MainPage/Help.tsx
+</code></pre></div></div>
+
+<h3 id="54-diff-の終了方法初心者がハマる罠">5.4 diff の終了方法（初心者がハマる罠）</h3>
+<p><code>git diff</code> や <code>git log</code> の出力が長いと、画面が <strong>ページャ</strong>（少しずつ表示するモード）に切り替わり、<code>(END)</code> や <code>:</code> が出てキーが効かなくなることがあります。</p>
+<blockquote>
+<p>⚠️ <strong><code>(END)</code> や <code>:</code> が出て固まったように見えたら、<code>q</code>（quit の q）キーを押してください。</strong> これでプロンプト（コマンド待ち）に戻れます。<code>Ctrl+C</code> でも抜けられます。これは故障ではなく「閲覧モード」です。慌てないでください。</p>
+</blockquote>
+<hr>
+<h2 id="6-git-add--記録の準備ステージング">6. git add ― 記録の準備（ステージング）</h2>
+<p>ここから先（<code>add</code> / <code>commit</code> / <code>push</code>）は <strong>実際に状態を変えるコマンド</strong> です。</p>
+<blockquote>
+<p>⚠️ <strong>本プロジェクトの運用ルール（再掲・最重要）:</strong> <code>git add</code> までは比較的安全ですが、<strong><code>commit</code> と <code>push</code> は、引き継ぎ担当者から明示の指示があるまで実行しないでください</strong>（理由は§16.6）。この節と次節は「しくみを理解する」ことが目的です。手順は読んで頭に入れつつ、実行は指示が出てからにしましょう。</p>
+</blockquote>
+<h3 id="61-基本">6.1 基本</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 指定したファイルの「作業ツリーの変更」を、ステージング（次のコミットに含める仮置き場）に載せます。§2の図でいう「作業ツリー → ステージング」の矢印です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-17"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このファイルの変更をステージングに載せる</span>
+git<span class="w"> </span>add<span class="w"> </span>frontend/src/MainPage/Help.tsx
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git add</code></strong>（Git）: 次の記録（コミット）に入れるファイルを選ぶコマンド。<code>git add ファイル名</code>、全部なら <code>git add .</code> です。選んだだけで、まだ記録はされていません。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p>実行しても、画面には <strong>何も表示されません</strong>（成功時は無言）。確認は <code>git status</code> で行います。</p>
+<blockquote>
+<p><strong>▼ add 後に <code>git status</code> を打つとこう変わります:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-18"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        modified:   frontend/src/MainPage/Help.tsx
+</code></pre></div></div>
+
+<p><code>Changes not staged for commit</code>（赤）の見出しが <code>Changes to be committed</code>（緑）に変わりました。これが「ステージングに載った」証拠です。</p>
+</blockquote>
+<h3 id="62-複数ファイル全部をまとめて">6.2 複数ファイル・全部をまとめて</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ファイルを並べれば複数をまとめて、<code>.</code>（ドット）なら「変更した全ファイル」をステージングに載せます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 2つまとめて</span>
+git<span class="w"> </span>add<span class="w"> </span>frontend/src/MainPage/Help.tsx<span class="w"> </span>hozen_another/settings.py
+<span class="c1"># 変更した全部をまとめて</span>
+git<span class="w"> </span>add<span class="w"> </span>.
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ <strong><code>git add .</code> は便利ですが、要注意。</strong> 「意図せず変えてしまったファイル」や「コミットすべきでない一時ファイル」まで巻き込みます。<code>git add .</code> の <strong>前に必ず <code>git status</code> を打って</strong>、緑になる予定のファイルを確認する癖をつけてください。本アプリでは特に <code>frontend/build/</code> 配下の自動生成ファイルなどが紛れ込みやすいので注意します。</p>
+</blockquote>
+<h3 id="63-間違えて-add-したらunstage">6.3 間違えて add したら（unstage）</h3>
+<p>ステージングから降ろしたい（作業ツリーには残したいが、今回の記録には含めたくない）場合：</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ステージングに載せたファイルを「載せる前の状態（作業ツリーのみ）」に戻します。ファイルの中身は変わりません。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-20"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ステージングから降ろす（中身は無傷）</span>
+git<span class="w"> </span>restore<span class="w"> </span>--staged<span class="w"> </span>frontend/src/MainPage/Help.tsx
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git restore</code></strong>（Git）: 保存したけれど記録（コミット）していない変更を捨てて、最後の記録の状態に戻すコマンド。<code>git restore frontend/src/MainPage/Help.tsx</code>。捨てた変更は戻せないので、<code>git diff</code> で確かめてから使います。</li>
+<li><strong><code>git restore --staged</code></strong>（Git）: <code>git add</code> の予約を取り消します（ファイルの中身は変わりません）。間違えて <code>add</code> したファイルを外す時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>なぜ？ <code>--staged</code> を付けると安全</strong>
+<code>git restore</code> は付ける引数で動きがガラッと変わります。<code>--staged</code> を <strong>付ける</strong> と「ステージングから降ろすだけ（中身そのまま）」で安全。<code>--staged</code> を <strong>付けない</strong> と「ファイルの中身を最後のコミット時点まで戻す（編集が消える）」破壊的操作になります。§16で詳述します。混同しないでください。</p>
+</blockquote>
+<hr>
+<h2 id="7-git-commit--記録を確定する">7. git commit ― 記録を確定する</h2>
+<p>ステージングに載せた変更を「ひとつの記録（コミット）」として封印するのが <code>git commit</code> です。§2の図でいう「ステージング → ローカルリポジトリ」の矢印です。</p>
+<blockquote>
+<p>⚠️ <strong>再掲:</strong> commit は <strong>指示があるまで実行しない</strong> 運用です。ここはしくみと「良いメッセージの書き方」を学びます。</p>
+</blockquote>
+<h3 id="71-基本">7.1 基本</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ステージング済みの変更を1つの記録にまとめ、<code>-m</code> の後ろの文字列を「コミットメッセージ（変更理由）」として添えて確定します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -m=メッセージ。&quot;&quot;の中が変更の説明</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;人員一覧で異動・退社を後ろに変更&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git commit</code></strong>（Git）: 選んだ変更を、1 つの記録（コミット）として残すコマンド。<code>git commit -m "何をしたか"</code> の <code>-m</code> の後ろに、変更の説明を書きます。</li>
+<li><strong><code>git commit -m</code></strong>（Git）: <code>git commit -m "説明"</code> の <code>-m</code> は、コミットの説明文を、その場で書く指定です。付けないと、説明を書くための画面（エディター）が開きます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<ul>
+<li><code>git commit</code> … 確定する命令。</li>
+<li><code>-m</code> … message（メッセージ）の <code>m</code>。直後の <code>"..."</code> をコミットメッセージにします。</li>
+<li><code>"人員一覧で異動・退社を後ろに変更"</code> … 何をしたかの説明。<strong>これは本アプリに実在するコミットメッセージ</strong>（§0.3）です。</li>
+</ul>
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-22"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>[master 30d45e7] 人員一覧で異動・退社を後ろに変更
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+</code></pre></div></div>
+
+<ul>
+<li><code>[master 30d45e7]</code> … <code>master</code> ブランチに、ID <code>30d45e7</code> のコミットができた。</li>
+<li><code>2 files changed, 14 insertions(+), 3 deletions(-)</code> … 2ファイル変更、14行追加、3行削除。</li>
+</ul>
+<p>⚠️ <strong><code>-m</code> を付け忘れると、テキストエディタ（vim など）が開いて固まったように見えます。</strong> Vim が開いてしまったら、慌てず <code>Esc</code> キー → <code>:q!</code> と打って <code>Enter</code> で何もせず終了できます。初心者は必ず <code>-m "メッセージ"</code> を付けて、エディタが開かないようにしましょう。</p>
+</blockquote>
+<h3 id="72-良いコミットメッセージの書き方">7.2 良いコミットメッセージの書き方</h3>
+<p>コミットメッセージは「未来の自分と後任者への手紙」です。本アプリの実例から学びましょう。</p>
+<p><strong>良い例（本アプリの実際のメッセージ）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>人員一覧で異動・退社を後ろに変更   ← 何を変えたか具体的
+休憩変更時の工数消去バグ修正       ← どんなバグを直したか分かる
+履歴に氏名追加                     ← 機能追加の内容が明確
+翌日チェック廃止                   ← 何を削除したか明確
+</code></pre></div></div>
+
+<p>これらは短いですが、「どの画面・機能を・どうしたか」が伝わります。本アプリは日本語のメッセージで統一されているので、後任者も日本語で書けばOKです。</p>
+<blockquote>
+<p>⚠️ <strong>悪い例（やってはいけない）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>修正            ← 何を？どこを？が一切不明
+aaa            ← 意味なし
+いろいろ        ← 後で検索しても見つからない
+とりあえず保存   ← Git は「保存」ではない。意味のまとまりで記録する
+</code></pre></div></div>
+
+<p>半年後の自分が <code>git log</code> を見て「これは何の修正だっけ？」とならないメッセージを心がけます。</p>
+<p><strong>なぜ？ メッセージが歴史検索の鍵になる</strong>
+「休憩まわりの不具合、前にも直したような…」というとき、コミット一覧から「休憩」という語を探すと、<code>9156f15 休憩変更時の工数消去バグ修正</code> が見つかります。メッセージが具体的だからこそ、過去の修正にたどり着けます。</p>
+</blockquote>
+<h3 id="73-コミットの粒度どのくらいで1コミット">7.3 コミットの粒度（どのくらいで1コミット？）</h3>
+<blockquote>
+<p><strong>目安:</strong> 「ひとつの意味のまとまり」で1コミット。たとえば「ヘルプ画面の文言修正」と「設定ファイルの変更」は <strong>別々のコミット</strong> にした方が、後で片方だけ戻せて便利です。本アプリの履歴も <code>履歴に氏名追加</code> <code>工数合計追加</code> のように、機能単位でコミットが分かれています。</p>
+</blockquote>
+<hr>
+<h2 id="8-git-log--過去の記録を読む">8. git log ― 過去の記録を読む</h2>
+<p><code>git log</code>（ギット・ログ）は、これまでのコミット（歴史）を一覧するコマンドです。タイムマシンの「行き先一覧」です。これは <strong>見るだけ</strong> のコマンドなので、安心して何度でも打てます。</p>
+<h3 id="81-基本">8.1 基本</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> コミットを新しい順に、ID・作者・日時・メッセージ付きで詳しく表示します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 全コミットを新しい順に詳しく表示</span>
+git<span class="w"> </span>log
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git log</code></strong>（Git）: これまでの記録（コミット）の一覧を、新しい順に出すコマンド。<code>--oneline</code> で 1 行ずつ短く、<code>--format="…"</code> で表示の形を自分で決められます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されます（本アプリの実際の履歴。ただし <code>Author:</code> の名前とメールアドレスは、例の「Taro Yamada」に置き換えてあります）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>commit 30d45e7c... (HEAD -&gt; master, origin/master)
+Author: Taro Yamada &lt;taro.yamada@example.com&gt;
+Date:   Sat May 30 ...
+
+    人員一覧で異動・退社を後ろに変更
+
+commit 3de6e62...
+Author: Taro Yamada &lt;taro.yamada@example.com&gt;
+Date:   ...
+
+    人員データ取り扱い修正
+</code></pre></div></div>
+
+</blockquote>
+<p>読み解きます。</p>
+<ul>
+<li><code>commit 30d45e7c...</code> … コミットID（ハッシュ）。最初の7文字 <code>30d45e7</code> だけで指定できます。</li>
+<li><code>(HEAD -&gt; master, origin/master)</code> … <code>HEAD</code>（ヘッド）＝「今いる位置」。それが <code>master</code> を指し、<code>origin/master</code>（GitHub側）とも同じ位置、という意味。</li>
+<li><code>Author: Taro Yamada &lt;taro.yamada@example.com&gt;</code> … このコミットを作った人（名前 ＜メールアドレス＞）。ここには、<code>git config --global user.name</code> と <code>git config --global user.email</code>（<code>01_環境構築</code> の §3）で登録した名前とメールアドレスが出ます。GitHub に公開したリポジトリでは、だれでも見られる所に出るので、会社のルールに合ったアドレスを登録します。</li>
+<li><code>Date:</code> … 作成日時。</li>
+<li>インデントされた <code>人員一覧で異動・退社を後ろに変更</code> … コミットメッセージ。</li>
+</ul>
+<blockquote>
+<p><strong>用語: HEAD（ヘッド）</strong>
+「今、自分が見ている／立っているコミット位置」を指す矢印のようなもの。普段は最新コミットを指しています。タイムマシンでいう「現在地」。</p>
+</blockquote>
+<h3 id="82-1行表示最頻出おすすめ">8.2 1行表示（最頻出・おすすめ）</h3>
+<p><code>git log</code> は1コミットが何行も使うので長くなりがち。普段は1行表示が便利です。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 各コミットを「短いID＋メッセージ」の1行に圧縮して一覧します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># oneline=1行表示。ID＋メッセージだけ</span>
+git<span class="w"> </span>log<span class="w"> </span>--oneline
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git log --oneline</code></strong>（Git）: <code>--oneline</code> は、1 件のコミットを 1 行（短い番号と、説明の 1 行目）で表示します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されます（本アプリの実際の履歴）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>30d45e7 人員一覧で異動・退社を後ろに変更
+3de6e62 人員データ取り扱い修正
+9156f15 休憩変更時の工数消去バグ修正
+4d2469a 通知誤削除修正
+43d02de 履歴に氏名追加
+e414b68 工数合計追加
+</code></pre></div></div>
+
+<p>これは§0.3で見た一覧そのものです。普段の確認はこれで十分です。</p>
+</blockquote>
+<h3 id="83-件数を絞るグラフ表示">8.3 件数を絞る・グラフ表示</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 最新の数件だけ見たり、ブランチの枝分かれをアスキーアートのグラフで見たりします。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 最新5件だけ</span>
+git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>-5
+<span class="c1"># ブランチの枝分かれをグラフで表示</span>
+git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>--graph<span class="w"> </span>--all
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git log --graph</code></strong>（Git）: コミットの歴史を、ブランチの枝分かれと合流が分かる線の絵で表示します。</li>
+<li><strong><code>git log --all</code></strong>（Git）: 今いるブランチだけでなく、全部のブランチのコミットを表示します。<code>git log --oneline --graph --all</code> と組み合わせると、全体の枝の様子が分かります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p><code>--graph</code> を付けると、ブランチがどこで分かれてどこで合流したかが、線（<code>*</code>・<code>|</code>・<code>/</code>・<code>\</code>）で描かれます。§10〜§11のブランチを学んだ後に見ると理解が深まります。</p>
+<h3 id="84-特定の時点の中身を見る">8.4 特定の時点の中身を見る</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> コミットIDを指定すると、その回で具体的に何行変わったか（diff）まで見られます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ID 9156f15（休憩バグ修正）の回の変更内容を表示</span>
+git<span class="w"> </span>show<span class="w"> </span>9156f15
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git show</code></strong>（Git）: 1 つの記録（コミット）の中身を見るコマンド。<code>git show 9156f15</code> で、そのコミットの説明と、変わった所（<code>-</code> が前、<code>+</code> が後）を表示します。<code>git show コミット:ファイル</code> で、その時のファイルの中身も見られます（一度記録した秘密のファイルも、こうして見えてしまいます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>なぜ？ これが「タイムマシン」の威力</strong>
+たとえば「休憩まわりがまた怪しい」となったとき、<code>git show 9156f15</code> で「前回どう直したか」を行単位で確認できます。コードの考古学（過去の意図を掘り起こす）に必須のコマンドです。</p>
+</blockquote>
+<hr>
+<h2 id="9-リモートとの同期push--pull--fetch">9. リモートとの同期：push / pull / fetch</h2>
+<p>ここまでは「手元（ローカル）」の話でした。ここからは GitHub（リモート）とのやり取りです。</p>
+<blockquote>
+<p>⚠️ <strong>再掲:</strong> <code>push</code> は <strong>指示があるまで実行しない</strong> 運用です（§16.6）。<code>pull</code>/<code>fetch</code> は「取り寄せ」なので比較的安全ですが、後述の注意を守ってください。</p>
+</blockquote>
+<h3 id="91-push--手元の記録を-github-に預ける">9.1 push ― 手元の記録を GitHub に預ける</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ローカルで確定したコミットを、GitHub（<code>origin</code>）の <code>master</code> ブランチに送って同期します。§2の図の「ローカル → GitHub」の矢印です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># origin（GitHub）の master へ、手元のコミットを送る</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>master
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git push</code></strong>（Git）: 自分のパソコンのコミットを、GitHub（リモート）へ送ります。<code>git push origin master</code> は「<code>origin</code> の <code>master</code> へ送る」。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Enumerating objects: 9, done.
+...
+To https://github.com/nomura-shokki/hozen-kosu-React.git
+   3de6e62..30d45e7  master -&gt; master
+</code></pre></div></div>
+
+<p>最後の <code>3de6e62..30d45e7 master -&gt; master</code> が「この範囲のコミットを master に送った」の意味です。</p>
+<p>⚠️ <strong>push は「公開・共有」の行為です。</strong> 一度 push すると、他の人がそれを取り込みます。後から「やっぱり無しで」と取り消すのは大ごとです。だから本アプリでは <strong>指示があるまで push しない</strong> のです。</p>
+</blockquote>
+<h3 id="92-pull--github-の最新を手元に取り寄せる">9.2 pull ― GitHub の最新を手元に取り寄せる</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> GitHub 側にある最新のコミットを取得し、手元の作業ツリーに反映（合流）します。「取得（fetch）＋合流（merge）」を一度に行います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># GitHub の master の最新を取り寄せて合流</span>
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>master
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git pull</code></strong>（Git）: GitHub の新しいコミットを取ってきて、今のブランチに取り込みます（<code>git fetch</code> と <code>git merge</code> を続けてやるのと同じ）。作業を始める前に、まず <code>git pull</code> します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されます:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Updating 3de6e62..30d45e7
+Fast-forward
+ frontend/src/MainPage/Help.tsx | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+</code></pre></div></div>
+
+<p><code>Fast-forward</code>（早送り）は「手元に変更がなかったので、すんなり最新に追いつけた」という幸せな状態です。</p>
+<p>⚠️ <strong>作業を始める前に必ず <code>git pull</code>。</strong> 古い状態のまま編集すると、他人の変更とぶつかって§12のコンフリクトが起きやすくなります。§17の「朝の儀式」に組み込みます。</p>
+</blockquote>
+<h3 id="93-fetch--取得だけして合流はしない">9.3 fetch ― 取得だけして、合流はしない</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> GitHub の最新を「取得するだけ」で、手元の作業ツリーにはまだ反映しません。中身を確認してから合流したい慎重派向け。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 取得のみ。手元には自動で混ざらない</span>
+git<span class="w"> </span>fetch<span class="w"> </span>origin
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git fetch</code></strong>（Git）: GitHub の新しいコミットを取ってくるだけで、自分の作業中のファイルには混ぜません。何が増えたかを先に見たい時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>pull と fetch の違い（重要）:</strong>
+| コマンド | 取得 | 自動で合流 | 安全度 |
+|---|---|---|---|
+| <code>git fetch</code> | する | <strong>しない</strong>（自分で確認できる） | 高い |
+| <code>git pull</code> | する | <strong>する</strong>（取得＋merge） | やや注意 |</p>
+<p><code>git pull</code> ＝ <code>git fetch</code> ＋ <code>git merge</code> です。慎重にいくなら <code>fetch</code> → <code>git log origin/master</code> で中身確認 → <code>git merge</code> の3手順に分けられます。</p>
+</blockquote>
+<hr>
+<h2 id="10-ブランチ--作業の枝分かれ">10. ブランチ ― 作業の枝分かれ</h2>
+<p>ここから Git の真骨頂、<strong>ブランチ（branch：枝）</strong> です。</p>
+<h3 id="101-ブランチとは何か">10.1 ブランチとは何か</h3>
+<blockquote>
+<p><strong>ブランチ（branch：意味は「枝」）とは？</strong>
+メインの歴史（<code>master</code>）から <strong>枝分かれ</strong> して、独立した作業を進められるようにするしくみ。枝の上で好きなだけ実験し、うまくいったら本流（<code>master</code>）に <strong>合流（merge）</strong> します。失敗したら枝ごと捨てればよく、本流は無傷です。</p>
+</blockquote>
+<p><strong>たとえ:</strong> 1冊のノート（<code>master</code>）に直接いきなり清書すると、失敗したとき台無しです。そこで「下書き用のコピー（ブランチ）」を作り、そこで試行錯誤し、完成したら本ノートに清書（merge）する。失敗しても本ノートは綺麗なまま。</p>
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 210" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-02-6-10b981" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#10b981"/></marker></defs>
+<text x="20" y="74" font-size="13" fill="#1e40af" text-anchor="start" font-weight="800" font-family="Consolas, DefCode, monospace">master</text>
+<text x="20" y="154" font-size="13" fill="#047857" text-anchor="start" font-weight="800" font-family="Consolas, DefCode, monospace">feature</text>
+<line x1="110" y1="70" x2="600" y2="70" stroke="#3b82f6" stroke-width="3"/>
+<path d="M270,70 L340,150 L450,150 L536,82" fill="none" stroke="#10b981" stroke-width="3" marker-end="url(#ar-kosu-02-6-10b981)"/>
+<circle cx="130" cy="70" r="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="130" y="75" font-size="13" fill="#1e40af" text-anchor="middle" font-weight="800">A</text>
+<circle cx="200" cy="70" r="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="200" y="75" font-size="13" fill="#1e40af" text-anchor="middle" font-weight="800">B</text>
+<circle cx="270" cy="70" r="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="270" y="75" font-size="13" fill="#1e40af" text-anchor="middle" font-weight="800">C</text>
+<circle cx="360" cy="150" r="16" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="360" y="155" font-size="13" fill="#047857" text-anchor="middle" font-weight="800">D</text>
+<circle cx="440" cy="150" r="16" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="440" y="155" font-size="13" fill="#047857" text-anchor="middle" font-weight="800">E</text>
+<circle cx="560" cy="70" r="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="560" y="75" font-size="13" fill="#1e40af" text-anchor="middle" font-weight="800">F</text>
+<text x="330" y="40" font-size="12" fill="#1e40af" text-anchor="middle">本流（いつでも動く状態を保つ）</text>
+<text x="400" y="186" font-size="12" fill="#047857" text-anchor="middle">枝（ここで試す。できたら合流）</text>
+<text x="620" y="76" font-size="12" fill="#475569" text-anchor="start">← 合流（merge）</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図2-4: ブランチ（枝）。master はいつでも動く状態に保ち、feature で試した変更を、できあがったら合流させる</div>
+</div>
+
+<blockquote>
+<p><strong>なぜ？ なぜわざわざ枝を分けるのか</strong>
+① 本流（<code>master</code>）を常に「動く状態」に保てる。② 複数人が同時に別々の作業をしてもぶつからない。③ 「この機能だけやっぱり無し」が枝の削除で簡単にできる。本アプリのような業務システムでは、「本番で動いている <code>master</code> を壊さないこと」が最重要なので、ブランチを切って作業するのが安全です。</p>
+</blockquote>
+<h3 id="102-ブランチを作る移動する">10.2 ブランチを作る・移動する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> <code>help-fix</code> という名前の新しい枝を作り、そこへ移動します。<code>-c</code>（create）付きの <code>switch</code> は「作って移動」を一度にやります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -c=create。help-fix という枝を作って移動</span>
+git<span class="w"> </span>switch<span class="w"> </span>-c<span class="w"> </span>help-fix
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git switch</code></strong>（Git）: ブランチを切り替えます。<code>git switch master</code> で <code>master</code> へ移ります。</li>
+<li><strong><code>git switch -c</code></strong>（Git）: 新しいブランチを作って、そこへ切り替えます（<code>-c</code> は create＝作る）。<code>git switch -c help-fix</code>。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Switched to a new branch &#39;help-fix&#39;
+</code></pre></div></div>
+
+<p>「新しいブランチ help-fix に切り替えました」。これ以降の編集・コミットは、<code>master</code> ではなく <code>help-fix</code> 上に積まれます。<code>master</code> は無傷のままです。</p>
+<p><strong>用語: <code>switch</code> と <code>checkout</code></strong>
+昔は <code>git checkout -b 名前</code> でブランチを作って移動していました。今は役割を分かりやすくした <code>git switch</code>（ブランチ移動専用）が推奨です。どちらも動きますが、本章では新しい <code>switch</code> を使います。</p>
+</blockquote>
+<p>ブランチ名の付け方の例（本アプリ向け）:</p>
+<table>
+<thead>
+<tr>
+<th>作業内容</th>
+<th>おすすめのブランチ名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ヘルプ画面の文言修正</td>
+<td><code>help-text-fix</code></td>
+</tr>
+<tr>
+<td>工数合計機能の追加</td>
+<td><code>add-kosu-total</code></td>
+</tr>
+<tr>
+<td>休憩バグの修正</td>
+<td><code>fix-break-bug</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="103-ブランチ間を行き来する">10.3 ブランチ間を行き来する</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 既存のブランチへ移動します（<code>-c</code> なしの <code>switch</code>）。<code>master</code> に戻りたいときに使います。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># master に戻る</span>
+git<span class="w"> </span>switch<span class="w"> </span>master
+<span class="c1"># help-fix に移動</span>
+git<span class="w"> </span>switch<span class="w"> </span>help-fix
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ こう表示されます:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Switched to branch &#39;master&#39;
+</code></pre></div></div>
+
+<p>⚠️ <strong>ブランチを移動すると、作業ツリーのファイルの中身も切り替わります。</strong> <code>help-fix</code> で編集した内容は <code>master</code> に移ると見えなくなり（消えたわけではない）、<code>help-fix</code> に戻ると再び現れます。「ファイルが消えた！」と慌てないこと。今どの枝にいるかは <code>git status</code> か <code>git branch</code> で確認できます。</p>
+</blockquote>
+<hr>
+<h2 id="11-mergeマージ-枝を合流させる">11. merge（マージ）― 枝を合流させる</h2>
+<p>枝で完成した作業を本流（<code>master</code>）に取り込むのが <strong>merge（マージ：合流）</strong> です。</p>
+<h3 id="111-基本の流れ">11.1 基本の流れ</h3>
+<p>merge は「<strong>取り込みたい側（master）に移動してから、取り込む枝（help-fix）を指定する</strong>」のが鉄則です。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> まず本流 <code>master</code> に移動し、<code>help-fix</code> の変更を <code>master</code> に合流させます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 取り込み先（本流）に移動</span>
+git<span class="w"> </span>switch<span class="w"> </span>master
+<span class="c1"># ② help-fix の変更を master に取り込む</span>
+git<span class="w"> </span>merge<span class="w"> </span>help-fix
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git merge</code></strong>（Git）: ほかのブランチの変更を、今いるブランチに取り込みます。<code>master</code> にいる時に <code>git merge help-fix</code> で、<code>help-fix</code> の変更が <code>master</code> に入ります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p><strong>▼ こう表示されれば成功（Fast-forward の場合）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Updating 3de6e62..a1b2c3d
+Fast-forward
+ frontend/src/MainPage/Help.tsx | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+</code></pre></div></div>
+
+<p><strong>用語: Fast-forward（ファストフォワード：早送り）マージ</strong>
+<code>master</code> が枝分かれ後に一切変わっていなかった場合、Git は「枝の先まで <code>master</code> のしおりを早送りするだけ」で済ませます。これが Fast-forward。最もシンプルで安全な merge です。</p>
+</blockquote>
+<h3 id="112-マージコミットができる場合">11.2 マージコミットができる場合</h3>
+<p><code>master</code> 側も、枝を切った後に別の変更が進んでいた場合は、Git が両方を織り交ぜた「<strong>マージコミット</strong>」を自動で作ります。</p>
+<blockquote>
+<p><strong>▼ こう表示されます:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Merge made by the &#39;ort&#39; strategy.
+ frontend/src/MainPage/Help.tsx | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+</code></pre></div></div>
+
+<p><code>Merge made by the 'ort' strategy</code> は「ort という方式で自動合流しました」の意味。<strong>両方の変更が別々の場所なら、Git が自動でうまく混ぜてくれます。</strong> 同じ場所を両方がいじっていると、次の§12「コンフリクト」になります。</p>
+</blockquote>
+<h3 id="113-終わった枝を片付ける">11.3 終わった枝を片付ける</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> master に取り込み終えた <code>help-fix</code> 枝を削除します。<code>-d</code>（delete）は「ちゃんと merge 済みなら消す」安全版です。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># -d=delete。merge済みの枝を安全に削除</span>
+git<span class="w"> </span>branch<span class="w"> </span>-d<span class="w"> </span>help-fix
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git branch -d</code></strong>（Git）: ブランチを消します。取り込み（マージ）が済んでいないブランチは、消さずに止まって教えてくれます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p>⚠️ <code>-d</code>（小文字）は「merge 済みでないと消さない」安全装置付き。<code>-D</code>（大文字）は「未マージでも強制削除」で、未保存の作業が消えます。基本は <strong>小文字の <code>-d</code></strong> を使ってください。</p>
+</blockquote>
+<hr>
+<h2 id="12-コンフリクト衝突の解決">12. コンフリクト（衝突）の解決</h2>
+<blockquote>
+<p><strong>コンフリクト（conflict：衝突）とは？</strong>
+2つのブランチ（または自分と他人）が <strong>同じファイルの同じ行</strong> を別々に書き換えたまま合流しようとして、Git が「どっちを正解にすればいいか分からない」と判断保留すること。Git は勝手に決めず、<strong>人間に判断を委ねます</strong>。</p>
+</blockquote>
+<p>初心者はコンフリクトを怖がりますが、<strong>正体さえ知れば必ず手で直せます</strong>。ここで実際の画面を1行ずつ追います。</p>
+<h3 id="121-コンフリクトが起きた瞬間">12.1 コンフリクトが起きた瞬間</h3>
+<p><code>git merge</code> や <code>git pull</code> のときに、こう出ます。</p>
+<blockquote>
+<p><strong>▼ こう表示されたらコンフリクト発生:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Auto-merging frontend/src/MainPage/Help.tsx
+CONFLICT (content): Merge conflict in frontend/src/MainPage/Help.tsx
+Automatic merge failed; fix conflicts and then commit the result.
+</code></pre></div></div>
+
+<ul>
+<li><code>CONFLICT (content): Merge conflict in ...Help.tsx</code> … <code>Help.tsx</code> の中身で衝突したよ。</li>
+<li><code>Automatic merge failed; fix conflicts and then commit the result.</code> … 自動合流は失敗。<strong>コンフリクトを直して、結果をコミットしてね。</strong></li>
+</ul>
+</blockquote>
+<h3 id="122-どのファイルが衝突したか確認">12.2 どのファイルが衝突したか確認</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 衝突して未解決のファイル一覧を確認します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 「both modified:」がコンフリクト中のファイル</span>
+git<span class="w"> </span>status
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ こう表示されます:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Unmerged paths:
+  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)
+        both modified:   frontend/src/MainPage/Help.tsx
+</code></pre></div></div>
+
+<p><code>both modified:</code>（両方が変更した）が、コンフリクト中のファイルです。</p>
+</blockquote>
+<h3 id="123-衝突マーカーを読むここが核心">12.3 衝突マーカーを読む（ここが核心）</h3>
+<p>衝突したファイルを開くと、Git が次のような <strong>目印（マーカー）</strong> を埋め込んでいます。これは実際にファイルの中に書き込まれます。</p>
+<blockquote>
+<p><strong>▼ コンフリクト中の Help.tsx の中身（※形式を示すための説明用の例）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&lt;h2&gt;ヘルプ&lt;/h2&gt;
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+        &lt;p&gt;このページでは使い方を説明します。&lt;/p&gt;
+=======
+        &lt;p&gt;工数システムの操作方法はこちらです。&lt;/p&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; help-fix
+        &lt;ul&gt;
+</code></pre></div></div>
+
+</blockquote>
+<p>1行ずつ意味を読み解きます。<strong>ここを理解できれば、もうコンフリクトは怖くありません。</strong></p>
+<ul>
+<li><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> … ここから下が「<strong>今いるブランチ（master側、HEAD）の主張</strong>」の始まり。</li>
+<li><code>&lt;p&gt;このページでは使い方を説明します。&lt;/p&gt;</code> … master 側が書いた内容。</li>
+<li><code>=======</code> … 境界線。ここから下が「<strong>取り込もうとした側（help-fix）の主張</strong>」。</li>
+<li><code>&lt;p&gt;工数システムの操作方法はこちらです。&lt;/p&gt;</code> … help-fix 側が書いた内容。</li>
+<li><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; help-fix</code> … help-fix 側の主張の終わり。</li>
+</ul>
+<h3 id="124-手で解決する3つの選択肢">12.4 手で解決する（3つの選択肢）</h3>
+<p>あなたがやることは、「<strong>マーカーを全部消して、正しい最終形だけを残す</strong>」ことです。選択肢は3つ。</p>
+<p><strong>(A) master 側を採用する場合 → こう書き換える:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&lt;h2&gt;ヘルプ&lt;/h2&gt;
+        &lt;p&gt;このページでは使い方を説明します。&lt;/p&gt;
+        &lt;ul&gt;
+</code></pre></div></div>
+
+<p><strong>(B) help-fix 側を採用する場合 → こう書き換える:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&lt;h2&gt;ヘルプ&lt;/h2&gt;
+        &lt;p&gt;工数システムの操作方法はこちらです。&lt;/p&gt;
+        &lt;ul&gt;
+</code></pre></div></div>
+
+<p><strong>(C) 両方を活かして自分で書き直す場合 → こう書き換える:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>&lt;h2&gt;ヘルプ&lt;/h2&gt;
+        &lt;p&gt;工数システムの操作方法（使い方）はこちらです。&lt;/p&gt;
+        &lt;ul&gt;
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ <strong><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> の3種類のマーカー行は、1つ残らず削除してください。</strong> これらが1文字でも残っていると、コードが文法エラーになり、画面が真っ白になります。解決後に <code>git diff</code> で「マーカーが残っていないか」を必ず目視確認しましょう。</p>
+<p><strong>VS Code を使うと楽:</strong> VS Code はコンフリクト箇所に「Accept Current Change（master側を採用）」「Accept Incoming Change（help-fix側を採用）」「Accept Both Changes（両方）」というボタンを表示します。クリックするだけでマーカーごと処理してくれます。初心者にはこちらを強くおすすめします。</p>
+</blockquote>
+<h3 id="125-解決を確定する">12.5 解決を確定する</h3>
+<p>直したら、Git に「解決したよ」と教え、合流を完了します。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 解決したファイルを <code>add</code> で「解決済み」と記録し、<code>commit</code> で合流を完了します（merge 中の commit はメッセージ省略でもOK）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① 「このファイルは解決した」と記録</span>
+git<span class="w"> </span>add<span class="w"> </span>frontend/src/MainPage/Help.tsx
+<span class="c1"># ② Unmerged が消えたか確認</span>
+git<span class="w"> </span>status
+<span class="c1"># ③ 合流を完了（※指示があれば実行）</span>
+git<span class="w"> </span>commit
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>▼ 解決後 <code>git status</code> でこう出れば成功:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>All conflicts fixed but you are still merging.
+  (use &quot;git commit&quot; to conclude merge)
+</code></pre></div></div>
+
+<p>「すべての衝突は解決済み。<code>git commit</code> で merge を締めくくってね」。</p>
+<p><strong>途中でやめたくなったら:</strong> <code>git merge --abort</code> と打てば、<strong>merge を始める前の状態に完全に巻き戻せます</strong>。「やっぱり今は merge しない」が安全にできる脱出ボタンです。コンフリクトで混乱したら、無理せず <code>--abort</code> で一旦戻り、落ち着いてから再挑戦しましょう。</p>
+</blockquote>
+<hr>
+<h2 id="13-プルリクエストpull-requestの流れ">13. プルリクエスト（Pull Request）の流れ</h2>
+<blockquote>
+<p><strong>プルリクエスト（Pull Request、略して PR：プルリク）とは？</strong>
+「自分のブランチの変更を、本流（<code>master</code>）に取り込んでください」と GitHub 上で <strong>お願い（リクエスト）する</strong> しくみ。取り込む前に、他のメンバーが <strong>レビュー（コードの確認）</strong> できるのが最大の利点です。</p>
+</blockquote>
+<p>ローカルの <code>git merge</code> と違い、PR は「<strong>GitHub 上で、人の目を通してから合流する</strong>」公式の手続きです。</p>
+<h3 id="131-pr-の全体の流れ">13.1 PR の全体の流れ</h3>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① ブランチを作る（git switch -c add-kosu-total）
+② そのブランチで作業し、commit する
+③ git push origin add-kosu-total で GitHub に枝を送る
+④ GitHub の画面で「Pull Request」を作成（add-kosu-total → master）
+⑤ レビュアーが変更を確認し、コメント・承認（Approve）
+⑥ 「Merge」ボタンで master に合流
+⑦ 枝を削除（GitHub の Delete branch ボタン）
+⑧ 手元で git switch master &amp;&amp; git pull で最新に追いつく
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ ③ の <code>push</code> は <strong>指示があるまで実行しない</strong> 運用です。PR は「複数人で安全に合流する」ための仕組みなので、運用方針を引き継ぎ担当者に確認してから使います。</p>
+</blockquote>
+<h3 id="132-pr-画面で見る要素">13.2 PR 画面で見る要素</h3>
+<p>GitHub の PR 画面には次の情報が並びます。</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>何の変更か（例: <code>工数合計機能を追加</code>）</td>
+</tr>
+<tr>
+<td>Description（説明）</td>
+<td>なぜ・どう変えたか・確認方法</td>
+</tr>
+<tr>
+<td>Commits タブ</td>
+<td>含まれるコミット一覧</td>
+</tr>
+<tr>
+<td>Files changed タブ</td>
+<td>変更されたファイルの diff（§5の表示と同じ）</td>
+</tr>
+<tr>
+<td>Conversation</td>
+<td>レビューコメントのやり取り</td>
+</tr>
+<tr>
+<td>Approve / Request changes</td>
+<td>承認 / 修正依頼</td>
+</tr>
+<tr>
+<td>Merge ボタン</td>
+<td>押すと master に合流</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>なぜ？ なぜローカル merge ではなく PR を使うのか</strong>
+① 第三者の目で <strong>バグや危険なコード</strong> を合流前に発見できる。② 「なぜこの変更をしたか」の議論が GitHub に記録として残る。③ master への直接の変更を防ぎ、本番システムの安全を守る。本アプリのような業務システムでは、この「合流前レビュー」が品質の生命線です。</p>
+</blockquote>
+<h3 id="133-pr-の説明文の書き方テンプレート例">13.3 PR の説明文の書き方（テンプレート例）</h3>
+<blockquote>
+<p><strong>▼ PR 説明文のテンプレート（※説明用の例。本アプリ向けに調整可）:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>## 何を変えたか
+工数一覧に「合計」行を追加した。
+
+## なぜ変えたか
+利用者から「1日の合計をいちいち電卓で足している」との要望があったため。
+
+## 確認方法
+1. 工数ページを開く
+2. 一覧最下部に「合計」が表示されることを確認
+3. 値が各行の手計算と一致することを確認
+</code></pre></div></div>
+
+<p>本アプリのコミット <code>e414b68 工数合計追加</code> のような変更を PR にするなら、この粒度で書くと、レビュアーが確認しやすくなります。</p>
+</blockquote>
+<hr>
+<h2 id="14-gitignore--追跡しないファイルの指定">14. .gitignore ― 追跡しないファイルの指定</h2>
+<blockquote>
+<p><strong><code>.gitignore</code>（ギット・イグノア、ignore＝無視する）とは？</strong>
+「Git に <strong>記録させたくない／追跡させたくない</strong> ファイルやフォルダ」を列挙する設定ファイル。ここに書いたものは、<code>git status</code> にも出てこなくなり、<code>git add .</code> でも巻き込まれません。</p>
+</blockquote>
+<h3 id="141-なぜ無視が必要なのか">14.1 なぜ無視が必要なのか</h3>
+<p>世の中のファイルには「Git で管理すべきもの」と「すべきでないもの」があります。</p>
+<table>
+<thead>
+<tr>
+<th>管理すべき</th>
+<th>管理すべきでない（無視する）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自分で書いたソースコード（<code>.tsx</code>/<code>.py</code>）</td>
+<td>自動生成される <code>node_modules/</code>（巨大）</td>
+</tr>
+<tr>
+<td>設定の <strong>ひな形</strong></td>
+<td><strong>秘密情報</strong> を含む <code>.env</code></td>
+</tr>
+<tr>
+<td>ドキュメント（<code>.md</code>）</td>
+<td>ビルド成果物・キャッシュ（<code>__pycache__/</code>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="142-本アプリのルート-gitignore-を1行ずつ読む">14.2 本アプリのルート <code>.gitignore</code> を1行ずつ読む</h3>
+<p>これは本アプリに実在するファイル <code>/.gitignore</code> の <strong>全文</strong> です。1行ずつ意味を解説します。</p>
+<blockquote>
+<p><strong>▼ このファイルがやること（先に日本語で）:</strong> 秘密情報ファイル <code>.env</code>、Python の自動生成キャッシュ、エディタ設定、巨大な依存フォルダ <code>node_modules</code> を、Git の追跡対象から外します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env                    # ① 秘密情報（DBパスワード等）を含む環境設定ファイル。絶対に追跡しない
+**/__pycache__/         # ② Pythonが自動生成するキャッシュフォルダ（全階層）。中身は再生成される
+*.py[cod]               # ③ コンパイル済みPython（.pyc/.pyo/.pyd）。自動生成物なので不要
+*$py.class              # ④ Jython等が作る .class ファイル。自動生成物
+.vscode/                # ⑤ VS Codeの個人設定フォルダ。人によって違うので共有しない
+.claude                 # ⑥ Claude（AI支援ツール）の設定。個人環境用
+
+node_modules/           # ⑦ npmが入れる大量の依存ライブラリ。巨大すぎ＆再生成可能
+frontend/node_modules/  # ⑧ frontend配下の依存ライブラリも同様に無視
+</code></pre></div></div>
+
+<p>各行の補足:</p>
+<ul>
+<li>① <strong><code>.env</code>（ドットイーエヌブイ）</strong> … 環境変数（environment variables）を書くファイル。<code>CLAUDE.md</code> にあるとおり、本アプリの <code>.env</code> には <code>SECRET_KEY</code>・<code>DB_PASSWORD</code>（データベースのパスワード）・<code>DB_HOST</code> などの <strong>絶対に外に出してはいけない秘密</strong> が入っています。詳細は§14.4。</li>
+<li>② <strong><code>**/__pycache__/</code></strong> … <code>**</code> は「どの階層でも」を意味するワイルドカード。Python が高速化のために自動生成するキャッシュ。消えても自動で再生成されるので記録不要。</li>
+<li>③ <strong><code>*.py[cod]</code></strong> … <code>*</code> は「任意の文字列」、<code>[cod]</code> は「c か o か d のどれか1文字」。つまり <code>.pyc</code>・<code>.pyo</code>・<code>.pyd</code> をまとめて指定。すべて自動生成物。</li>
+<li>⑤ <strong><code>.vscode/</code></strong> … エディタの個人設定。人によって好みが違うので共有しない（共有すると他人の設定を上書きして喧嘩になる）。</li>
+<li>⑦⑧ <strong><code>node_modules/</code></strong> … <code>npm install</code> で入る何万ファイルもの依存ライブラリ。<code>package.json</code> さえあれば誰でも再生成できるので、Git には入れない（入れるとリポジトリが数百MBに膨れる）。</li>
+</ul>
+<h3 id="143-本アプリの-frontend-gitignore-も読む">14.3 本アプリの frontend <code>.gitignore</code> も読む</h3>
+<p>本アプリには <code>frontend/.gitignore</code> もあります。フロント専用の無視設定です。これも実在ファイルの全文です。</p>
+<blockquote>
+<p><strong>▼ このファイルがやること（先に日本語で）:</strong> フロント専用に、依存フォルダ・テスト結果・OSやログの一時ファイル・本番用の環境設定を無視します。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># dependencies          # （コメント）依存ライブラリの見出し
+/node_modules           # ① このフォルダ直下の node_modules を無視
+# testing               # （コメント）テスト関連の見出し
+/coverage               # ② テストのカバレッジ結果（自動生成）
+
+# misc                  # （コメント）その他
+.DS_Store               # ③ macOSが勝手に作る隠しファイル
+npm-debug.log*          # ④ npmのデバッグログ（エラー時に出る）
+yarn-debug.log*         # ⑤ yarnのデバッグログ
+yarn-error.log*         # ⑥ yarnのエラーログ
+
+.env.production         # ⑦ 本番用の環境設定（秘密を含みうる）。無視
+
+# npm install           # （コメント）メモ。動作に影響なし
+# npm run build         # （コメント）メモ
+</code></pre></div></div>
+
+<ul>
+<li><code>#</code> で始まる行は <strong>コメント</strong>（人間向けの注釈。Git は無視）。</li>
+<li>⑦ <code>.env.production</code> … 本番（production）用の環境設定。秘密情報を含むため無視します。<code>git status</code>（章冒頭）で <code>M frontend/.env.production</code> のように出ることがありますが、これは過去に一度追跡対象になっていた経緯がある特殊ケースです。原則として <code>.env</code> 系は追跡しないのが鉄則です（§14.5の「すでに追跡してしまった場合」を参照）。</li>
+</ul>
+<h3 id="144--最重要警告env-を絶対に-commit-しない">14.4 ⚠️ 最重要警告：<code>.env</code> を絶対に commit しない</h3>
+<blockquote>
+<p>⚠️⚠️⚠️ <strong>これは本章で最も重要な安全ルールです。</strong> <code>.env</code> には <strong>データベースのパスワード</strong>・<code>SECRET_KEY</code>（Django がセッションや暗号に使う秘密の鍵）が書かれています。これを GitHub に push してしまうと、<strong>世界中の誰でもパスワードを読めてしまい</strong>、データベースが乗っ取られたり、データが盗まれたりします。</p>
+<p><strong>なぜ？ 一度 push した秘密は「消しても手遅れ」</strong>
+GitHub は履歴をすべて残します。後から <code>.env</code> を削除してコミットしても、「過去のコミットを遡れば中身が見える」状態が残ります。さらに、誰かが既に clone（複製）していたら回収不能です。だから <strong>「最初から1度も push しない」</strong> ことだけが唯一の防御です。<code>.gitignore</code> に <code>.env</code> が入っているのは、この事故を物理的に防ぐためです。</p>
+<p><strong>もし誤って <code>.env</code> を add してしまったら:</strong></p>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>git<span class="w"> </span>restore<span class="w"> </span>--staged<span class="w"> </span>.env<span class="w">   </span><span class="c1"># ステージングから降ろす（中身は無傷。§6.3）</span>
+git<span class="w"> </span>status<span class="w">                  </span><span class="c1"># .env が緑から消えたか確認</span>
+</code></pre></div></div>
+
+<p>そして <strong>絶対に commit/push せず</strong>、引き継ぎ担当者に即報告してください。</p>
+</blockquote>
+<h3 id="145-すでに追跡してしまったファイルを無視に変える">14.5 すでに追跡してしまったファイルを無視に変える</h3>
+<p><code>.gitignore</code> に書いても、<strong>既に Git が追跡を始めてしまったファイル</strong> には効きません。追跡を止めるには:</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> ファイルを「Git の追跡対象から外す」が、手元のファイル自体は消さない（<code>--cached</code>）。これで <code>.gitignore</code> が効くようになります。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 追跡だけ外す。手元の .env ファイルは残る</span>
+git<span class="w"> </span>rm<span class="w"> </span>--cached<span class="w"> </span>.env
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git rm</code></strong>（Git）: ファイルを、Git の記録から外すコマンド。<code>git rm --cached .env</code> は、ファイルそのものは残したまま、記録からだけ外します（間違えて記録した秘密のファイルを外す時に使います）。</li>
+<li><strong><code>git rm --cached</code></strong>（Git）: <code>git rm --cached .env</code> は、ファイルは消さずに、Git の管理からだけ外します。うっかり入れてしまった秘密のファイルを、次のコミットから外す時に使います。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p>⚠️ <code>--cached</code> を <strong>付け忘れる</strong> と、手元の <code>.env</code> ファイル <strong>自体が削除</strong> されます。必ず <code>--cached</code> を付けてください。これも commit を伴うので、本運用では実行前に指示を仰ぎましょう。</p>
+</blockquote>
+<hr>
+<h2 id="15-トークン認証--github-への安全なログイン">15. トークン認証 ― GitHub への安全なログイン</h2>
+<p><code>git push</code> や、プライベートリポジトリの <code>git pull</code> をすると、GitHub は「本当にあなたですか？」と認証を求めます。</p>
+<h3 id="151-なぜパスワードではなくトークンなのか">15.1 なぜパスワードではなくトークンなのか</h3>
+<blockquote>
+<p><strong>重要:</strong> GitHub は <strong>2021年以降、HTTPS でのパスワード認証を廃止</strong> しました。<code>git push</code> のときにパスワードを入れても通りません。代わりに <strong>トークン</strong> を使います。</p>
+<p><strong>トークン（token：意味は「引換券・合言葉」）とは？</strong>
+パスワードの代わりに使う、ランダムな長い文字列。正式には <strong>Personal Access Token（パーソナル・アクセス・トークン、略して PAT）</strong>。「この合言葉を持っている人＝本人」とみなして GitHub が認証します。</p>
+<p><strong>なぜ？ なぜトークンの方が安全なのか</strong>
+① パスワードと違い <strong>権限を細かく絞れる</strong>（「読み取りだけ」「このリポジトリだけ」等）。② <strong>有効期限を設定でき</strong>、漏れても期限切れで無効になる。③ 漏れたら <strong>そのトークンだけ即無効化</strong> でき、パスワード（他サービスでも使い回しがち）を変える必要がない。</p>
+</blockquote>
+<h3 id="152-トークンの作り方手順">15.2 トークンの作り方（手順）</h3>
+<p>GitHub の Web 画面で作ります。</p>
+<ol>
+<li>GitHub にログインします。</li>
+<li>右上のアイコン → <strong>Settings</strong>（設定）を開きます。</li>
+<li>左のメニューのいちばん下 → <strong>Developer settings</strong> を開きます。</li>
+<li><strong>Personal access tokens</strong> → <strong>Tokens (classic)</strong> → <strong>Generate new token</strong> を選びます。</li>
+<li><strong>Note</strong>（メモの名前）に、例えば「kosu-react 用」と入れます。</li>
+<li><strong>Expiration</strong>（有効期限）を選びます（例: 90 days）。</li>
+<li><strong>Select scopes</strong>（権限）で、<code>repo</code> にチェックを入れます（リポジトリの操作に必要です）。</li>
+<li><strong>Generate token</strong> ボタンを押します。</li>
+<li>表示された <code>ghp_xxxxxxxx...</code> を、<strong>必ずその場でコピー</strong>します（この画面を閉じると、二度と見られません）。</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>トークンは生成直後の一度しか表示されません。</strong> 必ずその場でコピーし、パスワード管理ソフトなど安全な場所に保管してください。万一控え忘れたら、作り直す（古いものは削除）だけなので慌てなくて大丈夫です。</p>
+</blockquote>
+<h3 id="153-トークンの使い方">15.3 トークンの使い方</h3>
+<p><code>git push</code> 時にユーザー名とパスワードを聞かれたら:</p>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>Username: あなたのGitHubユーザー名
+Password: ここに「トークン」を貼り付ける（パスワードではない！）
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>覚え方:</strong> Password の欄に入れるのは <strong>トークン</strong> です。本物の GitHub ログインパスワードを入れても通りません。</p>
+</blockquote>
+<h3 id="154-毎回聞かれないようにする資格情報の保存">15.4 毎回聞かれないようにする（資格情報の保存）</h3>
+<p>Windows では、一度入れたトークンを OS が安全に覚えてくれる設定があります。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> Git に「認証情報を Windows の資格情報マネージャーに保存して」と設定し、次回から自動でトークンを使わせます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Windowsの資格情報マネージャーに保存</span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>credential.helper<span class="w"> </span>manager
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>用語: <code>--global</code>（グローバル）</strong>
+「このPC全体の設定として」の意味。<code>--global</code> なしだと「このリポジトリだけ」の設定になります。認証ヘルパーは全リポジトリ共通でよいので <code>--global</code> を付けます。</p>
+<p>⚠️ <strong>トークンが漏れたら即無効化。</strong> GitHub の Settings → トークン一覧から、該当トークンの「Delete（削除）」を押せば、そのトークンは即座に使えなくなります。漏洩が疑われたら迷わず削除→新規作成してください。</p>
+</blockquote>
+<hr>
+<h2 id="16-復旧コマンドとやってしまった対処集">16. 復旧コマンドと「やってしまった」対処集</h2>
+<p>Git の最大の安心は「<strong>たいていの失敗は元に戻せる</strong>」ことです。ここでは「やってしまった！」を救う復旧コマンドを、危険度順に整理します。</p>
+<h3 id="161-編集を捨てて最後のコミットの状態に戻すrestore">16.1 編集を捨てて、最後のコミットの状態に戻す（restore）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 指定ファイルの <strong>作業ツリーの編集を破棄</strong> し、最後にコミットした時点の中身に戻します。「さっきの編集、なかったことにしたい」とき。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このファイルの編集を捨てて元に戻す</span>
+git<span class="w"> </span>restore<span class="w"> </span>frontend/src/MainPage/Help.tsx
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ <strong>これは破壊的操作です。</strong> 捨てた編集は <strong>基本的に戻りません</strong>（まだコミットしていない変更なので、Git も覚えていない）。実行前に「本当に捨てていいか」を <code>git diff</code> で確認しましょう。</p>
+</blockquote>
+<h3 id="162-ステージングから降ろすrestore---staged">16.2 ステージングから降ろす（restore --staged）</h3>
+<p>§6.3 で見たもの。<code>add</code> を取り消すだけで、中身は無傷の <strong>安全な操作</strong> です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># add を取り消す（中身そのまま）</span>
+git<span class="w"> </span>restore<span class="w"> </span>--staged<span class="w"> </span>Help.tsx
+</code></pre></div></div>
+
+<h3 id="163-直前のコミットメッセージを直すamend">16.3 直前のコミットメッセージを直す（amend）</h3>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 直前のコミットの <strong>メッセージを書き直す</strong>（まだ push していない場合に限る）。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 直前コミットのメッセージを上書き</span>
+git<span class="w"> </span>commit<span class="w"> </span>--amend<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;正しいメッセージ&quot;</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git commit --amend</code></strong>（Git）: 直前のコミットを作り直します。<code>git commit --amend -m "正しいメッセージ"</code> でメッセージを直せます。もう <code>push</code> したコミットには使いません（GitHub 側とずれます）。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<blockquote>
+<p>⚠️ <strong><code>--amend</code> は「直前コミットを作り直す」操作。</strong> すでに push したコミットに対して使うと、リモートと食い違って厄介になります。<strong>push 前のローカルでのみ</strong> 使ってください。本運用では commit/push を勝手にしないので、出番は限定的です。</p>
+</blockquote>
+<h3 id="164-コミットを取り消すreset-危険度別">16.4 コミットを取り消す（reset）― 危険度別</h3>
+<p><code>git reset</code>（リセット）は、コミットを巻き戻す強力なコマンドです。3つのモードがあり、危険度が違います。</p>
+<blockquote>
+<p><strong>▼ このコードがやること（先に日本語で）:</strong> 直前のコミットを取り消す。<code>--soft</code> は変更を残し、<code>--mixed</code>（既定）はステージングだけ解除し、<code>--hard</code> は <strong>変更ごと完全に消す</strong>。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① コミットだけ取消。変更はステージングに残る（安全）</span>
+git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>HEAD~1
+<span class="c1"># ② コミット&amp;add取消。変更は作業ツリーに残る（既定・安全）</span>
+git<span class="w"> </span>reset<span class="w"> </span>--mixed<span class="w"> </span>HEAD~1
+<span class="c1"># ③ コミットも変更も全部消す（超危険！）</span>
+git<span class="w"> </span>reset<span class="w"> </span>--hard<span class="w"> </span>HEAD~1
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git reset</code></strong>（Git）: 今いるブランチの位置を、前のコミットへ戻します。<code>HEAD~1</code> は「1 つ前のコミット」です。</li>
+<li><strong><code>git reset --soft</code></strong>（Git）: コミットだけを取り消し、変更は <code>add</code> 済みのまま残します。「コミットをやり直したい」時に使います。</li>
+<li><strong><code>git reset --mixed</code></strong>（Git）: コミットと <code>add</code> を取り消し、変更はファイルに残します（何も付けない <code>git reset</code> と同じ）。</li>
+<li><strong><code>git reset --hard</code></strong>（Git）: コミットも、ファイルの変更も、全部消して戻します。消した変更は元に戻せないことがあるので、使う前に必ず <code>git status</code> で確かめます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<ul>
+<li><code>HEAD~1</code>（ヘッド・チルダ・いち）… 「今の位置（HEAD）の1つ前」の意味。<code>~2</code> なら2つ前。</li>
+<li>① <code>--soft</code> … コミットは消すが、編集内容はステージングに残る。「コミットの粒度をやり直したい」とき。</li>
+<li>② <code>--mixed</code> … コミットも add も取り消すが、編集は作業ツリーに残る。比較的安全。</li>
+<li>③ <code>--hard</code> … <strong>コミットも編集も跡形もなく消える。</strong> 取り返しがつかないことが多い。</li>
+</ul>
+<blockquote>
+<p>⚠️⚠️ <strong><code>git reset --hard</code> は本章で最も危険なコマンドです。</strong> 作業ツリーの未保存の変更も、対象コミットも完全に消えます。使う前に必ず立ち止まり、可能なら引き継ぎ担当者に相談してください。初心者のうちは <code>--hard</code> は封印しておくのが安全です。</p>
+</blockquote>
+<h3 id="165-コミット済みならだいたい救えるreflog">16.5 「コミット済みなら」だいたい救える（reflog）</h3>
+<blockquote>
+<p><strong>救いの神 <code>git reflog</code>（レフログ）:</strong> Git は、HEAD が動いたすべての履歴（reset も含む）を裏でこっそり記録しています。<code>git reflog</code> を打つと、「reset で消したつもりのコミット」のIDが見つかり、<code>git reset --hard そのID</code> で <strong>復活</strong> できることが多いです。「やらかした！」と思っても、<strong>一度コミットしてさえいれば</strong> 諦めるのはまだ早い。<code>git reflog</code> を思い出してください。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># HEADが動いた全履歴を表示。消したつもりのコミットIDが見つかる</span>
+git<span class="w"> </span>reflog
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>git reflog</code></strong>（Git）: <code>HEAD</code>（今いる位置）が動いた記録の一覧。<code>git reset --hard</code> で消してしまったコミットも、ここに出る番号から取り戻せることがあります。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<h3 id="166--本プロジェクトの運用ルール再々掲最重要">16.6 ⚠️ 本プロジェクトの運用ルール（再々掲・最重要）</h3>
+<blockquote>
+<p>⚠️ <strong><code>commit</code> と <code>push</code> は、引き継ぎ担当者から明示の指示があるまで実行しないでください。</strong></p>
+<p><strong>なぜこのルールがあるのか:</strong>
+1. <strong>push は公開・共有の行為</strong>（§9.1）。他のメンバーや本番環境に影響が及び、取り消しが困難。
+2. <strong>本アプリは業務システム</strong>。<code>master</code> が壊れると、実際の業務（工数入力）が止まる恐れがある。
+3. <strong><code>.env</code> 等の秘密情報の誤 push</strong>（§14.4）は、取り返しのつかない情報漏洩につながる。
+4. 初心者のうちは「何が安全で何が危険か」の判断が難しい。だから「見るだけ（status/diff/log）」で Git に慣れ、記録系（add/commit/push）は <strong>指示が出てから</strong> が安全。</p>
+<p><strong>やってよいこと:</strong> <code>git status</code> / <code>git diff</code> / <code>git log</code> / <code>git branch</code>（一覧）/ <code>git switch</code>（移動）など、<strong>見る・移動するだけ</strong> のコマンドは自由に練習してOK。
+<strong>指示を待つこと:</strong> <code>git commit</code> / <code>git push</code> / <code>git reset --hard</code> / <code>git rm</code> など、<strong>歴史や中身を確定・破壊する</strong> コマンド。</p>
+</blockquote>
+<hr>
+<h2 id="17-1日の作業テンプレート">17. 1日の作業テンプレート</h2>
+<p>最後に、毎日の Git の使い方を「儀式」としてテンプレ化します。これをルーティンにすれば、事故が激減します。</p>
+<h3 id="171-朝の儀式作業を始める前">17.1 朝の儀式（作業を始める前）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① まず本流にいることを確認</span>
+git<span class="w"> </span>switch<span class="w"> </span>master
+<span class="c1"># ② 手元に変なゴミが残っていないか確認（クリーンが理想）</span>
+git<span class="w"> </span>status
+<span class="c1"># ③ GitHubの最新を取り寄せる（古い状態で始めない）</span>
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>master
+<span class="c1"># ④ 最近の変更をざっと把握</span>
+git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span>-5
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>なぜ朝に <code>pull</code>？</strong> 昨日の自分や他の人の変更を取り込んでから始めることで、コンフリクト（§12）を未然に防げます。</p>
+</blockquote>
+<h3 id="172-作業中の儀式こまめに">17.2 作業中の儀式（こまめに）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 今どのファイルを触ったか、いつでも確認</span>
+git<span class="w"> </span>status
+<span class="c1"># 何をどう変えたか、こまめに眺める</span>
+git<span class="w"> </span>diff
+</code></pre></div></div>
+
+<blockquote>
+<p><strong>コツ:</strong> 「キリのいいところで <code>git status</code> と <code>git diff</code>」を口癖に。自分が何をしているか見失わなくなります。</p>
+</blockquote>
+<h3 id="173-帰る前の儀式作業の区切り">17.3 帰る前の儀式（作業の区切り）</h3>
+<div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 今日の変更を一覧で確認</span>
+git<span class="w"> </span>status
+<span class="c1"># 中身を最終確認</span>
+git<span class="w"> </span>diff
+<span class="c1"># ここから先（add/commit/push）は指示があれば実行：</span>
+<span class="c1"># git add &lt;意図したファイルだけ&gt;</span>
+<span class="c1"># git commit -m &quot;わかりやすい日本語メッセージ&quot;</span>
+<span class="c1"># git push origin &lt;ブランチ&gt;</span>
+</code></pre></div></div>
+
+<blockquote>
+<p>⚠️ <strong>add/commit/push の3行はコメントアウト（先頭に <code>#</code>）してあります。</strong> §16.6 のルールどおり、これらは <strong>指示が出てから</strong> 実行します。それまでは <code>status</code> と <code>diff</code> で「今日やったこと」を自分の目で確認するところまでが日課です。</p>
+</blockquote>
+<h3 id="174-困ったときの合言葉">17.4 困ったときの合言葉</h3>
+<blockquote>
+<p><strong>迷ったら、まず <code>git status</code>。</strong>
+Git は不安になったら必ず <code>git status</code> を打ちます。「今どの場所に何があるか」「次に何をすればいいか」のヒントが、必ずそこに書いてあります。本章のコマンドの9割は、<code>git status</code> を起点に組み立てられます。</p>
+</blockquote>
+<hr>
+<h2 id="18-トラブルシューティング">18. トラブルシューティング</h2>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>原因</th>
+<th>対処</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fatal: not a git repository</code></td>
+<td>Git 管理外のフォルダにいる</td>
+<td><code>hozen-kosu-React</code> フォルダに移動する</td>
+</tr>
+<tr>
+<td><code>git diff</code> で画面が固まり <code>(END)</code> が出る</td>
+<td>ページャ表示モード</td>
+<td><code>q</code> キーで抜ける（故障ではない）</td>
+</tr>
+<tr>
+<td><code>git commit</code> でVimが開いて操作不能</td>
+<td><code>-m</code> を付け忘れた</td>
+<td><code>Esc</code> → <code>:q!</code> → <code>Enter</code> で抜ける。次回は <code>-m "..."</code> を付ける</td>
+</tr>
+<tr>
+<td>push でパスワードを入れても弾かれる</td>
+<td>パスワード認証は廃止</td>
+<td>Password 欄に <strong>トークン</strong> を入れる（§15）</td>
+</tr>
+<tr>
+<td><code>CONFLICT</code> が出た</td>
+<td>同じ行を双方が変更</td>
+<td>§12の手順でマーカーを消して解決。混乱したら <code>git merge --abort</code></td>
+</tr>
+<tr>
+<td>merge 後、画面が真っ白／文法エラー</td>
+<td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> 等のマーカーが残っている</td>
+<td>ファイル内を検索し、3種のマーカー行を全削除</td>
+</tr>
+<tr>
+<td><code>git switch</code> したらファイルが消えた</td>
+<td>別ブランチに移動しただけ</td>
+<td>元のブランチに <code>git switch</code> で戻れば再表示される</td>
+</tr>
+<tr>
+<td><code>.env</code> をうっかり add した</td>
+<td><code>git add .</code> で巻き込んだ</td>
+<td><code>git restore --staged .env</code>、commit/push せず報告（§14.4）</td>
+</tr>
+<tr>
+<td><code>git reset --hard</code> で作業が消えた</td>
+<td>破壊的操作</td>
+<td><code>git reflog</code> で消えたコミットIDを探し復活を試みる（§16.5）</td>
+</tr>
+<tr>
+<td><code>git pull</code> でコンフリクト</td>
+<td>リモートと手元が同じ行を変更</td>
+<td>§12の手順で解決。朝の <code>pull</code>（§17.1）で予防</td>
+</tr>
+<tr>
+<td><code>Your branch is ahead of 'origin/master' by N commits</code></td>
+<td>手元にあるが未 push のコミット</td>
+<td>状態説明にすぎない。push は指示があるまで保留</td>
+</tr>
+<tr>
+<td>変更したのに <code>git status</code> に出ない</td>
+<td><code>.gitignore</code> で無視されている</td>
+<td>§14で無視対象か確認。意図と違えば <code>.gitignore</code> を見直す</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="19-演習問題">19. 演習問題</h2>
+<p>手を動かすと定着します。<strong>§16.6 のルールを守り、<code>commit</code>/<code>push</code>/<code>reset --hard</code> は行わないこと。</strong> 「見る・移動する」練習だけで十分に力が付きます。</p>
+<ol>
+<li><strong>状態を見る:</strong> 本アプリのフォルダで <code>git status</code> を打ち、今 <code>On branch master</code> と出ること、変更ファイルがあれば一覧されることを確認せよ。</li>
+<li><strong>リモートを確認:</strong> <code>git remote -v</code> を打ち、<code>origin</code> の URL が <code>https://github.com/nomura-shokki/hozen-kosu-React.git</code> であることを確認せよ。</li>
+<li><strong>歴史を読む:</strong> <code>git log --oneline -10</code> を打ち、<code>30d45e7 人員一覧で異動・退社を後ろに変更</code> などのメッセージが並ぶことを確認せよ。気になるコミットを1つ選び、<code>git show &lt;ID&gt;</code> でその回の変更内容を眺めよ。</li>
+<li><strong>差分を見る:</strong> <code>Help.tsx</code> をエディタで1文字だけ書き換え（例: 文末に空白を足す）、<code>git diff</code> で <code>-</code>（赤）と <code>+</code>（緑）の行が出ることを確認せよ。確認したら <code>git restore frontend/src/MainPage/Help.tsx</code> で編集を捨てて元に戻せ。</li>
+<li><strong>ブランチを練習:</strong> <code>git switch -c practice-branch</code> で枝を作って移動し、<code>git branch</code> で <code>* practice-branch</code> と出ることを確認。<code>git switch master</code> で戻り、<code>git branch -d practice-branch</code> で練習枝を片付けよ。</li>
+<li><strong>.gitignore を読む:</strong> <code>/.gitignore</code> を開き、<code>.env</code> が無視対象であることを確認。なぜ <code>.env</code> を絶対に push してはいけないのか、§14.4 を読まずに自分の言葉で説明できるか試せ。</li>
+<li><strong>検索の練習:</strong> <code>git log --oneline</code> の結果から「休憩」に関するコミット（<code>9156f15 休憩変更時の工数消去バグ修正</code>）を目で探し、そのIDで <code>git show</code> を打って、当時どこを直したか確認せよ。</li>
+</ol>
+<hr>
+<h2 id="20-この章のまとめ">20. この章のまとめ</h2>
+<ul>
+<li><strong>バージョン管理</strong>は「保存」の上位互換。Git は変更を <strong>行単位</strong> で記録し、<strong>いつでも過去に戻せる</strong> タイムマシン。<code>9156f15 休憩変更時の工数消去バグ修正</code> のようなメッセージが、コードの意図を後任者へ引き継ぐ。</li>
+<li><strong>Git は手元の道具（ローカル）</strong>、<strong>GitHub はネットの倉庫（リモート）</strong>。本アプリのリモートは <code>origin = https://github.com/nomura-shokki/hozen-kosu-React.git</code>、メインブランチは <strong><code>master</code></strong>。</li>
+<li>Git の心臓は <strong>3つの場所</strong>：①作業ツリー（編集中）→ <code>git add</code> → ②ステージング（記録の下書き台）→ <code>git commit</code> → ③リポジトリ（歴史の保管庫）→ <code>git push</code> → GitHub。</li>
+<li><strong>見るコマンド</strong>（安全）：<code>git status</code>（今の状態）/<code>git diff</code>（<code>-</code>削除・<code>+</code>追加の差分）/<code>git log --oneline</code>（歴史一覧）。<strong>困ったらまず <code>git status</code>。</strong></li>
+<li><strong>ブランチ</strong>で本流を壊さず並行作業し、<strong>merge</strong> で合流。同じ行を双方が変えると <strong>コンフリクト</strong>。<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; / ======= / &gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> のマーカーを <strong>全部消して</strong> 正解だけ残し、<code>add</code>→<code>commit</code> で解決。混乱したら <code>git merge --abort</code>。</li>
+<li><strong>PR（プルリクエスト）</strong> は GitHub 上で「レビューしてから合流」する安全な手続き。業務システムの品質を守る要。</li>
+<li><strong><code>.gitignore</code></strong> で <code>node_modules</code>・<code>__pycache__</code>・そして何より <strong><code>.env</code>（秘密情報）</strong> を追跡から外す。<strong><code>.env</code> を1度でも push したら情報漏洩。最初から push しないことだけが防御。</strong></li>
+<li>GitHub 認証はパスワードではなく <strong>トークン（PAT）</strong>。Password 欄にトークンを貼る。漏れたら即無効化。</li>
+<li>失敗しても <strong>コミット済みなら <code>git reflog</code> でだいたい救える</strong>。ただし <code>git reset --hard</code> は破壊的、初心者は封印推奨。</li>
+<li>⚠️ <strong>本プロジェクトの鉄則：<code>commit</code>/<code>push</code> は指示があるまで実行しない。</strong> 見る・移動するコマンドで Git に慣れることから始める。</li>
+<li><strong>1日の儀式</strong>：朝 <code>pull</code> で最新化 → 作業中こまめに <code>status</code>/<code>diff</code> → 帰る前に変更を <code>status</code>/<code>diff</code> で確認（add 以降は指示待ち）。</li>
+</ul>
+<p>次は、画面の骨組みと見た目を作る言語、「<a href="03_Web基礎_HTML_CSS.html">03_Web基礎_HTML_CSS.md</a>」へ進みます。</p>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>

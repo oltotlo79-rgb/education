@@ -1,0 +1,3500 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>14_付録_逆引き_やりたいことからコードを探す</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/14_%E4%BB%98%E9%8C%B2_%E9%80%86%E5%BC%95%E3%81%8D_%E3%82%84%E3%82%8A%E3%81%9F%E3%81%84%E3%81%93%E3%81%A8%E3%81%8B%E3%82%89%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E6%8E%A2%E3%81%99.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
+<div style="font-size: 14px; color: #475569;">業務工数システム 引き継ぎ教育資料</div>
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">14 付録 — 逆引き: やりたいことからコードを探す</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">「一覧をしぼり込みたい」「Excel に書き出したい」から、書き方を 465 個引く。本文に出てくる所と、合わせて覚えるコードつき</div>
+</div>
+
+<style>
+/* 逆引きの表: 書き方の列を広めにして、コードが途中で折れにくくする */
+table th:nth-child(1), table td:nth-child(1) { width: 22%; }
+table th:nth-child(2), table td:nth-child(2) { width: 38%; }
+table td:nth-child(2) code { word-break: normal; overflow-wrap: anywhere; }
+table th:nth-child(4), table td:nth-child(4) { width: 16%; }
+/* 長い表は、ページの途中から始めて、次のページへ続ける（表全体を 1 ページに収めようとして、見出しの下を空けない） */
+table { page-break-inside: auto; }
+</style>
+
+<h1 id="14-付録-逆引き--やりたいことからコードを探す">14 付録: 逆引き — やりたいことからコードを探す</h1>
+<h2 id="この逆引きについて">この逆引きについて</h2>
+<p>13 付録「出てくるコードとコマンドの一覧」は、「この <code>useEffect</code> は何だっけ？」のように、<strong>コードから意味を引く</strong>ための物です。この 14 付録は、その反対です。「<strong>人員の一覧を条件でしぼり込みたい</strong>」「<strong>工数のデータを Excel に書き出したい</strong>」のような、<strong>やりたいことから、書き方を引く</strong>ための物です。</p>
+<ul>
+<li><strong>全部で 465 個</strong>の「やりたいこと」を、<strong>23 の分類</strong>に分けています。分類は、引き継いだ人が触る順（道具 → Git → HTML・CSS → TypeScript・React → Python・Django → Excel・テスト・運用）です。下の「分類の一覧」から選ぶか、Web 版（<code>kosu\html</code>）で <code>Ctrl</code> ＋ <code>F</code> を押して、やりたいことの言葉（「しぼる」「並べかえる」「送る」など）で探してください。</li>
+<li><strong>同じやりたいことでも、言語ごとに書き方が違います。</strong> 例えば「並びから条件に合う物だけを集める」は、TypeScript では <code>items.filter(…)</code>、Python では <code>[r for r in rows if …]</code>、Django では <code>member.objects.filter(…)</code> です。それぞれの言語の分類に載せています。</li>
+<li><strong>「書き方」の列:</strong> そのまま使える形の、短いコードです。<code>…</code> の所は、自分の場面に合わせて書きます。このアプリのモデル（<code>member</code>・<code>Business_Time_graph</code> など）を使った例も多く入れています。</li>
+<li><strong>「ひとこと」の列:</strong> 気をつけることや、結果の例です。くわしい意味は、13 付録の一覧と、本文の「▶ ここで初めて出てくるコード」の箱にあります。</li>
+<li><strong>「出てくる所」の列:</strong> その書き方が、00〜12 で初めて出てくる巻と章です（373 個）。</li>
+<li><strong>「＋ 合わせて覚える」:</strong> 本文で使った書き方と一緒に覚えておくと、保守ですぐ役に立つ書き方です（92 個）。この付録で足しました。本番のアプリに入れる前に、13 付録の一覧や、それぞれの説明書で、くわしい使い方を確かめ、自分のパソコン（ローカル）で試してください。</li>
+</ul>
+<blockquote>
+<p><strong>ヒント:</strong> 直したい所がある時は、「何をしたいか」を短い言葉にしてから、この付録を開いてください。1 つの分類の表を上から下まで一度ながめておくと、あとで探す時に思い出しやすくなります。</p>
+</blockquote>
+<h2 id="分類の一覧">分類の一覧</h2>
+<table>
+<thead>
+<tr>
+<th>分類</th>
+<th>数</th>
+<th>分類</th>
+<th>数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#rev-1">道具を確かめる・フォルダを移る（PowerShell）</a></td>
+<td>21</td>
+<td><a href="#rev-13">Python の基本</a></td>
+<td>29</td>
+</tr>
+<tr>
+<td><a href="#rev-2">Python の道具（仮想環境・pip）</a></td>
+<td>14</td>
+<td><a href="#rev-14">Python の文字・数・並び・辞書・日時・ファイル</a></td>
+<td>32</td>
+</tr>
+<tr>
+<td><a href="#rev-3">Django の道具（manage.py）</a></td>
+<td>14</td>
+<td><a href="#rev-15">Django（モデル・ORM）</a></td>
+<td>36</td>
+</tr>
+<tr>
+<td><a href="#rev-4">npm と画面の開発用サーバー</a></td>
+<td>16</td>
+<td><a href="#rev-16">Django（URL・ビュー・セッション・設定・ログ）</a></td>
+<td>25</td>
+</tr>
+<tr>
+<td><a href="#rev-5">Git と GitHub（毎日の作業）</a></td>
+<td>26</td>
+<td><a href="#rev-17">Django REST framework（API）</a></td>
+<td>15</td>
+</tr>
+<tr>
+<td><a href="#rev-6">Git（間違えた時に戻す）</a></td>
+<td>11</td>
+<td><a href="#rev-18">Excel を読む・書く（openpyxl・pandas）</a></td>
+<td>13</td>
+</tr>
+<tr>
+<td><a href="#rev-7">HTML（画面の中身）</a></td>
+<td>21</td>
+<td><a href="#rev-19">重い処理を裏で動かす（スレッド・タスク）</a></td>
+<td>6</td>
+</tr>
+<tr>
+<td><a href="#rev-8">CSS（画面の見た目）</a></td>
+<td>37</td>
+<td><a href="#rev-20">テスト（画面: Vitest と Testing Library）</a></td>
+<td>20</td>
+</tr>
+<tr>
+<td><a href="#rev-9">TypeScript の基本</a></td>
+<td>31</td>
+<td><a href="#rev-21">テスト（サーバー: Django）</a></td>
+<td>11</td>
+</tr>
+<tr>
+<td><a href="#rev-10">TypeScript でよく使う道具（並び・文字・数・日付）</a></td>
+<td>31</td>
+<td><a href="#rev-22">データベース（psql・SQL）</a></td>
+<td>9</td>
+</tr>
+<tr>
+<td><a href="#rev-11">React（部品・状態・画面の切り替え）</a></td>
+<td>29</td>
+<td><a href="#rev-23">運用・デプロイ（本番に出す）</a></td>
+<td>6</td>
+</tr>
+<tr>
+<td><a href="#rev-12">サーバーとの通信（axios）</a></td>
+<td>12</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-1">道具を確かめる・フォルダを移る（PowerShell）</h2>
+<p>ターミナル（PowerShell）で、道具の版を確かめたり、フォルダを移ったりします。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Git の版を見る</td>
+<td><code>git --version</code></td>
+<td></td>
+<td>01 3. 道具をそろえる②：Git</td>
+</tr>
+<tr>
+<td>Python の版を見る</td>
+<td><code>python --version</code></td>
+<td>3.12.x なら OK</td>
+<td>01 4. 道具をそろえる③：Python 3.12</td>
+</tr>
+<tr>
+<td>Node.js と npm の版を見る</td>
+<td><code>node --version</code><br><code>npm --version</code></td>
+<td>v20 か v22</td>
+<td>01 5. 道具をそろえる④：Node.js v22</td>
+</tr>
+<tr>
+<td>PostgreSQL の道具の版を見る</td>
+<td><code>psql --version</code></td>
+<td></td>
+<td>01 6. 道具をそろえる⑤：PostgreSQL</td>
+</tr>
+<tr>
+<td>VS Code で今のフォルダを開く</td>
+<td><code>code .</code></td>
+<td></td>
+<td>01 7. ソースコードを手元に持ってくる</td>
+</tr>
+<tr>
+<td>今いるフォルダを知る</td>
+<td><code>pwd</code></td>
+<td></td>
+<td>00a 4. コマンド ― 命令の言葉</td>
+</tr>
+<tr>
+<td>フォルダを移る</td>
+<td><code>cd hozen-kosu-React</code></td>
+<td>cd .. で 1 つ上へ</td>
+<td>00a 4. コマンド ― 命令の言葉</td>
+</tr>
+<tr>
+<td>フォルダの中を見る</td>
+<td><code>ls</code></td>
+<td>正式な名前は Get-ChildItem</td>
+<td>00a 4. コマンド ― 命令の言葉</td>
+</tr>
+<tr>
+<td>隠しファイル（.env など）も見る</td>
+<td><code>Get-ChildItem -Force</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>フォルダを作る</td>
+<td><code>mkdir "$HOME\Documents\git-projects" -Force</code></td>
+<td>-Force で、あってもエラーにしない</td>
+<td>01 7. ソースコードを手元に持ってくる</td>
+</tr>
+<tr>
+<td>ファイルの中を見る</td>
+<td><code>Get-Content web_console.log</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルの最後の 50 行を見る</td>
+<td><code>Get-Content web_console.log -Tail 50</code></td>
+<td>ログの確かめに便利</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ログを見張って、増えた行を出し続ける</td>
+<td><code>Get-Content web_console.log -Wait -Tail 20</code></td>
+<td>Ctrl＋C で止める</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルの中から言葉を探す</td>
+<td><code>Select-String -Path web_console.log -Pattern "ERROR"</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルを写す</td>
+<td><code>Copy-Item .env .env.bak</code></td>
+<td>書き換える前の控え</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルを消す</td>
+<td><code>Remove-Item 古いファイル.xlsx</code></td>
+<td>ごみ箱に入らないので注意</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>空白の入った場所のプログラムを動かす</td>
+<td><code>&amp; "C:\Program Files\PostgreSQL\16\bin\psql.exe" --version</code></td>
+<td>先頭の &amp; が要る</td>
+<td>01 12. バックエンド準備④：データベースを作って migr…</td>
+</tr>
+<tr>
+<td>環境変数を入れる（この窓だけ）</td>
+<td><code>$env:DEBUG = "True"</code></td>
+<td>窓を閉じると消える</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>スクリプトの実行を許す（自分だけ）</td>
+<td><code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code></td>
+<td>Activate.ps1 が動かない時</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>動いているプログラムを止める</td>
+<td><code>Ctrl ＋ C</code></td>
+<td>runserver・npm start を止める</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>前に打ったコマンドを呼び出す</td>
+<td><code>↑ キー</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-2">Python の道具（仮想環境・pip）</h2>
+<p>サーバー側の部品は、このアプリ専用の入れ物（仮想環境 <code>venv</code>）に入れて使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仮想環境を作る</td>
+<td><code>python -m venv venv</code></td>
+<td>venv フォルダができる</td>
+<td>01 8. バックエンド準備①：仮想環境</td>
+</tr>
+<tr>
+<td>仮想環境に入る</td>
+<td><code>.\venv\Scripts\Activate.ps1</code></td>
+<td>行の頭に (venv) と出る</td>
+<td>01 8. バックエンド準備①：仮想環境</td>
+</tr>
+<tr>
+<td>仮想環境から出る</td>
+<td><code>deactivate</code></td>
+<td></td>
+<td>01 8. バックエンド準備①：仮想環境</td>
+</tr>
+<tr>
+<td>pip の版と場所を見る</td>
+<td><code>pip --version</code></td>
+<td>venv の中か確かめる</td>
+<td>01 4. 道具をそろえる③：Python 3.12</td>
+</tr>
+<tr>
+<td>部品を全部入れる</td>
+<td><code>pip install -r requirements.txt</code></td>
+<td></td>
+<td>01 9. バックエンド準備②：requirements.txt…</td>
+</tr>
+<tr>
+<td>部品を 1 つ足す</td>
+<td><code>pip install 部品の名前</code></td>
+<td>足したら requirements.txt にも書く</td>
+<td>01 9. バックエンド準備②：requirements.txt…</td>
+</tr>
+<tr>
+<td>部品の版を決めて入れる</td>
+<td><code>pip install Django==4.2.7</code></td>
+<td>== で版を決める</td>
+<td>01 9. バックエンド準備②：requirements.txt…</td>
+</tr>
+<tr>
+<td>入っている部品の一覧</td>
+<td><code>pip list</code></td>
+<td></td>
+<td>01 9. バックエンド準備②：requirements.txt…</td>
+</tr>
+<tr>
+<td>古くなった部品を調べる</td>
+<td><code>pip list --outdated</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>入っている部品を書き出す</td>
+<td><code>pip freeze &gt; requirements.txt</code></td>
+<td>今の版を全部書く（要らない物も入るので確かめる）</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>部品を消す</td>
+<td><code>pip uninstall xlwings</code></td>
+<td>requirements.txt からも消す</td>
+<td>11 12. 不要な依存を安全に整理する手順</td>
+</tr>
+<tr>
+<td>部品の説明（版・依存）を見る</td>
+<td><code>pip show django</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>Python の短いプログラムをその場で動かす</td>
+<td><code>python -c "print(1 + 2)"</code></td>
+<td></td>
+<td>01 10. バックエンド準備③：.env を作る</td>
+</tr>
+<tr>
+<td>秘密の鍵（SECRET_KEY）を作る</td>
+<td><code>python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"</code></td>
+<td>.env に書く</td>
+<td>01 10. バックエンド準備③：.env を作る</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-3">Django の道具（manage.py）</h2>
+<p><code>manage.py</code> があるフォルダ（<code>hozen-kosu-React/</code>）で、仮想環境に入ってから打ちます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>開発用のサーバーを動かす</td>
+<td><code>python manage.py runserver</code></td>
+<td>http://localhost:8000</td>
+<td>01 14. バックエンドを起動する</td>
+</tr>
+<tr>
+<td>別の番号（ポート）で動かす</td>
+<td><code>python manage.py runserver 8001</code></td>
+<td>8000 が使用中の時</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>裏方の係（django-q）を動かす</td>
+<td><code>python manage.py qcluster</code></td>
+<td></td>
+<td>01 9. バックエンド準備②：requirements.txt…</td>
+</tr>
+<tr>
+<td>モデルの変更から設計図を作る</td>
+<td><code>python manage.py makemigrations</code></td>
+<td></td>
+<td>08 21. 保守の心得</td>
+</tr>
+<tr>
+<td>設計図をデータベースに当てる</td>
+<td><code>python manage.py migrate</code></td>
+<td></td>
+<td>01 12. バックエンド準備④：データベースを作って migr…</td>
+</tr>
+<tr>
+<td>当てた・まだの設計図を見る</td>
+<td><code>python manage.py showmigrations</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>設計図の SQL を見る</td>
+<td><code>python manage.py sqlmigrate kosu 0001</code></td>
+<td>本番の前の確かめ</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>管理画面の利用者を作る</td>
+<td><code>python manage.py createsuperuser</code></td>
+<td></td>
+<td>01 13. バックエンド準備⑤：管理者を作る</td>
+</tr>
+<tr>
+<td>静的ファイルを集める（本番）</td>
+<td><code>python manage.py collectstatic</code></td>
+<td>staticfiles/ に集まる</td>
+<td>09 3. 日常運用コマンド集</td>
+</tr>
+<tr>
+<td>テストを全部流す</td>
+<td><code>python manage.py test --settings=hozen_another.test_settings</code></td>
+<td></td>
+<td>12 13. テストの実行コマンドと出力例</td>
+</tr>
+<tr>
+<td>テストを 1 つのクラスだけ流す</td>
+<td><code>python manage.py test kosu.tests.test_backend.TestModels --settings=hozen_another.test_settings</code></td>
+<td></td>
+<td>12 13. テストの実行コマンドと出力例</td>
+</tr>
+<tr>
+<td>Django の中で Python を打つ</td>
+<td><code>python manage.py shell</code></td>
+<td>モデルを直接さわって確かめる</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>設定の誤りを調べる</td>
+<td><code>python manage.py check</code></td>
+<td></td>
+<td>11 12. 不要な依存を安全に整理する手順</td>
+</tr>
+<tr>
+<td>本番向けの設定の誤りを調べる</td>
+<td><code>python manage.py check --deploy</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-4">npm と画面の開発用サーバー</h2>
+<p>画面側（React）は <code>frontend/</code> フォルダで打ちます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>画面のフォルダへ移る</td>
+<td><code>cd frontend</code></td>
+<td></td>
+<td>01 16. フロントエンド準備①：package.json 全…</td>
+</tr>
+<tr>
+<td>部品を全部入れる</td>
+<td><code>npm install</code></td>
+<td>package.json のとおり</td>
+<td>01 16. フロントエンド準備①：package.json 全…</td>
+</tr>
+<tr>
+<td>package-lock.json のとおりに入れる</td>
+<td><code>npm ci</code></td>
+<td>版がそろう（本番・CI 向け）</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>部品を足す</td>
+<td><code>npm install dayjs</code></td>
+<td>dependencies に入る</td>
+<td>01 16. フロントエンド準備①：package.json 全…</td>
+</tr>
+<tr>
+<td>開発の時だけの部品を足す</td>
+<td><code>npm install -D vitest</code></td>
+<td>devDependencies に入る</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>部品を消す</td>
+<td><code>npm uninstall @fullcalendar/daygrid</code></td>
+<td></td>
+<td>11 12. 不要な依存を安全に整理する手順</td>
+</tr>
+<tr>
+<td>開発用サーバーを動かす</td>
+<td><code>npm start</code></td>
+<td>http://localhost:3000</td>
+<td>01 18. フロントエンドを起動する</td>
+</tr>
+<tr>
+<td>本番用に作る</td>
+<td><code>npm run build</code></td>
+<td>frontend/build/ にできる</td>
+<td>01 19. 本番ビルド</td>
+</tr>
+<tr>
+<td>テスト（見張り続ける）</td>
+<td><code>npm test</code></td>
+<td>q で終わる</td>
+<td>09 4. テストの実行</td>
+</tr>
+<tr>
+<td>テストを 1 回だけ流す</td>
+<td><code>npm run test:run</code></td>
+<td>直した後・提出前に</td>
+<td>09 4. テストの実行</td>
+</tr>
+<tr>
+<td>テストの結果を画面で見る</td>
+<td><code>npm run test:ui</code></td>
+<td></td>
+<td>09 4. テストの実行</td>
+</tr>
+<tr>
+<td>古くなった部品を調べる</td>
+<td><code>npm outdated</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>弱点のある部品を調べる</td>
+<td><code>npm audit</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>部品が壊れた時に入れ直す</td>
+<td><code>Remove-Item -Recurse -Force node_modules</code><br><code>npm install</code></td>
+<td>package-lock.json は残す</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>登録したコマンドの一覧</td>
+<td><code>"scripts": { "start": "react-scripts start", … }</code></td>
+<td>package.json</td>
+<td>01 16. フロントエンド準備①：package.json 全…</td>
+</tr>
+<tr>
+<td>動くのに要る部品の一覧</td>
+<td><code>"dependencies": { "axios": "^1.11.0", … }</code></td>
+<td>^ は「上の版でもよい」</td>
+<td>01 16. フロントエンド準備①：package.json 全…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-5">Git と GitHub（毎日の作業）</h2>
+<p>直す前に <code>git pull</code>、直したら <code>add</code> → <code>commit</code> → <code>push</code> が、毎日の流れです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最初に名前とメールを登録</td>
+<td><code>git config --global user.name "Yamada Taro"</code><br><code>git config --global user.email "you@example.com"</code></td>
+<td></td>
+<td>01 3. 道具をそろえる②：Git</td>
+</tr>
+<tr>
+<td>リポジトリを写してくる</td>
+<td><code>git clone https://github.com/your-company/hozen-kosu-React.git</code></td>
+<td></td>
+<td>01 7. ソースコードを手元に持ってくる</td>
+</tr>
+<tr>
+<td>今どうなっているか</td>
+<td><code>git status</code></td>
+<td>まず打つ</td>
+<td>02 3. このプロジェクトの Git の状態を見てみる</td>
+</tr>
+<tr>
+<td>短く表示</td>
+<td><code>git status -s</code></td>
+<td></td>
+<td>02 4. git status ― 今どうなっているか</td>
+</tr>
+<tr>
+<td>変えた所を見る</td>
+<td><code>git diff</code></td>
+<td></td>
+<td>02 5. git diff ― 何をどう変えたか</td>
+</tr>
+<tr>
+<td>add 済みの変更を見る</td>
+<td><code>git diff --staged</code></td>
+<td></td>
+<td>02 5. git diff ― 何をどう変えたか</td>
+</tr>
+<tr>
+<td>次のコミットに入れる</td>
+<td><code>git add frontend/src/MainPage/Help.tsx</code></td>
+<td></td>
+<td>02 6. git add ― 記録の準備</td>
+</tr>
+<tr>
+<td>全部の変更を入れる</td>
+<td><code>git add .</code></td>
+<td>.env などが入らないか先に status で確かめる</td>
+<td>02 6. git add ― 記録の準備</td>
+</tr>
+<tr>
+<td>記録する（コミット）</td>
+<td><code>git commit -m "人員一覧で異動・退社を後ろに変更"</code></td>
+<td>何をしたかを書く</td>
+<td>02 7. git commit ― 記録を確定する</td>
+</tr>
+<tr>
+<td>GitHub へ送る</td>
+<td><code>git push origin master</code></td>
+<td></td>
+<td>02 9. リモートとの同期：push / pull / fet…</td>
+</tr>
+<tr>
+<td>GitHub の新しい物を取り込む</td>
+<td><code>git pull origin master</code></td>
+<td>作業の前に</td>
+<td>02 9. リモートとの同期：push / pull / fet…</td>
+</tr>
+<tr>
+<td>取ってくるだけ（混ぜない）</td>
+<td><code>git fetch origin</code></td>
+<td></td>
+<td>02 9. リモートとの同期：push / pull / fet…</td>
+</tr>
+<tr>
+<td>歴史を見る</td>
+<td><code>git log --oneline</code></td>
+<td></td>
+<td>02 8. git log ― 過去の記録を読む</td>
+</tr>
+<tr>
+<td>最新の 5 件</td>
+<td><code>git log --oneline -5</code></td>
+<td></td>
+<td>02 8. git log ― 過去の記録を読む</td>
+</tr>
+<tr>
+<td>枝分かれを絵で見る</td>
+<td><code>git log --oneline --graph --all</code></td>
+<td></td>
+<td>02 8. git log ― 過去の記録を読む</td>
+</tr>
+<tr>
+<td>1 つのコミットの中身を見る</td>
+<td><code>git show 9156f15</code></td>
+<td></td>
+<td>02 8. git log ― 過去の記録を読む</td>
+</tr>
+<tr>
+<td>ファイルごとの変更の歴史</td>
+<td><code>git log -p -- kosu/models.py</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>その行を最後に変えたのはだれか</td>
+<td><code>git blame kosu/models.py</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>つながっている GitHub を見る</td>
+<td><code>git remote -v</code></td>
+<td></td>
+<td>02 3. このプロジェクトの Git の状態を見てみる</td>
+</tr>
+<tr>
+<td>ブランチの一覧</td>
+<td><code>git branch -a</code></td>
+<td></td>
+<td>02 3. このプロジェクトの Git の状態を見てみる</td>
+</tr>
+<tr>
+<td>ブランチを作って移る</td>
+<td><code>git switch -c help-fix</code></td>
+<td></td>
+<td>02 10. ブランチ ― 作業の枝分かれ</td>
+</tr>
+<tr>
+<td>ブランチを移る</td>
+<td><code>git switch master</code></td>
+<td></td>
+<td>02 10. ブランチ ― 作業の枝分かれ</td>
+</tr>
+<tr>
+<td>ブランチを取り込む</td>
+<td><code>git merge help-fix</code></td>
+<td>master にいる時に</td>
+<td>02 11. merge</td>
+</tr>
+<tr>
+<td>ブランチを消す</td>
+<td><code>git branch -d help-fix</code></td>
+<td></td>
+<td>02 11. merge</td>
+</tr>
+<tr>
+<td>Git に入れないファイルを決める</td>
+<td><code>.gitignore に .env と書く</code></td>
+<td>秘密・大きな物は入れない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>GitHub のパスワードを覚えさせる</td>
+<td><code>git config --global credential.helper manager</code></td>
+<td></td>
+<td>02 15. トークン認証 ― GitHub への安全なログイン</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-6">Git（間違えた時に戻す）</h2>
+<p>戻す前に、必ず <code>git status</code> で今の様子を見ます。<code>--hard</code> は消えた物が戻らないことがあります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>add を取り消す</td>
+<td><code>git restore --staged Help.tsx</code></td>
+<td>ファイルの中身はそのまま</td>
+<td>02 6. git add ― 記録の準備</td>
+</tr>
+<tr>
+<td>ファイルの変更を捨てる</td>
+<td><code>git restore frontend/src/MainPage/Help.tsx</code></td>
+<td>元に戻せない</td>
+<td>02 6. git add ― 記録の準備</td>
+</tr>
+<tr>
+<td>直前のコミットのメッセージを直す</td>
+<td><code>git commit --amend -m "正しいメッセージ"</code></td>
+<td>push 前だけ</td>
+<td>02 16. 復旧コマンドと「やってしまった」対処集</td>
+</tr>
+<tr>
+<td>コミットを取り消す（変更は add 済みで残す）</td>
+<td><code>git reset --soft HEAD~1</code></td>
+<td></td>
+<td>02 16. 復旧コマンドと「やってしまった」対処集</td>
+</tr>
+<tr>
+<td>コミットと add を取り消す（変更は残す）</td>
+<td><code>git reset --mixed HEAD~1</code></td>
+<td></td>
+<td>02 16. 復旧コマンドと「やってしまった」対処集</td>
+</tr>
+<tr>
+<td>全部消して戻す</td>
+<td><code>git reset --hard HEAD~1</code></td>
+<td>変更が消える</td>
+<td>02 16. 復旧コマンドと「やってしまった」対処集</td>
+</tr>
+<tr>
+<td>push 済みのコミットを打ち消す</td>
+<td><code>git revert 9156f15</code></td>
+<td>打ち消すコミットを新しく作る（歴史は消さない）</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>消えたコミットを探す</td>
+<td><code>git reflog</code></td>
+<td></td>
+<td>02 16. 復旧コマンドと「やってしまった」対処集</td>
+</tr>
+<tr>
+<td>誤って入れた .env を Git から外す</td>
+<td><code>git rm --cached .env</code></td>
+<td>ファイルは残る</td>
+<td>02 14. .gitignore ― 追跡しないファイルの指定</td>
+</tr>
+<tr>
+<td>作業を一時しまう</td>
+<td><code>git stash</code><br><code>git stash pop</code></td>
+<td>pull する前に</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ぶつかり（コンフリクト）を直した後</td>
+<td><code>git add ファイル</code><br><code>git commit</code></td>
+<td>&lt;&lt;&lt;&lt;&lt;&lt;&lt; の印を消してから</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-7">HTML（画面の中身）</h2>
+<p>React の画面（JSX）も、元は HTML のタグです。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>見出し</td>
+<td><code>&lt;h1&gt;工数入力&lt;/h1&gt;</code></td>
+<td>h1〜h6</td>
+<td>03 0. 前提知識：ブラウザが画面を作るしくみ</td>
+</tr>
+<tr>
+<td>段落</td>
+<td><code>&lt;p&gt;…&lt;/p&gt;</code></td>
+<td></td>
+<td>03 0. 前提知識：ブラウザが画面を作るしくみ</td>
+</tr>
+<tr>
+<td>リンク</td>
+<td><code>&lt;a href="/help"&gt;ヘルプ&lt;/a&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>新しいタブで開くリンク</td>
+<td><code>&lt;a href="/help" target="_blank"&gt;ヘルプ&lt;/a&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>画像</td>
+<td><code>&lt;img src="../logo.png" alt="ロゴ"&gt;</code></td>
+<td>alt は画像の説明</td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>囲み（意味なし）</td>
+<td><code>&lt;div class="container"&gt;…&lt;/div&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>文の一部を囲む</td>
+<td><code>&lt;span&gt;…&lt;/span&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>箇条書き</td>
+<td><code>&lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;</code></td>
+<td>番号付きは <ol></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>表</td>
+<td><code>&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;日付&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;…&lt;/tbody&gt;&lt;/table&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>表のマスを横につなぐ</td>
+<td><code>&lt;td colspan="4"&gt;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>入力欄</td>
+<td><code>&lt;input type="text" id="numberInput"&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>入力欄の名前</td>
+<td><code>&lt;label for="numberInput"&gt;従業員番号&lt;/label&gt;</code></td>
+<td>for と id をそろえる</td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>日付の入力欄</td>
+<td><code>&lt;input type="date"&gt;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>選ぶ欄（プルダウン）</td>
+<td><code>&lt;select&gt;&lt;option value="1"&gt;1直&lt;/option&gt;&lt;/select&gt;</code></td>
+<td>value が送られる値</td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>何行も書ける入力欄</td>
+<td><code>&lt;textarea rows="5"&gt;&lt;/textarea&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>ボタン</td>
+<td><code>&lt;button type="button"&gt;検索&lt;/button&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>押せないボタン</td>
+<td><code>&lt;button disabled&gt;…&lt;/button&gt;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>読み上げソフトに「警告」と伝える</td>
+<td><code>&lt;div role="alert"&gt;…&lt;/div&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>横線</td>
+<td><code>&lt;hr&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>改行</td>
+<td><code>&lt;br&gt;</code></td>
+<td></td>
+<td>03 1. HTMLの基本</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code>&lt;!-- … --&gt;</code></td>
+<td>画面には出ない</td>
+<td>03 1. HTMLの基本</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-8">CSS（画面の見た目）</h2>
+<p>このアプリは、画面ごとの <code>○○.module.css</code>（CSS Modules）と、共通の <code>global.css</code> を使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>クラスに見た目を付ける</td>
+<td><code>.blue_button { … }</code></td>
+<td></td>
+<td>03 7. Flexbox</td>
+</tr>
+<tr>
+<td>中にある物を選ぶ</td>
+<td><code>.search-bar input { … }</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>属性で選ぶ</td>
+<td><code>input[type="date"] { … }</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>マウスが乗った時</td>
+<td><code>.blue_button:hover { … }</code></td>
+<td></td>
+<td>03 8. 擬似クラスと擬似要素</td>
+</tr>
+<tr>
+<td>入力中の欄</td>
+<td><code>input:focus { … }</code></td>
+<td></td>
+<td>03 8. 擬似クラスと擬似要素</td>
+</tr>
+<tr>
+<td>押せないボタン</td>
+<td><code>button:disabled { … }</code></td>
+<td></td>
+<td>03 8. 擬似クラスと擬似要素</td>
+</tr>
+<tr>
+<td>1 行おきに色を変える</td>
+<td><code>tr:nth-child(even) { … }</code></td>
+<td></td>
+<td>03 8. 擬似クラスと擬似要素</td>
+</tr>
+<tr>
+<td>前に飾りを足す</td>
+<td><code>.icon::before { content: "⚠️ "; }</code></td>
+<td></td>
+<td>03 8. 擬似クラスと擬似要素</td>
+</tr>
+<tr>
+<td>文字の色・背景の色</td>
+<td><code>color: #333;</code><br><code>background-color: #007bff;</code></td>
+<td></td>
+<td>03 4. CSSの基本文法</td>
+</tr>
+<tr>
+<td>文字の大きさ・太さ</td>
+<td><code>font-size: 16px;</code><br><code>font-weight: bold;</code></td>
+<td></td>
+<td>03 4. CSSの基本文法</td>
+</tr>
+<tr>
+<td>文字を真ん中にそろえる</td>
+<td><code>text-align: center;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>内側・外側の余白</td>
+<td><code>padding: 10px;</code><br><code>margin: 0 auto;</code></td>
+<td>auto で横の真ん中</td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>枠線と角の丸み</td>
+<td><code>border: 1px solid #ccc;</code><br><code>border-radius: 8px;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>幅と高さ</td>
+<td><code>width: 100%;</code><br><code>height: 100%;</code></td>
+<td></td>
+<td>03 10. メディアクエリ</td>
+</tr>
+<tr>
+<td>幅の上限・下限</td>
+<td><code>max-width: 1200px;</code><br><code>min-width: unset;</code></td>
+<td></td>
+<td>03 10. メディアクエリ</td>
+</tr>
+<tr>
+<td>横に並べる</td>
+<td><code>display: flex;</code><br><code>gap: 10px;</code></td>
+<td></td>
+<td>03 7. Flexbox</td>
+</tr>
+<tr>
+<td>横の真ん中・縦の真ん中</td>
+<td><code>justify-content: center;</code><br><code>align-items: center;</code></td>
+<td></td>
+<td>03 7. Flexbox</td>
+</tr>
+<tr>
+<td>隠す</td>
+<td><code>display: none;</code></td>
+<td></td>
+<td>03 7. Flexbox</td>
+</tr>
+<tr>
+<td>画面の決まった所に置く（スクロールしても動かない）</td>
+<td><code>position: fixed;</code><br><code>bottom: 30px;</code><br><code>right: 30px;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>親を基準に好きな所へ置く</td>
+<td><code>position: absolute;</code><br><code>top: 0;</code><br><code>left: 0;</code></td>
+<td>親は position: relative</td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>重なりの上下</td>
+<td><code>z-index: 1;</code></td>
+<td>大きいほど手前</td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>はみ出したらスクロール</td>
+<td><code>overflow-x: auto;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>影</td>
+<td><code>box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>半透明の色</td>
+<td><code>rgba(0, 0, 0, 0.1)</code></td>
+<td></td>
+<td>03 6. 単位と色</td>
+</tr>
+<tr>
+<td>なめらかに変える</td>
+<td><code>transition: background-color 0.3s ease;</code></td>
+<td></td>
+<td>03 9. トランジションとアニメーション</td>
+</tr>
+<tr>
+<td>動きを付ける</td>
+<td><code>@keyframes fadeInUp { from { … } to { … } }</code><br><code>animation: fadeInUp 1s ease-out;</code></td>
+<td></td>
+<td>03 9. トランジションとアニメーション</td>
+</tr>
+<tr>
+<td>回す・ずらす</td>
+<td><code>transform: rotate(45deg);</code><br><code>transform: translateY(50px);</code></td>
+<td></td>
+<td>03 9. トランジションとアニメーション</td>
+</tr>
+<tr>
+<td>画面の幅で大きさを変える</td>
+<td><code>clamp(1.5rem, 1.5rem + 3vw, 4rem)</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>計算した幅</td>
+<td><code>width: calc(100% - 40px);</code></td>
+<td></td>
+<td>03 12. 実コード全解説：Login.module.css …</td>
+</tr>
+<tr>
+<td>画面の高さいっぱい</td>
+<td><code>min-height: 100vh;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>共通の色を変数にする</td>
+<td><code>:root { --main-color: #007bff; }</code><br><code>color: var(--main-color);</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>スマホの幅の時だけ</td>
+<td><code>@media (max-width: 768px) { … }</code></td>
+<td></td>
+<td>03 10. メディアクエリ</td>
+</tr>
+<tr>
+<td>表の線を 1 本にまとめる</td>
+<td><code>border-collapse: collapse;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>長い言葉を折り返す</td>
+<td><code>word-break: break-all;</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+<tr>
+<td>画像を枠に収める</td>
+<td><code>object-fit: contain;</code></td>
+<td></td>
+<td>03 12. 実コード全解説：Login.module.css …</td>
+</tr>
+<tr>
+<td>いちばん強くする</td>
+<td><code>display: none !important;</code></td>
+<td>使いすぎない</td>
+<td>03 13. 実コード追加解説：KosuList / MainM…</td>
+</tr>
+<tr>
+<td>日付欄のカレンダーの印を消す</td>
+<td><code>input[type=date]::-webkit-calendar-picker-indicator { … }</code></td>
+<td></td>
+<td>03 11. 実コード全解説：global.css 全342行を…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-9">TypeScript の基本</h2>
+<p>型（値の種類）を書いておくと、まちがいを、動かす前にエディターが教えてくれます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>変えない値に名前を付ける</td>
+<td><code>const pageSize = 20;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>あとで変える値</td>
+<td><code>let count = 0;</code></td>
+<td></td>
+<td>04 2. 変数 ― 値に名前を付ける</td>
+</tr>
+<tr>
+<td>型を書く</td>
+<td><code>let age: number = 42;</code></td>
+<td></td>
+<td>04 14. TypeScript ― 型という安全装置</td>
+</tr>
+<tr>
+<td>文字・数・真偽</td>
+<td><code>string</code><br><code>number</code><br><code>boolean</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>どちらかの型</td>
+<td><code>value: string &#124; number</code></td>
+<td></td>
+<td>04 14. TypeScript ― 型という安全装置</td>
+</tr>
+<tr>
+<td>無いかもしれない</td>
+<td><code>string &#124; null</code></td>
+<td></td>
+<td>04 14. TypeScript ― 型という安全装置</td>
+</tr>
+<tr>
+<td>オブジェクトの形に名前を付ける</td>
+<td><code>interface Employee { employeeNo: number; name: string; }</code></td>
+<td></td>
+<td>04 14. TypeScript ― 型という安全装置</td>
+</tr>
+<tr>
+<td>無くてもよい項目</td>
+<td><code>buttonColor?: string;</code></td>
+<td></td>
+<td>05 3. props ― 親から子へ渡す設定値</td>
+</tr>
+<tr>
+<td>型に名前を付ける</td>
+<td><code>type Props = { isLoading: boolean };</code></td>
+<td></td>
+<td>04 14. TypeScript ― 型という安全装置</td>
+</tr>
+<tr>
+<td>キーが何でもよい辞書</td>
+<td><code>{ [key: string]: string }</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>並び（配列）の型</td>
+<td><code>string[]</code></td>
+<td></td>
+<td>05 4. state と useState ― 画面が覚える値</td>
+</tr>
+<tr>
+<td>関数を作る</td>
+<td><code>const getDayOfWeek = (dateStr: string): string =&gt; { … };</code></td>
+<td></td>
+<td>04 19. 実コード全解説：KosuList.tsx の型と関…</td>
+</tr>
+<tr>
+<td>条件で分ける</td>
+<td><code>if (…) { … } else if (…) { … } else { … }</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>値ごとに分ける</td>
+<td><code>switch (value) { case "1": … break; default: … }</code></td>
+<td></td>
+<td>04 6. 条件分岐 ― if / else / 三項演算子 /…</td>
+</tr>
+<tr>
+<td>条件で値を選ぶ</td>
+<td><code>a ? b : c</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>同じか（型も）</td>
+<td><code>a === b</code><br><code>a !== b</code></td>
+<td>== は使わない</td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>かつ・または・ではない</td>
+<td><code>a &amp;&amp; b</code><br><code>a &#124;&#124; b</code><br><code>!a</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>無ければ右を使う</td>
+<td><code>value ?? ""</code></td>
+<td>null・undefined の時だけ</td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>無ければ止まらずに undefined</td>
+<td><code>err.response?.data</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>決まった回数くり返す</td>
+<td><code>for (let i = 0; i &lt; 5; i++) { … }</code></td>
+<td></td>
+<td>04 7. 繰り返し ― for とループ</td>
+</tr>
+<tr>
+<td>並びを 1 つずつ</td>
+<td><code>for (const item of items) { … }</code></td>
+<td></td>
+<td>04 7. 繰り返し ― for とループ</td>
+</tr>
+<tr>
+<td>文字の中に値を入れる</td>
+<td><code>&#96;${year}-${month}&#96;</code></td>
+<td></td>
+<td>04 5. テンプレートリテラル ― 文字列に値を埋め込む</td>
+</tr>
+<tr>
+<td>中身を広げる</td>
+<td><code>{ ...base, filter: true }</code><br><code>[...arr1, 3, 4]</code></td>
+<td></td>
+<td>04 13. 分割代入・スプレッド・オプショナルチェイニング</td>
+</tr>
+<tr>
+<td>取り出して名前を付ける</td>
+<td><code>const { data } = response;</code><br><code>const [a, b] = arr;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>エラーを受け止める</td>
+<td><code>try { … } catch (err) { … } finally { … }</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>完了を待つ関数</td>
+<td><code>const fetchData = async () =&gt; { const res = await api.get(…); }</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>外から使えるようにする</td>
+<td><code>export default Login;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>ほかのファイルから読む</td>
+<td><code>import api from "../api/axios";</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>何の型でもよい（使いすぎない）</td>
+<td><code>any</code></td>
+<td>テストのにせ物など</td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>型をこれだと伝える</td>
+<td><code>e.target as HTMLInputElement</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>コメント</td>
+<td><code>// 1 行</code><br><code>/* 何行も */</code></td>
+<td>JSX の中は {/<em> … </em>/}</td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-10">TypeScript でよく使う道具（並び・文字・数・日付）</h2>
+<p>一覧の画面で、データを並べかえたり、しぼったり、形を整えたりする時に使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>並びの数</td>
+<td><code>items.length</code></td>
+<td></td>
+<td>04 10. 配列 ― 値を並べて持つ</td>
+</tr>
+<tr>
+<td>1 つずつ形を変えた並び</td>
+<td><code>items.map((item) =&gt; …)</code></td>
+<td>JSX の一覧に使う</td>
+<td>04 11. 配列の必殺技 ― map と filter</td>
+</tr>
+<tr>
+<td>条件に合う物だけ</td>
+<td><code>items.filter((item) =&gt; item.shop === "P")</code></td>
+<td></td>
+<td>04 11. 配列の必殺技 ― map と filter</td>
+</tr>
+<tr>
+<td>最初に合う 1 つ</td>
+<td><code>items.find((item) =&gt; item.id === id)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>入っているか</td>
+<td><code>items.includes("P")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>1 つでも合うか・全部合うか</td>
+<td><code>items.some(…)</code><br><code>items.every(…)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>合計を出す</td>
+<td><code>items.reduce((sum, x) =&gt; sum + x.time, 0)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>items.sort((a, b) =&gt; a.id - b.id)</code></td>
+<td>元の並びも変わる</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>後ろに足す</td>
+<td><code>items.push(x)</code></td>
+<td></td>
+<td>04 10. 配列 ― 値を並べて持つ</td>
+</tr>
+<tr>
+<td>文字で区切って並びに</td>
+<td><code>"08:30".split(":")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>並びを文字でつなぐ</td>
+<td><code>list.join(" / ")</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>前後の空白を取る</td>
+<td><code>text.trim()</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>前を 0 でうめる</td>
+<td><code>String(n).padStart(2, "0")</code></td>
+<td>5 → "05"</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>一部を取り出す</td>
+<td><code>text.slice(0, 4)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>置きかえる</td>
+<td><code>text.replace("-", "/")</code></td>
+<td>全部なら replaceAll</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>文字を数に</td>
+<td><code>Number(employee_no)</code></td>
+<td>数でない時は NaN</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>小数を切り上げる</td>
+<td><code>Math.ceil(count / pageSize)</code></td>
+<td>ページの数</td>
+<td>04 19. 実コード全解説：KosuList.tsx の型と関…</td>
+</tr>
+<tr>
+<td>小数を切り捨てる・四捨五入</td>
+<td><code>Math.floor(x)</code><br><code>Math.round(x)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>数か調べる</td>
+<td><code>Number.isNaN(n)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>日付を作る</td>
+<td><code>new Date(dateStr)</code></td>
+<td></td>
+<td>04 19. 実コード全解説：KosuList.tsx の型と関…</td>
+</tr>
+<tr>
+<td>曜日（0＝日曜）</td>
+<td><code>date.getDay()</code></td>
+<td></td>
+<td>04 19. 実コード全解説：KosuList.tsx の型と関…</td>
+</tr>
+<tr>
+<td>年・月・日</td>
+<td><code>date.getFullYear()</code><br><code>date.getMonth() + 1</code><br><code>date.getDate()</code></td>
+<td>月は 0 から</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>日付を YYYY-MM-DD に</td>
+<td><code>date.toISOString().slice(0, 10)</code></td>
+<td>時差でずれることがある</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>軽い日付の道具で形を整える</td>
+<td><code>dayjs(date).format("YYYY-MM-DD")</code></td>
+<td>dayjs を使う</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>オブジェクトを JSON の文字に</td>
+<td><code>JSON.stringify(obj)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>JSON の文字をオブジェクトに</td>
+<td><code>JSON.parse(text)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>キーの一覧</td>
+<td><code>Object.keys(obj)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>少したってから動かす</td>
+<td><code>setTimeout(() =&gt; { … }, 3000)</code></td>
+<td>ミリ秒</td>
+<td>05 10. 実コード全解説：Loading.tsx 全42行</td>
+</tr>
+<tr>
+<td>くり返し動かす（見張り）</td>
+<td><code>const id = setInterval(check, 2000);</code><br><code>clearInterval(id);</code></td>
+<td>タスクの状態を見に行く時など</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>画面に出す（調べ物）</td>
+<td><code>console.log(value)</code></td>
+<td>ブラウザーの F12 → Console</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>タブの名前を変える</td>
+<td><code>document.title = "ログイン - 業務工数システム";</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-11">React（部品・状態・画面の切り替え）</h2>
+<p>画面は「部品（コンポーネント）」の組み合わせです。値が変わると、React が画面を描き直します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>部品を作る</td>
+<td><code>const Login: React.FC = () =&gt; { return (&lt;div&gt;…&lt;/div&gt;); };</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>覚えておく値（状態）</td>
+<td><code>const [employee_no, setNumber] = useState&lt;string&gt;("");</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>値を変えて描き直す</td>
+<td><code>setNumber(e.target.value)</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>表示の後に動かす</td>
+<td><code>useEffect(() =&gt; { … }, [])</code></td>
+<td>[] で最初の 1 回だけ</td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>値が変わるたびに動かす</td>
+<td><code>useEffect(() =&gt; { … }, [location])</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>片付け（部品が消える時）</td>
+<td><code>useEffect(() =&gt; { … return () =&gt; clearInterval(id); }, [])</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>描き直さずに覚える・部品を指す</td>
+<td><code>const searchBarRef = useRef&lt;HTMLDivElement&gt;(null);</code></td>
+<td></td>
+<td>05 6. useRef ― 再描画を起こさない箱</td>
+</tr>
+<tr>
+<td>ref の中身</td>
+<td><code>searchDayRef.current</code></td>
+<td></td>
+<td>05 5. useEffect ― タイミングで処理を走らせる</td>
+</tr>
+<tr>
+<td>入力欄と値を結ぶ</td>
+<td><code>&lt;input value={employee_no} onChange={(e) =&gt; setNumber(e.target.value)} /&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>最初の値だけ入れる入力欄</td>
+<td><code>&lt;input defaultValue={searchDayRef.current} /&gt;</code></td>
+<td></td>
+<td>05 8. 実コード全解説：KosuList.tsx 全215行</td>
+</tr>
+<tr>
+<td>押した時</td>
+<td><code>&lt;button onClick={() =&gt; handleSearch(true)}&gt;検索&lt;/button&gt;</code></td>
+<td></td>
+<td>04 9. アロー関数 ― 関数の短い書き方</td>
+</tr>
+<tr>
+<td>キーを押した時</td>
+<td><code>onKeyDown={(e) =&gt; { if (e.key === "Enter") … }}</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>フォームを送った時</td>
+<td><code>&lt;form onSubmit={handleSubmit}&gt;</code><br><code>e.preventDefault();</code></td>
+<td>画面の読み直しを止める</td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>条件が合う時だけ出す</td>
+<td><code>{errorMessage &amp;&amp; (&lt;div role="alert"&gt;{errorMessage}&lt;/div&gt;)}</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>どちらかを出す</td>
+<td><code>{loading ? &lt;Loading isLoading={loading} /&gt; : &lt;TableContainer …&gt;}</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>読み込み中は先に返す</td>
+<td><code>if (loading) return &lt;div&gt;&lt;Loading isLoading={loading} /&gt;&lt;/div&gt;;</code></td>
+<td></td>
+<td>05 8. 実コード全解説：KosuList.tsx 全215行</td>
+</tr>
+<tr>
+<td>一覧を並べる</td>
+<td><code>{items.map((item) =&gt; &lt;tr key={item.id}&gt;…&lt;/tr&gt;)}</code></td>
+<td>key が要る</td>
+<td>04 19. 実コード全解説：KosuList.tsx の型と関…</td>
+</tr>
+<tr>
+<td>クラスを付ける（CSS Modules）</td>
+<td><code>className={styles["login-wrapper"]}</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>直接スタイルを書く</td>
+<td><code>style={{ marginTop: 8 }}</code></td>
+<td></td>
+<td>05 9. 実コード全解説：Pagination.tsx 全71行</td>
+</tr>
+<tr>
+<td>押せなくする</td>
+<td><code>disabled={currentPage === 1}</code></td>
+<td></td>
+<td>05 9. 実コード全解説：Pagination.tsx 全71行</td>
+</tr>
+<tr>
+<td>部品に値を渡す</td>
+<td><code>&lt;Loading isLoading={loading} /&gt;</code></td>
+<td></td>
+<td>05 8. 実コード全解説：KosuList.tsx 全215行</td>
+</tr>
+<tr>
+<td>画像を取り込んで出す</td>
+<td><code>import logo from "../img/TitleRogo.png";</code><br><code>&lt;img src={logo} alt="…" /&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>画面と URL を結ぶ</td>
+<td><code>&lt;Route path="/kosu-new" element={&lt;KosuNew /&gt;} /&gt;</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>URL の中の番号を受け取る</td>
+<td><code>const { id } = useParams();</code></td>
+<td>path="/kosu-update/:id" の :id</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>プログラムで画面を移る</td>
+<td><code>const navigate = useNavigate();</code><br><code>navigate("/");</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>リンクで画面を移る</td>
+<td><code>&lt;Link to="/help"&gt;ヘルプ&lt;/Link&gt;</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>今の URL を知る</td>
+<td><code>const location = useLocation();</code><br><code>location.pathname</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>アプリ全体を画面に描く</td>
+<td><code>ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(&lt;App /&gt;)</code></td>
+<td></td>
+<td>00 10. 実コード⑥：index.tsx</td>
+</tr>
+<tr>
+<td>中身（子）を受け取る部品</td>
+<td><code>const Box = ({ children }: { children: React.ReactNode }) =&gt; &lt;div&gt;{children}&lt;/div&gt;;</code></td>
+<td></td>
+<td>05 11. 実コード全解説：TableContainer.ts…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-12">サーバーとの通信（axios）</h2>
+<p>画面は <code>api</code>（<code>axios.create</code> で作った係）で、Django の API とやりとりします。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通信の係を作る</td>
+<td><code>const api = axios.create({ baseURL: process.env.REACT_APP_API_BASE_URL, withCredentials: true });</code></td>
+<td></td>
+<td>04 17. 実コード全解説：axios.ts 全8行</td>
+</tr>
+<tr>
+<td>環境変数を読む</td>
+<td><code>process.env.REACT_APP_API_BASE_URL</code></td>
+<td>REACT_APP_ で始まる名前だけ読める</td>
+<td>04 17. 実コード全解説：axios.ts 全8行</td>
+</tr>
+<tr>
+<td>データを取ってくる</td>
+<td><code>const response = await api.get("/api/member_list/", { params: { page: 1 } });</code></td>
+<td>params は ?page=1 になる</td>
+<td>04 19. 実コード全解説：KosuList.tsx の型と関…</td>
+</tr>
+<tr>
+<td>データを送る</td>
+<td><code>await api.post("/api/login/", { employee_no: Number(employee_no) });</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>データを直す・消す</td>
+<td><code>await api.put(&#96;/api/member_update/${employeeNo}/&#96;, formData)</code><br><code>await api.delete(…)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>返事の中身</td>
+<td><code>response.data</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>返事の番号</td>
+<td><code>response.status</code></td>
+<td>200 成功・400 入力の誤り・401 ログインしていない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>通信のエラーか調べる</td>
+<td><code>if (axios.isAxiosError(err)) { … }</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>エラーの返事の中身</td>
+<td><code>err.response?.data.message</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>ログインしていない時にログイン画面へ</td>
+<td><code>if (err.response?.status === 401) navigate("/login");</code></td>
+<td></td>
+<td>00 5. 実コード①：Login.tsx</td>
+</tr>
+<tr>
+<td>ファイルを送る</td>
+<td><code>const form = new FormData();</code><br><code>form.append("file", file);</code><br><code>await api.post(url, form);</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ファイルを受け取って保存</td>
+<td><code>api.get(url, { responseType: "blob" })</code></td>
+<td>Excel のダウンロードなど</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-13">Python の基本</h2>
+<p>字下げ（このアプリは空白 2 つ）で、まとまりを表します。字下げがずれると動きません。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>変数に入れる</td>
+<td><code>input_number = data.get('employee_no')</code></td>
+<td>型は書かなくてよい</td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>関数を作る</td>
+<td><code>def time_index(time):</code></td>
+<td></td>
+<td>08 8. kosu_utils.py 逐行解説①: time_…</td>
+</tr>
+<tr>
+<td>値を返す</td>
+<td><code>return start_time_hour, start_time_min</code></td>
+<td>2 つ返すとタプル</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>いくつでも受け取る</td>
+<td><code>def save(self, *args, **kwargs):</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>辞書をばらして渡す</td>
+<td><code>member.objects.create(…, **break_times)</code></td>
+<td></td>
+<td>12 8. 実コード全解説：test_backend.py の土台</td>
+</tr>
+<tr>
+<td>名前を付けて渡す</td>
+<td><code>models.CharField('氏名', max_length=100)</code></td>
+<td></td>
+<td>00 6. 実コード②：kosu/urls.py</td>
+</tr>
+<tr>
+<td>条件で分ける</td>
+<td><code>if …: … elif …: … else: …</code></td>
+<td></td>
+<td>06 4. 条件分岐 if</td>
+</tr>
+<tr>
+<td>条件で値を選ぶ</td>
+<td><code>a if 条件 else b</code></td>
+<td></td>
+<td>06 8. 三項演算子・f文字列</td>
+</tr>
+<tr>
+<td>かつ・または・ではない</td>
+<td><code>a and b</code><br><code>a or b</code><br><code>not a</code></td>
+<td></td>
+<td>06 4. 条件分岐 if</td>
+</tr>
+<tr>
+<td>入っているか</td>
+<td><code>'temp_file_path' in locals()</code><br><code>val not in [None, '']</code></td>
+<td></td>
+<td>08 16. モデル④: kosu_division</td>
+</tr>
+<tr>
+<td>無いか</td>
+<td><code>if obj is None:</code></td>
+<td></td>
+<td>06 4. 条件分岐 if</td>
+</tr>
+<tr>
+<td>くり返す</td>
+<td><code>for d in range(1, 8):</code></td>
+<td></td>
+<td>06 5. 繰り返し for</td>
+</tr>
+<tr>
+<td>番号つきでくり返す</td>
+<td><code>for i, e in enumerate(detail_list):</code></td>
+<td></td>
+<td>08 13. kosu_utils.py 逐行解説⑥: deta…</td>
+</tr>
+<tr>
+<td>条件の間くり返す</td>
+<td><code>while 条件:</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>くり返しを抜ける・飛ばす</td>
+<td><code>break</code><br><code>continue</code></td>
+<td></td>
+<td>06 5. 繰り返し for</td>
+</tr>
+<tr>
+<td>並びを作り直す（内包表記）</td>
+<td><code>[today - datetime.timedelta(days=d) for d in range(1, 8)]</code></td>
+<td></td>
+<td>06 5. 繰り返し for</td>
+</tr>
+<tr>
+<td>エラーを受け止める</td>
+<td><code>try: … except json.JSONDecodeError: …</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>何でも受け止める</td>
+<td><code>except Exception as e:</code></td>
+<td>最後の守り</td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>自分でエラーを起こす</td>
+<td><code>raise ValueError("未入力箇所があります")</code></td>
+<td></td>
+<td>08 7. 【最重要】休憩文字列 #HHMMHHMM の読み方</td>
+</tr>
+<tr>
+<td>必ず最後に動かす</td>
+<td><code>finally: os.remove(temp_file_path)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>クラスを作る</td>
+<td><code>class member(models.Model):</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>作る時に動く関数</td>
+<td><code>def __init__(self, name, age):</code></td>
+<td></td>
+<td>06 9. クラスとインスタンス</td>
+</tr>
+<tr>
+<td>表示の時の文字</td>
+<td><code>def __str__(self): return self.name</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>親の処理も動かす</td>
+<td><code>super().save(*args, **kwargs)</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>自分と同じクラス</td>
+<td><code>self.__class__.objects.count()</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>部品を読み込む</td>
+<td><code>from django.db import models</code><br><code>import json</code></td>
+<td></td>
+<td>00 6. 実コード②：kosu/urls.py</td>
+</tr>
+<tr>
+<td>開いて自動で閉じる</td>
+<td><code>with open(path, encoding="utf-8") as f:</code></td>
+<td></td>
+<td>06 7. 関数 def</td>
+</tr>
+<tr>
+<td>何もしない</td>
+<td><code>pass</code></td>
+<td></td>
+<td>06 9. クラスとインスタンス</td>
+</tr>
+<tr>
+<td>画面に出す（調べ物）</td>
+<td><code>print(value)</code></td>
+<td>本番ではログを使う</td>
+<td>06 1. インデント ― Python最大の特徴</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-14">Python の文字・数・並び・辞書・日時・ファイル</h2>
+<p>よく使う型の道具です。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文字の中に値を入れる</td>
+<td><code>f'{member_name}氏の工数未入力があります。'</code></td>
+<td></td>
+<td>06 5. 繰り返し for</td>
+</tr>
+<tr>
+<td>前を 0 でうめる</td>
+<td><code>f"{n:02d}"</code></td>
+<td>5 → 05</td>
+<td>12 9. 実コード全解説：TestModels</td>
+</tr>
+<tr>
+<td>区切りで分ける</td>
+<td><code>post_time.split(':')</code></td>
+<td></td>
+<td>09 7. tasks.py 全解説②：予測データ出力</td>
+</tr>
+<tr>
+<td>文字の場所</td>
+<td><code>post_time.index(':')</code></td>
+<td>無いとエラー</td>
+<td>08 8. kosu_utils.py 逐行解説①: time_…</td>
+</tr>
+<tr>
+<td>一部を取り出す</td>
+<td><code>text[1:5]</code><br><code>text[-1]</code></td>
+<td></td>
+<td>08 7. 【最重要】休憩文字列 #HHMMHHMM の読み方</td>
+</tr>
+<tr>
+<td>置きかえる</td>
+<td><code>text.replace('#', '')</code></td>
+<td></td>
+<td>08 7. 【最重要】休憩文字列 #HHMMHHMM の読み方</td>
+</tr>
+<tr>
+<td>前後の空白を取る</td>
+<td><code>text.strip()</code></td>
+<td></td>
+<td>06 1. インデント ― Python最大の特徴</td>
+</tr>
+<tr>
+<td>文字を数に・数を文字に</td>
+<td><code>int("12")</code><br><code>str(12)</code></td>
+<td></td>
+<td>06 2. 変数とデータ型</td>
+</tr>
+<tr>
+<td>長さ</td>
+<td><code>len(detail_list)</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>後ろに足す</td>
+<td><code>items.append(x)</code></td>
+<td></td>
+<td>06 3. リスト・辞書・タプル</td>
+</tr>
+<tr>
+<td>辞書から読む（無ければ None）</td>
+<td><code>data.get('employee_no')</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>辞書の中身を全部</td>
+<td><code>for key, value in d.items():</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>辞書をまとめて足す</td>
+<td><code>d.update(other)</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>JSON の文字を辞書に</td>
+<td><code>json.loads(request.body)</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>辞書を JSON の文字に</td>
+<td><code>json.dumps(data, ensure_ascii=False)</code></td>
+<td>日本語をそのまま</td>
+<td>12 8. 実コード全解説：test_backend.py の土台</td>
+</tr>
+<tr>
+<td>今日の日付</td>
+<td><code>datetime.date.today()</code></td>
+<td></td>
+<td>06 12. import と相対import</td>
+</tr>
+<tr>
+<td>今の日時（時間帯つき）</td>
+<td><code>timezone.now()</code></td>
+<td>Django の道具</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>何日前・何日後</td>
+<td><code>today - datetime.timedelta(days=1)</code></td>
+<td></td>
+<td>06 5. 繰り返し for</td>
+</tr>
+<tr>
+<td>文字を日付に</td>
+<td><code>datetime.datetime.strptime(start_day, '%Y-%m-%d').date()</code></td>
+<td></td>
+<td>08 7. 【最重要】休憩文字列 #HHMMHHMM の読み方</td>
+</tr>
+<tr>
+<td>日付を文字に</td>
+<td><code>day.strftime('%Y-%m-%d')</code></td>
+<td></td>
+<td>06 16. 実コード全解説③：asynchronous_vie…</td>
+</tr>
+<tr>
+<td>日本の時間に直す</td>
+<td><code>value.astimezone(pytz.timezone('Asia/Tokyo'))</code></td>
+<td></td>
+<td>09 9. tasks.py 全解説④：人員・班員・定義・その他…</td>
+</tr>
+<tr>
+<td>ファイルの場所をつなぐ</td>
+<td><code>os.path.join(settings.MEDIA_ROOT, 'backup.xlsx')</code></td>
+<td></td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>ファイルがあるか</td>
+<td><code>os.path.exists(path)</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>フォルダを作る</td>
+<td><code>os.makedirs(media_dir)</code></td>
+<td>途中も作る</td>
+<td>09 6. tasks.py 全解説①：工数バックアップ</td>
+</tr>
+<tr>
+<td>ファイルを消す</td>
+<td><code>os.remove(temp_file_path)</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>場所の最後の名前</td>
+<td><code>os.path.basename(file_path)</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>プロジェクトのいちばん上</td>
+<td><code>Path(__file__).resolve().parent.parent</code></td>
+<td></td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>一時ファイルを作る</td>
+<td><code>tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False)</code></td>
+<td></td>
+<td>06 11. with 文</td>
+</tr>
+<tr>
+<td>ファイルを全部の行で読む</td>
+<td><code>log_file.readlines()</code></td>
+<td></td>
+<td>06 7. 関数 def</td>
+</tr>
+<tr>
+<td>環境変数を読む</td>
+<td><code>os.getenv('DB_NAME', '')</code></td>
+<td></td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>ほかと重ならない ID</td>
+<td><code>str(uuid.uuid4())</code></td>
+<td></td>
+<td>06 16. 実コード全解説③：asynchronous_vie…</td>
+</tr>
+<tr>
+<td>少し待つ</td>
+<td><code>time.sleep(3)</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-15">Django（モデル・ORM）</h2>
+<p>データベースの表を Python のクラス（モデル）で書き、ORM（SQL を書かずに読み書きする仕組み）で使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表を作る（モデル）</td>
+<td><code>class member(models.Model):</code></td>
+<td>変えたら makemigrations → migrate</td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>整数の列</td>
+<td><code>employee_no = models.IntegerField('従業員番号')</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>文字の列</td>
+<td><code>name = models.CharField('氏名', max_length=100)</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>選び肢つきの列</td>
+<td><code>models.CharField('ショップ', choices=shop_list, max_length=15)</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>真偽の列</td>
+<td><code>models.BooleanField('権限')</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>日付・日時の列</td>
+<td><code>models.DateField('就業日')</code><br><code>models.DateTimeField(auto_now_add=True)</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>ほかの表を指す</td>
+<td><code>models.ForeignKey(member, verbose_name='氏名', null=True, on_delete=models.SET_NULL)</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>空でもよい</td>
+<td><code>null=True, blank=True</code></td>
+<td>null はデータベース、blank は入力の確かめ</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>全部</td>
+<td><code>kosu_division.objects.all()</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>しぼる</td>
+<td><code>member.objects.filter(employee_no=input_number)</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>除く</td>
+<td><code>member.objects.exclude(shop='異動・退社')</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>1 つだけ取る</td>
+<td><code>member.objects.get(employee_no=no)</code></td>
+<td>無いと DoesNotExist</td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>無かった時を受け止める</td>
+<td><code>except member.DoesNotExist:</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>1 つ取る（無ければ None）</td>
+<td><code>member.objects.filter(…).first()</code></td>
+<td></td>
+<td>06 8. 三項演算子・f文字列</td>
+</tr>
+<tr>
+<td>最後の 1 つ</td>
+<td><code>kosu_division.objects.order_by("id").last()</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>あるか</td>
+<td><code>member.objects.filter(employee_no=no).exists()</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>AsyncTask.objects.count()</code></td>
+<td></td>
+<td>00 8. 実コード④：models.py</td>
+</tr>
+<tr>
+<td>並べかえる</td>
+<td><code>order_by('-id')</code></td>
+<td>- で逆</td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>期間でしぼる</td>
+<td><code>filter(work_day2__gte=start_day, work_day2__lte=end_day)</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>含む（部分一致）</td>
+<td><code>filter(employee_no__icontains=search_number)</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>並びのどれか</td>
+<td><code>filter(shop__in=['P', 'R'])</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>つながった表の列でしぼる</td>
+<td><code>filter(name__shop='…')</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>条件で値を作って並べる</td>
+<td><code>annotate(shop_order=Case(When(shop='異動・退社', then=Value(1)), default=Value(0), output_field=IntegerField())).order_by('shop_order')</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>作って保存</td>
+<td><code>AsyncTask.objects.create(task_id=task_id, status='pending')</code></td>
+<td></td>
+<td>06 16. 実コード全解説③：asynchronous_vie…</td>
+</tr>
+<tr>
+<td>変えて保存</td>
+<td><code>obj.name = "…"</code><br><code>obj.save()</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>まとめて変える</td>
+<td><code>member.objects.filter(…).update(shop='…')</code></td>
+<td>save() は呼ばれない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>消す</td>
+<td><code>obj.delete()</code><br><code>AsyncTask.objects.filter(…).delete()</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>あれば取り、無ければ作る</td>
+<td><code>obj, created = member.objects.get_or_create(employee_no=no, defaults={…})</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>あれば直し、無ければ作る</td>
+<td><code>member.objects.update_or_create(employee_no=no, defaults={…})</code></td>
+<td>バックアップのロードに向く</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>必要な列だけ辞書で</td>
+<td><code>member.objects.values('employee_no', 'name')</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>1 列だけの並び</td>
+<td><code>values_list('employee_no', flat=True)</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>つながった表を一緒に読む（速くする）</td>
+<td><code>Business_Time_graph.objects.select_related('name')</code></td>
+<td>何度も読みに行かない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>全部成功か、全部取り消すか</td>
+<td><code>with transaction.atomic():</code></td>
+<td>ロードの途中で失敗した時に半端にしない</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>重なりのエラー</td>
+<td><code>except IntegrityError:</code></td>
+<td></td>
+<td>09 6. tasks.py 全解説①：工数バックアップ</td>
+</tr>
+<tr>
+<td>保存の後に動かす（シグナル）</td>
+<td><code>@receiver(post_save, sender=member)</code></td>
+<td></td>
+<td>06 13. デコレータ @</td>
+</tr>
+<tr>
+<td>管理画面に出す</td>
+<td><code>admin.site.register(member)</code></td>
+<td></td>
+<td>00 9. 実コード⑤：hozen_another/urls.py</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-16">Django（URL・ビュー・セッション・設定・ログ）</h2>
+<p>URL ごとに、答える係（ビュー）を決めます。設定は <code>hozen_another/settings.py</code> にあります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL と係を結ぶ</td>
+<td><code>path('kosu_update/&lt;int:pk&gt;/', kosu_views.KosuUpdate.as_view(), name='kosu_update')</code></td>
+<td></td>
+<td>00 6. 実コード②：kosu/urls.py</td>
+</tr>
+<tr>
+<td>URL から数を受け取る</td>
+<td><code>&lt;int:pk&gt;</code></td>
+<td></td>
+<td>00 6. 実コード②：kosu/urls.py</td>
+</tr>
+<tr>
+<td>ほかの URL の決まりを取り込む</td>
+<td><code>path('api/', include('kosu.urls'))</code></td>
+<td></td>
+<td>00 9. 実コード⑤：hozen_another/urls.py</td>
+</tr>
+<tr>
+<td>React の画面を返す（どの URL でも）</td>
+<td><code>re_path(r'^(?!admin).*$', react_view)</code></td>
+<td>admin を除く。最後に書く</td>
+<td>00 9. 実コード⑤：hozen_another/urls.py</td>
+</tr>
+<tr>
+<td>URL から係の名前を調べる</td>
+<td><code>resolve(request.path).url_name</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>今の URL</td>
+<td><code>request.path</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>URL の ?○○= の値</td>
+<td><code>request.GET.get('task_id')</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>送られた本文（JSON）</td>
+<td><code>json.loads(request.body)</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>ログインを覚える</td>
+<td><code>request.session['login_No'] = input_number</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>覚えた値を読む</td>
+<td><code>request.session.get('login_No')</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>ログアウトで忘れる</td>
+<td><code>request.session.flush()</code></td>
+<td>セッションを全部消す</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>JSON で返す</td>
+<td><code>return JsonResponse({'status': 'error', 'message': '…'}, status=400)</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>ファイルを返す（ダウンロード）</td>
+<td><code>FileResponse(open(path, 'rb'), as_attachment=True, filename=os.path.basename(path))</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>設定の値を読む</td>
+<td><code>from django.conf import settings</code><br><code>settings.MEDIA_ROOT</code></td>
+<td></td>
+<td>00 6. 実コード②：kosu/urls.py</td>
+</tr>
+<tr>
+<td>.env の値を読む</td>
+<td><code>env = environ.Env()</code><br><code>env.read_env(…)</code><br><code>env('SECRET_KEY')</code></td>
+<td></td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>.env の真偽を読む</td>
+<td><code>DEBUG = env.bool('DEBUG')</code></td>
+<td></td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>本番で受け付けるドメイン</td>
+<td><code>ALLOWED_HOSTS = ['…']</code></td>
+<td>無いと 400</td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>POST を許すドメイン</td>
+<td><code>CSRF_TRUSTED_ORIGINS = ['https://…']</code></td>
+<td>無いと 403</td>
+<td>01 11. settings.py を1行ずつ読む</td>
+</tr>
+<tr>
+<td>ログの係を取る</td>
+<td><code>views_logger = logging.getLogger('views_logger')</code></td>
+<td></td>
+<td>06 14. 実コード全解説①：main_views.py の …</td>
+</tr>
+<tr>
+<td>ログに書く</td>
+<td><code>views_logger.info(message)</code><br><code>.warning(…)</code><br><code>.error(…)</code></td>
+<td></td>
+<td>06 1. インデント ― Python最大の特徴</td>
+</tr>
+<tr>
+<td>エラーの詳しい場所もログに</td>
+<td><code>logger.exception("ロードに失敗しました")</code></td>
+<td>except の中で使う</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>大きくなったら切り替えるログ</td>
+<td><code>RotatingFileHandler</code></td>
+<td></td>
+<td>00 12. 実コード⑦：settings.py の主要設定を1…</td>
+</tr>
+<tr>
+<td>リクエストの前後に必ず通す（ミドルウェア）</td>
+<td><code>def __call__(self, request): response = self.get_response(request)</code></td>
+<td></td>
+<td>07 10. 実コード全解説：middleware と apps…</td>
+</tr>
+<tr>
+<td>起動の時の準備</td>
+<td><code>class KosuConfig(AppConfig): def ready(self): import kosu.signals</code></td>
+<td></td>
+<td>07 10. 実コード全解説：middleware と apps…</td>
+</tr>
+<tr>
+<td>本番サーバーから呼ぶ入口</td>
+<td><code>application = get_wsgi_application()</code></td>
+<td></td>
+<td>09 12. wsgi.py 全解説：Webサーバーとの玄関</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-17">Django REST framework（API）</h2>
+<p>画面（React）からの JSON の要求に答える API を作ります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API の係を作る</td>
+<td><code>class Login(APIView): def post(self, request):</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>関数で API を作る</td>
+<td><code>@api_view(['GET'])</code></td>
+<td></td>
+<td>06 13. デコレータ @</td>
+</tr>
+<tr>
+<td>受け取れる形を決める</td>
+<td><code>@parser_classes([MultiPartParser, JSONParser, FormParser])</code></td>
+<td>ファイルも受け取る</td>
+<td>06 13. デコレータ @</td>
+</tr>
+<tr>
+<td>返事を返す</td>
+<td><code>return Response(serializer.data, status=status.HTTP_200_OK)</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>返事の番号の名前</td>
+<td><code>status.HTTP_400_BAD_REQUEST</code></td>
+<td></td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>URL の ?○○= の値</td>
+<td><code>request.query_params.get('employee_no', None)</code></td>
+<td></td>
+<td>06 7. 関数 def</td>
+</tr>
+<tr>
+<td>送られたデータ</td>
+<td><code>request.data</code></td>
+<td>JSON もフォームも</td>
+<td>00 7. 実コード③：main_views.py の Login</td>
+</tr>
+<tr>
+<td>送られたファイル</td>
+<td><code>request.FILES.get('file')</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>モデルと JSON を相互に変える</td>
+<td><code>class MemberSerializer(serializers.ModelSerializer): class Meta: model = member; fields = '__all__'</code></td>
+<td></td>
+<td>07 6. 実コード全解説：serializers.py</td>
+</tr>
+<tr>
+<td>全部の項目を使う</td>
+<td><code>fields = '__all__'</code></td>
+<td></td>
+<td>07 6. 実コード全解説：serializers.py</td>
+</tr>
+<tr>
+<td>入力を確かめる</td>
+<td><code>if serializer.is_valid(): serializer.save()</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>確かめの誤り</td>
+<td><code>serializer.errors</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ページに分ける</td>
+<td><code>class CustomPagination(PageNumberPagination): page_size = 20</code></td>
+<td>管理者設定の menu_row があれば、その件数</td>
+<td>06 9. クラスとインスタンス</td>
+</tr>
+<tr>
+<td>そのページの分だけ取る</td>
+<td><code>result_page = paginator.paginate_queryset(members, request)</code></td>
+<td></td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td>ページつきで返す</td>
+<td><code>return paginator.get_paginated_response(serializer.data)</code></td>
+<td>count・next・results が入る</td>
+<td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-18">Excel を読む・書く（openpyxl・pandas）</h2>
+<p>バックアップ（DB → Excel）とロード（Excel → DB）で使います。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>新しい Excel を作る</td>
+<td><code>wb = openpyxl.Workbook()</code><br><code>ws = wb.active</code></td>
+<td></td>
+<td>09 6. tasks.py 全解説①：工数バックアップ</td>
+</tr>
+<tr>
+<td>1 行足す</td>
+<td><code>ws.append(['従業員番号', '氏名'])</code></td>
+<td>見出しの行にも</td>
+<td>09 6. tasks.py 全解説①：工数バックアップ</td>
+</tr>
+<tr>
+<td>保存する</td>
+<td><code>wb.save(filepath)</code></td>
+<td></td>
+<td>09 6. tasks.py 全解説①：工数バックアップ</td>
+</tr>
+<tr>
+<td>Excel を読む</td>
+<td><code>wb = openpyxl.load_workbook(temp_file_path)</code></td>
+<td></td>
+<td>09 8. tasks.py 全解説③：ロード</td>
+</tr>
+<tr>
+<td>マスの値</td>
+<td><code>ws.cell(1, col).value</code></td>
+<td>1 から数える</td>
+<td>09 8. tasks.py 全解説③：ロード</td>
+</tr>
+<tr>
+<td>全部の行を値で読む</td>
+<td><code>for row in ws.iter_rows(min_row=2, values_only=True):</code></td>
+<td>2 行目から（見出しを飛ばす）</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>見出しが合っているか確かめる</td>
+<td><code>actual_headers = [ws.cell(1, col).value for col in range(1, len(expected_headers) + 1)]</code></td>
+<td></td>
+<td>09 8. tasks.py 全解説③：ロード</td>
+</tr>
+<tr>
+<td>表（データフレーム）を作る</td>
+<td><code>df = pd.DataFrame(data, columns=['工数定義区分', '作業詳細'])</code></td>
+<td></td>
+<td>09 7. tasks.py 全解説②：予測データ出力</td>
+</tr>
+<tr>
+<td>条件に合わない行を除く</td>
+<td><code>df = df[~df['工数定義区分'].isin(['', '#', '$'])]</code></td>
+<td>~ で「ではない」</td>
+<td>09 7. tasks.py 全解説②：予測データ出力</td>
+</tr>
+<tr>
+<td>重なった行を消す</td>
+<td><code>df.drop_duplicates(subset=['工数定義区分', '作業詳細'], keep='first')</code></td>
+<td></td>
+<td>09 7. tasks.py 全解説②：予測データ出力</td>
+</tr>
+<tr>
+<td>Excel に書く</td>
+<td><code>with pd.ExcelWriter(filepath, engine='openpyxl') as writer: df.to_excel(writer, index=False)</code></td>
+<td></td>
+<td>09 7. tasks.py 全解説②：予測データ出力</td>
+</tr>
+<tr>
+<td>Excel を表で読む</td>
+<td><code>df = pd.read_excel(path)</code></td>
+<td>簡単に読む時</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>アップロードされたファイルを一時ファイルに書く</td>
+<td><code>for chunk in kosu_file.chunks(): temp_file.write(chunk)</code></td>
+<td></td>
+<td>06 11. with 文</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-19">重い処理を裏で動かす（スレッド・タスク）</h2>
+<p>バックアップなどの重い処理は、別のスレッドで動かし、画面はタスクの状態を見に来ます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タスクの番号を作る</td>
+<td><code>task_id = str(uuid.uuid4())</code></td>
+<td></td>
+<td>06 16. 実コード全解説③：asynchronous_vie…</td>
+</tr>
+<tr>
+<td>タスクの状態を記録</td>
+<td><code>AsyncTask.objects.create(task_id=task_id, status='pending')</code></td>
+<td></td>
+<td>06 16. 実コード全解説③：asynchronous_vie…</td>
+</tr>
+<tr>
+<td>別のスレッドで動かす</td>
+<td><code>thread = threading.Thread(target=handle_task, args=(task_id, task_function, *args))</code><br><code>thread.start()</code></td>
+<td></td>
+<td>07 11. 実コード全解説：asynchronous_view…</td>
+</tr>
+<tr>
+<td>スレッドごとの入れ物</td>
+<td><code>_thread_locals = local()</code></td>
+<td></td>
+<td>06 18. 実コード全解説⑤：signals.py の差分計算</td>
+</tr>
+<tr>
+<td>状態を見に行く（画面から）</td>
+<td><code>api.get(&#96;/api/check_backup_status?task_id=${taskId}&#96;)</code></td>
+<td>終わるまで少しおきに</td>
+<td>07 7. 実コード全解説：urls.py</td>
+</tr>
+<tr>
+<td>裏方の係を動かす（django-q）</td>
+<td><code>python manage.py qcluster</code></td>
+<td></td>
+<td>01 9. バックエンド準備②：requirements.txt…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-20">テスト（画面: Vitest と Testing Library）</h2>
+<p><code>frontend/src/tests/</code> の <code>*.test.tsx</code>。<code>npm run test:run</code> で流します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>テストのまとまり</td>
+<td><code>describe("Login Component", () =&gt; { … })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>テストを 1 つ</td>
+<td><code>it("ログイン画面が表示される", () =&gt; { … })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>毎回の準備</td>
+<td><code>beforeEach(() =&gt; { vi.clearAllMocks(); })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>部品を描く</td>
+<td><code>render(&lt;MemoryRouter&gt;&lt;Login /&gt;&lt;/MemoryRouter&gt;)</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>役割と名前で探す</td>
+<td><code>screen.getByRole("heading", { name: "ログイン" })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>ラベルで入力欄を探す</td>
+<td><code>screen.getByLabelText("従業員番号")</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>出てくるまで待って探す</td>
+<td><code>await screen.findByRole("alert")</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>無いことを確かめる</td>
+<td><code>expect(screen.queryByRole("alert")).not.toBeInTheDocument()</code></td>
+<td>queryBy は無くても失敗しない</td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>文字を入れる</td>
+<td><code>fireEvent.change(input, { target: { value: "12345" } })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>押す</td>
+<td><code>fireEvent.click(button)</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>確かめる</td>
+<td><code>expect(x).toBe(5)</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>画面にある</td>
+<td><code>expect(el).toBeInTheDocument()</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>その文字がある</td>
+<td><code>expect(el).toHaveTextContent("…")</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>待ちながら確かめる</td>
+<td><code>await waitFor(() =&gt; { expect(…) })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>部品をにせ物にする</td>
+<td><code>vi.mock("../../api/axios")</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>にせの関数</td>
+<td><code>vi.fn()</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>次の 1 回だけ成功させる</td>
+<td><code>mockedApi.post.mockResolvedValueOnce({ data: { status: "success" } })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>次の 1 回だけ失敗させる</td>
+<td><code>mockedApi.post.mockRejectedValueOnce({ response: { status: 401 } })</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>呼ばれたか・何で呼ばれたか</td>
+<td><code>expect(mockedNavigate).toHaveBeenCalledWith("/")</code></td>
+<td></td>
+<td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
+</tr>
+<tr>
+<td>1 つのファイルだけ流す</td>
+<td><code>npx vitest run src/tests/MainPage/Login.test.tsx</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-21">テスト（サーバー: Django）</h2>
+<p><code>kosu/tests/</code> の <code>test_*.py</code>。<code>python manage.py test --settings=hozen_another.test_settings</code> で流します。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>テストのクラス</td>
+<td><code>class TestModels(BaseTestCase):</code></td>
+<td>TestCase を元にする</td>
+<td>12 8. 実コード全解説：test_backend.py の土台</td>
+</tr>
+<tr>
+<td>毎回の準備</td>
+<td><code>def setUp(self):</code></td>
+<td></td>
+<td>12 8. 実コード全解説：test_backend.py の土台</td>
+</tr>
+<tr>
+<td>テストを 1 つ</td>
+<td><code>def test_member_creation_and_str(self):</code></td>
+<td>名前は test_ で始める</td>
+<td>12 9. 実コード全解説：TestModels</td>
+</tr>
+<tr>
+<td>同じか</td>
+<td><code>self.assertEqual(response.status_code, 200)</code></td>
+<td></td>
+<td>12 9. 実コード全解説：TestModels</td>
+</tr>
+<tr>
+<td>真・偽か</td>
+<td><code>self.assertTrue(…)</code><br><code>self.assertFalse(…)</code></td>
+<td></td>
+<td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
+</tr>
+<tr>
+<td>入っているか</td>
+<td><code>self.assertIn('…', text)</code></td>
+<td></td>
+<td>12 9. 実コード全解説：TestModels</td>
+</tr>
+<tr>
+<td>以下か</td>
+<td><code>self.assertLessEqual(AsyncTask.objects.count(), AsyncTask.MAX_RECORDS)</code></td>
+<td></td>
+<td>12 9. 実コード全解説：TestModels</td>
+</tr>
+<tr>
+<td>API を呼ぶ</td>
+<td><code>self.client = APIClient()</code><br><code>self.client.post('/api/login/', {…}, format='json')</code></td>
+<td></td>
+<td>12 8. 実コード全解説：test_backend.py の土台</td>
+</tr>
+<tr>
+<td>にせ物に取り替える</td>
+<td><code>with patch('kosu.views.….threading.Thread') as mock_thread:</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>何を呼ばれても答えるにせ物</td>
+<td><code>MagicMock()</code></td>
+<td></td>
+<td>12 8. 実コード全解説：test_backend.py の土台</td>
+</tr>
+<tr>
+<td>エラーが起きることを確かめる</td>
+<td><code>with self.assertRaises(ValueError):</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-22">データベース（psql・SQL）</h2>
+<p>ふだんは ORM を使いますが、確かめの時に SQL を打つことがあります。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>データベースを作る</td>
+<td><code>psql -U postgres -c "CREATE DATABASE hozen_kosu;"</code></td>
+<td></td>
+<td>01 12. バックエンド準備④：データベースを作って migr…</td>
+</tr>
+<tr>
+<td>つなぐ</td>
+<td><code>psql -U postgres -d hozen_kosu</code></td>
+<td><code>\q</code> で抜ける</td>
+<td>01 12. バックエンド準備④：データベースを作って migr…</td>
+</tr>
+<tr>
+<td>表の一覧</td>
+<td><code>\dt</code></td>
+<td>psql の中で</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>表の形</td>
+<td><code>\d kosu_member</code></td>
+<td>psql の中で</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>行を見る</td>
+<td><code>SELECT * FROM kosu_member LIMIT 10;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>数える</td>
+<td><code>SELECT count(*) FROM kosu_business_time_graph;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>条件でしぼる</td>
+<td><code>SELECT … WHERE employee_no = 12345;</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>データベースを丸ごと控える</td>
+<td><code>pg_dump -U postgres -d hozen_kosu -f backup.sql</code></td>
+<td>直す前に</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>控えから戻す</td>
+<td><code>psql -U postgres -d hozen_kosu -f backup.sql</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rev-23">運用・デプロイ（本番に出す）</h2>
+<p>本番（Azure）へ出す前に、ローカルで動作とテストを確かめます。</p>
+<table>
+<thead>
+<tr>
+<th>やりたいこと</th>
+<th>書き方</th>
+<th>ひとこと</th>
+<th>出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>画面を本番用に作る</td>
+<td><code>npm run build</code></td>
+<td>frontend/ で</td>
+<td>01 19. 本番ビルド</td>
+</tr>
+<tr>
+<td>静的ファイルを集める</td>
+<td><code>python manage.py collectstatic</code></td>
+<td></td>
+<td>09 3. 日常運用コマンド集</td>
+</tr>
+<tr>
+<td>設計図を本番に当てる</td>
+<td><code>python manage.py migrate</code></td>
+<td>列を消す変更は特に注意</td>
+<td>01 12. バックエンド準備④：データベースを作って migr…</td>
+</tr>
+<tr>
+<td>本番のサーバーを動かす</td>
+<td><code>gunicorn hozen_another.wsgi:application</code></td>
+<td>Azure がこの形で起動</td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>ログの最後を見る</td>
+<td><code>Get-Content web_console.log -Tail 50</code></td>
+<td></td>
+<td>＋ 合わせて覚える</td>
+</tr>
+<tr>
+<td>資料の PDF・Web 版を作り直す</td>
+<td><code>python _build_pdfs.py kosu kosu/README.md</code></td>
+<td>資料の置き場所で</td>
+<td>09 17. 定期メンテナンスとドキュメントのPDF・Web版の…</td>
+</tr>
+</tbody>
+</table>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>
