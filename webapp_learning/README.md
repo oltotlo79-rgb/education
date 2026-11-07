@@ -38,5 +38,5 @@
 ## 関係する資料
 
 - `onprem/` … 作ったアプリを、会社の Windows Server に建てて運用する
-- `docs/` … Django＋React の、より詳しい説明
+- `kosu/` … Django＋React の、より詳しい説明
 - `Rust/` … Rust と Topcoat の、より詳しい説明

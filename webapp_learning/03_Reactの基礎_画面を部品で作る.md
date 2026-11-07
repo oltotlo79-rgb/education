@@ -17,7 +17,7 @@
 
 練習のアプリは `samples/03_react/` にあります。01 の HTML・CSS と、02 の TypeScript で作った物を、React で動く画面にします。この巻の画面の写しは、練習のアプリをビルドして Chrome で開き、**実際に操作して撮った**物です。
 
-> **もっと詳しく:** `docs/05_React_フロントエンド.md`、`next/03-react-basics.md` にも、React の説明があります。
+> **もっと詳しく:** `kosu/05_React_フロントエンド.md`、`next/03-react-basics.md` にも、React の説明があります。
 
 ## 1. 動かしてみる
 

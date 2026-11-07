@@ -17,7 +17,7 @@
 
 練習のファイルは `samples/02_typescript/` にあります。この巻の結果は、Node.js（25 系）と TypeScript 7.0.2 で、実際に動かした結果です。
 
-> **もっと詳しく:** `docs/04_JavaScript_TypeScript.md`、`next/02-typescript-basics.md` にも、TypeScript の説明があります。
+> **もっと詳しく:** `kosu/04_JavaScript_TypeScript.md`、`next/02-typescript-basics.md` にも、TypeScript の説明があります。
 
 ## 1. TypeScript とは
 

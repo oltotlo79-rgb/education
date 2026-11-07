@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>00a_はじめての方へ_超入門</title>
+<style>
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+  @bottom-right {
+    content: counter(page);
+    font-size: 10px;
+    color: #64748b;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: "Yu Gothic UI", "Yu Gothic", "Meiryo", "Hiragino Sans",
+               "Noto Sans JP", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.75;
+  color: #1e293b;
+  background: #ffffff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 1.4em 0 0.6em;
+  page-break-after: avoid;
+}
+h1 {
+  font-size: 22pt;
+  border-bottom: 3px solid #1e40af;
+  padding-bottom: 0.3em;
+  margin-top: 0.4em;
+  page-break-before: auto;
+}
+h2 {
+  font-size: 16pt;
+  border-bottom: 1.5px solid #cbd5e1;
+  padding-bottom: 0.25em;
+  margin-top: 1.6em;
+}
+h3 { font-size: 13pt; color: #1e40af; }
+h4 { font-size: 12pt; color: #334155; }
+
+p { margin: 0.5em 0 0.8em; }
+
+a { color: #1d4ed8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 0.4em 0 0.9em; padding-left: 1.6em; }
+li { margin: 0.2em 0; }
+
+blockquote {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #1e3a8a;
+  border-radius: 0 6px 6px 0;
+  page-break-inside: avoid;
+}
+blockquote p { margin: 0.3em 0; }
+blockquote strong { color: #1e40af; }
+
+code {
+  /* DefCode (see _code_font.py) has ASCII and Japanese in ONE font, so a code
+     line is drawn as one text run and copies as one line in every PDF viewer. */
+  font-family: "Consolas", "Consolas", monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  color: #be123c;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  /* Long inline code (file paths / URLs) must break instead of overflowing. */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  /* In a PDF there is no horizontal scrolling, so long lines must wrap
+     instead of being clipped off the right edge of the page. */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: 9.2pt;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+
+/* The codehilite extension wraps highlighted blocks in a scrolling div; make
+   that wrap too so nothing is clipped in the PDF. */
+.codehilite {
+  overflow-x: hidden;
+  /* overflow-x: hidden alone turns overflow-y into auto, and a glyph from a
+     fallback font that is a hair too tall then shows a vertical scrollbar. */
+  overflow-y: hidden;
+}
+.codehilite pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* No per-token colours: every coloured token became its own text run (and its
+   own tag) in the PDF, and some viewers then pasted each token on its own line.
+   Only whole comment lines get a colour, so each line is still one run. */
+pre .cmt { color: #94a3b8; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 9.6pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+img { max-width: 100%; height: auto; }
+
+hr {
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.6em 0;
+}
+
+/* Diagram blocks (the inline-styled <div>s in the source) */
+div[style] {
+  page-break-inside: avoid;
+}
+
+/* Tighten spacing right after headings */
+h1 + p, h2 + p, h3 + p, h4 + p { margin-top: 0.2em; }
+
+/* Avoid ugly page breaks inside list items / table rows */
+li, tr { page-break-inside: avoid; }
+
+@media screen {
+  body { max-width: 920px; margin: 0 auto; padding: 20px 20px 120px; font-size: 16px; }
+  pre { white-space: pre !important; word-break: normal !important; overflow-wrap: normal !important;
+        overflow-x: auto !important; font-size: 14px !important; }
+  img { max-width: 100%; height: auto; }
+}
+.web-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 14px;
+  padding: 8px 12px; margin-bottom: 16px; background: #eef2f7; border-radius: 8px; }
+.web-bar a { color: #1e3a5f; }
+.web-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; max-width: 90%;
+  font-size: 15px; font-weight: 700; background: #fff7ed; border: 2px solid #f2994a; border-radius: 8px;
+  padding: 10px 16px; margin: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.paste-note { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 11; width: 640px;
+  max-width: calc(100% - 32px); box-sizing: border-box; font-size: 15px; line-height: 1.7; background: #ecfdf5;
+  border: 2px solid #27ae60; border-radius: 8px; padding: 12px 40px 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+.paste-note[hidden] { display: none; }
+.paste-note button { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 20px;
+  line-height: 1; cursor: pointer; color: #1f2937; padding: 4px 6px; }
+.code-wrap { position: relative; scroll-margin-top: 16px; }
+.code-wrap pre { padding-top: 40px !important; }
+.copy-btn { position: absolute; top: 8px; right: 8px; z-index: 2; font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border: 0; border-radius: 6px; background: #2f80ed; color: #fff; cursor: pointer;
+  font-family: inherit; }
+.copy-btn:hover { background: #1c64c8; }
+.copy-btn.done { background: #27ae60; }
+.code-wrap:target pre { outline: 4px solid #f2994a; outline-offset: 2px; }
+.code-wrap:target .copy-btn { box-shadow: 0 0 0 4px #f2994a; }
+/* syntax colours on screen (the PDF uses one colour so that each line copies as one piece) */
+.codehilite .k, .codehilite .kd, .codehilite .kn, .codehilite .kr { color: #c084fc; }
+.codehilite .s, .codehilite .s1, .codehilite .s2, .codehilite .sb { color: #fcd34d; }
+.codehilite .c, .codehilite .c1, .codehilite .cm { color: #94a3b8; }
+.codehilite .nf, .codehilite .nx { color: #60a5fa; }
+.codehilite .nb { color: #34d399; }
+.codehilite .mi, .codehilite .mf { color: #f472b6; }
+.codehilite .nt { color: #f59e0b; }
+.codehilite .na { color: #93c5fd; }
+</style>
+</head>
+<body>
+<div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/00a_%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AE%E6%96%B9%E3%81%B8_%E8%B6%85%E5%85%A5%E9%96%80.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><h1 id="00a-はじめての方へ超入門-パソコン操作の基礎から">00a. はじめての方へ（超入門）― パソコン操作の基礎から</h1>
+<p>この章は、<strong>「プログラミングはおろか、パソコンの操作にもあまり自信がない」</strong> という方のための、いちばん最初の一歩です。ここで出てくる言葉は、後の章でずっと使います。急がず、知っている所は飛ばしながら読んでください。</p>
+<blockquote>
+<p>この章のゴール：「フォルダ」「パス」「ターミナル」「コマンド」という4つの言葉に、こわさを感じなくなること。これだけで十分です。</p>
+</blockquote>
+<hr>
+<h2 id="1-まず深呼吸--これから何を学ぶの">1. まず深呼吸 ― これから何を学ぶの？</h2>
+<p>あなたがこれから引き継ぐのは、<strong>「業務工数システム」というWebアプリ</strong> を作り・動かし・直し続ける仕事です。</p>
+<p>最初に知っておいてほしいことが3つあります。</p>
+<ol>
+<li><strong>最初は意味が分からなくて当たり前</strong> です。専門用語が次々出てきますが、全部を一度に理解する必要はありません。「そういう名前のものがあるんだな」で先に進んでOKです。</li>
+<li><strong>手を動かすと分かってきます</strong>。読むだけより、実際にコマンドを打ち、画面を触ると、ぐっと理解が進みます。</li>
+<li><strong>壊しても大丈夫な場所（自分のPCの中）で練習します</strong>。本番（みんなが使っている環境）にいきなり触ることはありません。安心してください。</li>
+</ol>
+<hr>
+<h2 id="2-パソコンの中の住所を理解するファイルフォルダパス">2. パソコンの中の「住所」を理解する：ファイル・フォルダ・パス</h2>
+<p>プログラムは、たくさんの <strong>ファイル</strong> からできています。まずファイルとフォルダの関係を整理しましょう。</p>
+<h3 id="ファイルとは">ファイルとは</h3>
+<p>データの「1つのまとまり」。文書・画像・プログラムなど。名前が付いています。
+- 例：<code>Login.tsx</code>、<code>models.py</code>、<code>data.xlsx</code></p>
+<h3 id="拡張子かくちょうしとは">拡張子（かくちょうし）とは</h3>
+<p>ファイル名の最後、ドット（<code>.</code>）以降の部分。<strong>そのファイルの種類</strong> を表します。
+- <code>.txt</code> → ふつうの文字ファイル
+- <code>.py</code> → Python（パイソン）のプログラム
+- <code>.tsx</code> / <code>.ts</code> → TypeScript（タイプスクリプト）のプログラム
+- <code>.css</code> → 見た目を決めるファイル
+- <code>.md</code> → マークダウン（この教育資料の形式）
+- <code>.xlsx</code> → Excelファイル</p>
+<blockquote>
+<p>Windowsは初期設定で拡張子を隠していることがあります。エクスプローラー（フォルダを見る画面）の「表示」メニューで「ファイル名拡張子」にチェックを入れると表示されます。プログラムを扱うときは表示しておくのがおすすめです。</p>
+</blockquote>
+<h3 id="フォルダディレクトリとは">フォルダ（ディレクトリ）とは</h3>
+<p>ファイルを整理して入れておく「箱」。箱の中にさらに箱（フォルダ）を入れられます。
+- 「フォルダ」と「ディレクトリ」は <strong>同じ意味</strong> です。プログラムの世界では「ディレクトリ」と呼ぶことが多いです。</p>
+<div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>hozen-kosu-React        ← いちばん外側のフォルダ（このプロジェクト全体）
+├─ frontend             ← フォルダ（画面側のコード一式）
+│   └─ src              ← フォルダ
+│       └─ MainPage     ← フォルダ
+│           └─ Login.tsx  ← ファイル（ログイン画面のコード）
+├─ kosu                 ← フォルダ（裏側の処理一式）
+│   └─ models.py        ← ファイル
+└─ manage.py            ← ファイル
+</code></pre></div></div>
+
+<h3 id="パスpathとは--ファイルの住所">パス（path）とは ― ファイルの「住所」</h3>
+<p>あるファイルが「どのフォルダの、どのフォルダの中にあるか」を表した文字列を <strong>パス</strong> と言います。住所のようなものです。</p>
+<ul>
+<li>Windowsでは、フォルダの区切りに <strong><code>\</code>（円マーク／バックスラッシュ）</strong> を使います。</li>
+<li>例：<code>C:\Users\あなた\Documents\git-projects\hozen-kosu-React\manage.py</code></li>
+<li>プログラムの世界（このアプリのコードの中）では <strong><code>/</code>（スラッシュ）</strong> を使うことも多いです。</li>
+<li>例：<code>frontend/src/MainPage/Login.tsx</code></li>
+<li>どちらも「フォルダをたどっていく道順」を表している、と理解すればOKです。</li>
+</ul>
+<blockquote>
+<p><strong>絶対パスと相対パス</strong>
+- <strong>絶対パス</strong>：<code>C:\</code> から始まる「完全な住所」。どこから見ても同じ場所を指す。
+- <strong>相対パス</strong>：「今いる場所から見た道順」。<code>./</code> は「今いるフォルダ」、<code>../</code> は「1つ上のフォルダ」を表す。
+後の章でコードを読むときに <code>../api/axios</code> のような書き方が出てきますが、これは相対パスです。</p>
+</blockquote>
+<hr>
+<h2 id="3-ターミナルpowershell-文字でpcに命令する黒い画面">3. ターミナル（PowerShell）― 文字でPCに命令する黒い画面</h2>
+<p>ふだんは、アイコンをクリックしてアプリを動かしますよね。プログラミングでは、それに加えて <strong>文字で命令を打ち込む</strong> 操作をよく使います。そのための画面を <strong>ターミナル</strong> と呼びます。</p>
+<p>Windowsの標準ターミナルが <strong>PowerShell（パワーシェル）</strong> です。</p>
+<h3 id="powershellの開き方">PowerShellの開き方</h3>
+<ol>
+<li>キーボードの <strong>Windowsキー</strong> を押す（または画面左下のスタートボタン）。</li>
+<li><code>PowerShell</code> と入力する。</li>
+<li>出てきた「Windows PowerShell」をクリック。</li>
+<li>黒い（または青い）画面が開きます。これがターミナルです。</li>
+</ol>
+<p>開くと、こんな表示が出ます：</p>
+<div class="codehilite"><div class="code-wrap" id="code-2"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>PS C:\Users\あなた&gt;
+</code></pre></div></div>
+
+<ul>
+<li><code>PS</code> は PowerShell の印。</li>
+<li><code>C:\Users\あなた</code> は <strong>今いるフォルダ（カレントディレクトリ）</strong> ＝「今あなたが立っている場所」。</li>
+<li><code>&gt;</code> の右側に、命令（コマンド）を打ち込みます。</li>
+</ul>
+<hr>
+<h2 id="4-コマンド--命令の言葉">4. コマンド ― 命令の言葉</h2>
+<p>ターミナルに打ち込む命令を <strong>コマンド</strong> と言います。コマンドは「<strong>コマンド名 + 追加の指定</strong>」という形が基本です。</p>
+<div class="codehilite"><div class="code-wrap" id="code-3"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">Documents</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>cd</code></strong>（PowerShell）: 「change directory（フォルダを移る）」の略。<code>cd Documents</code> で、今いるフォルダの中の <code>Documents</code> へ移ります。<code>cd ..</code> は 1 つ上のフォルダへ、<code>cd ~</code> はホームフォルダ（<code>C:\Users\あなたの名前</code>）へ戻ります。今いる場所は、行の頭の <code>PS C:\Users\…&gt;</code> の部分に表示されます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<ul>
+<li><code>cd</code> がコマンド名（change directory ＝フォルダを移動せよ、の意味）。</li>
+<li><code>Documents</code> が「どこへ移動するか」の指定。</li>
+<li>打ち込んだら、最後に <strong>Enterキー</strong> を押して実行します。</li>
+</ul>
+<h3 id="最初に覚えると便利なコマンド3つ">最初に覚えると便利なコマンド3つ</h3>
+<div class="codehilite"><div class="code-wrap" id="code-4"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">フォルダ名</span>
+</code></pre></div></div>
+
+<p>今いる場所から、指定したフォルダへ <strong>移動</strong> する。<code>cd ..</code> で1つ上のフォルダへ戻る。</p>
+<div class="codehilite"><div class="code-wrap" id="code-5"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">ls</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>ls</code></strong>（PowerShell）: フォルダの中の一覧を見るコマンド（正式な名前は <code>Get-ChildItem</code>）。<code>Mode</code> の列の <code>d</code> はフォルダ、<code>a</code> はファイルです。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<p>今いるフォルダの中身（ファイル・フォルダ）の <strong>一覧を表示</strong> する。「今どこに何があるか」を確認できる。</p>
+<div class="codehilite"><div class="code-wrap" id="code-6"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">pwd</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>pwd</code></strong>（コマンド）: 今いるフォルダを表示するコマンド（print working directory）。bash（WSL）では <code>/home/you</code> のような Linux の形で、PowerShell では <code>C:\Users\you</code> のような形で出ます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+<p>今いるフォルダの <strong>住所（パス）を表示</strong> する。「自分が今どこにいるか」が分かる。</p>
+<h3 id="コマンドを打つときのコツ">コマンドを打つときのコツ</h3>
+<ul>
+<li><strong>コピー＆貼り付けが使えます</strong>：この資料のコマンドをコピーし、PowerShellの画面で <strong>右クリック</strong>（または <code>Ctrl + V</code>）すると貼り付けられます。打ち間違い防止に有効。</li>
+<li><strong>Tabキーで補完</strong>：フォルダ名を途中まで打って <code>Tab</code> キーを押すと、続きを自動入力してくれます。</li>
+<li><strong>↑キーで前のコマンド</strong>：上矢印キーで、前に打ったコマンドを呼び出せます。</li>
+<li><strong>大文字小文字・スペースに注意</strong>：コマンドは正確に。とくに半角スペースの有無は意味が変わります。</li>
+<li><strong>エラーが出ても壊れません</strong>：間違ったコマンドを打っても、たいていは赤い文字で「できませんでした」と出るだけです。落ち着いて読み、打ち直しましょう。</li>
+</ul>
+<blockquote>
+<p><strong>「コマンドが見つかりません」と出たら？</strong>
+そのコマンド（プログラム）がまだインストールされていない、または「PATH」に登録されていない、というサインです。<code>01_環境構築.md</code> でインストールを進めると解決します。</p>
+</blockquote>
+<hr>
+<h2 id="5-インターネットとサーバーの超ざっくり理解">5. インターネットとサーバーの超ざっくり理解</h2>
+<p>Webアプリを理解するうえで、最低限のイメージを持っておきましょう。</p>
+<ul>
+<li>あなたがブラウザ（Chrome等）でURLを開くと、ブラウザは <strong>インターネットを通じて「サーバー」というコンピュータにお願い</strong> を送ります。</li>
+<li>サーバーは、お願いに応じて画面やデータを <strong>返事</strong> します。</li>
+<li>ブラウザはその返事を受け取って、画面に表示します。</li>
+</ul>
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 170" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-00a-2-475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="40" y="30" width="200" height="90" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="140" y="69" font-size="14" fill="#1e40af" text-anchor="middle" font-weight="800">ブラウザ</text>
+<text x="140" y="91" font-size="12" fill="#0f172a" text-anchor="middle">あなたの手元のパソコン</text>
+<rect x="480" y="30" width="200" height="90" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="580" y="69" font-size="14" fill="#047857" text-anchor="middle" font-weight="800">サーバー</text>
+<text x="580" y="91" font-size="12" fill="#0f172a" text-anchor="middle">どこかにあるコンピューター</text>
+<line x1="244" y1="60" x2="476" y2="60" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-00a-2-475569)"/>
+<text x="360" y="53" font-size="11" fill="#475569" text-anchor="middle" font-weight="700">「この画面をください」</text>
+<line x1="476" y1="94" x2="244" y2="94" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-00a-2-475569)"/>
+<text x="360" y="114" font-size="11" fill="#475569" text-anchor="middle" font-weight="700">「はい、どうぞ」（画面の中身）</text>
+<text x="360" y="156" font-size="12" fill="#475569" text-anchor="middle">インターネットの向こう側にあるサーバーと、手紙をやり取りするようなもの</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図0a-1: ブラウザとサーバー。ブラウザが「この画面をください」と頼み、サーバーが「はい、どうぞ」と返す</div>
+</div>
+
+<p>この「お願い」と「返事」のやり取りが、Webアプリのすべての基本です。くわしくは <code>00_導入と全体像.md</code> で説明します。今は「ブラウザとサーバーが会話している」とだけ覚えればOKです。</p>
+<hr>
+<h2 id="6-ブラウザの開発者ツールf12-困ったときの味方">6. ブラウザの開発者ツール（F12）― 困ったときの味方</h2>
+<p>ブラウザには、画面の裏側を調べる機能が隠れています。キーボードの <strong>F12キー</strong> を押すと開きます（または画面で右クリック →「検証」）。</p>
+<ul>
+<li>最初は難しそうに見えますが、不具合が起きたとき「何が起きているか」を教えてくれる、頼れる味方です。</li>
+<li>とくに <strong>「Console（コンソール）」タブ</strong> にはエラーが赤字で出ます。困ったら、まずここを見る習慣をつけましょう。</li>
+</ul>
+<p>くわしい使い方は <code>03_Web基礎_HTML_CSS.md</code> で説明します。今は「F12で開く調査画面がある」とだけ知っておけば十分です。</p>
+<hr>
+<h2 id="7-この資料の歩き方">7. この資料の歩き方</h2>
+<ul>
+<li>章は <strong>番号順</strong> に読むのがおすすめです（前の章の知識を使います）。</li>
+<li><strong>分からない言葉が出たら</strong>、すぐ <code>10_用語集.md</code> を開いてください。やさしい言葉とたとえ話で説明しています。</li>
+<li><strong>コードのサンプルには、ほぼ全行にコメント</strong>（<code>#</code> や <code>//</code> で始まる説明）を付けています。コメントは「人間向けの注釈」で、プログラムの動作には影響しません。まずコメントだけ追って流れをつかみ、慣れたらコードも読む、という順がおすすめです。</li>
+<li><strong>一度で理解できなくて当然</strong> です。2回目、3回目で「あ、こういうことか」と分かってきます。</li>
+</ul>
+<hr>
+<h2 id="8-つまずいたときの心構え">8. つまずいたときの心構え</h2>
+<ul>
+<li><strong>エラーは敵ではありません</strong>。「どこが・どう良くないか」を教えてくれるメッセージです。怖がらず読みましょう。</li>
+<li><strong>エラーメッセージはそのまま検索</strong> しましょう。同じことで悩んだ人の解決策が見つかることがほとんどです。</li>
+<li><strong>小さく試す</strong>。いきなり大きな変更をせず、1か所だけ変えて結果を見る、を繰り返します。</li>
+<li><strong>こまめに保存・記録</strong>（<code>02_Git_GitHub.md</code> で学ぶGitが、これを助けてくれます）。</li>
+<li><strong>それでも詰まったら、遠慮なく前任者・IT担当者に聞く</strong>。聞くことは恥ではありません。</li>
+</ul>
+<hr>
+<h2 id="9-この章のまとめ">9. この章のまとめ</h2>
+<ul>
+<li><strong>ファイル</strong>＝データのまとまり、<strong>フォルダ（ディレクトリ）</strong>＝ファイルを入れる箱、<strong>パス</strong>＝ファイルの住所。</li>
+<li><strong>ターミナル（PowerShell）</strong>＝文字でPCに命令する画面。<strong>コマンド</strong>＝その命令の言葉。</li>
+<li>まず使うコマンドは <strong><code>cd</code>（移動）・<code>ls</code>（一覧）・<code>pwd</code>（現在地）</strong>。コピペとTabキー、↑キーが助けになる。</li>
+<li>Webアプリは <strong>ブラウザとサーバーの「お願い」と「返事」</strong> で動く。</li>
+<li>困ったら <strong>F12（開発者ツール）</strong> と <strong>用語集</strong>、そして <strong>検索</strong>。</li>
+<li>完璧を目指さず、手を動かしながら、一歩ずつ。</li>
+</ul>
+<p>準備運動はこれで終わりです。次は、いよいよこのアプリの全体像を見ていきましょう →「<a href="00_導入と全体像.html">00_導入と全体像.md</a>」。</p>
+
+<script>
+(function () {
+  // The old way (a hidden text box + execCommand) works where the clipboard API is refused.
+  function copyOld(text) {
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(function () { return copyOld(text); });
+    }
+    return copyOld(text);
+  }
+  var pasteNote = document.getElementById("paste-note");
+  var pasteTimer = null;
+  function showPasteNote() {
+    if (!pasteNote) { return; }
+    var webNote = document.getElementById("web-note");
+    if (webNote) { webNote.hidden = true; }
+    pasteNote.hidden = false;
+    clearTimeout(pasteTimer);
+    pasteTimer = setTimeout(function () { pasteNote.hidden = true; }, 15000);
+  }
+  if (pasteNote) {
+    pasteNote.querySelector("button").addEventListener("click", function () { pasteNote.hidden = true; });
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var pre = btn.parentElement.querySelector("pre");
+      var text = pre.textContent.replace(/\n$/, "");
+      copyText(text).then(function () {
+        btn.textContent = "コピーしました";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "コピー"; btn.classList.remove("done"); }, 2000);
+        if (text.indexOf("\n") >= 0) { showPasteNote(); }
+      }, function () {
+        // could not write to the clipboard: select the code so that Ctrl+C copies it (lines are kept)
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        var range = document.createRange();
+        range.selectNodeContents(pre.querySelector("code") || pre);
+        sel.addRange(range);
+        btn.textContent = "選びました。Ctrl＋C を押してください";
+      });
+    });
+  });
+  if (/^#code-\d+$/.test(location.hash)) {
+    var note = document.getElementById("web-note");
+    if (note) { note.hidden = false; }
+  }
+})();
+</script>
+</body>
+</html>
