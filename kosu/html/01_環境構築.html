@@ -1049,21 +1049,34 @@ jsonfield==3.2.0                         # ㉔ モデルにJSON型のフィー�
 <blockquote>
 <p><strong>▼ このファイルがやること:</strong> Django が起動時に読み込む秘密情報・設定をまとめます。<code>settings.py</code>（§11）がここから各値を取り出します。<code>&lt;...&gt;</code> の部分は、あなたの環境の値に置き換えてください。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>SECRET_KEY=&lt;§10.1で生成した長い文字列をそのまま貼る&gt;      # Djangoの秘密鍵
-DEBUG=True                                              # 開発中はTrue（詳しいエラー画面が出る）
-DB_NAME=hozen_kosu                                      # 使うデータベース名（§12で作る）
-DB_USER=postgres                                        # PostgreSQLのユーザー名（既定はpostgres）
-DB_PASSWORD=&lt;PostgreSQLインストール時に決めたパスワード&gt;   # そのユーザーのパスワード（§6.1でメモした値）
-DB_HOST=localhost                                       # データベースの場所（自分のPC＝localhost）
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># Django の秘密鍵（§10.1 で作った長い文字列を、&#39; と &#39; で囲んで貼る）
+SECRET_KEY=&#39;&lt;§10.1で生成した長い文字列をそのまま貼る&gt;&#39;
+# 開発中は True（詳しいエラー画面が出る）
+DEBUG=True
+# 使うデータベース名（§12 で作る）
+DB_NAME=hozen_kosu
+# PostgreSQL のユーザー名（既定は postgres）
+DB_USER=postgres
+# そのユーザーのパスワード（§6.1 でメモした値）
+DB_PASSWORD=&lt;PostgreSQLインストール時に決めたパスワード&gt;
+# データベースの場所（自分の PC ＝ localhost）
+DB_HOST=localhost
+# ヘルプ画面（データの初期化）を開く時のパスワード（手元では自分で決めてよい）
+HELP_PATH=&lt;ヘルプ画面のパスワード&gt;
 </code></pre></div></div>
 
 <p>各行の意味（<code>settings.py</code> との対応は §11 で詳説）：
-- <code>SECRET_KEY=...</code> … §10.1 で生成した鍵。<strong><code>=</code> の後に空白を入れず</strong>、鍵をそのまま貼ります。引用符（<code>"</code>）は不要です。
+- <code># …</code> の行 … 説明（コメント）です。Django は読み飛ばします。<strong>説明は、必ず値とは別の行に書きます</strong>（理由はすぐ下の ⚠️）。
+- <code>SECRET_KEY='...'</code> … §10.1 で生成した鍵。<strong><code>=</code> の後に空白を入れず</strong>、鍵を <code>'</code>（シングルクォート）で囲んで貼ります。鍵には <code>#</code> が入ることがあり、囲まないと <code>#</code> から後ろが説明だとみなされて消えてしまうからです。もし鍵が <code>$</code> で始まっていたら、§10.1 のコマンドでもう一度作り直してください（<code>$</code> で始まる値は「別の設定の名前」だと読まれ、起動の時に <code>Set the … environment variable</code> というエラーになります）。
 - <code>DEBUG=True</code> … 開発中は <code>True</code>。エラー時に原因が画面に詳しく出ます（後述）。
 - <code>DB_NAME=hozen_kosu</code> … 接続するデータベースの名前。本書では <code>hozen_kosu</code> という名前で作ります（§12）。好きな名前でも可ですが、§12と合わせてください。
 - <code>DB_USER=postgres</code> … PostgreSQL の管理ユーザー。インストール直後の既定は <code>postgres</code> です。
-- <code>DB_PASSWORD=...</code> … §6.1 でメモした、<code>postgres</code> ユーザーのパスワード。
-- <code>DB_HOST=localhost</code> … データベースが動いている場所。自分のPC内なので <code>localhost</code>。</p>
+- <code>DB_PASSWORD=...</code> … §6.1 でメモした、<code>postgres</code> ユーザーのパスワード。パスワードに <code>#</code> が入っている時は、<code>'</code> で囲みます（例: <code>DB_PASSWORD='ab#cd'</code>）。
+- <code>DB_HOST=localhost</code> … データベースが動いている場所。自分のPC内なので <code>localhost</code>。
+- <code>HELP_PATH=...</code> … ヘルプ画面（<code>/help</code>）でデータを初期化する時に聞かれるパスワード。無くても起動はしますが、ヘルプ画面でパスワードを送った時にエラーになります。手元では好きな文字でかまいません（本番の値は、引き継ぎの時に前任者から安全な方法で受け取ります。「<a href="000_引き継ぎ書_最初に読む.html">000 引き継ぎ書</a>」の §3）。</p>
+<blockquote>
+<p>⚠️ <strong>説明（<code># …</code>）を値と同じ行に書かない。</strong> <code>DB_NAME=hozen_kosu      # 使うデータベース名</code> のように書くと、このアプリが <code>.env</code> を読む部品（django-environ 0.11）は <code>#</code> から後ろを消しますが、<strong>その前の空白は値に残します</strong>。値が「<code>hozen_kosu</code> ＋空白」になり、「そんな名前のデータベースは無い」というエラーで Django が動きません（実際に試して確かめました）。また、<code>#</code> を含む値は <code>'...'</code> で囲まないと <code>#</code> から後ろが消えます（<code>"..."</code> で囲んでも、うまく読めません）。</p>
+</blockquote>
 <ol start="4">
 <li><strong><code>Ctrl + S</code> で保存</strong> します。</li>
 </ol>
@@ -1213,7 +1226,7 @@ DB_HOST=localhost                                       # データベースの�
 <blockquote>
 <p><strong>用語: JSON（ジェイソン）</strong> … JavaScript Object Notation。<code>{ "name": "山田", "age": 30 }</code> のような、人にもプログラムにも読みやすいデータの書き方。フロント（React）とバック（Django）は、このJSON形式でデータを交換します。</p>
 </blockquote>
-<h3 id="115-データベース設定114123行目-envと直結">11.5 データベース設定（114〜123行目）← .envと直結</h3>
+<h3 id="115-データベース設定113122行目-envと直結">11.5 データベース設定（113〜122行目）← .envと直結</h3>
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> Django がどのデータベースに、どのユーザー・パスワードで接続するかを決めます。<strong>ここで §10 の <code>DB_NAME</code> など <code>.env</code> の値が使われます。</strong> この章の山場です。</p>
 </blockquote>
@@ -1246,7 +1259,7 @@ DB_HOST=localhost                                       # データベースの�
 <blockquote>
 <p>⚠️ <strong>超重要な気づき:</strong> 上の <code>'NAME'</code> などは <code>os.getenv(...)</code> を使っています。<code>os.getenv</code> は <strong>OSレベルの環境変数</strong> を読みます。<code>.env</code> ファイルの内容は §11.1 の <code>env.read_env(...)</code> によって読み込まれ環境変数として展開されるため、<code>os.getenv('DB_NAME')</code> で <code>.env</code> の値を取得できます。<strong>つまり <code>.env</code> に <code>DB_NAME</code> 等を正しく書いていないと、ここが空になり接続に失敗します。</strong> 接続エラー時はまず <code>.env</code> の綴りを疑ってください。</p>
 </blockquote>
-<h3 id="116-非同期タスクdjango-qの設定125132行目">11.6 非同期タスク（django-q）の設定（125〜132行目）</h3>
+<h3 id="116-非同期タスクdjango-qの設定124131行目">11.6 非同期タスク（django-q）の設定（124〜131行目）</h3>
 <blockquote>
 <p><strong>▼ このコードがやること:</strong> §15で起動する <code>qcluster</code>（非同期ワーカー）の動作を決めます。</p>
 </blockquote>
@@ -1269,7 +1282,7 @@ DB_HOST=localhost                                       # データベースの�
 <li><code>'workers': 4</code> … 4つの処理を同時にこなせる、の意味。</li>
 <li><code>'timeout': 1800</code> … 30分以内に終わらないタスクは打ち切り。バックアップ等の重い処理に対応した余裕ある設定です。</li>
 </ul>
-<h3 id="117-言語タイムゾーン静的ファイル149173行目">11.7 言語・タイムゾーン・静的ファイル（149〜173行目）</h3>
+<h3 id="117-言語タイムゾーン静的ファイル148172行目">11.7 言語・タイムゾーン・静的ファイル（148〜172行目）</h3>
 <div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 表示言語を日本語に</span>
 <span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;ja&#39;</span>
 <span class="c1"># 時刻を日本時間に</span>
@@ -1289,7 +1302,7 @@ DB_HOST=localhost                                       # データベースの�
 <li><code>LANGUAGE_CODE = 'ja'</code> / <code>TIME_ZONE = 'Asia/Tokyo'</code> … 日本語・日本時間の設定。管理画面が日本語になります。</li>
 <li><code>STATIC_URL</code> / <code>STATIC_ROOT</code> … CSS・画像などの「静的ファイル」をどこに置き、どのURLで配るかの設定。本番では <code>whitenoise</code>（§9⑱）が配信します。</li>
 </ul>
-<h3 id="118-csrfと静的ファイル保存方式163169行目">11.8 CSRFと静的ファイル保存方式（163〜169行目）</h3>
+<h3 id="118-csrfと静的ファイル保存方式162168行目">11.8 CSRFと静的ファイル保存方式（162〜168行目）</h3>
 <div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="p">[</span>
   <span class="c1"># 本番</span>
   <span class="s1">&#39;https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net&#39;</span><span class="p">,</span>
@@ -1631,26 +1644,27 @@ found 0 vulnerabilities
 <h3 id="171-envproduction-を読んで仕組みを理解する">17.1 .env.production を読んで仕組みを理解する</h3>
 <p>本アプリの <code>frontend/</code> には <code>.env.production</code>（本番用設定）があります。まずこの実物を読み、設定の書き方を学びます。</p>
 <blockquote>
-<p><strong>▼ このファイルがやること:</strong> React が通信する相手（API）のベースURLを、環境（ローカル／ステージング／本番）ごとに切り替えるための設定です。下記は <code>frontend/.env.production</code> の <strong>実物そのまま</strong> です。</p>
+<p><strong>▼ このファイルがやること:</strong> React が通信する相手（API）のベースURLを、環境（ローカル／ステージング／本番）ごとに切り替えるための設定です。下記は、GitHub の <code>master</code> ブランチにある <code>frontend/.env.production</code> の <strong>実物そのまま</strong> です（本番の行だけが有効）。</p>
 </blockquote>
 <div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># ステージング環境にデプロイするときは下記を有効にしてビルド
 # REACT_APP_API_BASE_URL=https://hozen-kosu-another-c6e2gyeraydpdnhq.japaneast-01.azurewebsites.net
 
 # 本番環境にデプロイするときは下記を有効にしてビルド
-# REACT_APP_API_BASE_URL=https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net/
+REACT_APP_API_BASE_URL=https://hozen-kosu-react-cwaqashkafgbg5e5.japaneast-01.azurewebsites.net/
 
 
 # ローカル環境での動作時は下記を有効にしてビルド
-REACT_APP_API_BASE_URL=http://localhost:8000
+# REACT_APP_API_BASE_URL=http://localhost:8000
 </code></pre></div></div>
 
 <p>1行ずつ：
-- <code># ...</code> で始まる行 … <strong>コメント（無効化された行）</strong>。<code>#</code> を付けると、その行は「メモ書き」になり設定としては効きません。ステージング・本番用のURLは、いまは <code>#</code> で無効化されています。
-- <code>REACT_APP_API_BASE_URL=http://localhost:8000</code> … <strong>唯一有効な行</strong>。React が API を呼ぶときの相手先を「<code>http://localhost:8000</code>（あなたのPCの Django）」に設定しています。</p>
+- <code># ...</code> で始まる行 … <strong>コメント（無効化された行）</strong>。<code>#</code> を付けると、その行は「メモ書き」になり設定としては効きません。ステージング用とローカル用の URL は、いまは <code>#</code> で無効化されています。
+- <code>REACT_APP_API_BASE_URL=https://hozen-kosu-react-…/</code> … <strong>唯一有効な行</strong>。本番のサーバーの住所です。<code>master</code> に push すると、GitHub Actions が本番用の画面を作り（<code>npm run build</code>）、この住所が画面のプログラムの中に書き込まれます（09 章 §14）。</p>
 <blockquote>
 <p><strong>REACT_APP_API_BASE_URL とは？</strong> React のコードから「API（バックエンド）の住所」を読み取るための環境変数。React（Create React App）では、<strong><code>REACT_APP_</code> で始まる名前</strong> の環境変数だけがフロントのコードに渡される、というルールがあります。だからこの名前になっています。コード中では <code>process.env.REACT_APP_API_BASE_URL</code> で読み出し、axios の通信先に使います（<code>04</code>/<code>05</code>章で実コードを確認）。</p>
-<p><strong>なぜ？ なぜローカルは <code>http://localhost:8000</code> なの？</strong>
-§14 で起動した Django が <code>localhost:8000</code> で待っているからです。React（<code>localhost:3000</code>）が「工数データをください」と頼む相手＝Django の住所が、まさに <code>http://localhost:8000</code>。<strong>ここがずれると、画面は出てもデータが取れません</strong>（通信先が間違うため）。</p>
+<p>⚠️ <strong>この行を切り替えたら、コミットする前に必ず戻す。</strong> 手元で <code>npm run build</code> して、Django（<code>http://localhost:8000</code>）から画面を開いて試す時は、本番の行に <code>#</code> を付け、ローカルの行の <code>#</code> を外して作ります。<strong>そのままコミットして <code>master</code> に push すると、本番の画面が「あなたの PC（localhost:8000）」を呼びに行き、だれもログインできなくなります。</strong> コミットの前に <code>git status</code> を見て、<code>frontend/.env.production</code> が「modified」と出ていたら、<code>git diff frontend/.env.production</code> で中身を確かめ、本番の行が有効な形に戻します（02 章 §16 の <code>git restore</code> でも戻せます）。</p>
+<p><strong>なぜ？ なぜローカルの行は <code>http://localhost:8000</code> なの？</strong>
+§14 で起動した Django が <code>localhost:8000</code> で待っているからです。画面が「工数データをください」と頼む相手＝Django の住所が、まさに <code>http://localhost:8000</code>。<strong>ここがずれると、画面は出てもデータが取れません</strong>（通信先が間違うため）。ふだんの開発（<code>npm start</code>）では、このファイルではなく、次の §17.2 で作る <code>frontend/.env</code> が使われます。</p>
 </blockquote>
 <h3 id="172-ローカル用の-frontendenv-を用意する">17.2 ローカル用の frontend/.env を用意する</h3>
 <p>開発（<code>npm start</code>）では <code>.env</code>（または <code>.env.development</code>）が使われます。<strong>ローカル開発用に、<code>frontend/.env</code> を作成（または確認）</strong> します。</p>
@@ -1658,11 +1672,13 @@ REACT_APP_API_BASE_URL=http://localhost:8000
 <blockquote>
 <p><strong>▼ このファイルがやること:</strong> ローカル開発時、React が通信する Django の住所を <code>localhost:8000</code> に設定します。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>REACT_APP_API_BASE_URL=http://localhost:8000      # 開発時のAPI接続先（自分のPCのDjango）
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code># 開発の時の API の接続先（自分の PC の Django）
+REACT_APP_API_BASE_URL=http://localhost:8000
 </code></pre></div></div>
 
 <p>保存（<code>Ctrl + S</code>）します。</p>
 <blockquote>
+<p>⚠️ <strong>ここでも、説明（<code># …</code>）は別の行に書きます。</strong> <code>REACT_APP_API_BASE_URL=http://localhost:8000   # 説明</code> のように同じ行に書くと、React の部品（react-scripts 5 の中の dotenv 10.0.0）は、<code>#</code> から後ろまで全部を値として読みます。接続先が「<code>http://localhost:8000   # 説明</code>」という壊れた住所になり、ログインのボタンを押しても何も返ってきません（実際に試して確かめました）。</p>
 <p>⚠️ <strong><code>.env</code> を編集・新規作成したら、<code>npm start</code> を再起動する必要があります。</strong> React の開発サーバーは <strong>起動時に一度だけ</strong> 環境変数を読み込むため、起動中に <code>.env</code> を変えても反映されません。すでに起動していたら、一度 <code>Ctrl + C</code> で止めて、もう一度 <code>npm start</code> してください（§18）。</p>
 <p><strong>用語: <code>.env</code> / <code>.env.development</code> / <code>.env.production</code> の使い分け（React/CRAの場合）</strong>
 - <code>.env</code> … 常に読まれる共通設定。
@@ -1799,7 +1815,7 @@ The build folder is ready to be deployed.
 <blockquote>
 <p><strong>これが重要な設計です。</strong> 本番では、<code>npm run build</code> で作った <code>frontend/build/</code> を <strong>Django が配信</strong> します。<code>STATICFILES_DIRS</code> で <code>build/static</code>（CSS/JS）を、<code>TEMPLATES[0]['DIRS']</code> で <code>build/index.html</code> を Django に教えています。つまり <strong>本番は「Django 1つが、画面（Reactのビルド成果）もAPIも両方配信する」</strong> 構成です。ローカル開発では別々（3000と8000）に動かしますが、本番では合体する——この違いを覚えておくと、<code>08</code>章のデプロイで迷いません。</p>
 <p>⚠️ <strong>ローカル開発では <code>npm run build</code> は不要です。</strong> 普段は <code>npm start</code>（開発サーバー）で十分。<code>build</code> は「本番に出す」ときだけ実行します。</p>
-<p><strong><code>REACT_APP_API_BASE_URL</code> の切り替え（§17.1の再確認）:</strong> 本番ビルド時は <code>.env.production</code> が読まれます。本番にデプロイするなら、<code>.env.production</code> で本番用URL（<code>#</code> を外す）を有効にしてからビルドします。<strong>ローカルで動作確認するだけなら触らなくてOK</strong> です。</p>
+<p><strong><code>REACT_APP_API_BASE_URL</code> の切り替え（§17.1の再確認）:</strong> 本番ビルド時は <code>.env.production</code> が読まれます。<code>master</code> にある <code>.env.production</code> は、はじめから本番用の URL が有効です（本番用の画面は、<code>master</code> に push した時に GitHub Actions が作ります）。手元でビルドを試すためにローカルの行へ切り替えた時は、<strong>コミットする前に必ず本番の行に戻します</strong>。<strong>ふだんの開発（<code>npm start</code>）だけなら、このファイルは触らなくてOK</strong> です。</p>
 </blockquote>
 <hr>
 <h2 id="20-毎日の起動手順まとめチートシート">20. 毎日の起動手順まとめ（チートシート）</h2>

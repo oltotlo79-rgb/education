@@ -2376,7 +2376,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 </blockquote>
 </li>
 </ul>
-<h3 id="124-rest-frameworkセッション--6180行目">12.4 REST Framework・セッション ― 61〜80行目</h3>
+<h3 id="124-rest-frameworkセッション--6179行目">12.4 REST Framework・セッション ― 61〜79行目</h3>
 <div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① REST Frameworkの設定</span>
 <span class="n">REST_FRAMEWORK</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># ページ分割方式</span>
@@ -2397,31 +2397,25 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <span class="n">SESSION_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;django.contrib.sessions.backends.db&#39;</span>
 <span class="c1"># ③ セッションの有効期間(秒)=約10年</span>
 <span class="n">SESSION_COOKIE_AGE</span> <span class="o">=</span> <span class="mi">315360000</span>
-<span class="c1"># ④ クッキーの送信範囲(なりすまし対策)</span>
-<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s1">&#39;Lax&#39;</span>
-<span class="c1"># ⑤ HTTPSのみ送信するか(開発はFalse)</span>
-<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="c1"># ④ クッキーを送る場面(&#39;None&#39;=ほかのサイトからの通信でも送る)</span>
+<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+<span class="c1"># ⑤ HTTPS(暗号化した通信)の時だけクッキーを送る</span>
+<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># ⑥ 最上位URL表は hozen_another/urls.py(§9)</span>
 <span class="n">ROOT_URLCONF</span> <span class="o">=</span> <span class="s1">&#39;hozen_another.urls&#39;</span>
 </code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>False</code></strong>（Python）: Python の「正しくない（いいえ）」の値。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
 
 <ul>
 <li><strong>① <code>PAGE_SIZE: 20</code></strong> … 一覧を20件ずつに分けて表示（ページネーション）。§7.4の <code>AdministratorKosuList</code> などで使われていた <code>CustomPagination</code> の土台設定です。<code>JSONParser</code>・<code>JSONRenderer</code> により「受信も送信もJSON」と決まり、§3のJSONやり取りが実現します。</li>
 <li><strong>② <code>SESSION_ENGINE = ...backends.db</code></strong> … セッション情報（§7.2⑨で保存した <code>login_No</code> 等）を <strong>データベースに保存</strong> する設定。</li>
 <li><strong>③ <code>SESSION_COOKIE_AGE = 315360000</code></strong> … 約10年。事実上「ログインしっぱなし」にする設定です（現場で何度もログインし直す手間を省くため）。</li>
+<li><strong>④⑤ <code>SESSION_COOKIE_SAMESITE = 'None'</code> / <code>SESSION_COOKIE_SECURE = True</code></strong> … セッションの鍵（クッキー）を、どんな時にブラウザが送るかの設定。<code>'None'</code> は「ほかのサイトから来た通信にも付けて送る」、<code>True</code> は「HTTPS（暗号化した通信）の時だけ送る」。ブラウザは、<code>'None'</code> のクッキーを <code>Secure</code>（＝<code>True</code>）と組み合わせた時しか受け付けないので、2 つはセットです。これが GitHub の <code>master</code>（＝本番）の設定です。</li>
 <li><strong>⑥ <code>ROOT_URLCONF = 'hozen_another.urls'</code></strong> … <strong>「最初に見るURL表は §9 のファイル」と指定</strong>。すべてのリクエストは、まずここから振り分けが始まります。</li>
 </ul>
-<h3 id="125-テンプレートと静的ファイル--101106行目-157173行目">12.5 テンプレートと静的ファイル ― 101〜106行目, 157〜173行目</h3>
+<blockquote>
+<p>⚠️ <strong>④⑤ を書き換えたままコミットしない。</strong> 手元の <code>http://localhost</code> で動かした時、ブラウザによっては④⑤のクッキーが保存されず、ログインしてもすぐログイン画面に戻ることがあります。その時は、手元でだけ <code>'Lax'</code> と <code>False</code> に書き換えて試します。書き換えたままコミットして <code>master</code> に push すると、そのまま本番の設定が変わってしまいます。くわしくは「<a href="000_引き継ぎ書_最初に読む.html">000 引き継ぎ書</a>」の §8。</p>
+</blockquote>
+<h3 id="125-テンプレートと静的ファイル--100105行目-156172行目">12.5 テンプレートと静的ファイル ― 100〜105行目, 156〜172行目</h3>
 <div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STATICFILES_DIRS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># ① Reactのビルド成果物(JS/CSS)の場所</span>
     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;frontend/build/static&#39;</span><span class="p">),</span>
@@ -2447,7 +2441,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>①②</strong> ここが <strong>フロントとバックの結合点</strong> です。Reactを <code>npm run build</code>（<code>01</code>章で扱う）すると <code>frontend/build/</code> に成果物ができ、Djangoはそこの <code>index.html</code>（§9⑪が返すもの）と <code>static/</code>（JS・CSS）を配信します。<strong>「Reactで作った画面を、Djangoが配る」連携が、この設定で実現</strong> されています。</li>
 <li><strong>⑤ WhiteNoise</strong> … §11.1の「静的配信」。本番でCSS・JS・画像を効率よく（圧縮して）配る仕組みです。</li>
 </ul>
-<h3 id="126-データベース非同期ログ--114202行目">12.6 データベース・非同期・ログ ― 114〜202行目</h3>
+<h3 id="126-データベース非同期ログ--113201行目">12.6 データベース・非同期・ログ ― 113〜201行目</h3>
 <div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ① データベース接続設定</span>
 <span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
@@ -2508,7 +2502,7 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
 <li><strong>③④</strong> 日本語・東京時間の設定。エラーメッセージや日付表示が日本向けになります。</li>
 <li><strong>⑥</strong> <code>DEFAULT_AUTO_FIELD</code> … §8.2で触れた「各モデルに自動で付く <code>id</code>（pk）」の型を、大きな整数（<code>BigAutoField</code>）に指定。データが大量に増えてもID番号が枯渇しません。</li>
 </ul>
-<p>最後の <code>LOGGING</code>（175〜202行目）は、サーバーの動作記録を <code>web_console.log</code> というファイルに残す設定です。<code>RotatingFileHandler</code> で「ログが1MBを超えたら古いものを捨てる」回転方式（<code>maxBytes: 1024 * 1024 * 1</code>）にし、ログが無限に膨らむのを防いでいます。</p>
+<p>最後の <code>LOGGING</code>（174〜201行目）は、サーバーの動作記録を <code>web_console.log</code> というファイルに残す設定です。<code>RotatingFileHandler</code> で「ログが1MBを超えたら古いものを捨てる」回転方式（<code>maxBytes: 1024 * 1024 * 1</code>）にし、ログが無限に膨らむのを防いでいます。</p>
 <div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -2532,6 +2526,16 @@ Object-Relational Mapping の略。「データベースの操作を、Pythonの
     <span class="p">},</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>False</code></strong>（Python）: Python の「正しくない（いいえ）」の値。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
 
 <blockquote>
 <p><strong><code>settings.py</code> のまとめ:</strong> これは <strong>アプリの設定ダイヤル盤</strong> です。秘密情報は <code>.env</code> から読み（漏洩防止）、<code>INSTALLED_APPS</code> で <code>kosu</code> を有効化し、<code>CORS</code> でフロント・バックの別ポート通信を許し、<code>DATABASES</code> でPostgreSQLにつなぎ、<code>STATICFILES_DIRS</code>/<code>TEMPLATES</code> でReactのビルド成果物を配信します。<strong>本章で見た全ファイルが、この設定によって連携して動いている</strong> のです。</p>

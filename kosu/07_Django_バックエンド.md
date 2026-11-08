@@ -2638,7 +2638,7 @@ REST_FRAMEWORK = {
 - **64〜66行目** `'DEFAULT_PARSER_CLASSES'` … 既定では **JSONParserのみ**。だから§11.2でファイルアップロードを扱う `backup` 関数は、わざわざ `@parser_classes` でファイル対応を追加していたのです。
 - **67〜69行目** `'DEFAULT_RENDERER_CLASSES'` … 応答は **JSONで返す**。HTMLの管理画面風UIは出さず、純粋なJSONだけを返すAPIにしています。
 
-### 12.6 セッション設定 ― 72〜79行目
+### 12.6 セッション設定 ― 72〜77行目
 
 > **▼ このコードがやること（先に日本語で）:** ログイン状態を覚えておくセッションの保管先や有効期限、クッキーの安全設定を決めます。
 
@@ -2647,19 +2647,20 @@ REST_FRAMEWORK = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # セッションの有効期限（秒）≒10年
 SESSION_COOKIE_AGE = 315360000
-# クッキーの送信ポリシー
-SESSION_COOKIE_SAMESITE = 'Lax'
-# HTTPでもクッキー送信を許可（開発用）
-SESSION_COOKIE_SECURE = False
+# クッキーを送る場面（'None' ＝ ほかのサイトからの通信でも送る）
+SESSION_COOKIE_SAMESITE = 'None'
+# HTTPS（暗号化した通信）の時だけクッキーを送る
+SESSION_COOKIE_SECURE = True
 ```
 
 - **72行目** `SESSION_ENGINE = 'django.contrib.sessions.backends.db'` … セッションを **データベース** に保存。§5で `request.session.get(...)` が読んでいたのは、このDB保存のセッションです。
 - **74行目** `SESSION_COOKIE_AGE = 315360000` … 有効期限。315360000秒 ≒ 10年。長くして「めったにログアウトされない」運用にしています。
-- **78行目** `SESSION_COOKIE_SAMESITE = 'Lax'` … クッキーを送る条件。`'Lax'`（緩め）は基本的な安全性を保ちつつ、通常の遷移では送る設定。
-- **79行目** `SESSION_COOKIE_SECURE = False` … HTTP（暗号化なし）でもクッキーを送る。開発用の設定で、本番でHTTPSを使うなら True にすべき項目です。
+- **76行目** `SESSION_COOKIE_SAMESITE = 'None'` … クッキーを送る条件。`'None'` は「ほかのサイトから来た通信にも付けて送る」設定です（`'Lax'` は「ほかのサイトから来た時は、ふつうのリンクの移動の時だけ送る」、`'Strict'` は「同じサイトの中だけ」）。
+- **77行目** `SESSION_COOKIE_SECURE = True` … HTTPS（暗号化した通信）の時だけクッキーを送ります。ブラウザは、`'None'` のクッキーを `Secure`（＝`True`）と組み合わせた時しか受け付けないので、76 行目と 77 行目はセットです。本番は HTTPS なので、この設定で動きます。
 
-> ⚠️ **76〜77行目はコメントアウト**
-> 実ファイルの76〜77行目には `#SESSION_COOKIE_SAMESITE = 'None'` などコメントアウトされた行があります。これは本番（HTTPS・クロスサイト）用の代替設定で、開発中は無効にしてあります。環境を切り替えるときに使う「予備の設定」です。
+> ⚠️ **手元で動かす時に、76〜77 行目を書き換えることがある（コミットしない）**
+> 上の 2 行は、GitHub の `master`（＝本番）の設定です。手元の `http://localhost`（暗号化していない通信）で動かすと、ブラウザによっては `Secure` のクッキーが保存されず、ログインしても、すぐログイン画面に戻されることがあります。その時は、手元でだけ 76〜77 行目の先頭に `#` を付けて無効にし、その下に `SESSION_COOKIE_SAMESITE = 'Lax'` と `SESSION_COOKIE_SECURE = False` の 2 行を書いて試します。
+> **書き換えたまま、コミットしないでください。** `master` に push すると、そのまま本番の設定が「暗号化していない通信でもクッキーを送る」に変わります。コミットの前に `git status` を見て、`hozen_another/settings.py` が「modified」と出ていたら `git diff` で確かめ、元に戻します（「[000 引き継ぎ書](./000_引き継ぎ書_最初に読む.md)」の §8）。
 
 ### 12.7 その他の重要設定 ― 抜粋
 

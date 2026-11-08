@@ -3160,7 +3160,7 @@ Cross-Origin Resource Sharing（クロスオリジン・リソース・シェア
 <li><strong>64〜66行目</strong> <code>'DEFAULT_PARSER_CLASSES'</code> … 既定では <strong>JSONParserのみ</strong>。だから§11.2でファイルアップロードを扱う <code>backup</code> 関数は、わざわざ <code>@parser_classes</code> でファイル対応を追加していたのです。</li>
 <li><strong>67〜69行目</strong> <code>'DEFAULT_RENDERER_CLASSES'</code> … 応答は <strong>JSONで返す</strong>。HTMLの管理画面風UIは出さず、純粋なJSONだけを返すAPIにしています。</li>
 </ul>
-<h3 id="126-セッション設定--7279行目">12.6 セッション設定 ― 72〜79行目</h3>
+<h3 id="126-セッション設定--7277行目">12.6 セッション設定 ― 72〜77行目</h3>
 <blockquote>
 <p><strong>▼ このコードがやること（先に日本語で）:</strong> ログイン状態を覚えておくセッションの保管先や有効期限、クッキーの安全設定を決めます。</p>
 </blockquote>
@@ -3168,21 +3168,22 @@ Cross-Origin Resource Sharing（クロスオリジン・リソース・シェア
 <span class="n">SESSION_ENGINE</span> <span class="o">=</span> <span class="s1">&#39;django.contrib.sessions.backends.db&#39;</span>
 <span class="c1"># セッションの有効期限（秒）≒10年</span>
 <span class="n">SESSION_COOKIE_AGE</span> <span class="o">=</span> <span class="mi">315360000</span>
-<span class="c1"># クッキーの送信ポリシー</span>
-<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s1">&#39;Lax&#39;</span>
-<span class="c1"># HTTPでもクッキー送信を許可（開発用）</span>
-<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="c1"># クッキーを送る場面（&#39;None&#39; ＝ ほかのサイトからの通信でも送る）</span>
+<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+<span class="c1"># HTTPS（暗号化した通信）の時だけクッキーを送る</span>
+<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">True</span>
 </code></pre></div></div>
 
 <ul>
 <li><strong>72行目</strong> <code>SESSION_ENGINE = 'django.contrib.sessions.backends.db'</code> … セッションを <strong>データベース</strong> に保存。§5で <code>request.session.get(...)</code> が読んでいたのは、このDB保存のセッションです。</li>
 <li><strong>74行目</strong> <code>SESSION_COOKIE_AGE = 315360000</code> … 有効期限。315360000秒 ≒ 10年。長くして「めったにログアウトされない」運用にしています。</li>
-<li><strong>78行目</strong> <code>SESSION_COOKIE_SAMESITE = 'Lax'</code> … クッキーを送る条件。<code>'Lax'</code>（緩め）は基本的な安全性を保ちつつ、通常の遷移では送る設定。</li>
-<li><strong>79行目</strong> <code>SESSION_COOKIE_SECURE = False</code> … HTTP（暗号化なし）でもクッキーを送る。開発用の設定で、本番でHTTPSを使うなら True にすべき項目です。</li>
+<li><strong>76行目</strong> <code>SESSION_COOKIE_SAMESITE = 'None'</code> … クッキーを送る条件。<code>'None'</code> は「ほかのサイトから来た通信にも付けて送る」設定です（<code>'Lax'</code> は「ほかのサイトから来た時は、ふつうのリンクの移動の時だけ送る」、<code>'Strict'</code> は「同じサイトの中だけ」）。</li>
+<li><strong>77行目</strong> <code>SESSION_COOKIE_SECURE = True</code> … HTTPS（暗号化した通信）の時だけクッキーを送ります。ブラウザは、<code>'None'</code> のクッキーを <code>Secure</code>（＝<code>True</code>）と組み合わせた時しか受け付けないので、76 行目と 77 行目はセットです。本番は HTTPS なので、この設定で動きます。</li>
 </ul>
 <blockquote>
-<p>⚠️ <strong>76〜77行目はコメントアウト</strong>
-実ファイルの76〜77行目には <code>#SESSION_COOKIE_SAMESITE = 'None'</code> などコメントアウトされた行があります。これは本番（HTTPS・クロスサイト）用の代替設定で、開発中は無効にしてあります。環境を切り替えるときに使う「予備の設定」です。</p>
+<p>⚠️ <strong>手元で動かす時に、76〜77 行目を書き換えることがある（コミットしない）</strong>
+上の 2 行は、GitHub の <code>master</code>（＝本番）の設定です。手元の <code>http://localhost</code>（暗号化していない通信）で動かすと、ブラウザによっては <code>Secure</code> のクッキーが保存されず、ログインしても、すぐログイン画面に戻されることがあります。その時は、手元でだけ 76〜77 行目の先頭に <code>#</code> を付けて無効にし、その下に <code>SESSION_COOKIE_SAMESITE = 'Lax'</code> と <code>SESSION_COOKIE_SECURE = False</code> の 2 行を書いて試します。
+<strong>書き換えたまま、コミットしないでください。</strong> <code>master</code> に push すると、そのまま本番の設定が「暗号化していない通信でもクッキーを送る」に変わります。コミットの前に <code>git status</code> を見て、<code>hozen_another/settings.py</code> が「modified」と出ていたら <code>git diff</code> で確かめ、元に戻します（「<a href="000_引き継ぎ書_最初に読む.html">000 引き継ぎ書</a>」の §8）。</p>
 </blockquote>
 <h3 id="127-その他の重要設定--抜粋">12.7 その他の重要設定 ― 抜粋</h3>
 <div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># データベース接続設定</span>
