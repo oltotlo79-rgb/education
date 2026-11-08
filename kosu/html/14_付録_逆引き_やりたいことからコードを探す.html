@@ -233,8 +233,8 @@ table { page-break-inside: auto; }
 <li><strong>同じやりたいことでも、言語ごとに書き方が違います。</strong> 例えば「並びから条件に合う物だけを集める」は、TypeScript では <code>items.filter(…)</code>、Python では <code>[r for r in rows if …]</code>、Django では <code>member.objects.filter(…)</code> です。それぞれの言語の分類に載せています。</li>
 <li><strong>「書き方」の列:</strong> そのまま使える形の、短いコードです。<code>…</code> の所は、自分の場面に合わせて書きます。このアプリのモデル（<code>member</code>・<code>Business_Time_graph</code> など）を使った例も多く入れています。</li>
 <li><strong>「ひとこと」の列:</strong> 気をつけることや、結果の例です。くわしい意味は、13 付録の一覧と、本文の「▶ ここで初めて出てくるコード」の箱にあります。</li>
-<li><strong>「出てくる所」の列:</strong> その書き方が、00〜12 で初めて出てくる巻と章です（373 個）。</li>
-<li><strong>「＋ 合わせて覚える」:</strong> 本文で使った書き方と一緒に覚えておくと、保守ですぐ役に立つ書き方です（92 個）。この付録で足しました。本番のアプリに入れる前に、13 付録の一覧や、それぞれの説明書で、くわしい使い方を確かめ、自分のパソコン（ローカル）で試してください。</li>
+<li><strong>「出てくる所」の列:</strong> その書き方が、00〜12 と 15 で初めて出てくる巻と章です（380 個）。</li>
+<li><strong>「＋ 合わせて覚える」:</strong> 本文で使った書き方と一緒に覚えておくと、保守ですぐ役に立つ書き方です（85 個）。この付録で足しました。本番のアプリに入れる前に、13 付録の一覧や、それぞれの説明書で、くわしい使い方を確かめ、自分のパソコン（ローカル）で試してください。</li>
 </ul>
 <blockquote>
 <p><strong>ヒント:</strong> 直したい所がある時は、「何をしたいか」を短い言葉にしてから、この付録を開いてください。1 つの分類の表を上から下まで一度ながめておくと、あとで探す時に思い出しやすくなります。</p>
@@ -644,7 +644,7 @@ table { page-break-inside: auto; }
 <td>Django の中で Python を打つ</td>
 <td><code>python manage.py shell</code></td>
 <td>モデルを直接さわって確かめる</td>
-<td>＋ 合わせて覚える</td>
+<td>15 5. 不具合</td>
 </tr>
 <tr>
 <td>設定の誤りを調べる</td>
@@ -688,7 +688,7 @@ table { page-break-inside: auto; }
 <td>package-lock.json のとおりに入れる</td>
 <td><code>npm ci</code></td>
 <td>版がそろう（本番・CI 向け）</td>
-<td>＋ 合わせて覚える</td>
+<td>15 6. 開発・運用の整理</td>
 </tr>
 <tr>
 <td>部品を足す</td>
@@ -2200,7 +2200,7 @@ table { page-break-inside: auto; }
 <td>必ず最後に動かす</td>
 <td><code>finally: os.remove(temp_file_path)</code></td>
 <td></td>
-<td>＋ 合わせて覚える</td>
+<td>15 5. 不具合</td>
 </tr>
 <tr>
 <td>クラスを作る</td>
@@ -2340,7 +2340,7 @@ table { page-break-inside: auto; }
 <td>辞書の中身を全部</td>
 <td><code>for key, value in d.items():</code></td>
 <td></td>
-<td>＋ 合わせて覚える</td>
+<td>15 4. 安全の問題</td>
 </tr>
 <tr>
 <td>辞書をまとめて足す</td>
@@ -2540,7 +2540,7 @@ table { page-break-inside: auto; }
 <td>除く</td>
 <td><code>member.objects.exclude(shop='異動・退社')</code></td>
 <td></td>
-<td>＋ 合わせて覚える</td>
+<td>15 5. 不具合</td>
 </tr>
 <tr>
 <td>1 つだけ取る</td>
@@ -2654,7 +2654,7 @@ table { page-break-inside: auto; }
 <td>必要な列だけ辞書で</td>
 <td><code>member.objects.values('employee_no', 'name')</code></td>
 <td></td>
-<td>＋ 合わせて覚える</td>
+<td>15 5. 不具合</td>
 </tr>
 <tr>
 <td>1 列だけの並び</td>
@@ -2830,7 +2830,7 @@ table { page-break-inside: auto; }
 <td>エラーの詳しい場所もログに</td>
 <td><code>logger.exception("ロードに失敗しました")</code></td>
 <td>except の中で使う</td>
-<td>＋ 合わせて覚える</td>
+<td>15 4. 安全の問題</td>
 </tr>
 <tr>
 <td>大きくなったら切り替えるログ</td>

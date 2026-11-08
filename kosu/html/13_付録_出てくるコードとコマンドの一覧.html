@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/13_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">業務工数システム 引き継ぎ教育資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">13 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 に出てくる 629 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 716 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -226,7 +226,7 @@ table { page-break-inside: auto; }
 
 <h1 id="13-付録-出てくるコードとコマンドの一覧機能ごと">13 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="この一覧について">この一覧について</h2>
-<p>00〜12 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 629 個</strong>を、<strong>23 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 716 個</strong>を、<strong>24 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。Web 版（<code>kosu\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
@@ -255,7 +255,7 @@ table { page-break-inside: auto; }
 <td><a href="#cat-1">PowerShell</a></td>
 <td>9</td>
 <td><a href="#cat-13">JavaScript・TypeScript</a></td>
-<td>57</td>
+<td>61</td>
 </tr>
 <tr>
 <td><a href="#cat-2">コマンド</a></td>
@@ -265,31 +265,31 @@ table { page-break-inside: auto; }
 </tr>
 <tr>
 <td><a href="#cat-3">WSL・bash</a></td>
-<td>1</td>
+<td>5</td>
 <td><a href="#cat-15">React</a></td>
-<td>64</td>
+<td>65</td>
 </tr>
 <tr>
 <td><a href="#cat-4">Python の道具</a></td>
-<td>12</td>
+<td>13</td>
 <td><a href="#cat-16">Python</a></td>
-<td>114</td>
+<td>129</td>
 </tr>
 <tr>
 <td><a href="#cat-5">Django の道具</a></td>
-<td>5</td>
+<td>6</td>
 <td><a href="#cat-17">Django</a></td>
-<td>56</td>
+<td>77</td>
 </tr>
 <tr>
 <td><a href="#cat-6">Node.js</a></td>
-<td>10</td>
+<td>11</td>
 <td><a href="#cat-18">Django REST framework</a></td>
-<td>14</td>
+<td>23</td>
 </tr>
 <tr>
 <td><a href="#cat-7">設定ファイル（JSON）</a></td>
-<td>18</td>
+<td>19</td>
 <td><a href="#cat-19">pandas・openpyxl</a></td>
 <td>8</td>
 </tr>
@@ -307,7 +307,7 @@ table { page-break-inside: auto; }
 </tr>
 <tr>
 <td><a href="#cat-10">Git</a></td>
-<td>38</td>
+<td>40</td>
 <td><a href="#cat-22">Vitest・Testing Library</a></td>
 <td>23</td>
 </tr>
@@ -320,8 +320,8 @@ table { page-break-inside: auto; }
 <tr>
 <td><a href="#cat-12">CSS</a></td>
 <td>96</td>
-<td></td>
-<td></td>
+<td><a href="#cat-24">GitHub Actions</a></td>
+<td>27</td>
 </tr>
 </tbody>
 </table>
@@ -419,6 +419,26 @@ table { page-break-inside: auto; }
 <td>bash では、<code>#</code> から行の終わりまでがコメントです（1 行目の <code>#!</code> だけは特別です）。</td>
 <td>02 3. このプロジェクトの Git の状態を見てみる</td>
 </tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source antenv/bin/activate</code> は、Python の仮想環境（<code>antenv</code>）に入るコマンド（Linux・Mac の書き方）。入ると、<code>python</code>・<code>pip</code> が、その仮想環境の物になります。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>zip</code></td>
+<td>ファイルやフォルダを、1 つの zip ファイルにまとめるコマンド。<code>zip -r release.zip .</code> は、今いるフォルダの中を全部、<code>release.zip</code> にまとめます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>zip -r</code></td>
+<td><code>zip</code> の <code>-r</code> は、フォルダの中のフォルダまで、全部まとめるという指定です（recursive）。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>zip -x</code></td>
+<td><code>zip</code> の <code>-x</code> の後ろに書いた物は、まとめる物から外します。<code>-x ".git/*" "node_modules/*"</code> は、Git の記録と部品のフォルダを入れない、という意味です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
 </tbody>
 </table>
 <h2 id="cat-4">Python の道具</h2>
@@ -491,6 +511,11 @@ table { page-break-inside: auto; }
 <td>入れた部品を消します。<code>pip uninstall 部品の名前</code> で、消してよいか聞かれたら <code>y</code> を押します。消したら <code>requirements.txt</code> からも、その行を消します。</td>
 <td>11 12. 不要な依存を安全に整理する手順</td>
 </tr>
+<tr>
+<td><code>pip install --upgrade</code></td>
+<td><code>pip install --upgrade pip</code> は、部品をいちばん新しい版にするコマンド。ここでは <code>pip</code> 自身を新しくしています。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
 </tbody>
 </table>
 <h2 id="cat-5">Django の道具</h2>
@@ -527,6 +552,11 @@ table { page-break-inside: auto; }
 <td><code>python --settings</code></td>
 <td><code>python manage.py test --settings=hozen_another.test_settings</code> の <code>--settings</code> は「この設定ファイルを使う」という指定です。テストの時だけ、試し用のデータベースなどの設定に切り替えます。</td>
 <td>12 13. テストの実行コマンドと出力例</td>
+</tr>
+<tr>
+<td><code>python --noinput</code></td>
+<td><code>python manage.py collectstatic --noinput</code> の <code>--noinput</code> は、「上書きしてよいか」などの質問をせずに進める、という指定です。人が答えられない GitHub Actions の中で使います。</td>
+<td>15 6. 開発・運用の整理</td>
 </tr>
 </tbody>
 </table>
@@ -589,6 +619,11 @@ table { page-break-inside: auto; }
 <td><code>npm uninstall</code></td>
 <td>入れた部品を消し、<code>package.json</code> と <code>package-lock.json</code> からも消します。<code>npm uninstall 部品の名前</code>。</td>
 <td>11 12. 不要な依存を安全に整理する手順</td>
+</tr>
+<tr>
+<td><code>npm ci</code></td>
+<td><code>package-lock.json</code> に書かれたとおりの版で、部品を入れ直すコマンド（<code>node_modules</code> を一度消してから入れる）。<code>npm install</code> と違い、<code>package-lock.json</code> を書きかえないので、いつ・どこで入れても同じになります。</td>
+<td>15 6. 開発・運用の整理</td>
 </tr>
 </tbody>
 </table>
@@ -691,6 +726,11 @@ table { page-break-inside: auto; }
 <td><code>"development":</code></td>
 <td><code>"browserslist"</code> の中の、開発用（<code>npm start</code> の時）の対象のブラウザーの指定です。</td>
 <td>11 5. package.json の scripts / e…</td>
+</tr>
+<tr>
+<td><code>"proxy":</code></td>
+<td><code>frontend/package.json</code> の <code>"proxy": "http://localhost:8000"</code> は、<code>npm start</code> で動く開発用のサーバーに、「自分で答えられない頼み（<code>/api/…</code> など）は、<code>localhost:8000</code> の Django に回して」と伝える設定です。本番の build には関係しません。</td>
+<td>15 6. 開発・運用の整理</td>
 </tr>
 </tbody>
 </table>
@@ -957,6 +997,16 @@ table { page-break-inside: auto; }
 <td><code>git reflog</code></td>
 <td><code>HEAD</code>（今いる位置）が動いた記録の一覧。<code>git reset --hard</code> で消してしまったコミットも、ここに出る番号から取り戻せることがあります。</td>
 <td>02 16. 復旧コマンドと「やってしまった」対処集</td>
+</tr>
+<tr>
+<td><code>git add --renormalize</code></td>
+<td><code>git add --renormalize .</code> は、記録されているファイルを、今の <code>.gitattributes</code> の決まり（改行の扱いなど）で記録し直すコマンド。<code>.gitattributes</code> を変えた後に使います。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>git rm -r</code></td>
+<td><code>git rm</code> の <code>-r</code> は、フォルダの中を全部、という指定です。<code>git rm -r --cached staticfiles</code> は、<code>staticfiles</code> フォルダの中を全部、Git の記録から外します（手元のファイルは残る）。</td>
+<td>15 6. 開発・運用の整理</td>
 </tr>
 </tbody>
 </table>
@@ -1959,6 +2009,26 @@ table { page-break-inside: auto; }
 <td><code>defineConfig({ … })</code> は、Vite・Vitest の設定ファイル（このアプリでは <code>frontend/vite.config.ts</code>）で、設定を書くための関数です。書き間違いを、エディターが教えてくれるようになります。</td>
 <td>12 6. フロントのテスト設定ファイル</td>
 </tr>
+<tr>
+<td><code>.createObjectURL()</code></td>
+<td><code>URL.createObjectURL(データ)</code> は、ブラウザの中にあるデータ（受け取ったファイルの中身など）に、一時的な住所を付ける関数。その住所を <code>&lt;a&gt;</code> の <code>href</code> にして押すと、ファイルとして保存できます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.revokeObjectURL()</code></td>
+<td><code>URL.revokeObjectURL(住所)</code> は、<code>createObjectURL</code> で付けた一時的な住所を片付ける関数。使い終わったら呼んで、ブラウザの記憶を空けます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>alert()</code></td>
+<td>ブラウザに、小さな知らせの窓を出す関数。<code>alert("処理が完了しました。")</code>。OK を押すまで、画面の操作が止まります。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.href</code></td>
+<td><code>link.href = url</code> は、<code>&lt;a&gt;</code>（リンク）の行き先の住所を決める書き方です。読む時は、今の行き先の住所の全部が返ります（<code>location.href</code> なら、今のページの URL）。</td>
+<td>15 4. 安全の問題</td>
+</tr>
 </tbody>
 </table>
 <h2 id="cat-14">TypeScript</h2>
@@ -2472,6 +2542,11 @@ table { page-break-inside: auto; }
 <td><code>react()</code></td>
 <td><code>react()</code> は、Vite に、React（JSX）のファイルを扱えるようにする部品（プラグイン）です。</td>
 <td>12 6. フロントのテスト設定ファイル</td>
+</tr>
+<tr>
+<td><code>setIsRunning()</code></td>
+<td>データ管理画面で、「そのバックアップ・ロードが実行中か」を覚えている値を変える関数（<code>useState</code> で作った物を渡している）。<code>setIsRunning(false)</code> で「終わった」にします。</td>
+<td>15 4. 安全の問題</td>
 </tr>
 </tbody>
 </table>
@@ -3055,6 +3130,81 @@ table { page-break-inside: auto; }
 <td><code>def __getitem__(self, item):</code> を書いたクラスの物は、<code>物[item]</code> と書いて中身を取り出せるようになります。</td>
 <td>12 12. バックのテスト設定</td>
 </tr>
+<tr>
+<td><code>bool()</code></td>
+<td>値を <code>True</code>・<code>False</code> にする関数。空の文字列や <code>None</code> は <code>False</code>、中身があれば <code>True</code> です。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>@property</code></td>
+<td>クラスのメソッドの上に付けると、<code>()</code> 無しで値のように読めるようにする印。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.isdigit()</code></td>
+<td>文字列が、全部数字の文字だけでできていれば <code>True</code> を返すメソッド。<code>str(a).strip().isdigit()</code> で、「従業員番号として読める文字か」を確かめています。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.items()</code></td>
+<td>辞書の「キーと値」の組を 1 つずつ取り出せる形にするメソッド。<code>for k, v in d.items():</code> で、両方を同時に使えます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>set()</code></td>
+<td>集合（同じ値は 1 つしか入らない入れ物）を作る関数。<code>seen = set()</code> で空の集合を作り、<code>seen.add(x)</code>・<code>x in seen</code> で使います。重複を見つける時に便利です。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>{キー: 値 for …}</code></td>
+<td><code>{u.pk: u for u in users}</code> は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です（辞書内包表記）。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.startswith()</code></td>
+<td>文字列が、その中身で始まっていれば <code>True</code> を返すメソッド。<code>login_member.shop.startswith('組長以上')</code> は、ショップが「組長以上(P,R,T,その他)」「組長以上(W,A)」のどちらかなら <code>True</code> です。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.is_file()</code></td>
+<td><code>Path</code> の <code>.is_file()</code> は、その場所にファイルがあれば <code>True</code> を返すメソッド。フォルダや、何も無い時は <code>False</code> です。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.unlink()</code></td>
+<td><code>Path</code> の <code>.unlink()</code> は、そのファイルを消すメソッド。消せない時は <code>OSError</code> になります。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>original_close()</code></td>
+<td>この巻のダウンロードの直し方で、<code>FileResponse</code> が元から持っていた <code>close</code>（開いたファイルを閉じる処理）を、変数 <code>original_close</code> に取っておいた物。先にこれを呼んでファイルを閉じてから、ファイルを消します。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>OSError</code></td>
+<td>ファイルを開く・消すなど、OS とのやり取りで起きるエラーのまとめ役。<code>except OSError:</code> で、ファイルが無い・使用中で消せない、などをまとめて受け止めます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.compare_digest()</code></td>
+<td><code>hmac.compare_digest(a, b)</code> は、2 つの値が同じかを、かかる時間から中身を推測されない方法で比べる関数です。合言葉やハッシュを比べる時に使います。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.exception()</code></td>
+<td><code>logger.exception('…')</code> は、文と一緒に、今起きたエラーのくわしい中身（どこで起きたか）をログに書くメソッド。<code>except</code> の中で使います。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>finally</code></td>
+<td><code>try … except</code> のあと、成功しても失敗しても最後に必ず動く所。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>Python の <code>7 % 2</code> は、割った余り（<code>1</code>）です。</td>
+<td>15 5. 不具合</td>
+</tr>
 </tbody>
 </table>
 <h2 id="cat-17">Django</h2>
@@ -3347,6 +3497,111 @@ table { page-break-inside: auto; }
 <td>テストの答えの <code>res.status_code</code> は、HTTP の状態コード（<code>200</code>・<code>403</code> など）です。</td>
 <td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
 </tr>
+<tr>
+<td><code>.process_request()</code></td>
+<td>Django のミドルウェア（頼みの前後に動く部品）の、頼みが来た時に動くメソッド。<code>CSRFCheck</code> では、クッキーから CSRF の合言葉を読み出します。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.process_view()</code></td>
+<td>Django のミドルウェアの、画面（ビュー）を動かす直前に動くメソッド。<code>CSRFCheck</code> では、送られてきた合言葉が合っているかを確かめ、合わなければ理由の文を返します。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.user</code></td>
+<td>Django の <code>request.user</code> は、今ログインしている人（していなければ「だれでもない人」）です。<code>request.user.is_authenticated</code> で、ログインしているかが分かります。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>render()</code></td>
+<td>Django で、テンプレート（HTML のひな形）に値を入れて、答え（HTML）を作る関数。<code>render(request, "テンプレート名", {"名前": 値})</code>。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>method_decorator()</code></td>
+<td>関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>@ensure_csrf_cookie</code></td>
+<td>その画面（ビュー）の返事に、CSRF の合言葉（<code>csrftoken</code> というクッキー）を必ず付ける印。React の画面は、このクッキーの値を、書き込みの時に <code>X-CSRFToken</code> という見出しに入れて送ります（<code>frontend/src/api/axios.ts</code>）。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>@method_decorator</code></td>
+<td><code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.cycle_key()</code></td>
+<td><code>request.session.cycle_key()</code> は、セッションの中身はそのままで、セッションの番号（クッキーの値）だけを新しくするメソッド。ログインの時に呼ぶと、ログインの前の番号を知っている人が、なりすませなくなります。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.atomic()</code></td>
+<td><code>with transaction.atomic():</code> の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.values_list()</code></td>
+<td>問い合わせの結果を、タプル（値の組）の並びで返すメソッド。<code>flat=True</code> を付けると、1 つの列の値だけの並びになります。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.exclude()</code></td>
+<td>問い合わせから、条件に合う行を除くメソッド（<code>filter</code> の逆）。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.distinct()</code></td>
+<td>問い合わせの結果から、重なった値を 1 つにするメソッド。<code>.values_list('def_ver2', flat=True).distinct()</code> は、使われている定義の Ver 名を、重ならないように並べます。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.values()</code></td>
+<td>行を、モデルではなく、決めた列だけの辞書で受け取るメソッド。<code>member.objects.values('employee_no').annotate(n=Count('id'))</code> は、「従業員番号ごとに、何行あるか」を数える時の書き方です。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>Count</code></td>
+<td>Django の <code>Count("id")</code> は、ORM の集計で、数を数えます。<code>.annotate(n=Count("id"))</code> で、グループごとの件数が付きます。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.UniqueConstraint()</code></td>
+<td>「この組み合わせの値は、表の中で重ならない」という決まりを表す物。モデルの <code>class Meta:</code> の <code>constraints</code> に書きます。<code>fields=['employee_no3', 'work_day2']</code> は「同じ人の、同じ就業日の行は、2 つ作れない」。<code>name=</code> は、決まりの名前（表の中で重ならない名前）です。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>"-列の名前"</code></td>
+<td>Django の <code>ordering = ["-created_at"]</code> や <code>.order_by("-created_at")</code> の、名前の頭の <code>-</code> は、「大きい順（新しい順）に並べる」という意味です。<code>-</code> が無ければ、小さい順（古い順）です。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.list()</code></td>
+<td><code>env.list('ALLOWED_HOSTS', default=[...])</code> は、<code>django-environ</code> で、<code>a,b,c</code> のようにカンマで区切った環境変数を、並び（リスト）として読むメソッド。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>.int()</code></td>
+<td><code>env.int('名前', default=0)</code> は、<code>django-environ</code> で、環境変数を整数として読むメソッド。無い時は <code>default</code> の値になります。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>override_settings()</code></td>
+<td><code>from django.test import override_settings</code> で読み込む、テストの間だけ設定を変える道具。<code>@override_settings(…)</code> の形で使います。</td>
+<td>15 7. テスト</td>
+</tr>
+<tr>
+<td><code>@override_settings</code></td>
+<td>テストのメソッドの上に付けると、そのテストの間だけ、<code>settings.py</code> の値を変えられる印。<code>@override_settings(HELP_PATH='test-help')</code>。</td>
+<td>15 7. テスト</td>
+</tr>
+<tr>
+<td><code>.cookies</code></td>
+<td>テスト用のクライアントの <code>client.cookies</code> は、そのクライアントが覚えているクッキーです。<code>client.cookies['csrftoken'].value</code> で、配られた CSRF の合言葉の値が取れます。</td>
+<td>15 7. テスト</td>
+</tr>
 </tbody>
 </table>
 <h2 id="cat-18">Django REST framework</h2>
@@ -3428,6 +3683,51 @@ table { page-break-inside: auto; }
 <td><code>.is_valid()</code></td>
 <td>送られてきたデータが、シリアライザー（入力の確かめ係）の決まりに合うかを調べるメソッド。<code>raise_exception=True</code> で、合わない時は 400 の答えにします。</td>
 <td>07 5. 実コード全解説：member_views.py 全2…</td>
+</tr>
+<tr>
+<td><code>.PermissionDenied()</code></td>
+<td><code>exceptions.PermissionDenied('…')</code> は、「してはいけない」というエラーを起こす物。Django REST framework が受け止めて、403 の返事にします。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>BaseAuthentication</code></td>
+<td>「この頼みは、だれからか」を調べる部品の土台。これを受け継いで <code>authenticate</code> を書き、だれか分かったら <code>(その人, None)</code>、分からなければ <code>None</code> を返します。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>CSRFCheck</code></td>
+<td>Django の CSRF の確かめ（<code>CsrfViewMiddleware</code>）を、Django REST framework の中から使うための部品。<code>rest_framework.authentication</code> から読み込みます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>BasePermission</code></td>
+<td>「この人に、この API を使わせてよいか」を決める部品の土台。これを受け継いで <code>has_permission</code> を書き、よければ <code>True</code> を返します。<code>False</code> なら 401 か 403 になります。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>AllowAny</code></td>
+<td>「だれでも使える」という確かめ（いつも通す）。全部の API に「ログインが要る」をかけた後で、ログイン画面のように、ログインしていなくても使う API にだけ <code>permission_classes = [AllowAny]</code> と付けて外します。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>permission_classes()</code></td>
+<td><code>from rest_framework.decorators import permission_classes</code> で読み込む、関数の API に確かめを付ける道具。<code>@permission_classes([…])</code> の形で使います。クラスの API では、<code>permission_classes = [...]</code> という変数に書きます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>@permission_classes</code></td>
+<td><code>@api_view</code> で書いた関数の API に、「だれが使えるか」の確かめを付ける印。<code>@permission_classes([IsAdministrator])</code> で、管理者だけにします。<code>@api_view</code> のすぐ下に書きます。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>SimpleRateThrottle</code></td>
+<td>「決まった時間に、何回まで」と回数を制限する部品の土台。<code>rate = '5/min'</code> で 1 分に 5 回、<code>get_cache_key</code> で何ごとに数えるか（ここでは送ってきた住所ごと）を決めます。超えると 429 が返ります。</td>
+<td>15 4. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.validated_data</code></td>
+<td>DRF の <code>serializer.validated_data</code> は、確かめ（<code>is_valid()</code>）を通った後の、安全な値です。</td>
+<td>15 5. 不具合</td>
 </tr>
 </tbody>
 </table>
@@ -3743,6 +4043,153 @@ table { page-break-inside: auto; }
 <td><code>.assertTrue()</code></td>
 <td><code>self.assertTrue(値)</code> は「値が真（True）」を確かめます。</td>
 <td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cat-24">GitHub Actions</h2>
+<table>
+<thead>
+<tr>
+<th>コード</th>
+<th>意味と使い方</th>
+<th>初めて出てくる所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name:</code></td>
+<td><code>name:</code> は、名前です。いちばん上の <code>name: Deploy Django + React to Azure</code> は、ワークフロー（自動の手順）の名前、<code>- name: Build React</code> は、手順 1 つの名前で、GitHub の Actions の画面に表示されます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>on:</code></td>
+<td><code>on:</code> は、「いつ動かすか」です。<code>push:</code>（送った時）・<code>pull_request:</code>（プルリクエストの時）・<code>schedule:</code>（決まった時刻）などを並べます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>push:</code></td>
+<td><code>push:</code> は、「リポジトリに送った（push）時に動かす」指定です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>branches:</code></td>
+<td><code>branches:</code> の下に、ブランチの名前を並べて、「そのブランチに送った時だけ」としぼります。このアプリは <code>- master</code> なので、<code>master</code> に push した時だけ動きます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>pull_request:</code></td>
+<td><code>pull_request:</code> は、「プルリクエスト（変更を取り込んでほしいというお願い）が作られた・更新された時に動かす」指定です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>workflow_dispatch:</code></td>
+<td><code>on:</code> の下の <code>workflow_dispatch:</code> は、「GitHub の Actions の画面の『Run workflow』ボタンで、手で動かせるようにする」指定です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>jobs:</code></td>
+<td><code>jobs:</code> の下に、動かす仕事（ジョブ）を並べます。ジョブは、ふつう同時に動きます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>build-and-deploy:</code></td>
+<td><code>jobs:</code> の下の <code>build-and-deploy:</code> は、仕事（ジョブ）の名前です。名前は自分で決めます。このアプリは、build・テスト・本番に出す、を 1 つの仕事でやっています。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>runs-on:</code></td>
+<td><code>runs-on: ubuntu-latest</code> は、その仕事を、どの OS の機械で動かすかです。GitHub が用意した Linux（Ubuntu）の機械を、その時だけ借ります。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>steps:</code></td>
+<td><code>steps:</code> の下に、その仕事の手順を、上から順に <code>-</code> で並べます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>YAML の行の頭の <code>-</code> は、「並びの 1 つ」を表します。<code>steps:</code> の下の <code>- name: …</code> は、手順の 1 つ目・2 つ目…です。字下げ（空白の数）で、どこに入るかが決まるので、そろえて書きます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>uses:</code></td>
+<td><code>uses: actions/checkout@v4</code> は、ほかの人が作った決まった手順（アクション）を使う指定です。<code>actions/checkout</code> は、リポジトリのファイルを取ってくる手順、<code>@v4</code> はその版です。<code>actions/setup-python</code> は Python を、<code>actions/setup-node</code> は Node.js を入れる手順です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>with:</code></td>
+<td><code>with:</code> は、<code>uses:</code> で使うアクションに渡す設定です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>python-version:</code></td>
+<td><code>actions/setup-python</code> に渡す設定で、入れる Python の版です。<code>"3.12"</code> と引用符で囲むのは、<code>3.10</code> が数の <code>3.1</code> と読まれるような間違いを防ぐためです。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>node-version:</code></td>
+<td><code>actions/setup-node</code> に渡す設定で、入れる Node.js の版です。<code>"22"</code> なら、22 系の新しい版が入ります。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>run:</code></td>
+<td><code>run:</code> は、その手順で動かすコマンドです。<code>run: &#124;</code> と書くと、次の行から何行も書けます（<code>cd frontend</code> の次の行に <code>npm ci</code>、のように）。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>&#124;</code></td>
+<td><code>run: &#124;</code> の <code>&#124;</code> は、「次の行から、字下げした所までを、改行も含めてそのまま 1 つの文字にする」という印です。コマンドを何行も書く時に使います。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>env:</code></td>
+<td><code>env:</code> の下に <code>名前: 値</code> を並べると、その手順（または仕事全体）の中だけで使える環境変数になります。手順の下に書けば、その手順の中だけで見えます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>SECRET_KEY:</code></td>
+<td><code>env:</code> の下の <code>SECRET_KEY: …</code> は、<code>SECRET_KEY</code> という環境変数を作る行です。Django の <code>settings.py</code> は、起動の時にこの値を読みます（無いと動きません）。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>DEBUG:</code></td>
+<td><code>env:</code> の下の <code>DEBUG: "False"</code> は、<code>DEBUG</code> という環境変数を作る行です。<code>"False"</code> と引用符で囲むのは、YAML が <code>False</code> を「文字」ではなく「真偽の値」と読まないようにするためです。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>HELP_PATH:</code></td>
+<td><code>env:</code> の下の <code>HELP_PATH: …</code> は、ヘルプ画面のパスワードを入れる環境変数を作る行です。テストの手順では、テストのためだけの値を入れます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>${{ … }}</code></td>
+<td><code>${{ }}</code> の中に書いた物は、GitHub Actions が、動かす時に値に置き換えます。<code>${{ secrets.SECRET_KEY }}</code> は、リポジトリの Secrets に入れた <code>SECRET_KEY</code> の値、<code>${{ github.event_name }}</code> は、何をきっかけに動いたか（<code>push</code>・<code>pull_request</code> など）です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>secrets.名前</code></td>
+<td><code>secrets.SECRET_KEY</code> のように書くと、リポジトリの Settings → Secrets and variables → Actions に入れた、秘密の値を読めます。値は画面やログには出ません（<code>***</code> になります）。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>if:</code></td>
+<td><code>if:</code> に条件を書くと、その条件が合う時だけ、その手順を動かします。<code>if: github.event_name != 'pull_request'</code> は「Pull Request がきっかけでない時だけ」（＝ master に push した時だけ本番に出す）。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>app-name:</code></td>
+<td><code>azure/webapps-deploy</code> に渡す設定で、送り先の Azure App Service の名前です（このアプリは <code>hozen-kosu-React</code>）。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>publish-profile:</code></td>
+<td><code>azure/webapps-deploy</code> に渡す設定で、Azure に送るための「通行証」（発行プロファイル）です。値は秘密なので、Secrets から読みます。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>package:</code></td>
+<td><code>azure/webapps-deploy</code> に渡す設定で、送るファイルです。このアプリは、全部を 1 つにまとめた <code>release.zip</code> を送ります。</td>
+<td>15 6. 開発・運用の整理</td>
 </tr>
 </tbody>
 </table>

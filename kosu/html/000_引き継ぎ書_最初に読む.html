@@ -1401,6 +1401,7 @@ li, tr { page-break-inside: avoid; }
 </ol>
 <blockquote>
 <p><strong>ふだんの開発（<code>npm start</code>）では、1 つ目は書き換えなくてよい。</strong> <code>npm start</code> の時は、<code>frontend/.env.production</code> ではなく、自分で作る <code>frontend/.env</code> が使われます（01 章 §17.2）。<code>frontend/.env</code> は <code>.gitignore</code> で除外されているので、コミットされません。</p>
+<p><strong>この 2 か所は、書き換えなくて済むように直せます。</strong> 直し方は <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の D-4 にあります。</p>
 </blockquote>
 <h3 id="82-押す前に必ずバックアップを取る操作">8.2 押す前に、必ずバックアップを取る操作</h3>
 <p>次の操作は、データが消えたり置き換わったりします。押す前に、<strong>管理者 ⇒ データ管理</strong> で、関係する種類のデータの「バックアップ開始」を押して、Excel を保存しておきます。</p>
@@ -1415,7 +1416,7 @@ li, tr { page-break-inside: avoid; }
 <tbody>
 <tr>
 <td><strong>ヘルプ（<code>/help</code>）の初期化</strong></td>
-<td>パスワード（<code>HELP_PATH</code>）を入れた後、選んだ物（人員・工数区分定義・設定）を全部消し、初めの 1 件だけにする。人員を選ぶと、従業員番号 <code>12345</code>（名前 <code>admin</code>）の 1 人だけになり、ほかの人はだれもログインできなくなる</td>
+<td>パスワード（<code>HELP_PATH</code>）を入れた後、選んだ物（人員・工数区分定義・設定）を全部消し、初めの 1 件だけにする。人員を選ぶと、従業員番号 <code>12345</code>（名前 <code>admin</code>）の 1 人だけになり、ほかの人はだれもログインできなくなる（今の <code>master</code> では、画面の URL の誤りで、この初期化は動いていない。15 巻の B-1）</td>
 <td>事前のバックアップをロードする。無ければ Azure のデータベースの時点復元（09 章 §13.3）</td>
 </tr>
 <tr>
@@ -1491,6 +1492,9 @@ li, tr { page-break-inside: avoid; }
 <li>画面を足したら、<code>frontend/src/index.tsx</code> に URL とタブの名前を、<code>kosu/urls.py</code> に API の住所を足します。</li>
 <li>テストも足します（12 章）。</li>
 </ul>
+<blockquote>
+<p><strong>直すべき所の一覧:</strong> 今のアプリで、サーバーの確かめが抜けている API や、不具合・整理したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。引き継いだら、「🔴 すぐ」の物から直してください。</p>
+</blockquote>
 <hr>
 <h2 id="9-よくある依頼と対応のしかた">9. よくある依頼と、対応のしかた</h2>
 <h3 id="91-新しく入った人を登録したい">9.1 新しく入った人を登録したい</h3>
