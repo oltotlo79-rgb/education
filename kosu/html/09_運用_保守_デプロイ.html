@@ -339,7 +339,8 @@ li, tr { page-break-inside: avoid; }
 <blockquote>
 <p><strong>なぜ環境を分けるのか？</strong> いきなり本番でコードを書き換えてテストすると、バグがあったとき <strong>実際のユーザーの業務が止まり、本物のデータが壊れます</strong>。それを防ぐため、「自分のPC（ローカル）で作る → 本番そっくりの場所（ステージング）で確認 → 問題なければ本番へ」という3段階を踏みます。料理でたとえると「自宅で試作 → 試食会で確認 → お店で提供」です。</p>
 <p>⚠️ <strong>本アプリの現状について</strong>
-本アプリのリポジトリには明確な「ステージング環境専用の設定ファイル」は用意されていません。実態としては <strong>ローカル（あなたのPC）</strong> と <strong>本番（Azure）</strong> の2環境です。ステージングは「本番に出す前に、ローカルで本番相当のビルドを動かして確認する」という形で代用しています。この章では、将来ステージングを追加する場合の考え方も含めて説明します。</p>
+本アプリのリポジトリには、ステージング専用の設定ファイルも、ステージングへ自動で出す仕組みもありません。<code>frontend/.env.production</code> にはステージング用の住所（<code>https://hozen-kosu-another-…azurewebsites.net</code>）が <code>#</code> 付きで書いてあるので、ステージング用のサーバーが用意されていた（いる）ことは分かりますが、GitHub Actions（§14）が自動で出すのは <strong>本番だけ</strong> です。また、<code>settings.py</code> の <code>ALLOWED_HOSTS</code> には本番と localhost しか無いので、今のコードをそのままステージングに置いても、そのままでは動きません。
+したがって実態は <strong>ローカル（あなたのPC）</strong> と <strong>本番（Azure）</strong> の 2 環境で、ステージングの代わりに「本番に出す前に、ローカルで本番相当のビルドを動かして確かめる」形で運用します。ステージングのサーバーが今も使えるか・どう出していたかは、リポジトリからは分からないので、前任者に確かめてください（「<a href="000_引き継ぎ書_最初に読む.html">000 引き継ぎ書</a>」の §10）。この章では、将来ステージングを整える場合の考え方も含めて説明します。</p>
 </blockquote>
 <h3 id="22-環境ごとに変わるもの設定ファイル">2.2 環境ごとに変わるもの＝設定ファイル</h3>
 <p>3つの環境で「アプリのコードそのもの」は同じです。違うのは <strong>設定</strong> です。本アプリでは、設定の違いを次のファイルで吸収しています。</p>
@@ -476,7 +477,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic
 <div class="codehilite"><div class="code-wrap" id="code-7"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>XXX static files copied to &#39;.../staticfiles&#39;.
 </code></pre></div></div>
 
-<p>⚠️ 本番デプロイの前には、<code>npm run build</code>（フロント）→ <code>collectstatic</code>（バック）の順で実行するのが定石です（§14）。</p>
+<p>⚠️ 本番に出す時の <code>npm run build</code>（フロント）→ <code>collectstatic</code>（バック）は、<code>master</code> に push した時に GitHub Actions が自動で行います（§14.1）。手元で打つのは、手元で本番と同じ形を試したい時だけです。</p>
 </blockquote>
 <h3 id="36-コマンド早見表保存版">3.6 コマンド早見表（保存版）</h3>
 <table>
@@ -511,7 +512,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic
 <tr>
 <td><code>python manage.py collectstatic</code></td>
 <td>静的ファイル集約</td>
-<td>本番デプロイ前</td>
+<td>手元で本番と同じ形を試す時（本番に出す時は GitHub Actions が行う）</td>
 </tr>
 <tr>
 <td><code>python manage.py createsuperuser</code></td>
@@ -531,12 +532,17 @@ python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic
 <tr>
 <td><code>npm run build</code></td>
 <td>フロント本番ビルド</td>
-<td>本番デプロイ前</td>
+<td>手元で本番と同じ形を試す時（本番に出す時は GitHub Actions が行う）</td>
 </tr>
 <tr>
 <td><code>npm run test:run</code></td>
 <td>テストを1回実行</td>
 <td>コミット前・確認時</td>
+</tr>
+<tr>
+<td><code>git push origin master</code></td>
+<td>GitHub の master に送る</td>
+<td><strong>本番に出す時</strong>（GitHub Actions が自動で本番へ。§14）</td>
 </tr>
 </tbody>
 </table>
@@ -1439,11 +1445,11 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <h3 id="95-作業詳細選択肢問い合わせ管理者設定">9.5 作業詳細選択肢・問い合わせ・管理者設定</h3>
 <ul>
 <li><code>generate_choice_backup</code> / <code>load_choice_file</code> … 作業詳細の選択肢（記号と詳細のペア）。ロードは「<strong>全削除してから全登録</strong>」する完全置き換え方式。</li>
-<li><code>generate_inquiry_backup</code> / <code>load_inquiry_file</code> … 問い合わせデータ。ロードは人員を <code>.get()</code> で紐付けて <code>.create()</code>。</li>
+<li><code>generate_inquiry_backup</code> / <code>load_inquiry_file</code> … 問い合わせデータ。ロードは人員を <code>.get()</code> で紐付けて <code>.create()</code>。すでにある問い合わせと同じかどうかは確かめずに、<strong>全行を新しく足す</strong>ので、同じファイルを 2 回ロードすると、同じ問い合わせが 2 件ずつになります。</li>
 <li><code>generate_setting_backup</code> / <code>load_setting_file</code> … 管理者設定（表示件数・担当者・ポップアップ）。ロードは「<strong>全削除してから登録</strong>」方式。</li>
 </ul>
 <blockquote>
-<p>⚠️ <strong>ロードの「置き換え方」は表ごとに3種類</strong> あります。混同すると復元時に事故ります。</p>
+<p>⚠️ <strong>ロードの「置き換え方」は表ごとに4種類</strong> あります。混同すると復元時に事故ります。</p>
 <table>
 <thead>
 <tr>
@@ -1467,6 +1473,11 @@ openpyxlでセル1つを指す書き方。<strong>行も列も1から始まる</
 <td><strong>全置換</strong></td>
 <td>作業詳細選択肢・管理者設定</td>
 <td>テーブルを丸ごと消してから全件登録</td>
+</tr>
+<tr>
+<td><strong>追加だけ</strong></td>
+<td>問い合わせ</td>
+<td>既存は確かめず、全行を新しく足す（2 回ロードすると 2 件ずつになる）</td>
 </tr>
 </tbody>
 </table>
@@ -2119,10 +2130,10 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <span class="c1"># セッション有効期間（約10年=秒）</span>
 <span class="n">SESSION_COOKIE_AGE</span> <span class="o">=</span> <span class="mi">315360000</span>
 
-<span class="c1"># CookieのSameSite属性</span>
-<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s1">&#39;Lax&#39;</span>
-<span class="c1"># HTTPS必須にしない（開発向け）</span>
-<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="c1"># Cookieを送る場面（&#39;None&#39;＝ほかのサイトからの通信でも送る）</span>
+<span class="n">SESSION_COOKIE_SAMESITE</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+<span class="c1"># HTTPS（暗号化した通信）の時だけCookieを送る</span>
+<span class="n">SESSION_COOKIE_SECURE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># ルーティングの起点</span>
 <span class="n">ROOT_URLCONF</span> <span class="o">=</span> <span class="s1">&#39;hozen_another.urls&#39;</span>
 </code></pre></div></div>
@@ -2131,10 +2142,10 @@ Djangoアプリが、CSS・JavaScript・画像といった「静的ファイル�
 <li><code>'PAGE_SIZE': 20</code> … APIが一覧を返すとき、1ページあたり20件に区切ります。</li>
 <li><code>SESSION_ENGINE = '...db'</code> … ログイン状態（セッション）を <strong>データベースに保存</strong> します。</li>
 <li><code>SESSION_COOKIE_AGE = 315360000</code> … 約10年（秒数）。事実上「ログインしっぱなし」にする長い有効期間です。</li>
-<li><code>SESSION_COOKIE_SAMESITE = 'Lax'</code> / <code>SESSION_COOKIE_SECURE = False</code> … Cookieの送信条件。ファイル内にコメントアウトされた <code>'None'</code>／<code>True</code> の行があり、これらは <strong>HTTPS本番向け</strong> の候補です。現在は開発向けの <code>Lax</code>／<code>False</code> が有効になっています。</li>
+<li><code>SESSION_COOKIE_SAMESITE = 'None'</code> / <code>SESSION_COOKIE_SECURE = True</code> … Cookieの送信条件。<code>'None'</code> は「ほかのサイトから来た通信にも付けて送る」、<code>True</code> は「HTTPS の時だけ送る」。ブラウザは <code>'None'</code> を <code>Secure</code>（<code>True</code>）と組み合わせた時しか受け付けないので、2 つはセットです。これが GitHub の <code>master</code>（＝本番）の設定です。</li>
 </ul>
 <blockquote>
-<p>⚠️ <strong>本番をHTTPSで運用する場合</strong>、<code>SESSION_COOKIE_SECURE = True</code>（HTTPSでのみCookie送信）にするのがセキュリティ上望ましい設定です。ファイル内にコメントアウトで残っているのは、その切り替え候補です。</p>
+<p>⚠️ <strong>手元で <code>'Lax'</code> / <code>False</code> に書き換えたら、コミットしない。</strong> 手元の <code>http://localhost</code> で動かした時、ブラウザによっては <code>Secure</code> のクッキーが保存されず、ログインしてもすぐログイン画面に戻ることがあります。その時は手元でだけ <code>'Lax'</code> / <code>False</code> に書き換えて試しますが、そのままコミットして <code>master</code> に push すると、本番の設定まで変わります。<code>frontend/.env.production</code> の切り替え（01 章 §17.1）と合わせて、<strong>「手元でだけ書き換えて、コミットしない 2 か所」</strong>として覚えてください（「<a href="000_引き継ぎ書_最初に読む.html">000 引き継ぎ書</a>」の §8）。</p>
 </blockquote>
 <h3 id="116-databasesデータベース接続">11.6 DATABASES（データベース接続）</h3>
 <div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
@@ -2545,47 +2556,177 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 </blockquote>
 <hr>
 <h2 id="14-デプロイ手順と本番マイグレーションの注意">14. デプロイ手順と本番マイグレーションの注意</h2>
-<p>新しい版を本番へ出す「デプロイ」の標準手順です。<strong>順番が命</strong> なので、1つずつ確認しながら進めます。</p>
-<h3 id="141-標準デプロイ手順">14.1 標準デプロイ手順</h3>
+<p>新しい版を本番へ出す「デプロイ」の手順です。まず「本番に出る仕組み」を知り、次に毎回の手順を見ます。<strong>順番が命</strong> なので、1つずつ確認しながら進めます。</p>
+<h3 id="141-本番に出る仕組みmaster-に-push-するとgithub-actions-が出す">14.1 本番に出る仕組み：master に push すると、GitHub Actions が出す</h3>
+<p>本アプリは、<strong>GitHub の <code>master</code> ブランチに push した瞬間に、本番へ出ていきます</strong>。だれかがボタンを押す必要はありません。仕組みを決めているのは、プロジェクト直下の <code>.github/workflows/master_hozen-kosu-react.yml</code>（GitHub Actions の設定ファイル）です。</p>
 <blockquote>
-<p><strong>▼ この手順がやること（先に日本語で）:</strong> ローカルで動作確認したコードを、ビルド・静的ファイル収集・コミット・本番反映・マイグレーションの順で本番に出します。</p>
+<p><strong>用語：GitHub Actions（ギットハブ・アクションズ）</strong>
+GitHub に「push されたら、このコマンドを順に動かして」と頼んでおける仕組み。決めたコマンドは、GitHub が用意したコンピューター（ここでは Ubuntu という Linux）の上で動きます。本アプリでは「画面を作る → 部品を入れる → 集める → まとめる → Azure に送る」を自動でやらせています。</p>
 </blockquote>
-<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① ローカルでテストを通す
-   npm run test:run            # フロントのテストが全部緑か確認
-   （バックエンドの動作も手元で確認）
+<div style="max-width:720px;margin:18px auto;text-align:center;">
+<svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Yu Gothic UI, Yu Gothic, Meiryo, sans-serif">
+<defs><marker id="ar-kosu-09-14-475569" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker></defs>
+<rect x="14" y="30" width="150" height="110" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+<text x="89" y="70" font-size="14" fill="#047857" text-anchor="middle" font-weight="800">あなたの PC</text>
+<text x="89" y="92" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">git push</text>
+<text x="89" y="111" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">origin master</text>
+<rect x="196" y="30" width="150" height="110" rx="8" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+<text x="271" y="70" font-size="14" fill="#6d28d9" text-anchor="middle" font-weight="800">GitHub</text>
+<text x="271" y="92" font-size="12" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">master</text>
+<text x="271" y="111" font-size="12" fill="#0f172a" text-anchor="middle">に記録が届く</text>
+<rect x="378" y="14" width="172" height="330" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="2"/>
+<text x="464" y="40" font-size="14" fill="#0f766e" text-anchor="middle" font-weight="800">GitHub Actions</text>
+<text x="464" y="58" font-size="11" fill="#475569" text-anchor="middle">（自動・数分）</text>
+<rect x="390" y="72" width="148" height="46" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<circle cx="406" cy="95" r="10" fill="#14b8a6"/>
+<text x="406" y="100" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="800">1</text>
+<text x="422" y="92" font-size="12" fill="#0f172a" text-anchor="start" font-weight="700">Node.js 20</text>
+<text x="422" y="109" font-size="10" fill="#475569" text-anchor="start">画面を作る（build）</text>
+<rect x="390" y="126" width="148" height="46" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<circle cx="406" cy="149" r="10" fill="#14b8a6"/>
+<text x="406" y="154" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="800">2</text>
+<text x="422" y="146" font-size="12" fill="#0f172a" text-anchor="start" font-weight="700">Python 3.12</text>
+<text x="422" y="163" font-size="10" fill="#475569" text-anchor="start" font-family="Consolas, DefCode, monospace">pip install -r …</text>
+<rect x="390" y="180" width="148" height="46" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<circle cx="406" cy="203" r="10" fill="#14b8a6"/>
+<text x="406" y="208" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="800">3</text>
+<text x="422" y="200" font-size="12" fill="#0f172a" text-anchor="start" font-weight="700">collectstatic</text>
+<text x="422" y="217" font-size="10" fill="#475569" text-anchor="start">画面の部品を集める</text>
+<rect x="390" y="234" width="148" height="46" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<circle cx="406" cy="257" r="10" fill="#14b8a6"/>
+<text x="406" y="262" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="800">4</text>
+<text x="422" y="254" font-size="12" fill="#0f172a" text-anchor="start" font-weight="700">zip</text>
+<text x="422" y="271" font-size="10" fill="#475569" text-anchor="start">全部を 1 つにまとめる</text>
+<rect x="390" y="288" width="148" height="46" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<circle cx="406" cy="311" r="10" fill="#14b8a6"/>
+<text x="406" y="316" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="800">5</text>
+<text x="422" y="308" font-size="12" fill="#0f172a" text-anchor="start" font-weight="700">Azure に送る</text>
+<text x="422" y="325" font-size="10" fill="#475569" text-anchor="start" font-family="Consolas, DefCode, monospace">azure/webapps-deploy</text>
+<rect x="582" y="30" width="124" height="110" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+<text x="644" y="60" font-size="15" fill="#1e40af" text-anchor="middle" font-weight="800">本番</text>
+<text x="644" y="83" font-size="11" fill="#0f172a" text-anchor="middle">App Service</text>
+<text x="644" y="102" font-size="10" fill="#0f172a" text-anchor="middle" font-family="Consolas, DefCode, monospace">hozen-kosu-React</text>
+<text x="644" y="121" font-size="12" fill="#0f172a" text-anchor="middle">が新しい版に</text>
+<line x1="168" y1="85" x2="192" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-09-14-475569)"/>
+<line x1="350" y1="85" x2="374" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-09-14-475569)"/>
+<line x1="554" y1="85" x2="578" y2="85" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-09-14-475569)"/>
+<rect x="14" y="170" width="332" height="80" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="1.5"/>
+<text x="28" y="194" font-size="12" fill="#a16207" text-anchor="start" font-weight="800">使う秘密の値（GitHub の Secrets）</text>
+<text x="28" y="214" font-size="11" fill="#0f172a" text-anchor="start" font-family="Consolas, DefCode, monospace">SECRET_KEY・DEBUG・DB_NAME・DB_USER・</text>
+<text x="28" y="232" font-size="11" fill="#0f172a" text-anchor="start" font-family="Consolas, DefCode, monospace">DB_PASSWORD・DB_HOST・HELP_PATH・発行プロファイル</text>
+<rect x="14" y="266" width="332" height="78" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+<text x="28" y="290" font-size="12" fill="#b91c1c" text-anchor="start" font-weight="800">Actions がやらないこと</text>
+<text x="28" y="310" font-size="11" fill="#0f172a" text-anchor="start">・本番のデータベースの migrate</text>
+<text x="28" y="328" font-size="11" fill="#0f172a" text-anchor="start">・ステージングへ出すこと</text>
+<rect x="582" y="170" width="124" height="174" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="644" y="194" font-size="11" fill="#334155" text-anchor="middle">結果は GitHub の</text>
+<text x="644" y="214" font-size="11" fill="#334155" text-anchor="middle">Actions タブで</text>
+<text x="644" y="234" font-size="11" fill="#334155" text-anchor="middle">見る</text>
+<text x="644" y="254" font-size="11" fill="#334155" text-anchor="middle"></text>
+<text x="644" y="274" font-size="11" fill="#334155" text-anchor="middle">緑のチェック ＝ 成功</text>
+<text x="644" y="294" font-size="11" fill="#334155" text-anchor="middle">赤のバツ ＝ 失敗</text>
+<text x="644" y="314" font-size="11" fill="#334155" text-anchor="middle">（本番は前の版のまま）</text>
+<text x="360" y="386" font-size="12" fill="#475569" text-anchor="middle">master に push した時のほか、Actions タブの「Run workflow」でも同じことが起きる</text>
+</svg>
+<div style="font-size:12px;color:#64748b;margin-top:6px;">図9-6: 本番に出る流れ（.github/workflows/master_hozen-kosu-react.yml）。master に push すると、GitHub Actions が ①〜⑤ を自動で行う</div>
+</div>
 
-② フロントエンドを本番ビルド
+<p>設定ファイルに書いてあることを、日本語にすると次のとおりです。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">順番</th>
+<th>設定ファイルの名前（<code>name:</code>）</th>
+<th>やること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">合図</td>
+<td><code>on: push: branches: - master</code> と <code>workflow_dispatch</code></td>
+<td><code>master</code> に push された時と、GitHub の <strong>Actions</strong> タブで「Run workflow」を押した時に動く</td>
+</tr>
+<tr>
+<td style="text-align: center;">①</td>
+<td>Set up Node.js / Install React dependencies / Build React</td>
+<td>Node.js <strong>20</strong> を入れ、<code>frontend/</code> で <code>npm install</code> と <code>npm run build</code> をする（<code>frontend/.env.production</code> の本番の URL が画面に書き込まれる）</td>
+</tr>
+<tr>
+<td style="text-align: center;">②</td>
+<td>Set up Python / Install Python dependencies</td>
+<td>Python <strong>3.12</strong> を入れ、<code>antenv</code> という仮想環境を作って <code>pip install -r requirements.txt</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">③</td>
+<td>Collect static files</td>
+<td><code>python manage.py collectstatic --noinput</code> で、画面の部品を <code>staticfiles/</code> に集める</td>
+</tr>
+<tr>
+<td style="text-align: center;">④</td>
+<td>Create deployment zip</td>
+<td><code>.git</code>・<code>node_modules</code>・<code>frontend/node_modules</code> を除いた全部を <code>release.zip</code> にまとめる</td>
+</tr>
+<tr>
+<td style="text-align: center;">⑤</td>
+<td>Deploy to Azure Web App</td>
+<td><code>azure/webapps-deploy@v3</code> で、Azure の App Service <strong><code>hozen-kosu-React</code></strong> に送る</td>
+</tr>
+</tbody>
+</table>
+<p>各ステップの意味と注意：</p>
+<ul>
+<li><strong>画面を作るのも、部品を集めるのも、Actions がやる。</strong> 以前は「手元で <code>npm run build</code> と <code>collectstatic</code> をしてからコミット」と案内していましたが、今の仕組みでは Actions が毎回作り直すので、手元でやってコミットする必要はありません（<code>frontend/build/</code> と <code>staticfiles/</code> はリポジトリに入っていますが、本番に送られるのは Actions が作り直した物です）。</li>
+<li><strong>秘密の値は GitHub の Secrets から使う。</strong> 設定ファイルは <code>SECRET_KEY</code>・<code>DEBUG</code>・<code>DB_NAME</code>・<code>DB_USER</code>・<code>DB_PASSWORD</code>・<code>DB_HOST</code>・<code>HELP_PATH</code> と、Azure に送るための「発行プロファイル」（<code>AZUREAPPSERVICE_PUBLISHPROFILE_…</code>）を、GitHub の Secrets から読みます。置き場所は、GitHub のリポジトリの <strong>Settings → Secrets and variables → Actions</strong> です。Secrets は、一度保存すると値を見られません（上書きはできます）。</li>
+<li><strong>本番で動いているアプリが読む値は、Azure 側にあるはず。</strong> リポジトリに <code>.env</code> は無く（§2.2）、Secrets は Actions が動いている間だけ使われます。そのため本番のアプリは、Azure の App Service の「環境変数」（以前の画面では「構成」→「アプリケーション設定」）から <code>SECRET_KEY</code> などを読んでいるはずです。リポジトリからは見えないので、Azure ポータルで確かめてください。</li>
+<li><strong>migrate はしない。</strong> 設定ファイルに <code>python manage.py migrate</code> はありません。モデルを変えて本番のデータベースの形を変える時は、別に行います（§14.3）。</li>
+<li><strong>結果は Actions タブで見る。</strong> GitHub のリポジトリの <strong>Actions</strong> タブに、push のたびに 1 行ずつ実行の記録が増えます。緑のチェックなら成功、赤のバツなら失敗です。失敗した時は、本番は前の版のまま動き続けます（どのステップで失敗したかは、その行を開くと分かります）。</li>
+<li><strong>起動のコマンドは Azure 側の設定。</strong> 本番で Django を動かす Gunicorn（§13.2）を、どんなコマンドで起動しているかも、リポジトリには書いてありません。Azure ポータルの App Service の設定で確かめます。</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong><code>master</code> への push ＝ 本番の作業。</strong> 練習のつもりで <code>master</code> に push しても、本番が変わります。業務時間中に大きな変更を出すのは避け、出したら Actions が緑になるのを見届け、本番の画面で確かめるまでが 1 回のデプロイです。</p>
+</blockquote>
+<h3 id="142-標準デプロイ手順毎回これ">14.2 標準デプロイ手順（毎回これ）</h3>
+<blockquote>
+<p><strong>▼ この手順がやること（先に日本語で）:</strong> 手元でテストを通し、「手元でだけ書き換えた所」が戻っているのを確かめてから、コミットして <code>master</code> に push します。あとは GitHub Actions が本番に出すので、その結果と本番の画面を確かめます。</p>
+</blockquote>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>① 手元でテストを通す
    cd frontend
-   npm run build               # frontend/build/ に最新の成果物を作る
+   npm run test:run            # フロントのテストが全部緑か確認
+   cd ..
+   python manage.py test --settings=hozen_another.test_settings   # バックのテスト（12章）
 
-③ 静的ファイルを収集（プロジェクトルートで）
-   python manage.py collectstatic   # staticfiles/ に集約（WhiteNoise配信用）
+② 「手元でだけ書き換えた 2 か所」が戻っているか確かめる
+   git status                  # 次の 2 つが modified なら、git diff で見て戻す
+                               #   frontend/.env.production
+                               #   hozen_another/settings.py
 
-④ 変更をコミット・プッシュ
-   git add -A
+③ 変更をコミットする
+   git add （変えたファイル）
    git commit -m &quot;（変更内容）&quot;
-   git push                    # GitHubへ
 
-⑤ Azureへデプロイ
-   （GitHub連携の自動デプロイ、またはAzure CLIで反映）
+④ master に push する（＝本番に出る）
+   git push origin master
 
-⑥ 本番でマイグレーションを実行（必要な場合のみ）
-   python manage.py migrate    # 本番DBにモデル変更を反映
+⑤ GitHub の Actions タブで、緑のチェックになるまで見守る（数分）
+
+⑥ モデルを変えた時だけ：本番のデータベースに migrate する（§14.3）
+
+⑦ 本番の画面で確かめる（§14.4）
 </code></pre></div></div>
 
 <p>各ステップの注意：</p>
 <ul>
-<li><strong>① テスト</strong> … 壊れたコードを本番に出さない最後の防衛線。<code>test:run</code> が赤なら、デプロイしてはいけません。</li>
-<li><strong>② ビルド</strong> … <code>npm run build</code> を忘れると、<strong>フロントの変更が本番に反映されません</strong>（古い画面のまま）。最頻出のミスです。</li>
-<li><strong>③ collectstatic</strong> … これを忘れると、新しいCSS/JSが配信されず、画面が崩れることがあります。</li>
-<li><strong>④ コミット</strong> … <code>frontend/build/</code> や <code>staticfiles/</code> の成果物もコミット対象になる構成です（git statusに大量の <code>.css.gz</code> 等が出るのはこのため）。</li>
-<li><strong>⑤ デプロイ</strong> … GitHub連携なら push で自動反映されます。</li>
+<li><strong>① テスト</strong> … 壊れたコードを本番に出さない最後の防衛線。<code>test:run</code> が赤なら、push してはいけません。</li>
+<li><strong>② 手元でだけ書き換えた所</strong> … <code>frontend/.env.production</code>（01章 §17.1）と <code>hozen_another/settings.py</code> のクッキーの 2 行（§11.5）は、手元で試す時に書き換えることがあります。戻し忘れて push すると、本番の画面がだれにも使えなくなったり、本番の設定が弱くなったりします。</li>
+<li><strong>③ コミット</strong> … <code>git add -A</code>（全部）より、変えたファイルを名前で指定するほうが、うっかり混ざるのを防げます。</li>
+<li><strong>④ push</strong> … これで本番に出ます（§14.1）。</li>
+<li><strong>⑤ Actions</strong> … 赤のバツなら、その行を開いて、どのステップで失敗したかを見ます。本番は前の版のまま動いているので、落ち着いて直して、もう一度 push します。</li>
 <li><strong>⑥ マイグレーション</strong> … モデルを変えていないなら不要。変えたなら <strong>慎重に</strong>（次項）。</li>
 </ul>
 <blockquote>
-<p>⚠️ <strong>②と③を飛ばすミスが圧倒的に多い。</strong> 「コードは直したのに本番が変わらない」の9割は、<code>npm run build</code> か <code>collectstatic</code> の忘れです。デプロイ前チェックリストとして手元に貼っておきましょう。</p>
+<p>⚠️ <strong>「コードは直したのに本番が変わらない」時は、まず Actions タブを見る。</strong> 赤のバツ（失敗）になっていないか、そもそも <code>master</code> に push できているか（<code>git log origin/master</code> に自分のコミットがあるか）を確かめます。画面が古いままの時は、ブラウザに古い画面が残っていることもあるので、<code>Ctrl</code> ＋ <code>F5</code>（強制的に読み直す）も試します。</p>
 </blockquote>
-<h3 id="142-本番マイグレーションの注意">14.2 本番マイグレーションの注意</h3>
+<h3 id="143-本番マイグレーションの注意">14.3 本番マイグレーションの注意</h3>
 <p>本番DBへのマイグレーションは、<strong>最も事故が起きやすい操作</strong> です。次を厳守します。</p>
 <blockquote>
 <p>⚠️ <strong>本番マイグレーション5つの鉄則</strong>
@@ -2597,8 +2738,9 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <p><strong>なぜ削除が危険なのか？</strong> 例えば <code>member</code> テーブルから列を削除するマイグレーションを本番で実行すると、その列に入っていた <strong>全ユーザーのデータが消えます</strong>。<code>makemigrations</code> が自動生成した削除を、内容を確認せずに <code>migrate</code> してしまうのが典型的な事故です。生成されたマイグレーションファイル（<code>kosu/migrations/</code>）の中身を <strong>必ず読んでから</strong> 適用します。</p>
 <p><strong>用語：<code>migrate --plan</code></strong>
 実際には適用せず、「これから何のマイグレーションが、どの順で実行されるか」の一覧だけを表示するオプション。本番適用前の「最終確認」に使います。（※<code>--plan</code> はDjangoの標準オプション）</p>
+<p>⚠️ <strong>本番で migrate を打つ場所は、前任者に確かめる。</strong> §14.1 のとおり、GitHub Actions は migrate をしません。本番のデータベースに migrate するには、本番のデータベースにつながる所で <code>python manage.py migrate</code> を打つ必要があります（例えば、Azure ポータルの App Service の「SSH」から打つ、本番の接続先を入れた手元の環境から打つ、など）。前任者がどの方法で行っていたかはリポジトリに書かれていないので、必ず確かめてから行ってください（「<a href="000_引き継ぎ書_最初に読む.html">000 引き継ぎ書</a>」の §10）。</p>
 </blockquote>
-<h3 id="143-デプロイ後の確認">14.3 デプロイ後の確認</h3>
+<h3 id="144-デプロイ後の確認">14.4 デプロイ後の確認</h3>
 <p>デプロイしたら、必ず本番で動作確認します。</p>
 <div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>□ トップページが表示されるか（500/502エラーが出ないか）
 □ ログインできるか
@@ -2717,7 +2859,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 <td><strong>502</strong></td>
 <td>Bad Gateway</td>
 <td>ゲートウェイ不正</td>
-<td>Gunicorn起動失敗・クラッシュ（§14.3）</td>
+<td>Gunicorn起動失敗・クラッシュ（§14.4）</td>
 </tr>
 <tr>
 <td><strong>503</strong></td>
@@ -2852,7 +2994,7 @@ Azureが提供するPostgreSQLの運用形態の1つ。柔軟な設定（停止/
 </blockquote>
 <h3 id="163-ロールバック前の版に戻す">16.3 ロールバック（前の版に戻す）</h3>
 <p>深刻な障害で原因がすぐ分からないときは、<strong>まず正常だった版に戻して</strong> 被害を止め、それから落ち着いて原因を調べます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>・コードの問題 → 直前の正常なコミットへ戻して再デプロイ
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>・コードの問題 → 直前の正常なコミットへ戻して master に push（＝再デプロイ）
 ・DBの問題     → Azure PITR（§13.3）で正常な時点へ復元
 </code></pre></div></div>
 
@@ -3006,13 +3148,13 @@ Done.
 </tr>
 <tr>
 <td>本番でコード変更が反映されない</td>
-<td><code>npm run build</code>・<code>collectstatic</code> 忘れ</td>
-<td>§14.1 の②③を実行</td>
+<td><code>master</code> に push していない／GitHub Actions が失敗した／ブラウザに古い画面が残っている</td>
+<td>Actions タブの結果を見る（§14.1）・<code>git log origin/master</code>・<code>Ctrl</code>＋<code>F5</code></td>
 </tr>
 <tr>
 <td>デプロイ後に502</td>
 <td>Gunicorn起動失敗</td>
-<td>環境変数・依存・<code>wsgi.py</code> を確認（§14.3）</td>
+<td>環境変数・依存・<code>wsgi.py</code> を確認（§14.4）</td>
 </tr>
 <tr>
 <td>POSTが403で弾かれる</td>
@@ -3052,7 +3194,7 @@ Done.
 <tr>
 <td>マイグレーションで本番データが消えた</td>
 <td>列削除マイグレーションを適用</td>
-<td>PITR/バックアップから復元。今後は§14.2を厳守</td>
+<td>PITR/バックアップから復元。今後は§14.3を厳守</td>
 </tr>
 </tbody>
 </table>
@@ -3061,13 +3203,13 @@ Done.
 <p>理解度を確認しましょう。答えは本文中にあります。</p>
 <p><strong>問1.</strong> バックアップ機能は「非同期」で動きます。ユーザーがボタンを押してからExcelをダウンロードするまでの流れを、<code>backup</code> → <code>check_task_status</code> → <code>download_file</code> の3関数の役割に触れながら、自分の言葉で説明してください。（§5・§10）</p>
 <p><strong>問2.</strong> <code>generate_kosu_backup</code>（§6）で、<code>str(item.name)</code> のように <code>name</code> だけ <code>str()</code> で囲んでいるのはなぜですか。</p>
-<p><strong>問3.</strong> ロード処理の「置き換え方」には3種類（上書き・スキップ・全置換）あります。それぞれどの表が該当し、どういう挙動か説明してください。（§8・§9.5）</p>
+<p><strong>問3.</strong> ロード処理の「置き換え方」には4種類（上書き・スキップ・全置換・追加だけ）あります。それぞれどの表が該当し、どういう挙動か説明してください。（§8・§9.5）</p>
 <p><strong>問4.</strong> <code>validate_dates</code>（§10.3）は、終了日に「今日以降」を許しません。なぜそのような制約があるのか、業務的な理由を答えてください。</p>
 <p><strong>問5.</strong> <code>download_file</code>（§10.5）は、ファイルを返したあと3秒待ってから削除します。「すぐ削除」でも「削除しない」でもなく「3秒後に削除」にしている理由を、2つの観点（ディスク／ダウンロード中）から説明してください。</p>
 <p><strong>問6.</strong> <code>settings.py</code> で本番URLを変更するとき、更新が必要な3か所を挙げてください。（§11.9）</p>
 <p><strong>問7.</strong> <code>RotatingFileHandler</code> の <code>maxBytes</code> と <code>backupCount</code> の意味を説明し、本アプリの設定（1MB・1世代）だとログが最大何MBになるか答えてください。（§11.10）</p>
 <p><strong>問8.</strong> <code>wsgi.py</code> の <code>application</code> という変数は、本番で何（どのソフト）に・どう使われますか。（§12・§13）</p>
-<p><strong>問9.</strong> 本番マイグレーションで「列を削除する」のが特に危険な理由と、事故を防ぐための鉄則を3つ挙げてください。（§14.2）</p>
+<p><strong>問9.</strong> 本番マイグレーションで「列を削除する」のが特に危険な理由と、事故を防ぐための鉄則を3つ挙げてください。（§14.3）</p>
 <p><strong>問10.</strong> ユーザーから「POSTすると403になる」と連絡がありました。まず疑うべき設定はどれですか。また「画面が真っ白」ならまず何を疑いますか。（§15・§16.2）</p>
 <p><strong>問11.</strong> アプリ内バックアップ（§6）とAzureのPITR（§13.3）は、どちらも「バックアップ」ですが役割が違います。それぞれ「誰が・何を・どう戻すか」を対比して説明してください。</p>
 <p><strong>問12.</strong> django-q（<code>Q_CLUSTER</code>）が設定されているのに、バックアップ処理は実際には <code>threading</code> で動いています。この事実が運用上どんな意味を持つか、<code>qcluster</code> 起動の要否に触れて説明してください。（§3.4・§10.2）</p>
@@ -3077,12 +3219,12 @@ Done.
 <ul>
 <li><strong>3つの環境</strong> — ローカル（実験）・ステージング（確認）・本番（公開）を分け、設定（<code>.env</code>）で差を吸収する。本アプリは実態としてローカルと本番の2環境。</li>
 <li><strong>日常運用コマンド</strong> — <code>runserver</code>・<code>migrate</code>・<code>makemigrations</code>・<code>qcluster</code>・<code>collectstatic</code>・<code>npm build</code>・テスト。それぞれの役割と使うタイミングを覚えた。</li>
-<li><strong>バックアップ／復元（<code>tasks.py</code>）</strong> — openpyxlでExcelを「ブック→シート→セル」で作り、pandasで重複を消し、Excel→DBへ流し込む。ロードの置き換え方は表ごとに3種類（上書き・スキップ・全置換）。</li>
+<li><strong>バックアップ／復元（<code>tasks.py</code>）</strong> — openpyxlでExcelを「ブック→シート→セル」で作り、pandasで重複を消し、Excel→DBへ流し込む。ロードの置き換え方は表ごとに4種類（上書き・スキップ・全置換・追加だけ）。</li>
 <li><strong>非同期フロー（<code>asynchronous_views.py</code>）</strong> — タスクID発行→別スレッド起動→ポーリング（202 pending）→ダウンロード→3秒後に自動削除、という一連を1行ずつ追った。</li>
 <li><strong>設定（<code>settings.py</code>）</strong> — <code>ALLOWED_HOSTS</code>・<code>CSRF_TRUSTED_ORIGINS</code>・<code>DATABASES</code>・<code>Q_CLUSTER</code>・WhiteNoise・<code>MEDIA_ROOT</code>・<code>LOGGING</code>（RotatingFileHandler）の意味を理解した。本番URL変更時は3か所更新。</li>
 <li><strong><code>wsgi.py</code></strong> — Webサーバー（Gunicorn）とDjangoをつなぐ玄関。<code>application</code> が本番の入口。</li>
 <li><strong>本番アーキテクチャ</strong> — Azure App Service + Gunicorn + WhiteNoise + Azure Database for PostgreSQL フレキシブルサーバー（接続・ファイアウォール・TLS・自動バックアップ・PITR）。</li>
-<li><strong>デプロイ</strong> — ①テスト②ビルド③collectstatic④コミット⑤反映⑥マイグレーション。②③忘れが最頻出ミス。本番マイグレーションは5つの鉄則を厳守。</li>
+<li><strong>デプロイ</strong> — <code>master</code> に push すると、GitHub Actions が画面のビルド・collectstatic・Azure への送り出しまで自動で行う。毎回の手順は ①テスト ②手元でだけ書き換えた 2 か所を戻す ③コミット ④<code>git push origin master</code> ⑤Actions が緑か見る ⑥（モデルを変えた時だけ）本番の migrate ⑦本番で確認。本番マイグレーションは5つの鉄則を厳守（やり方は前任者に確かめる）。</li>
 <li><strong>HTTPステータスコード</strong> — 4xx（送り手の問題）と5xx（サーバーの問題）で原因の方向を切り分ける。</li>
 <li><strong>障害対応</strong> — 症状把握→切り分け→ログ確認→原因特定→対処（深刻ならロールバック）→記録。「止血が先、診断は後」。</li>
 <li><strong>定期メンテ・PDF再生成</strong> — 履歴の定期整理でDB肥大化を防ぎ、<code>python _build_pdfs.py kosu kosu/README.md</code> で資料をPDF・Web版に作り直す。</li>
