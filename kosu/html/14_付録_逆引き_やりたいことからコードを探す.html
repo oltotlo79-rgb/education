@@ -608,7 +608,7 @@ table { page-break-inside: auto; }
 <td>当てた・まだの設計図を見る</td>
 <td><code>python manage.py showmigrations</code></td>
 <td></td>
-<td>＋ 合わせて覚える</td>
+<td>15 7. 開発・運用の整理</td>
 </tr>
 <tr>
 <td>設計図の SQL を見る</td>
@@ -644,7 +644,7 @@ table { page-break-inside: auto; }
 <td>Django の中で Python を打つ</td>
 <td><code>python manage.py shell</code></td>
 <td>モデルを直接さわって確かめる</td>
-<td>15 5. 不具合</td>
+<td>＋ 合わせて覚える</td>
 </tr>
 <tr>
 <td>設定の誤りを調べる</td>
@@ -688,7 +688,7 @@ table { page-break-inside: auto; }
 <td>package-lock.json のとおりに入れる</td>
 <td><code>npm ci</code></td>
 <td>版がそろう（本番・CI 向け）</td>
-<td>15 6. 開発・運用の整理</td>
+<td>15 7. 開発・運用の整理</td>
 </tr>
 <tr>
 <td>部品を足す</td>
@@ -2200,7 +2200,7 @@ table { page-break-inside: auto; }
 <td>必ず最後に動かす</td>
 <td><code>finally: os.remove(temp_file_path)</code></td>
 <td></td>
-<td>15 5. 不具合</td>
+<td>15 8. テスト</td>
 </tr>
 <tr>
 <td>クラスを作る</td>
@@ -2340,7 +2340,7 @@ table { page-break-inside: auto; }
 <td>辞書の中身を全部</td>
 <td><code>for key, value in d.items():</code></td>
 <td></td>
-<td>15 4. 安全の問題</td>
+<td>＋ 合わせて覚える</td>
 </tr>
 <tr>
 <td>辞書をまとめて足す</td>
@@ -2370,7 +2370,7 @@ table { page-break-inside: auto; }
 <td>今の日時（時間帯つき）</td>
 <td><code>timezone.now()</code></td>
 <td>Django の道具</td>
-<td>＋ 合わせて覚える</td>
+<td>15 6. 不具合</td>
 </tr>
 <tr>
 <td>何日前・何日後</td>
@@ -2540,7 +2540,7 @@ table { page-break-inside: auto; }
 <td>除く</td>
 <td><code>member.objects.exclude(shop='異動・退社')</code></td>
 <td></td>
-<td>15 5. 不具合</td>
+<td>15 6. 不具合</td>
 </tr>
 <tr>
 <td>1 つだけ取る</td>
@@ -2648,13 +2648,13 @@ table { page-break-inside: auto; }
 <td>あれば直し、無ければ作る</td>
 <td><code>member.objects.update_or_create(employee_no=no, defaults={…})</code></td>
 <td>バックアップのロードに向く</td>
-<td>＋ 合わせて覚える</td>
+<td>15 5. 安全の問題</td>
 </tr>
 <tr>
 <td>必要な列だけ辞書で</td>
 <td><code>member.objects.values('employee_no', 'name')</code></td>
 <td></td>
-<td>15 5. 不具合</td>
+<td>15 6. 不具合</td>
 </tr>
 <tr>
 <td>1 列だけの並び</td>
@@ -2830,7 +2830,7 @@ table { page-break-inside: auto; }
 <td>エラーの詳しい場所もログに</td>
 <td><code>logger.exception("ロードに失敗しました")</code></td>
 <td>except の中で使う</td>
-<td>15 4. 安全の問題</td>
+<td>＋ 合わせて覚える</td>
 </tr>
 <tr>
 <td>大きくなったら切り替えるログ</td>
