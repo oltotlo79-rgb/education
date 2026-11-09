@@ -1226,7 +1226,7 @@ li, tr { page-break-inside: avoid; }
 <td>データ管理<br><code>/manager-loading</code></td>
 <td><code>AdministratorLoading</code></td>
 <td><code>kosu_backup</code>・<code>member_load</code>・<code>History_delet</code> など 19 個（データの種類ごとの <code>…_backup</code>・<code>…_load</code>・<code>…_delet</code>）・<code>check_backup_status</code>・<code>download_backup</code>・<code>manager_Loading</code></td>
-<td><code>asynchronous_views.py</code>: <code>download_file</code>・<code>check_task_status</code>・<code>backup</code><br><code>main_views.py</code>: <code>AdministratorLoading</code></td>
+<td><code>main_views.py</code>: <code>AdministratorLoading</code><br><code>asynchronous_views.py</code>: <code>check_task_status</code>・<code>download_file</code>・<code>backup</code></td>
 <td>管理者</td>
 </tr>
 <tr>
@@ -1368,7 +1368,7 @@ li, tr { page-break-inside: avoid; }
 <hr>
 <h2 id="8-気を付けること">8. 気を付けること</h2>
 <h3 id="81-手元でだけ書き換えてコミットしない-2-か所">8.1 手元でだけ書き換えて、コミットしない 2 か所</h3>
-<p>手元の PC でアプリを試す時に、次の 2 か所を書き換えることがあります。<strong>書き換えたままコミットして <code>master</code> に push すると、そのまま本番が変わります。</strong></p>
+<p>手元の PC でアプリを試す時に、次の所を書き換えることがあります。<strong>書き換えたままコミットして <code>master</code> に push すると、（GitHub Actions が動いている時は）そのまま本番が変わります。</strong></p>
 <table>
 <thead>
 <tr>
@@ -1380,13 +1380,7 @@ li, tr { page-break-inside: avoid; }
 </thead>
 <tbody>
 <tr>
-<td><code>frontend/.env.production</code></td>
-<td>本番の URL の行が有効</td>
-<td>本番の行に <code>#</code> を付け、ローカル（<code>http://localhost:8000</code>）の行を有効にして、<code>npm run build</code></td>
-<td>本番の画面が「あなたの PC」を呼びに行き、だれもログインできなくなる</td>
-</tr>
-<tr>
-<td><code>hozen_another/settings.py</code>（76〜77 行目）</td>
+<td><code>hozen_another/settings.py</code>（166〜167 行目）</td>
 <td><code>SESSION_COOKIE_SAMESITE = 'None'</code> と <code>SESSION_COOKIE_SECURE = True</code></td>
 <td><code>'Lax'</code> と <code>False</code>（暗号化していない <code>http://localhost</code> でも、ログインが保たれるように）</td>
 <td>本番のクッキーが「暗号化していない通信でも送る」設定に変わる</td>
@@ -1396,12 +1390,12 @@ li, tr { page-break-inside: avoid; }
 <p><strong>コミットの前に、毎回これを確かめます:</strong></p>
 <ol>
 <li><code>git status</code> を打つ。</li>
-<li>上の 2 つのファイルが「modified」と出ていたら、<code>git diff ファイル名</code> で中身を見る。</li>
+<li>上のファイルが「modified」と出ていたら、<code>git diff ファイル名</code> で中身を見る。</li>
 <li>手元でだけ書き換えた物なら、<code>git restore ファイル名</code> で元に戻す（02 章 §16）。直したい変更と混ざっている時は、その行だけを手で戻す。</li>
 </ol>
 <blockquote>
-<p><strong>ふだんの開発（<code>npm start</code>）では、1 つ目は書き換えなくてよい。</strong> <code>npm start</code> の時は、<code>frontend/.env.production</code> ではなく、自分で作る <code>frontend/.env</code> が使われます（01 章 §17.2）。<code>frontend/.env</code> は <code>.gitignore</code> で除外されているので、コミットされません。</p>
-<p><strong>この 2 か所は、書き換えなくて済むように直せます。</strong> 直し方は <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の D-4 にあります。</p>
+<p><strong><code>frontend/.env.production</code> は、今は読まれません。</strong> 画面のビルドが Vite に変わった（2026 年 9 月）ので、<code>frontend/.env.production</code>・<code>frontend/.env</code> の <code>REACT_APP_API_BASE_URL</code> は使われなくなりました（01 章 §17.2 は、前の Create React App の時の説明です）。手元で <code>npm start</code> で動かす方法は、<a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の D-4 にあります。</p>
+<p><strong>書き換えなくて済むように直せます。</strong> 直し方は <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の S-5（Cookie を <code>Lax</code> にする）と D-4（Vite の中継）にあります。</p>
 </blockquote>
 <h3 id="82-押す前に必ずバックアップを取る操作">8.2 押す前に、必ずバックアップを取る操作</h3>
 <p>次の操作は、データが消えたり置き換わったりします。押す前に、<strong>管理者 ⇒ データ管理</strong> で、関係する種類のデータの「バックアップ開始」を押して、Excel を保存しておきます。</p>
@@ -1416,7 +1410,7 @@ li, tr { page-break-inside: avoid; }
 <tbody>
 <tr>
 <td><strong>ヘルプ（<code>/help</code>）の初期化</strong></td>
-<td>パスワード（<code>HELP_PATH</code>）を入れた後、選んだ物（人員・工数区分定義・設定）を全部消し、初めの 1 件だけにする。人員を選ぶと、従業員番号 <code>12345</code>（名前 <code>admin</code>）の 1 人だけになり、ほかの人はだれもログインできなくなる（今の <code>master</code> では、画面の URL の誤りで、この初期化は動いていない。15 巻の B-1）</td>
+<td>パスワード（<code>HELP_PATH</code>）を入れた後、選んだ物（人員・工数区分定義・設定）を全部消し、初めの 1 件だけにする。人員を選ぶと、従業員番号 <code>12345</code>（名前 <code>admin</code>）の 1 人だけになり、ほかの人はだれもログインできなくなる（本番で今動いている 9 月の版では、画面の URL の誤りで、この初期化は動かない。<code>master</code> では 2026 年 11 月 9 日に直った。15 巻の B-1）</td>
 <td>事前のバックアップをロードする。無ければ Azure のデータベースの時点復元（09 章 §13.3）</td>
 </tr>
 <tr>
@@ -1488,12 +1482,12 @@ li, tr { page-break-inside: avoid; }
 </ul>
 <h3 id="85-新しい画面や-api-を足す時">8.5 新しい画面や API を足す時</h3>
 <ul>
-<li><strong>サーバー（<code>kosu/views/</code>）でも、ログインと権限を確かめます。</strong> 画面でボタンを隠すだけでは、API の住所を直接呼ばれると防げません。<code>member_views.py</code> の <code>MemberList</code> のように、まず <code>request.session.get('login_No')</code> でログインを確かめ、次にその人の <code>authority</code>（または <code>administrator</code>）を確かめる形にそろえます（07 章）。</li>
+<li><strong>サーバー（<code>kosu/views/</code>）でも、ログインと権限を確かめます。</strong> 画面でボタンを隠すだけでは、API の住所を直接呼ばれると防げません。今は <code>kosu/permissions.py</code> の共通の確かめが、全部の API に最初からかかっています（何も書かなければ「ログインが要る」）。「権限」が要る API には <code>permission_classes = [HasAuthority]</code>、管理者だけの API には <code>[IsAdministrator]</code> を書きます。さらに、他人のデータを扱う API では、「そのデータが本人の物か」も確かめます（15 巻の S-3）。</li>
 <li>画面を足したら、<code>frontend/src/index.tsx</code> に URL とタブの名前を、<code>kosu/urls.py</code> に API の住所を足します。</li>
 <li>テストも足します（12 章）。</li>
 </ul>
 <blockquote>
-<p><strong>直すべき所の一覧:</strong> 今のアプリで、サーバーの確かめが抜けている API や、不具合・整理したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。引き継いだら、「🔴 すぐ」の物から直してください。</p>
+<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 9 日の <code>master</code>）で、安全・不具合・整理の面で直したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。引き継いだら、「🔴 すぐ」の物から直してください。</p>
 </blockquote>
 <hr>
 <h2 id="9-よくある依頼と対応のしかた">9. よくある依頼と、対応のしかた</h2>
