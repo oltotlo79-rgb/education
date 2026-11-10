@@ -1482,12 +1482,12 @@ li, tr { page-break-inside: avoid; }
 </ul>
 <h3 id="85-新しい画面や-api-を足す時">8.5 新しい画面や API を足す時</h3>
 <ul>
-<li><strong>サーバー（<code>kosu/views/</code>）でも、ログインと権限を確かめます。</strong> 画面でボタンを隠すだけでは、API の住所を直接呼ばれると防げません。今は <code>kosu/permissions.py</code> の共通の確かめが、全部の API に最初からかかっています（何も書かなければ「ログインが要る」）。「権限」が要る API には <code>permission_classes = [HasAuthority]</code>、管理者だけの API には <code>[IsAdministrator]</code> を書きます。さらに、他人のデータを扱う API では、「そのデータが本人の物か」も確かめます（15 巻の S-3）。</li>
+<li><strong>サーバー（<code>kosu/views/</code>）でも、ログインと権限を確かめます。</strong> 画面でボタンを隠すだけでは、API の住所を直接呼ばれると防げません。今は <code>kosu/permissions.py</code> の共通の確かめが、全部の API に最初からかかっています（何も書かなければ「ログインが要る」）。「権限」が要る API には <code>permission_classes = [HasAuthority]</code>、管理者だけの API には <code>[IsAdministrator]</code> を書きます。さらに、他人のデータを扱う API では、その API の中で「そのデータが本人の物か」も確かめています（2026 年 11 月 10 日に全部そろった。15 巻の S-3）。新しく API を足す時も、同じように確かめてください。</li>
 <li>画面を足したら、<code>frontend/src/index.tsx</code> に URL とタブの名前を、<code>kosu/urls.py</code> に API の住所を足します。</li>
 <li>テストも足します（12 章）。</li>
 </ul>
 <blockquote>
-<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 9 日の <code>master</code>）で、安全・不具合・整理の面で直したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。引き継いだら、「🔴 すぐ」の物から直してください。</p>
+<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 11 日の <code>master</code>）で、安全・不具合・整理の面で直したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。今の <code>master</code> は、アプリのテストが 9 個落ちる状態です（15 巻の T-5）。引き継いだら、「🔴 すぐ」の物から直してください。</p>
 </blockquote>
 <hr>
 <h2 id="9-よくある依頼と対応のしかた">9. よくある依頼と、対応のしかた</h2>
