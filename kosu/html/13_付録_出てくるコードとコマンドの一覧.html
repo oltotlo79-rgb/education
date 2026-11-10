@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/13_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">業務工数システム 引き継ぎ教育資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">13 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 747 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 708 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -226,7 +226,7 @@ table { page-break-inside: auto; }
 
 <h1 id="13-付録-出てくるコードとコマンドの一覧機能ごと">13 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="この一覧について">この一覧について</h2>
-<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 747 個</strong>を、<strong>24 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 708 個</strong>を、<strong>24 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。Web 版（<code>kosu\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
@@ -261,25 +261,25 @@ table { page-break-inside: auto; }
 <td><a href="#cat-2">コマンド</a></td>
 <td>2</td>
 <td><a href="#cat-14">TypeScript</a></td>
-<td>35</td>
+<td>34</td>
 </tr>
 <tr>
 <td><a href="#cat-3">WSL・bash</a></td>
 <td>5</td>
 <td><a href="#cat-15">React</a></td>
-<td>66</td>
+<td>65</td>
 </tr>
 <tr>
 <td><a href="#cat-4">Python の道具</a></td>
 <td>13</td>
 <td><a href="#cat-16">Python</a></td>
-<td>143</td>
+<td>127</td>
 </tr>
 <tr>
 <td><a href="#cat-5">Django の道具</a></td>
 <td>6</td>
 <td><a href="#cat-17">Django</a></td>
-<td>85</td>
+<td>72</td>
 </tr>
 <tr>
 <td><a href="#cat-6">Node.js</a></td>
@@ -309,13 +309,13 @@ table { page-break-inside: auto; }
 <td><a href="#cat-10">Git</a></td>
 <td>40</td>
 <td><a href="#cat-22">Vitest・Testing Library</a></td>
-<td>28</td>
+<td>23</td>
 </tr>
 <tr>
 <td><a href="#cat-11">HTML</a></td>
 <td>40</td>
 <td><a href="#cat-23">Python のテスト</a></td>
-<td>9</td>
+<td>6</td>
 </tr>
 <tr>
 <td><a href="#cat-12">CSS</a></td>
@@ -2186,11 +2186,6 @@ table { page-break-inside: auto; }
 <td>「何の型でもよい」という特別な型。型の確かめが効かなくなるので、ふだんは使わず、テストでにせ物を作る時など、どうしても必要な所だけに使います。</td>
 <td>12 4. 実コード全解説：Login.test.tsx 全13…</td>
 </tr>
-<tr>
-<td><code>.forEach()</code></td>
-<td>配列の中身を 1 つずつ処理するメソッド（新しい配列は作らない）。<code>(x, i) =&gt; …</code> で、番号 <code>i</code> も受け取れます。</td>
-<td>15 8. テスト</td>
-</tr>
 </tbody>
 </table>
 <h2 id="cat-15">React</h2>
@@ -2527,11 +2522,6 @@ table { page-break-inside: auto; }
 <td><code>name=</code></td>
 <td>部品（<code>&lt;input&gt;</code> など）の名前。フォームを送る時の項目の名前や、テストで部品を探す目印に使います。<code>id=</code> と同じ名前にしておくことが多いです。</td>
 <td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>&lt;WorkSelect&gt;</code></td>
-<td>就業形態を選ぶプルダウンの部品（<code>frontend/src/Components/WorkSelect.tsx</code>）。<code>mode</code> を省くと出勤を伴う物だけ、<code>mode="ALL"</code> で休日なども含めた全部の選択肢を出します。</td>
-<td>15 8. テスト</td>
 </tr>
 </tbody>
 </table>
@@ -3116,31 +3106,6 @@ table { page-break-inside: auto; }
 <td>12 12. バックのテスト設定</td>
 </tr>
 <tr>
-<td><code>TypeError</code></td>
-<td>値の種類（型）が合わない時のエラー。<code>int(None)</code> のように、数にできない種類の値を渡すと出ます。<code>except (TypeError, ValueError):</code> と並べると、まとめて捕まえられます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>AttributeError</code></td>
-<td>その値に無い名前（属性・メソッド）を使った時のエラー。<code>json.loads()</code> の結果が辞書ではなくリストだった時に、<code>data.get(...)</code> と書くと出ます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.isdigit()</code></td>
-<td>文字列が、全部数字の文字だけでできていれば <code>True</code> を返すメソッド。<code>str(a).strip().isdigit()</code> で、「従業員番号として読める文字か」を確かめています。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>set()</code></td>
-<td>集合（同じ値は 1 つしか入らない入れ物）を作る関数。<code>seen = set()</code> で空の集合を作り、<code>seen.add(x)</code>・<code>x in seen</code> で使います。重複を見つける時に便利です。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>setattr()</code></td>
-<td><code>setattr(物, '名前', 値)</code> で、名前を文字で指定して、その物の属性に値を入れる関数。<code>setattr(inquir_member, 'pop_up1', '')</code> は <code>inquir_member.pop_up1 = ''</code> と同じです。名前を <code>f'pop_up{i}'</code> のように作れるので、<code>pop_up1</code>〜<code>pop_up5</code> のような似た名前の項目を、ループで扱えます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
 <td><code>.is_file()</code></td>
 <td><code>Path</code> の <code>.is_file()</code> は、その場所にファイルがあれば <code>True</code> を返すメソッド。フォルダや、何も無い時は <code>False</code> です。</td>
 <td>15 5. 安全の問題</td>
@@ -3167,8 +3132,13 @@ table { page-break-inside: auto; }
 </tr>
 <tr>
 <td><code>.encode()</code></td>
-<td>文字列を、バイトの並びにするメソッド（UTF-8）。<code>token.encode()</code> のように、ハッシュの計算など、バイトを求める関数に渡す前に使います。</td>
+<td>文字列を、バイトの並び（<code>bytes</code>）にするメソッド。<code>password.encode('utf-8')</code> は、パスワードの文字を UTF-8 のバイトにします。<code>hmac.compare_digest</code> で日本語の文字も比べられるように、両方をバイトにしてから渡しています。</td>
 <td>15 5. 安全の問題</td>
+</tr>
+<tr>
+<td><code>get_settings()</code></td>
+<td><code>kosu/utils/main_utils.py</code> にある、このアプリの関数（2026 年 11 月 10 日に足された）。管理者設定（<code>administrator_data</code>）を 1 件返します。設定が 1 件も無い時は、初めの値（一覧の件数 20）で作ってから返すので、設定が無くても 500 になりません。</td>
+<td>15 6. 不具合</td>
 </tr>
 <tr>
 <td><code>.wraps()</code></td>
@@ -3191,11 +3161,6 @@ table { page-break-inside: auto; }
 <td>15 6. 不具合</td>
 </tr>
 <tr>
-<td><code>.endswith()</code></td>
-<td>文字列が、その文字で終わっていれば <code>True</code> を返すメソッド。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
 <td><code>%</code></td>
 <td>Python の <code>7 % 2</code> は、割った余り（<code>1</code>）です。</td>
 <td>15 6. 不具合</td>
@@ -3204,61 +3169,6 @@ table { page-break-inside: auto; }
 <td><code>.warning()</code></td>
 <td><code>ロガー.warning(文)</code> は、ロガー（ログを書く窓口）に「注意」の重さでログを書くメソッド。<code>info</code> より重い知らせに使います。</td>
 <td>15 7. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>finally</code></td>
-<td><code>try … except</code> のあと、成功しても失敗しても最後に必ず動く所。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.mkdtemp()</code></td>
-<td><code>tempfile.mkdtemp()</code> は、OS の一時フォルダの中に、新しい空のフォルダを作って、その場所を返す関数。<code>prefix=</code> は名前の頭です。動かすたびに別のフォルダになるので、前のテストで作った物が混ざりません。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.write_text()</code></td>
-<td><code>Path</code> のファイルに、文字列を書くメソッド。<code>encoding="utf-8"</code> を付けます。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.mkstemp()</code></td>
-<td><code>tempfile.mkstemp()</code> は、一時フォルダに空のファイルを作り、（開いたファイルの番号, ファイルの場所）の 2 つを返す関数。番号は <code>os.close()</code> で閉じてから、場所の方を使います。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.close()</code></td>
-<td>接続やファイルを閉じるメソッド。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.TemporaryDirectory()</code></td>
-<td><code>with tempfile.TemporaryDirectory() as 名前:</code> で、一時フォルダを作り、<code>with</code> の中だけ使えるようにする書き方。<code>with</code> を出ると、フォルダは中身ごと消えます。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.write_bytes()</code></td>
-<td><code>Path</code> のファイルに、バイトの並びをそのまま書くメソッド。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>dict()</code></td>
-<td>辞書を作る関数。<code>dict(BT, employee_no=3001, name='n')</code> は、辞書 <code>BT</code>（休憩時間の 24 項目）の中身に、<code>employee_no</code> などを足した、新しい辞書を作ります。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>sorted()</code></td>
-<td>並べかえた<strong>新しい</strong>リストを返す関数。<code>sorted(def_choice.objects.values_list('def_select', flat=True))</code> は、作業詳細の選択肢の文字を、並べかえたリストにします（テストで、並びの順番に関係なく中身をくらべるため）。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>b"…"</code></td>
-<td><code>b'data'</code> は、文字ではなく「バイトの並び」（<code>bytes</code>）を作る書き方です。ファイルに書く中身や、ダウンロードで返ってきた中身（<code>b''.join(response.streaming_content)</code>）とくらべるのに使います。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>{キー: 値 for …}</code></td>
-<td><code>{f'break_time{i}{s}': '#12001300' for i in range(1, 7) for s in ('', '_over1', '_over2', '_over3')}</code> は、「1 つずつから、キーと値の組を作って、辞書にする」書き方です。ここでは、休憩時間の 24 項目の辞書を、1 行で作っています。</td>
-<td>15 8. テスト</td>
 </tr>
 </tbody>
 </table>
@@ -3553,46 +3463,6 @@ table { page-break-inside: auto; }
 <td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
 </tr>
 <tr>
-<td><code>@ensure_csrf_cookie</code></td>
-<td>その画面（ビュー）の返事に、CSRF の合言葉（<code>csrftoken</code> というクッキー）を必ず付ける印。React の画面は、このクッキーの値を、書き込みの時に <code>X-CSRFToken</code> という見出しに入れて送ります（<code>frontend/src/api/axios.ts</code>）。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>method_decorator()</code></td>
-<td>関数用の印（デコレーター）を、クラスの画面（ビュー）のメソッドにも付けられるようにする物。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>@method_decorator</code></td>
-<td><code>@method_decorator(ensure_csrf_cookie, name="dispatch")</code> をクラスの上に付けて、そのクラスの画面に印を付けます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.cycle_key()</code></td>
-<td><code>request.session.cycle_key()</code> は、セッションの中身はそのままで、セッションの番号（クッキーの値）だけを新しくするメソッド。ログインの時に呼ぶと、ログインの前の番号を知っている人が、なりすませなくなります。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>rotate_token()</code></td>
-<td>CSRF トークンを、新しい物に変える関数（<code>django.middleware.csrf</code> の中にある）。ログインの時に呼ぶと、ログイン前のトークンを知られていても、ログインした後は使えなくなります。Django 標準の <code>login()</code> の中でも、同じことをしています。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.user</code></td>
-<td>Django の <code>request.user</code> は、今ログインしている人（していなければ「だれでもない人」）です。<code>request.user.is_authenticated</code> で、ログインしているかが分かります。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.update_or_create()</code></td>
-<td>条件に合う行があれば書きかえ、無ければ作るメソッド。<code>(物, 新しく作ったか)</code> の組が返ります。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.atomic()</code></td>
-<td><code>with transaction.atomic():</code> の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
 <td><code>@transaction</code></td>
 <td><code>@transaction.atomic</code> を関数の上に付けると、その関数の中のデータベースの変更が「全部成功か、全部取り消し」になります。</td>
 <td>15 5. 安全の問題</td>
@@ -3601,6 +3471,11 @@ table { page-break-inside: auto; }
 <td><code>.set_rollback()</code></td>
 <td><code>transaction.set_rollback(True)</code> は、今いる <code>transaction.atomic</code> の中の書き込みを、終わる時に全部取り消すよう印を付ける関数。<code>except</code> で例外を捕まえて普通に返すと、<code>atomic</code> は「うまくいった」とみなして確定してしまうので、取り消したい時はこれを呼びます。</td>
 <td>15 5. 安全の問題</td>
+</tr>
+<tr>
+<td><code>.atomic()</code></td>
+<td><code>with transaction.atomic():</code> の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。</td>
+<td>15 6. 不具合</td>
 </tr>
 <tr>
 <td><code>.values()</code></td>
@@ -3638,6 +3513,11 @@ table { page-break-inside: auto; }
 <td>15 6. 不具合</td>
 </tr>
 <tr>
+<td><code>.user</code></td>
+<td><code>request.user</code> は、今ログインしている人。このアプリでは、<code>kosu/permissions.py</code> の <code>LoginNoAuthentication</code> が、セッションの従業員番号（<code>login_No</code>）から探した人員データ（<code>member</code>）を入れます。ログインしていない時は <code>None</code> です（<code>settings.py</code> の <code>UNAUTHENTICATED_USER</code>）。</td>
+<td>15 6. 不具合</td>
+</tr>
+<tr>
 <td><code>.exclude()</code></td>
 <td>問い合わせから、条件に合う行を除くメソッド（<code>filter</code> の逆）。</td>
 <td>15 6. 不具合</td>
@@ -3645,6 +3525,11 @@ table { page-break-inside: auto; }
 <tr>
 <td><code>.distinct()</code></td>
 <td>問い合わせの結果から、重なった値を 1 つにするメソッド。<code>.values_list('def_ver2', flat=True).distinct()</code> は、使われている定義の Ver 名を、重ならないように並べます。</td>
+<td>15 6. 不具合</td>
+</tr>
+<tr>
+<td><code>.update_or_create()</code></td>
+<td>条件に合う行があれば書きかえ、無ければ作るメソッド。<code>(物, 新しく作ったか)</code> の組が返ります。</td>
 <td>15 6. 不具合</td>
 </tr>
 <tr>
@@ -3656,46 +3541,6 @@ table { page-break-inside: auto; }
 <td><code>.list()</code></td>
 <td><code>env.list('ALLOWED_HOSTS', default=[...])</code> は、<code>django-environ</code> で、<code>a,b,c</code> のようにカンマで区切った環境変数を、並び（リスト）として読むメソッド。</td>
 <td>15 7. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>.refresh_from_db()</code></td>
-<td>手元にある 1 行分のデータ（モデルのインスタンス）の値を、データベースから読み直すメソッド。API でデータが書き換わったかを確かめる前に呼びます。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.clear()</code></td>
-<td><code>cache.clear()</code> は、Django のキャッシュ（一時的に覚えておく場所）を全部空にするメソッド。呼び出し回数の制限（<code>ScopedRateThrottle</code>）は回数をキャッシュに覚えるので、テストの前後で空にします。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.values_list()</code></td>
-<td>問い合わせの結果を、タプル（値の組）の並びで返すメソッド。<code>flat=True</code> を付けると、1 つの列の値だけの並びになります。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>override_settings()</code></td>
-<td><code>from django.test import override_settings</code> で読み込む、テストの間だけ設定を変える道具。<code>@override_settings(…)</code> の形で使います。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>@override_settings</code></td>
-<td>テストのメソッドの上に付けると、そのテストの間だけ、<code>settings.py</code> の値を変えられる印。<code>@override_settings(HELP_PATH='test-help')</code>。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>Client</code></td>
-<td>Django のテスト用の、ブラウザの代わり（<code>django.test.Client</code>）。<code>Client(enforce_csrf_checks=True)</code> とすると、本物のブラウザと同じく、CSRF を確かめる状態で頼みを送れます（何も付けないと、確かめを切った状態）。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.cookies</code></td>
-<td>テスト用のクライアントの <code>client.cookies</code> は、そのクライアントが覚えているクッキーです。<code>client.cookies['csrftoken'].value</code> で、配られた CSRF の合言葉の値が取れます。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.json()</code></td>
-<td>テストで受け取った答え（レスポンス）の本文を、JSON として読んで、Python のリストや辞書にするメソッド。<code>self.assertEqual(res.json(), [])</code>。</td>
-<td>15 8. テスト</td>
 </tr>
 </tbody>
 </table>
@@ -3780,6 +3625,21 @@ table { page-break-inside: auto; }
 <td>07 5. 実コード全解説：member_views.py 全2…</td>
 </tr>
 <tr>
+<td><code>permission_classes()</code></td>
+<td><code>from rest_framework.decorators import permission_classes</code> で読み込む、関数の API に確かめを付ける道具。<code>@permission_classes([…])</code> の形で使います。クラスの API では、<code>permission_classes = [...]</code> という変数に書きます。</td>
+<td>15 5. 安全の問題</td>
+</tr>
+<tr>
+<td><code>@permission_classes</code></td>
+<td><code>@api_view</code> で書いた関数の API に、「だれが使えるか」の確かめを付ける印。<code>@permission_classes([IsAdministrator])</code> で、管理者だけにします。<code>@api_view</code> のすぐ下に書きます。</td>
+<td>15 5. 安全の問題</td>
+</tr>
+<tr>
+<td><code>IsAdministrator</code></td>
+<td><code>kosu/permissions.py</code> にある、権限の確かめの部品。ログインしていて、人員の「管理者（<code>administrator</code>）」が ON の人だけを通します（足りない時は 403）。クラスのビューでは <code>permission_classes = [IsAdministrator]</code>、関数のビューでは <code>@permission_classes([IsAdministrator])</code> と書いて使います。</td>
+<td>15 5. 安全の問題</td>
+</tr>
+<tr>
 <td><code>AllowAny</code></td>
 <td>「だれでも使える」という確かめ（いつも通す）。全部の API に「ログインが要る」をかけた後で、ログイン画面のように、ログインしていなくても使う API にだけ <code>permission_classes = [AllowAny]</code> と付けて外します。</td>
 <td>15 5. 安全の問題</td>
@@ -3790,24 +3650,9 @@ table { page-break-inside: auto; }
 <td>15 5. 安全の問題</td>
 </tr>
 <tr>
-<td><code>HasAuthority</code></td>
-<td><code>kosu/permissions.py</code> にある、権限の確かめの部品。ログインしていて、人員の「権限（<code>authority</code>）」が ON の人だけを通します（足りない時は 403）。ビューに <code>permission_classes = [HasAuthority]</code> と書いて使います。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
 <td><code>.validated_data</code></td>
 <td>DRF の <code>serializer.validated_data</code> は、確かめ（<code>is_valid()</code>）を通った後の、安全な値です。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>permission_classes()</code></td>
-<td><code>from rest_framework.decorators import permission_classes</code> で読み込む、関数の API に確かめを付ける道具。<code>@permission_classes([…])</code> の形で使います。クラスの API では、<code>permission_classes = [...]</code> という変数に書きます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>@permission_classes</code></td>
-<td><code>@api_view</code> で書いた関数の API に、「だれが使えるか」の確かめを付ける印。<code>@permission_classes([IsAdministrator])</code> で、管理者だけにします。<code>@api_view</code> のすぐ下に書きます。</td>
-<td>15 5. 安全の問題</td>
+<td>15 6. 不具合</td>
 </tr>
 </tbody>
 </table>
@@ -4082,31 +3927,6 @@ table { page-break-inside: auto; }
 <td><code>expect(にせの関数).toHaveBeenCalled()</code> は「1 回以上呼ばれた」ことを確かめます。<code>.not.toHaveBeenCalled()</code> なら「1 回も呼ばれていない」。</td>
 <td>12 15. 新しいテストの足し方</td>
 </tr>
-<tr>
-<td><code>.getByText()</code></td>
-<td><code>screen.getByText("出勤")</code> は、画面に表示されている文字で、部品を探すメソッド。見つからないと、テストが失敗します。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.getAllByRole()</code></td>
-<td>画面の中から、役割（<code>"option"</code> ＝ プルダウンの選択肢、など）が同じ物を全部探して、並び（配列）で返すメソッド。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.toHaveLength()</code></td>
-<td>並び（配列）の個数が、その数であることを確かめるメソッド。<code>expect(並び).toHaveLength(10)</code> は「10 個ある」。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.findByText()</code></td>
-<td>画面に、その文字が出てくるまで待って、見つかった物を返すメソッド（<code>await</code> で待つ）。読み込みが終わるのを待つ時に使います。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.toBeChecked()</code></td>
-<td>チェックボックスに、チェックが入っていることを確かめるメソッド。<code>.not.toBeChecked()</code> は「入っていない」ことを確かめます。</td>
-<td>15 8. テスト</td>
-</tr>
 </tbody>
 </table>
 <h2 id="cat-23">Python のテスト</h2>
@@ -4148,21 +3968,6 @@ table { page-break-inside: auto; }
 <td><code>.assertTrue()</code></td>
 <td><code>self.assertTrue(値)</code> は「値が真（True）」を確かめます。</td>
 <td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
-</tr>
-<tr>
-<td><code>.assertNotEqual()</code></td>
-<td>2 つの値が「違う」ことを確かめるメソッド。同じだと、テストが失敗します。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.object()</code></td>
-<td><code>mock.patch.object(物, '名前', 値)</code> を <code>with</code> で使うと、<code>with</code> の中だけ、その物の属性を別の値に差し替えます（<code>unittest.mock</code>）。テストで <code>ScopedRateThrottle.THROTTLE_RATES</code> を差し替えて、上限を 5 回にしています。</td>
-<td>15 8. テスト</td>
-</tr>
-<tr>
-<td><code>.dict()</code></td>
-<td><code>mock.patch.dict(os.environ, {'HELP_PATH': ''})</code> を <code>with</code> で使うと、<code>with</code> の中だけ、辞書（ここでは環境変数）の中身を書き換えます。<code>with</code> を出ると元に戻ります。</td>
-<td>15 8. テスト</td>
 </tr>
 </tbody>
 </table>
