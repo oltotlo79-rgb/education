@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/13_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">業務工数システム 引き継ぎ教育資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">13 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 708 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 695 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -226,7 +226,7 @@ table { page-break-inside: auto; }
 
 <h1 id="13-付録-出てくるコードとコマンドの一覧機能ごと">13 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="この一覧について">この一覧について</h2>
-<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 708 個</strong>を、<strong>24 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 695 個</strong>を、<strong>24 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。Web 版（<code>kosu\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
@@ -273,19 +273,19 @@ table { page-break-inside: auto; }
 <td><a href="#cat-4">Python の道具</a></td>
 <td>13</td>
 <td><a href="#cat-16">Python</a></td>
-<td>127</td>
+<td>120</td>
 </tr>
 <tr>
 <td><a href="#cat-5">Django の道具</a></td>
 <td>6</td>
 <td><a href="#cat-17">Django</a></td>
-<td>72</td>
+<td>69</td>
 </tr>
 <tr>
 <td><a href="#cat-6">Node.js</a></td>
 <td>11</td>
 <td><a href="#cat-18">Django REST framework</a></td>
-<td>20</td>
+<td>15</td>
 </tr>
 <tr>
 <td><a href="#cat-7">設定ファイル（JSON）</a></td>
@@ -315,7 +315,7 @@ table { page-break-inside: auto; }
 <td><a href="#cat-11">HTML</a></td>
 <td>40</td>
 <td><a href="#cat-23">Python のテスト</a></td>
-<td>6</td>
+<td>8</td>
 </tr>
 <tr>
 <td><a href="#cat-12">CSS</a></td>
@@ -3106,63 +3106,28 @@ table { page-break-inside: auto; }
 <td>12 12. バックのテスト設定</td>
 </tr>
 <tr>
-<td><code>.is_file()</code></td>
-<td><code>Path</code> の <code>.is_file()</code> は、その場所にファイルがあれば <code>True</code> を返すメソッド。フォルダや、何も無い時は <code>False</code> です。</td>
+<td><code>.startswith()</code></td>
+<td>文字列が、その中身で始まっていれば <code>True</code> を返すメソッド。<code>login_member.shop.startswith('組長以上')</code> は、ショップが「組長以上(P,R,T,その他)」「組長以上(W,A)」のどちらかなら <code>True</code> です。</td>
 <td>15 5. 安全の問題</td>
 </tr>
 <tr>
-<td><code>.unlink()</code></td>
-<td><code>Path</code> の <code>.unlink()</code> は、そのファイルを消すメソッド。消せない時は <code>OSError</code> になります。</td>
+<td><code>.find()</code></td>
+<td>文字列の中で、渡した文字が最初に出てくる位置（0 から数えた番号）を返すメソッド。見つからない時は <code>-1</code> を返します。<code>addr[1:addr.find(']')]</code> は、<code>[2001:db8::1]:51234</code> のような文字から、<code>[</code> の次から <code>]</code> の手前まで（<code>2001:db8::1</code>）を取り出します。</td>
 <td>15 5. 安全の問題</td>
 </tr>
 <tr>
-<td><code>original_close()</code></td>
-<td>この巻のダウンロードの直し方で、<code>FileResponse</code> が元から持っていた <code>close</code>（開いたファイルを閉じる処理）を、変数 <code>original_close</code> に取っておいた物。先にこれを呼んでファイルを閉じてから、ファイルを消します。</td>
+<td><code>[-1]</code></td>
+<td><code>items[-1]</code> は、最後の 1 つです。<code>[-2]</code> は後ろから 2 つ目です。</td>
 <td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>OSError</code></td>
-<td>ファイルを開く・消すなど、OS とのやり取りで起きるエラーのまとめ役。<code>except OSError:</code> で、ファイルが無い・使用中で消せない、などをまとめて受け止めます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.compare_digest()</code></td>
-<td><code>hmac.compare_digest(a, b)</code> は、2 つの値が同じかを、かかる時間から中身を推測されない方法で比べる関数です。合言葉やハッシュを比べる時に使います。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.encode()</code></td>
-<td>文字列を、バイトの並び（<code>bytes</code>）にするメソッド。<code>password.encode('utf-8')</code> は、パスワードの文字を UTF-8 のバイトにします。<code>hmac.compare_digest</code> で日本語の文字も比べられるように、両方をバイトにしてから渡しています。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>get_settings()</code></td>
-<td><code>kosu/utils/main_utils.py</code> にある、このアプリの関数（2026 年 11 月 10 日に足された）。管理者設定（<code>administrator_data</code>）を 1 件返します。設定が 1 件も無い時は、初めの値（一覧の件数 20）で作ってから返すので、設定が無くても 500 になりません。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>.wraps()</code></td>
-<td><code>@functools.wraps(func)</code> は、デコレーターの中で作った関数に、元の関数（<code>func</code>）の名前や説明を引き継がせる印。付けないと、エラーの表示などで、元の関数の名前が分からなくなります。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>func()</code></td>
-<td>デコレーター <code>atomic_load</code> に渡された、元の関数（ロード関数）を呼んでいる所。<code>func(*args, **kwargs)</code> の <code>*args</code>・<code>**kwargs</code> は、「受け取った引数を、全部そのまま渡す」書き方です。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>@functools</code></td>
-<td><code>@functools.wraps(func)</code> の頭の部分。<code>functools</code>（関数を扱う道具を集めた、Python に最初から入っている部品）の <code>wraps</code> を、デコレーターとして使うという意味です。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>@atomic_load</code></td>
-<td>この巻で <code>kosu/tasks.py</code> に足す、自分で作ったデコレーター。ロード関数の上に付けると、その関数の中の書き込みを 1 つのトランザクションにまとめ、関数がエラーを返した時は、全部取り消します。</td>
-<td>15 6. 不具合</td>
 </tr>
 <tr>
 <td><code>%</code></td>
 <td>Python の <code>7 % 2</code> は、割った余り（<code>1</code>）です。</td>
+<td>15 6. 不具合</td>
+</tr>
+<tr>
+<td><code>get_settings()</code></td>
+<td><code>kosu/utils/main_utils.py</code> にある、このアプリの関数（2026 年 11 月 10 日に足された）。管理者設定（<code>administrator_data</code>）を 1 件返します。設定が 1 件も無い時は、初めの値（一覧の件数 20）で作ってから返すので、設定が無くても 500 になりません。</td>
 <td>15 6. 不具合</td>
 </tr>
 <tr>
@@ -3463,19 +3428,19 @@ table { page-break-inside: auto; }
 <td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
 </tr>
 <tr>
-<td><code>@transaction</code></td>
-<td><code>@transaction.atomic</code> を関数の上に付けると、その関数の中のデータベースの変更が「全部成功か、全部取り消し」になります。</td>
+<td><code>.META</code></td>
+<td>Django の <code>request.META</code> は、要求の見出しやサーバーの情報が入った辞書です。<code>request.META.get("REMOTE_ADDR")</code> で、送ってきた所のアドレスが分かります。</td>
 <td>15 5. 安全の問題</td>
 </tr>
 <tr>
-<td><code>.set_rollback()</code></td>
-<td><code>transaction.set_rollback(True)</code> は、今いる <code>transaction.atomic</code> の中の書き込みを、終わる時に全部取り消すよう印を付ける関数。<code>except</code> で例外を捕まえて普通に返すと、<code>atomic</code> は「うまくいった」とみなして確定してしまうので、取り消したい時はこれを呼びます。</td>
+<td><code>.clear()</code></td>
+<td><code>cache.clear()</code> は、Django のキャッシュ（一時的に覚えておく場所）を全部空にするメソッド。呼び出し回数の制限（<code>ScopedRateThrottle</code>）は回数をキャッシュに覚えるので、テストの前後で空にします。</td>
 <td>15 5. 安全の問題</td>
 </tr>
 <tr>
-<td><code>.atomic()</code></td>
-<td><code>with transaction.atomic():</code> の中のデータベースの変更を、「全部成功か、全部取り消し」にする書き方。</td>
-<td>15 6. 不具合</td>
+<td><code>Client</code></td>
+<td>Django のテスト用の、ブラウザの代わり（<code>django.test.Client</code>）。<code>Client(enforce_csrf_checks=True)</code> とすると、本物のブラウザと同じく、CSRF を確かめる状態で頼みを送れます（何も付けないと、確かめを切った状態）。</td>
+<td>15 5. 安全の問題</td>
 </tr>
 <tr>
 <td><code>.values()</code></td>
@@ -3495,21 +3460,6 @@ table { page-break-inside: auto; }
 <tr>
 <td><code>.AddConstraint()</code></td>
 <td>マイグレーションの中で、表に決まり（<code>UniqueConstraint</code> など）を足す操作。モデルの <code>class Meta:</code> の <code>constraints</code> を見て、<code>makemigrations</code> が書きます。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>.savepoint()</code></td>
-<td><code>transaction.savepoint()</code> は、トランザクションの途中に「ここまで戻れる印（セーブポイント）」を付けて、その印を返す関数。後で <code>transaction.savepoint_rollback(印)</code> を呼ぶと、印より後の書き込みだけを取り消せます。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>.savepoint_rollback()</code></td>
-<td><code>transaction.savepoint_rollback(sid)</code> は、<code>savepoint()</code> で付けた印 <code>sid</code> より後の書き込みだけを取り消す関数。ロードで「この 1 行だけ飛ばして、次の行へ進む」のに使います。</td>
-<td>15 6. 不具合</td>
-</tr>
-<tr>
-<td><code>.now()</code></td>
-<td><code>timezone.now()</code> は、今の日時を、時差付きで返します（Django の設定に合わせた形）。Python の <code>datetime.now()</code> は時差が付かないので、Django ではこちらを使います。</td>
 <td>15 6. 不具合</td>
 </tr>
 <tr>
@@ -3625,34 +3575,9 @@ table { page-break-inside: auto; }
 <td>07 5. 実コード全解説：member_views.py 全2…</td>
 </tr>
 <tr>
-<td><code>permission_classes()</code></td>
-<td><code>from rest_framework.decorators import permission_classes</code> で読み込む、関数の API に確かめを付ける道具。<code>@permission_classes([…])</code> の形で使います。クラスの API では、<code>permission_classes = [...]</code> という変数に書きます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>@permission_classes</code></td>
-<td><code>@api_view</code> で書いた関数の API に、「だれが使えるか」の確かめを付ける印。<code>@permission_classes([IsAdministrator])</code> で、管理者だけにします。<code>@api_view</code> のすぐ下に書きます。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>IsAdministrator</code></td>
-<td><code>kosu/permissions.py</code> にある、権限の確かめの部品。ログインしていて、人員の「管理者（<code>administrator</code>）」が ON の人だけを通します（足りない時は 403）。クラスのビューでは <code>permission_classes = [IsAdministrator]</code>、関数のビューでは <code>@permission_classes([IsAdministrator])</code> と書いて使います。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>AllowAny</code></td>
-<td>「だれでも使える」という確かめ（いつも通す）。全部の API に「ログインが要る」をかけた後で、ログイン画面のように、ログインしていなくても使う API にだけ <code>permission_classes = [AllowAny]</code> と付けて外します。</td>
-<td>15 5. 安全の問題</td>
-</tr>
-<tr>
 <td><code>ScopedRateThrottle</code></td>
 <td>同じ所（IP アドレス）からの呼び出しの回数を数えて、上限を超えたら 429（呼びすぎ）を返す部品。ビューに <code>throttle_classes = [ScopedRateThrottle]</code> と <code>throttle_scope = 'help'</code> を書くと、<code>settings.py</code> の <code>REST_FRAMEWORK</code> の <code>DEFAULT_THROTTLE_RATES</code> の <code>'help': '5/hour'</code>（1 時間に 5 回）が上限になります。</td>
 <td>15 5. 安全の問題</td>
-</tr>
-<tr>
-<td><code>.validated_data</code></td>
-<td>DRF の <code>serializer.validated_data</code> は、確かめ（<code>is_valid()</code>）を通った後の、安全な値です。</td>
-<td>15 6. 不具合</td>
 </tr>
 </tbody>
 </table>
@@ -3968,6 +3893,16 @@ table { page-break-inside: auto; }
 <td><code>.assertTrue()</code></td>
 <td><code>self.assertTrue(値)</code> は「値が真（True）」を確かめます。</td>
 <td>12 10. APIの 401 / 403 / 200 を確かめ…</td>
+</tr>
+<tr>
+<td><code>.object()</code></td>
+<td><code>mock.patch.object(物, '名前', 値)</code> を <code>with</code> で使うと、<code>with</code> の中だけ、その物の属性を別の値に差し替えます（<code>unittest.mock</code>）。テストで <code>ScopedRateThrottle.THROTTLE_RATES</code> を差し替えて、上限を 5 回にしています。</td>
+<td>15 5. 安全の問題</td>
+</tr>
+<tr>
+<td><code>as_json()</code></td>
+<td><code>kosu/tests/test_security.py</code> にある、テスト用の小さな関数。辞書を JSON の文字にして、<code>{'data': JSON の文字, 'content_type': 'application/json'}</code> を返します。<code>c.post('/api/help_pass/', **as_json({'password': 'x'}))</code> のように <code>**</code> で広げて渡すと、JSON の本文を送れます。</td>
+<td>15 5. 安全の問題</td>
 </tr>
 </tbody>
 </table>
