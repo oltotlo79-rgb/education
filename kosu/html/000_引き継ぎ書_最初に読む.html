@@ -1380,10 +1380,10 @@ li, tr { page-break-inside: avoid; }
 </thead>
 <tbody>
 <tr>
-<td><code>hozen_another/settings.py</code>（166〜167 行目）</td>
-<td><code>SESSION_COOKIE_SAMESITE = 'None'</code> と <code>SESSION_COOKIE_SECURE = True</code></td>
-<td><code>'Lax'</code> と <code>False</code>（暗号化していない <code>http://localhost</code> でも、ログインが保たれるように）</td>
-<td>本番のクッキーが「暗号化していない通信でも送る」設定に変わる</td>
+<td><code>hozen_another/settings.py</code>（170・172 行目）</td>
+<td><code>SESSION_COOKIE_SAMESITE = 'Lax'</code> と <code>SESSION_COOKIE_SECURE = True</code>（2026 年 11 月 12 日の <code>7b84e00</code> から）</td>
+<td><strong>書き換えなくてよい</strong>（Chrome・Edge などは、<code>http://localhost</code> にも、この Cookie を送る）。前の版（<code>'None'</code> の時）は、<code>'Lax'</code> と <code>False</code> に書き換えていた</td>
+<td><code>SESSION_COOKIE_SECURE = False</code> のまま push すると、本番のクッキーが「暗号化していない通信でも送る」設定に変わる</td>
 </tr>
 </tbody>
 </table>
@@ -1395,7 +1395,7 @@ li, tr { page-break-inside: avoid; }
 </ol>
 <blockquote>
 <p><strong><code>frontend/.env.production</code> は、今は読まれません。</strong> 画面のビルドが Vite に変わった（2026 年 9 月）ので、<code>frontend/.env.production</code>・<code>frontend/.env</code> の <code>REACT_APP_API_BASE_URL</code> は使われなくなりました（01 章 §17.2 は、前の Create React App の時の説明です）。手元で <code>npm start</code> で動かす方法は、<a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の D-4 にあります。</p>
-<p><strong>書き換えなくて済むように直せます。</strong> 直し方は <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の S-5（Cookie を <code>Lax</code> にする）と D-4（Vite の中継）にあります。</p>
+<p><strong><code>settings.py</code> は、11 月 12 日から書き換えなくてよくなりました</strong>（<a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の S-5）。<code>frontend/.env.production</code> を使わずに手元で動かす直し方は、15 巻の D-4（Vite の中継）にあります。</p>
 </blockquote>
 <h3 id="82-押す前に必ずバックアップを取る操作">8.2 押す前に、必ずバックアップを取る操作</h3>
 <p>次の操作は、データが消えたり置き換わったりします。押す前に、<strong>管理者 ⇒ データ管理</strong> で、関係する種類のデータの「バックアップ開始」を押して、Excel を保存しておきます。</p>
@@ -1487,7 +1487,7 @@ li, tr { page-break-inside: avoid; }
 <li>テストも足します（12 章）。</li>
 </ul>
 <blockquote>
-<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 11 日の <code>master</code> に、前任者の PC でまだコミットしていない変更を足した物）で、安全・不具合・整理の面で直したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。GitHub の <code>master</code> は、アプリのテストが 5 個落ちる状態で、それを直す変更の多くは、まだ前任者の PC にしかありません（15 巻の §3.1・T-5）。引き継いだら、まず前任者の PC の変更が push されたかを確かめ、「🔴 すぐ」の物から直してください。</p>
+<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 16 日の <code>master</code>、コミット <code>7b4810f</code>）で、安全・不具合・整理の面で直したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。GitHub の <code>master</code> は、アプリのテストが全部通るようになりましたが、<strong>本番は 9 月 3 日の版のままで、GitHub Actions は止めてあります。</strong> 本番に出す前にすること（15 巻の冒頭の「いちばん急ぐこと」と §9）を済ませてから出し、「🔴 すぐ」の物から直してください。</p>
 </blockquote>
 <hr>
 <h2 id="9-よくある依頼と対応のしかた">9. よくある依頼と、対応のしかた</h2>
