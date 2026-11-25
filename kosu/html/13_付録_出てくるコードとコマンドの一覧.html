@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/13_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">業務工数システム 引き継ぎ教育資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">13 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 649 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 645 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -226,7 +226,7 @@ table { page-break-inside: auto; }
 
 <h1 id="13-付録-出てくるコードとコマンドの一覧機能ごと">13 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="この一覧について">この一覧について</h2>
-<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 649 個</strong>を、<strong>23 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 645 個</strong>を、<strong>23 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。Web 版（<code>kosu\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
@@ -279,7 +279,7 @@ table { page-break-inside: auto; }
 <td><a href="#cat-5">Django の道具</a></td>
 <td>5</td>
 <td><a href="#cat-17">Django</a></td>
-<td>66</td>
+<td>62</td>
 </tr>
 <tr>
 <td><a href="#cat-6">Node.js</a></td>
@@ -3389,7 +3389,7 @@ table { page-break-inside: auto; }
 </tr>
 <tr>
 <td><code>.values()</code></td>
-<td>行を、モデルではなく、決めた列だけの辞書で受け取るメソッド。<code>kosu_data.values('def_ver2').distinct()</code> は、工数データから定義の Ver 名の列だけを取り出し、重なりを除く書き方です。<code>member.objects.values('employee_no').annotate(n=Count('id'))</code> のように <code>.annotate()</code> と続けると、その列の値ごとに何行あるかを数えられます（D-2 の、重なりの調べ方）。</td>
+<td>行を、モデルではなく、決めた列だけの辞書で受け取るメソッド。<code>kosu_data.values('def_ver2').distinct()</code> は、工数データから定義の Ver 名の列だけを取り出し、重なりを除く書き方です。</td>
 <td>15 5. 不具合</td>
 </tr>
 <tr>
@@ -3401,26 +3401,6 @@ table { page-break-inside: auto; }
 <td><code>.values_list()</code></td>
 <td>行を、決めた列の値の並び（タプル）で受け取るメソッド。列を 1 つだけにして <code>flat=True</code> を付けると、タプルではなく値そのものの並びになります。<code>list(administrator_data.objects.values_list('pop_up_id5', flat=True))</code> は、全部の行の <code>pop_up_id5</code> を並べたリスト（例: <code>['77']</code>）です。</td>
 <td>15 5. 不具合</td>
-</tr>
-<tr>
-<td><code>Count</code></td>
-<td>Django の <code>Count("id")</code> は、ORM の集計で、数を数えます。<code>.annotate(n=Count("id"))</code> で、グループごとの件数が付きます。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>.cursor()</code></td>
-<td>データベースに、SQL の文をそのまま送るための「カーソル」を作るメソッド。<code>from django.db import connection</code> の <code>connection.cursor()</code> で作り、<code>with connection.cursor() as c:</code> の中で <code>c.execute("SQL の文")</code> と使うと、<code>with</code> を出る時に自動で閉じます。モデル（<code>models.py</code>）から消えた表のように、ORM で読めない物を調べる時に使います。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>.execute()</code></td>
-<td><code>c.execute("SELECT COUNT(*) FROM kosu_operation_history")</code> のように、カーソルで SQL の文を 1 つ実行するメソッド。<code>SELECT COUNT(*) FROM 表の名前</code> は、「その表の行の数を数える」という SQL です。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>.fetchone()</code></td>
-<td><code>execute()</code> で実行した SQL の結果から、1 行を取り出すメソッド。行は、列の値を並べたタプルで返ります（<code>COUNT(*)</code> なら、<code>(0,)</code> のように数が 1 つだけ入った形）。</td>
-<td>15 6. 開発・運用の整理</td>
 </tr>
 <tr>
 <td><code>.list()</code></td>

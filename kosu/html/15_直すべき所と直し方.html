@@ -221,7 +221,6 @@ li, tr { page-break-inside: avoid; }
 </ul>
 <p>⚠️ <strong>いちばん急ぐこと:</strong></p>
 <ol>
-<li><a href="#61-d-2-本番に-migrate-をする決まりが無い">D-2</a>: <strong>本番のデータベースに、マイグレーション <code>0013</code> が当たっているかを確かめてください。</strong> 本番には 11 月 17 日から <code>0013</code> を前提にしたコードが出ていますが、GitHub Actions は <code>migrate</code> をしません。当たっていなければ、重なったデータ（同じ従業員番号の人など）を止める決まりが、本番では働いていません。当てる前に、重なりと、消える表の中身を調べます。</li>
 <li><a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a>: リポジトリの履歴に残っている Excel を、コードとは別に、すぐ確かめてください。</li>
 <li><a href="#52-b-21-9-月の版で取った人員設定のバックアップをロードできない">B-21</a>: 9 月の版のうちに取った人員と設定のバックアップは、今の本番ではロードできません。そのバックアップから戻すことがあるなら、先に直します。</li>
 </ol>
@@ -378,49 +377,43 @@ li, tr { page-break-inside: avoid; }
 <td><code>tasks.py</code> 118〜120・976〜977 行目</td>
 </tr>
 <tr>
-<td><a href="#61-d-2-本番に-migrate-をする決まりが無い">D-2</a></td>
-<td>🟠</td>
-<td>本番に <code>migrate</code> をする決まりが無い。<code>0013</code> が本番に当たっているか分からない</td>
-<td><code>kosu/migrations/0013_sync_models.py</code></td>
-</tr>
-<tr>
-<td><a href="#62-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a></td>
+<td><a href="#61-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a></td>
 <td>🟡</td>
 <td>リポジトリの 1,560 ファイルのうち 1,272（200 MB）が、入れなくてよい物</td>
 <td><code>.gitignore</code>・<code>staticfiles/</code> など</td>
 </tr>
 <tr>
-<td><a href="#63-d-5-住所ホスト名がコードに直接書いてある">D-5</a></td>
+<td><a href="#62-d-5-住所ホスト名がコードに直接書いてある">D-5</a></td>
 <td>🟡</td>
 <td>住所（ホスト名）がコードに直接書いてある</td>
 <td><code>settings.py</code> 55〜61・287〜293 行目</td>
 </tr>
 <tr>
-<td><a href="#64-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a></td>
+<td><a href="#63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a></td>
 <td>🟡</td>
 <td>画面の部品の記録（lock）が、部品の一覧と食い違っている。テストの部品が一覧から抜けた。テスト用の設定に Django-Q の名残</td>
 <td><code>frontend/package.json</code>・<code>package-lock.json</code>・<code>test_settings.py</code></td>
 </tr>
 <tr>
-<td><a href="#65-d-8-サポート安全の直しが終わった部品">D-8</a></td>
+<td><a href="#64-d-8-サポート安全の直しが終わった部品">D-8</a></td>
 <td>🟠</td>
 <td>Django 4.2 はサポートが終わった</td>
 <td><code>requirements.txt</code></td>
 </tr>
 <tr>
-<td><a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a></td>
+<td><a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a></td>
 <td>🟡</td>
 <td><code>print</code> の行き先をすり替えている。ログのファイルの場所がずれる。テストの警告がコミットに入り、本番のログも上書きされる</td>
 <td><code>main_views.py</code> 74〜113 行目</td>
 </tr>
 <tr>
-<td><a href="#67-d-12-同じコードの繰り返しが多い">D-12</a></td>
+<td><a href="#66-d-12-同じコードの繰り返しが多い">D-12</a></td>
 <td>🟡</td>
 <td>同じコードの繰り返しが多い</td>
 <td>各所</td>
 </tr>
 <tr>
-<td><a href="#68-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a></td>
+<td><a href="#67-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a></td>
 <td>🟡</td>
 <td>アプリのリポジトリの <code>docs/</code> が、この資料の古い版で、PDF が壊れている。<code>CLAUDE.md</code> に古いことが 3 か所</td>
 <td><code>docs/</code>・<code>CLAUDE.md</code></td>
@@ -454,6 +447,9 @@ li, tr { page-break-inside: avoid; }
 </tbody>
 </table>
 <p>11 月 25 日には、テストが落ちた 5 回は本番に出ずに止まり、通った 4 回が本番に出ました。だからこそ、<strong><code>master</code> に直接 push せず、作業用のブランチ → Pull Request（テストが緑になるのを見る）→ <code>master</code></strong> の順にしてください。</p>
+<blockquote>
+<p>📌 <strong>ワークフローは <code>migrate</code> をしません。</strong> モデル（<code>models.py</code>）を変えて新しいマイグレーションを作った時は、本番に出た後に、Azure の SSH（000 巻 §10）で <code>python manage.py showmigrations kosu</code>（どこまで当たっているかを見る）→ <code>python manage.py migrate kosu</code> を打って当てます。当てる前に、本番のデータベースのバックアップを取ります（§3.2）。</p>
+</blockquote>
 <div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">hozen-kosu-React</span>
 <span class="n">git</span> <span class="k">switch</span> <span class="n">master</span>
 <span class="n">git</span> <span class="n">pull</span>
@@ -499,7 +495,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>テストが落ちたら、それは自分の直しのせいです。</strong></p>
 <blockquote>
 <p>💡 <strong>Node.js 25 以上で画面のテストを流すと、<code>localStorage.getItem is not a function</code> で 50 個ほど余計に落ちます。</strong> GitHub Actions と同じ Node.js 22 を使うか、<code>$env:NODE_OPTIONS = "--no-experimental-webstorage"</code> としてから流してください。</p>
-<p>💡 <strong>テストを流すと、リポジトリの直下の <code>web_console.log</code> に警告が書き足されます</strong>（<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>）。コミットの前に <code>git status</code> を見て、<code>web_console.log</code> が変わっていたら、<code>git restore web_console.log</code> で戻してからコミットしてください。</p>
+<p>💡 <strong>テストを流すと、リポジトリの直下の <code>web_console.log</code> に警告が書き足されます</strong>（<a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>）。コミットの前に <code>git status</code> を見て、<code>web_console.log</code> が変わっていたら、<code>git restore web_console.log</code> で戻してからコミットしてください。</p>
 </blockquote>
 <h3 id="34-1-つ直したらすぐ確かめてコミットする">3.4 1 つ直したら、すぐ確かめて、コミットする</h3>
 <ul>
@@ -573,7 +569,7 @@ li, tr { page-break-inside: avoid; }
 <li>会社の決まり（個人情報・社内の情報の扱い）に従って、担当の人に知らせます。</li>
 <li>11 月 11・12 日に <code>media/</code> に入れた Excel が何のファイルで、会社の外に出てよい物かを、前任者に確かめます。出てはいけない物なら、2 の連絡に含めます。</li>
 <li><strong>履歴からも消すか</strong> を決めます（4 月の Excel 5 つと、3 の Excel）。消すなら、GitHub の説明「Removing sensitive data from a repository」の手順（<code>git filter-repo</code> という道具を使う）に従います。履歴を書き換えると、全員が clone し直す必要があり、GitHub Actions の実行の記録とも合わなくなります。<strong>必ず前任者・組織の管理者と相談し、時間を決めてから</strong> やります。</li>
-<li>これからは、データ管理画面でダウンロードしたバックアップや、作業用の Excel を、<strong>リポジトリのフォルダの中に保存しない</strong> でください。<code>media/</code> も <code>.gitignore</code> に入れます（<a href="#62-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a>）。</li>
+<li>これからは、データ管理画面でダウンロードしたバックアップや、作業用の Excel を、<strong>リポジトリのフォルダの中に保存しない</strong> でください。<code>media/</code> も <code>.gitignore</code> に入れます（<a href="#61-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a>）。</li>
 </ol>
 <hr>
 <h2 id="5-不具合b">5. 不具合（B）</h2>
@@ -643,7 +639,7 @@ li, tr { page-break-inside: avoid; }
 <blockquote>
 <p><strong>▶ ここで初めて出てくるコード</strong></p>
 <ul>
-<li><strong><code>.values()</code></strong>（Django）: 行を、モデルではなく、決めた列だけの辞書で受け取るメソッド。<code>kosu_data.values('def_ver2').distinct()</code> は、工数データから定義の Ver 名の列だけを取り出し、重なりを除く書き方です。<code>member.objects.values('employee_no').annotate(n=Count('id'))</code> のように <code>.annotate()</code> と続けると、その列の値ごとに何行あるかを数えられます（D-2 の、重なりの調べ方）。</li>
+<li><strong><code>.values()</code></strong>（Django）: 行を、モデルではなく、決めた列だけの辞書で受け取るメソッド。<code>kosu_data.values('def_ver2').distinct()</code> は、工数データから定義の Ver 名の列だけを取り出し、重なりを除く書き方です。</li>
 <li><strong><code>.distinct()</code></strong>（Django）: 問い合わせの結果から、重なった値を 1 つにするメソッド。<code>.values_list('def_ver2', flat=True).distinct()</code> は、使われている定義の Ver 名を、重ならないように並べます。</li>
 </ul>
 </blockquote>
@@ -931,105 +927,7 @@ li, tr { page-break-inside: avoid; }
 <p><strong>直ったかの確かめ方:</strong> このテスト 2 個（<code>TestBackupNameColumn</code>）が通ること。✅ <code>231f9c8</code> にテストだけを入れると 2 個とも落ち（「'1_3002:m3002' != 'm3002'」）、直すと通りました。</p>
 <hr>
 <h2 id="6-開発運用の整理d">6. 開発・運用の整理（D）</h2>
-<h3 id="61-d-2-本番に-migrate-をする決まりが無い">6.1 D-2 本番に <code>migrate</code> をする決まりが無い</h3>
-<p>🟠 早めに ／ 📖 コードから（本番には触っていない）</p>
-<p><strong>どこ:</strong> <code>kosu/migrations/0013_sync_models.py</code>（11 月 16 日に入った）、<code>.github/workflows/master_hozen-kosu-react.yml</code>（<code>migrate</code> の手順が無い）</p>
-<p><strong>今:</strong> 本番のデータベースに <code>migrate</code> をする手順が、どこにもありません。GitHub Actions もしません。本番には、11 月 17 日から、<code>0013</code> を前提にしたコードが出ています。<code>0013</code> の中身は次のとおりです。</p>
-<table>
-<thead>
-<tr>
-<th>中身</th>
-<th>数</th>
-<th>本番のデータベースで起きること</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>AlterField</code>（お知らせの項目の <code>max_length=255</code> など）</td>
-<td>23</td>
-<td>列の形をモデルに合わせる</td>
-</tr>
-<tr>
-<td><code>AddConstraint</code>（同じ従業員番号の人員・同じ人の同じ日の工数 2 件・同じ名前の定義 Ver・同じ班長の班員データ 2 件、を許さない決まり）</td>
-<td>4</td>
-<td><strong>重なったデータが 1 件でもあると、ここで失敗する</strong></td>
-</tr>
-<tr>
-<td><code>RemoveField</code>・<code>DeleteModel</code>（使っていない表 <code>Operation_history</code>）</td>
-<td>2</td>
-<td><strong>表 <code>kosu_operation_history</code> を、中身ごと消す</strong></td>
-</tr>
-</tbody>
-</table>
-<p><strong>何が困るか:</strong> <code>0013</code> が当たっていないと、重なりを許さない決まりが本番では働かず、重なったデータが入ると、その人の画面が 500 になります（今のコードは、そうならない前提で書いてある）。今のコードは、<code>0013</code> が当たっていなくても動くので、当たっていないことに気付きにくいです。</p>
-<p><strong>直し方:</strong> だれが・いつ・どこで <code>migrate</code> を打つかを、前任者と決めます。まず今の状態を確かめ、当たっていなければ、次の順に当てます。どれも Azure の SSH（000 巻 §10）で打ちます。</p>
-<ol>
-<li><strong>当たっているかを見ます。</strong></li>
-</ol>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python<span class="w"> </span>manage.py<span class="w"> </span>showmigrations<span class="w"> </span>kosu<span class="w">   </span><span class="c1"># どこまで当たっているかを見る（[X] が当たっている）</span>
-</code></pre></div></div>
-
-<p><code>[X] 0013_sync_models</code> なら、当たっています（この節の残りは要りません）。<code>[ ] 0013_sync_models</code> なら、2 へ進みます。</p>
-<ol start="2">
-<li><strong>本番のデータベースのバックアップを取ります</strong>（§3.2）。</li>
-<li><strong>重なったデータが無いかを調べます。</strong> <code>python manage.py shell</code> を開き、次を打ちます。読むだけで、何も変えません。</li>
-</ol>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Count</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kosu.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">member</span><span class="p">,</span> <span class="n">Business_Time_graph</span><span class="p">,</span> <span class="n">team_member</span><span class="p">,</span> <span class="n">kosu_division</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;employee_no&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">n__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">Business_Time_graph</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;employee_no3&#39;</span><span class="p">,</span> <span class="s1">&#39;work_day2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">n__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">team_member</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;employee_no5&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">n__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">kosu_division</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;kosu_name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">n__gt</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>Count</code></strong>（Django）: Django の <code>Count("id")</code> は、ORM の集計で、数を数えます。<code>.annotate(n=Count("id"))</code> で、グループごとの件数が付きます。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
-<p>4 行とも <code>&lt;QuerySet []&gt;</code>（空）なら、重なりはありません。何か出たら、どちらを残すかを使う人と決めて、画面か管理サイト（<code>/admin/</code>）から直してから次へ進みます。</p>
-<ol start="4">
-<li><strong>消える表 <code>Operation_history</code> の中身を数えます。</strong> 同じ <code>shell</code> で、次を打ちます（読むだけ）。</li>
-</ol>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">connection</span>
-<span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
-    <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM kosu_operation_history&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">fetchone</span><span class="p">())</span>
-</code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>.cursor()</code></strong>（Django）: データベースに、SQL の文をそのまま送るための「カーソル」を作るメソッド。<code>from django.db import connection</code> の <code>connection.cursor()</code> で作り、<code>with connection.cursor() as c:</code> の中で <code>c.execute("SQL の文")</code> と使うと、<code>with</code> を出る時に自動で閉じます。モデル（<code>models.py</code>）から消えた表のように、ORM で読めない物を調べる時に使います。</li>
-<li><strong><code>.execute()</code></strong>（Django）: <code>c.execute("SELECT COUNT(*) FROM kosu_operation_history")</code> のように、カーソルで SQL の文を 1 つ実行するメソッド。<code>SELECT COUNT(*) FROM 表の名前</code> は、「その表の行の数を数える」という SQL です。</li>
-<li><strong><code>.fetchone()</code></strong>（Django）: <code>execute()</code> で実行した SQL の結果から、1 行を取り出すメソッド。行は、列の値を並べたタプルで返ります（<code>COUNT(*)</code> なら、<code>(0,)</code> のように数が 1 つだけ入った形）。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
-<p><code>(0,)</code> なら、消えて困る物はありません。0 でなければ、何の記録かを前任者に確かめ、要るなら先に書き出してから進みます（今のコードは、この表に何も書いていません）。</p>
-<ol start="5">
-<li><strong>当てます。</strong></li>
-</ol>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python<span class="w"> </span>manage.py<span class="w"> </span>migrate<span class="w"> </span>kosu
-python<span class="w"> </span>manage.py<span class="w"> </span>showmigrations<span class="w"> </span>kosu<span class="w">   </span><span class="c1"># [X] 0013_sync_models になったかを見る</span>
-</code></pre></div></div>
-
-<blockquote>
-<ul>
-<li>本番のデータベース（PostgreSQL）では、マイグレーションの途中で失敗すると、そのマイグレーションの変更は全部取り消されます（表が半分だけ変わることはない）。失敗したら、エラーの文（どの決まりで、どの値がぶつかったか）を読み、3 に戻ります。</li>
-<li><code>showmigrations</code>・<code>migrate</code> の結果が画面に出ない時は、<code>web_console.log</code> の終わりを読みます（<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>。<code>main_views.py</code> が <code>print</code> の行き先を差し替えているため）。</li>
-<li>これから表の形を変える時（<code>makemigrations</code> で新しいマイグレーションを作った時）も、本番に出した後に、同じ手順で当てます。</li>
-</ul>
-</blockquote>
-<h3 id="62-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">6.2 D-3 リポジトリに、入れなくてよい物が 1,272 ファイル（200 MB）ある</h3>
+<h3 id="61-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">6.1 D-3 リポジトリに、入れなくてよい物が 1,272 ファイル（200 MB）ある</h3>
 <p>🟡 余裕のある時に ／ ✅ 数えた</p>
 <p><strong>どこ:</strong> <code>.gitignore</code>（9 行）と、下の表のファイル</p>
 <p><strong>今:</strong> <code>231f9c8</code> のリポジトリは 1,560 ファイル・208 MB です。そのうち、次の物は、作り直せる・動かすと増える・人の PC の物で、リポジトリに入れなくてよい物です。</p>
@@ -1059,7 +957,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>showmigrations<sp
 <td><code>docs/pdf/</code></td>
 <td>15</td>
 <td>25.0 MB</td>
-<td><code>docs/</code> の資料の PDF（記録の時点で壊れている。<a href="#68-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a>）</td>
+<td><code>docs/</code> の資料の PDF（記録の時点で壊れている。<a href="#67-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a>）</td>
 </tr>
 <tr>
 <td><code>.vs/</code></td>
@@ -1089,7 +987,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>showmigrations<sp
 <td><code>.coverage</code>・<code>web_console.log</code>・<code>frontend/package.json.save</code>・直下の <code>package.json</code>・<code>package-lock.json</code></td>
 <td>5</td>
 <td>0.1 MB</td>
-<td>テストの記録・ログ（<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>）・エディターの控え・直下の部品の一覧</td>
+<td>テストの記録・ログ（<a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>）・エディターの控え・直下の部品の一覧</td>
 </tr>
 </tbody>
 </table>
@@ -1098,7 +996,7 @@ python<span class="w"> </span>manage.py<span class="w"> </span>showmigrations<sp
 <p>① <code>.gitignore</code> を、次に置き換えます。</p>
 <p><strong>場所:</strong> <code>.gitignore</code> の 1〜9 行目（.gitignore 全体）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
 **/__pycache__/
 *.py[cod]
 *$py.class
@@ -1110,7 +1008,7 @@ frontend/node_modules/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
 **/__pycache__/
 *.py[cod]
 *$py.class
@@ -1133,7 +1031,7 @@ media/
 </code></pre></div></div>
 
 <p>② 記録から外します（手元のファイルは消えません）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="nb">rm </span><span class="n">-r</span> <span class="p">-</span><span class="n">-cached</span> <span class="n">staticfiles</span> <span class="n">frontend</span><span class="p">/</span><span class="n">build</span> <span class="n">frontend</span><span class="p">/</span><span class="n">dist</span> <span class="n">node_modules</span> <span class="p">.</span><span class="n">vs</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="nb">rm </span><span class="n">-r</span> <span class="p">-</span><span class="n">-cached</span> <span class="n">staticfiles</span> <span class="n">frontend</span><span class="p">/</span><span class="n">build</span> <span class="n">frontend</span><span class="p">/</span><span class="n">dist</span> <span class="n">node_modules</span> <span class="p">.</span><span class="n">vs</span>
 <span class="n">git</span> <span class="nb">rm </span><span class="p">-</span><span class="n">-cached</span> <span class="p">.</span><span class="n">coverage</span> <span class="n">web_console</span><span class="p">.</span><span class="n">log</span> <span class="n">package</span><span class="p">.</span><span class="n">json</span> <span class="n">package-lock</span><span class="p">.</span><span class="n">json</span> <span class="n">frontend</span><span class="p">/</span><span class="n">package</span><span class="p">.</span><span class="n">json</span><span class="p">.</span><span class="n">save</span> <span class="s2">&quot;frontend/node-v22.17.1-linux-x64.tar.xz&quot;</span>
 <span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">&quot;D-3: ビルドの結果・作業用のファイルをリポジトリから外す&quot;</span>
 </code></pre></div></div>
@@ -1155,7 +1053,7 @@ media/
 </ul>
 </blockquote>
 <p><strong>直ったかの確かめ方:</strong> <code>git ls-files | Measure-Object -Line</code> が 300 行くらいになること。Pull Request の Actions の <code>test</code> が緑になること。</p>
-<h3 id="63-d-5-住所ホスト名がコードに直接書いてある">6.3 D-5 住所（ホスト名）がコードに直接書いてある</h3>
+<h3 id="62-d-5-住所ホスト名がコードに直接書いてある">6.2 D-5 住所（ホスト名）がコードに直接書いてある</h3>
 <p>🟡 余裕のある時に ／ 📖 コードから</p>
 <p><strong>どこ:</strong> <code>hozen_another/settings.py</code> 55〜61 行目（<code>ALLOWED_HOSTS</code>）・287〜293 行目（<code>CSRF_TRUSTED_ORIGINS</code>）</p>
 <p><strong>今:</strong> 本番のホスト名が、コードに直接書いてあります。</p>
@@ -1163,7 +1061,7 @@ media/
 <p><strong>直し方:</strong> 環境変数（<code>.env</code> や Azure の構成）にあればそれを、無ければ今の値を使うようにします（今の動きは変わりません）。</p>
 <p><strong>場所:</strong> <code>hozen_another/settings.py</code> の 55〜61 行目（ALLOWED_HOSTS）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
 <span class="c1">#   本番（Azure 上のサーバー）のホスト名と、開発用のローカル環境</span>
 <span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;&lt;本番のホスト名&gt;&#39;</span><span class="p">,</span>
@@ -1173,7 +1071,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
 <span class="c1">#   .env や Azure の構成に ALLOWED_HOSTS（カンマ区切り）があればそれを使い、無ければ下の値（本番と手元）を使う</span>
 <span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s1">&#39;ALLOWED_HOSTS&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span>
     <span class="s1">&#39;&lt;本番のホスト名&gt;&#39;</span><span class="p">,</span>
@@ -1194,7 +1092,7 @@ media/
 
 <p><strong>場所:</strong> <code>hozen_another/settings.py</code> の 287〜293 行目（CSRF_TRUSTED_ORIGINS）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
 <span class="c1">#   POST/PUT/DELETE のリクエストは、送信元（Origin ヘッダー）がここに含まれるか、同じホストである必要がある</span>
 <span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="p">[</span>
   <span class="s1">&#39;https://&lt;本番のホスト名&gt;&#39;</span><span class="p">,</span>
@@ -1204,7 +1102,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
 <span class="c1">#   POST/PUT/DELETE のリクエストは、送信元（Origin ヘッダー）がここに含まれるか、同じホストである必要がある</span>
 <span class="c1">#   .env や Azure の構成に CSRF_TRUSTED_ORIGINS（カンマ区切り）があればそれを使う</span>
 <span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s1">&#39;CSRF_TRUSTED_ORIGINS&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span>
@@ -1215,7 +1113,7 @@ media/
 </code></pre></div></div>
 
 <p><strong>直ったかの確かめ方:</strong> 環境変数を何も足さずに、アプリのテストが全部通ること（今の値のまま動く）。</p>
-<h3 id="64-d-7-画面の部品の記録lockが部品の一覧と食い違っている">6.4 D-7 画面の部品の記録（lock）が、部品の一覧と食い違っている</h3>
+<h3 id="63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">6.3 D-7 画面の部品の記録（lock）が、部品の一覧と食い違っている</h3>
 <p>🟡 余裕のある時に ／ ✅ 手元で確かめた</p>
 <p><strong>どこ:</strong> <code>frontend/package.json</code> 29〜49 行目、<code>frontend/package-lock.json</code>、<code>hozen_another/test_settings.py</code> 13 行目・35〜46 行目</p>
 <p><strong>今:</strong></p>
@@ -1230,7 +1128,7 @@ media/
 <p>① <code>package.json</code> の、<code>scripts</code> の後ろから <code>devDependencies</code> の最初までを、次に置き換えます（<code>eslintConfig</code>・<code>browserslist</code> を消し、<code>@testing-library/dom</code> をテスト用の部品に足す）。</p>
 <p><strong>場所:</strong> <code>frontend/package.json</code> の 29〜49 行目（scripts の後ろから devDependencies の最初まで）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;eslintConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;extends&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="s2">&quot;react-app&quot;</span><span class="p">,</span>
@@ -1254,32 +1152,32 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;@testing-library/dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^10.4.0&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;@testing-library/jest-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.9.1&quot;</span><span class="p">,</span>
 </code></pre></div></div>
 
 <p>② 記録を作り直して、2 つとも一緒にコミットします。</p>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">frontend</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">frontend</span>
 <span class="n">npm</span> <span class="n">install</span>
 <span class="n">git</span> <span class="n">add</span> <span class="n">package</span><span class="p">.</span><span class="n">json</span> <span class="n">package-lock</span><span class="p">.</span><span class="n">json</span>
 <span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">&quot;D-7: package-lock.json を package.json に合わせて作り直す&quot;</span>
 </code></pre></div></div>
 
-<p>③ <code>test_settings.py</code> の、Django-Q の名残を消します（頭の説明の 1 行は、<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a> の⑤で足すログの説明に替える）。</p>
+<p>③ <code>test_settings.py</code> の、Django-Q の名残を消します（頭の説明の 1 行は、<a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a> の⑤で足すログの説明に替える）。</p>
 <p><strong>場所:</strong> <code>hozen_another/test_settings.py</code> の 13 行目（ファイルの頭の説明。Django-Q の行を、ログの行に替える）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - Q_CLUSTER         : Django-Q をテスト向け（同期実行）に設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - Q_CLUSTER         : Django-Q をテスト向け（同期実行）に設定</span>
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - LOGGING           : ログ（web_console.log）を、毎回新しい一時フォルダのファイルに書く</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - LOGGING           : ログ（web_console.log）を、毎回新しい一時フォルダのファイルに書く</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>hozen_another/test_settings.py</code> の 35〜46 行目（Django-Q のテスト用設定。11 月 25 日に Django-Q を外したので、要らない）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Django-Q（非同期タスクキュー）のテスト用設定（settings.py の Q_CLUSTER を丸ごと置き換える）</span>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Django-Q（非同期タスクキュー）のテスト用設定（settings.py の Q_CLUSTER を丸ごと置き換える）</span>
 <span class="c1">#   name      … クラスター（タスク実行担当のまとまり）の名前</span>
 <span class="c1">#   sync: True … タスクを別プロセスに渡さず、その場で順番に実行する</span>
 <span class="c1">#   timeout   … 1つのタスクの実行時間の上限（秒）</span>
@@ -1295,7 +1193,7 @@ media/
 
 <p>直した後: 上の行を、全部消す（代わりに入れる物は無い）。</p>
 <p><strong>直ったかの確かめ方:</strong> ✅ 手元で、①を入れた <code>package.json</code> で記録を作り直すと（<code>npm install --package-lock-only</code>）、外した部品の分の 687 行が消え、11 行が足されて、記録のいちばん上が <code>package.json</code> と同じになりました。Pull Request の Actions で <code>npm ci</code> と画面のテストが通ること。</p>
-<h3 id="65-d-8-サポート安全の直しが終わった部品">6.5 D-8 サポート（安全の直し）が終わった部品</h3>
+<h3 id="64-d-8-サポート安全の直しが終わった部品">6.4 D-8 サポート（安全の直し）が終わった部品</h3>
 <p>🟠 早めに ／ 📖 コードから</p>
 <p><strong>どこ:</strong> <code>requirements.txt</code> 1 行目（<code>Django==4.2.7</code>）・3 行目（<code>djangorestframework==3.14.0</code>）</p>
 <table>
@@ -1323,27 +1221,27 @@ media/
 </tbody>
 </table>
 <p>Django を 5.1 以上にする時は、<code>settings.py</code> 305 行目の <code>STATICFILES_STORAGE</code> が使えなくなるので、次のように書き換えます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STORAGES</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STORAGES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;django.core.files.storage.FileSystemStorage&quot;</span><span class="p">},</span>
     <span class="s2">&quot;staticfiles&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;whitenoise.storage.CompressedManifestStaticFilesStorage&quot;</span><span class="p">},</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
 <p><strong>進め方:</strong> 一度に全部上げません。1 つずつ、テスト → 手元で動かす → Pull Request（Actions のテスト）→ 本番、の順にします。上げる前に、その部品の「リリースノート」（版ごとの変更点）の、変わった所・消えた所を読みます。</p>
-<h3 id="66-d-9-print-の行き先のすり替えとログのファイルの場所">6.6 D-9 <code>print</code> の行き先のすり替えと、ログのファイルの場所</h3>
+<h3 id="65-d-9-print-の行き先のすり替えとログのファイルの場所">6.5 D-9 <code>print</code> の行き先のすり替えと、ログのファイルの場所</h3>
 <p>🟡 余裕のある時に ／ ✅ 手元で再現</p>
 <p><strong>どこ:</strong> <code>kosu/views/main_views.py</code> 74〜113 行目（<code>PrintToLogger</code>）、<code>hozen_another/settings.py</code> 337 行目、<code>kosu/tasks.py</code> の <code>print</code> 8 か所、<code>asynchronous_views.py</code> 710〜712 行目</p>
 <p><strong>今:</strong></p>
 <ul>
 <li><code>sys.stdout = PrintToLogger()</code>（113 行目）で、<code>main_views.py</code> が読み込まれた瞬間から、<strong>サーバー全体の <code>print</code></strong> がログのファイルに書かれます。✅ <code>231f9c8</code> でも、<code>python manage.py makemigrations --check</code> の結果が画面に出ませんでした。</li>
 <li>ログのファイルは、書く側（<code>settings.py</code> 337 行目）が「起動した場所からの <code>web_console.log</code>」、読む側（<code>WebConsoleLogView</code>、<code>main_views.py</code> 1374 行目）が「プロジェクトの直下の <code>web_console.log</code>」です。起動の場所が違うと、書く所と読む所がずれます。</li>
-<li><strong>テストを流すと、リポジトリの直下の <code>web_console.log</code> に書き足されます。</strong> ✅ <code>231f9c8</code> のテストを流すと、テストのデータ（従業員番号 <code>88888</code>）の警告が書き足されました。11 月 16 日のコミットに 1 行、<strong>11 月 25 日のコミットに 4 行</strong>、この警告が入っています。その <code>web_console.log</code> が、デプロイの zip に入って本番に出ています（<a href="#62-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a>）。</li>
+<li><strong>テストを流すと、リポジトリの直下の <code>web_console.log</code> に書き足されます。</strong> ✅ <code>231f9c8</code> のテストを流すと、テストのデータ（従業員番号 <code>88888</code>）の警告が書き足されました。11 月 16 日のコミットに 1 行、<strong>11 月 25 日のコミットに 4 行</strong>、この警告が入っています。その <code>web_console.log</code> が、デプロイの zip に入って本番に出ています（<a href="#61-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a>）。</li>
 </ul>
 <p><strong>直し方:</strong></p>
 <p>① <code>PrintToLogger</code> を消します（<code>views_logger</code> は残す）。</p>
 <p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 74〜113 行目（PrintToLogger）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ============================================================</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ============================================================</span>
 <span class="c1"># ログ出力の設定（print の出力を web_console.log に記録する）</span>
 <span class="c1"># ============================================================</span>
 <span class="c1"># 専用ロガー取得(&#39;views_logger&#39;という名前のカスタムロガーを使用しログメッセージ記録)</span>
@@ -1386,7 +1284,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ============================================================</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ============================================================</span>
 <span class="c1"># ログ出力の設定</span>
 <span class="c1"># ============================================================</span>
 <span class="c1"># 専用ロガー取得(&#39;views_logger&#39;という名前のカスタムロガーを使用しログメッセージ記録)</span>
@@ -1401,17 +1299,17 @@ media/
 <p>② ログのファイルの場所を、プロジェクトの直下にそろえます。</p>
 <p><strong>場所:</strong> <code>hozen_another/settings.py</code> の 337 行目（LOGGING の出力先）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="s1">&#39;web_console.log&#39;</span><span class="p">,</span>  <span class="c1"># 出力先ファイル（サーバーを起動したフォルダからの相対パス）</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="s1">&#39;web_console.log&#39;</span><span class="p">,</span>  <span class="c1"># 出力先ファイル（サーバーを起動したフォルダからの相対パス）</span>
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;web_console.log&#39;</span><span class="p">),</span>  <span class="c1"># 出力先ファイル（プロジェクトルート。WebConsoleLogView が読む場所と同じにする）</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;web_console.log&#39;</span><span class="p">),</span>  <span class="c1"># 出力先ファイル（プロジェクトルート。WebConsoleLogView が読む場所と同じにする）</span>
 </code></pre></div></div>
 
 <p>③ <code>tasks.py</code> の <code>print</code> を、ロガー（<code>views_logger.info</code>）に変えます。</p>
 <p><strong>場所:</strong> <code>kosu/tasks.py</code> の 72 行目の前（import の後ろ）</p>
 <p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>  <span class="c1"># ログ（web_console.log）に書く</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>  <span class="c1"># ログ（web_console.log）に書く</span>
 <span class="c1"># ロード中の警告などを書くロガー（出力先は settings.py の LOGGING。管理者のログ画面で見られる）</span>
 <span class="n">views_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;views_logger&#39;</span><span class="p">)</span>
 </code></pre></div></div>
@@ -1480,18 +1378,18 @@ media/
 <p>④ <code>asynchronous_views.py</code> の <code>print</code> も変えます。</p>
 <p><strong>場所:</strong> <code>kosu/views/asynchronous_views.py</code> の 39 行目の前（import）</p>
 <p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>  <span class="c1"># ログ（web_console.log）に書く</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>  <span class="c1"># ログ（web_console.log）に書く</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>kosu/views/asynchronous_views.py</code> の 710〜712 行目（handle_task の最後）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="nb">print</span><span class="p">(</span>  
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="nb">print</span><span class="p">(</span>  
                 <span class="sa">f</span><span class="s1">&#39;Error: AsyncTask with id </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s1"> not found.&#39;</span>  
             <span class="p">)</span>  
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;views_logger&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;views_logger&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Error: AsyncTask with id </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s1"> not found.&#39;</span>
             <span class="p">)</span>
 </code></pre></div></div>
@@ -1509,13 +1407,13 @@ media/
 <p>⑤ テストの時は、ログを一時フォルダのファイルに書くようにします（①〜④だけでは、テストの警告がロガー経由で同じ <code>web_console.log</code> に書かれるため）。<strong>この 1 行だけでも、テストが <code>web_console.log</code> に書き足さなくなる</strong> ので、いちばん先に入れるとよい所です。</p>
 <p><strong>場所:</strong> <code>hozen_another/test_settings.py</code> の 69 行目の前（ファイルのいちばん後ろ）</p>
 <p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># テストでは、ログ（views_logger）を、毎回新しい一時フォルダのファイルに書く</span>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># テストでは、ログ（views_logger）を、毎回新しい一時フォルダのファイルに書く</span>
 <span class="c1">#   （リポジトリの直下の web_console.log に、テストの警告が書き足されて、コミットに入らないように）</span>
 <span class="n">LOGGING</span><span class="p">[</span><span class="s1">&#39;handlers&#39;</span><span class="p">][</span><span class="s1">&#39;web_console&#39;</span><span class="p">][</span><span class="s1">&#39;filename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;kosu-test-log-&#39;</span><span class="p">),</span> <span class="s1">&#39;web_console.log&#39;</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p><strong>直ったかの確かめ方:</strong> アプリのテストを流した後、<code>git status</code> で <code>web_console.log</code> が変わっていないこと。✅ <code>231f9c8</code> でテストを流すと <code>web_console.log</code> に 1 行増えましたが、⑤だけを入れた写しでも、全部を入れた写しでも、増えませんでした。<code>python manage.py makemigrations --check</code> の結果が画面に出ること（①）。長く残したいログは、App Service のログの機能を使います（前任者・Azure の権限を持つ人と）。</p>
-<h3 id="67-d-12-同じコードの繰り返しが多い">6.7 D-12 同じコードの繰り返しが多い</h3>
+<h3 id="66-d-12-同じコードの繰り返しが多い">6.6 D-12 同じコードの繰り返しが多い</h3>
 <p>🟡 余裕のある時に ／ 📖 コードから</p>
 <p>同じことを何か所にも書いていると、1 か所だけ直し忘れます。</p>
 <table>
@@ -1560,7 +1458,7 @@ media/
 </tbody>
 </table>
 <p><strong>進め方:</strong> 1 つの繰り返しをまとめるごとに、テストを流してコミットします。動きを変えないこと（まとめるだけ）を守ります。</p>
-<h3 id="68-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">6.8 D-14 アプリのリポジトリの <code>docs/</code> が、この資料の古い版。<code>CLAUDE.md</code> にも古い所がある</h3>
+<h3 id="67-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">6.7 D-14 アプリのリポジトリの <code>docs/</code> が、この資料の古い版。<code>CLAUDE.md</code> にも古い所がある</h3>
 <p>🟡 余裕のある時に ／ 📖 コードから</p>
 <p><strong>どこ:</strong> <code>docs/</code>（00〜12 巻の Markdown と PDF）、<code>CLAUDE.md</code> 25・29・30 行目</p>
 <p><strong>今:</strong></p>
@@ -1574,30 +1472,30 @@ media/
 <p>② <code>CLAUDE.md</code> の 3 か所を直します。</p>
 <p><strong>場所:</strong> <code>CLAUDE.md</code> の 24〜25 行目（Backend のコマンド。Django-Q は 11 月 25 日に外した）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python manage.py makemigrations      # Create new migrations
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python manage.py makemigrations      # Create new migrations
 python manage.py qcluster            # Start Django-Q task queue worker
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python manage.py makemigrations      # Create new migrations
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>python manage.py makemigrations      # Create new migrations
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>CLAUDE.md</code> の 29 行目（Environment Setup。ヘルプ画面のパスワード HELP_PATH も要る）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Backend requires <span class="sb">`.env`</span> file with: <span class="sb">`SECRET_KEY`</span>, <span class="sb">`DEBUG`</span>, <span class="sb">`DB_NAME`</span>, <span class="sb">`DB_USER`</span>, <span class="sb">`DB_PASSWORD`</span>, <span class="sb">`DB_HOST`</span>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Backend requires <span class="sb">`.env`</span> file with: <span class="sb">`SECRET_KEY`</span>, <span class="sb">`DEBUG`</span>, <span class="sb">`DB_NAME`</span>, <span class="sb">`DB_USER`</span>, <span class="sb">`DB_PASSWORD`</span>, <span class="sb">`DB_HOST`</span>
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Backend requires <span class="sb">`.env`</span> file with: <span class="sb">`SECRET_KEY`</span>, <span class="sb">`DEBUG`</span>, <span class="sb">`DB_NAME`</span>, <span class="sb">`DB_USER`</span>, <span class="sb">`DB_PASSWORD`</span>, <span class="sb">`DB_HOST`</span>, <span class="sb">`HELP_PATH`</span>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Backend requires <span class="sb">`.env`</span> file with: <span class="sb">`SECRET_KEY`</span>, <span class="sb">`DEBUG`</span>, <span class="sb">`DB_NAME`</span>, <span class="sb">`DB_USER`</span>, <span class="sb">`DB_PASSWORD`</span>, <span class="sb">`DB_HOST`</span>, <span class="sb">`HELP_PATH`</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>CLAUDE.md</code> の 30 行目</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Frontend uses <span class="sb">`REACT_APP_API_BASE_URL`</span> for API endpoint configuration
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Frontend uses <span class="sb">`REACT_APP_API_BASE_URL`</span> for API endpoint configuration
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Frontend calls the API with relative URLs (<span class="sb">`/api/...`</span>); in development Vite proxies <span class="sb">`/api`</span> to Django (see <span class="sb">`frontend/vite.config.mts`</span>)
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="k">-</span><span class="w"> </span>Frontend calls the API with relative URLs (<span class="sb">`/api/...`</span>); in development Vite proxies <span class="sb">`/api`</span> to Django (see <span class="sb">`frontend/vite.config.mts`</span>)
 </code></pre></div></div>
 
 <hr>
@@ -1610,8 +1508,7 @@ python manage.py qcluster            # Start Django-Q task queue worker
 <rect x="69" y="56" width="48" height="24" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
 <text x="93" y="72" font-size="12" fill="#b91c1c" text-anchor="middle" font-weight="700">すぐ</text>
 <text x="93" y="112" font-size="12" fill="#0f172a" text-anchor="middle">Excel S-9 の 1〜3</text>
-<text x="93" y="146" font-size="12" fill="#0f172a" text-anchor="middle">migrate D-2</text>
-<text x="93" y="180" font-size="12" fill="#0f172a" text-anchor="middle">古いバックアップ B-21</text>
+<text x="93" y="146" font-size="12" fill="#0f172a" text-anchor="middle">古いバックアップ B-21</text>
 <line x1="177" y1="165" x2="187" y2="165" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-15-1-475569)"/>
 <rect x="188" y="14" width="166" height="302" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <text x="271" y="44" font-size="17" fill="#c2410c" text-anchor="middle" font-weight="800">段 2</text>
@@ -1652,22 +1549,22 @@ python manage.py qcluster            # Start Django-Q task queue worker
 <tbody>
 <tr>
 <td>1（すぐ）</td>
-<td><a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a> の 1〜3（リポジトリの公開範囲・会社への連絡・<code>media/</code> に入れた Excel の確認。コードを直すより先に）、<a href="#61-d-2-本番に-migrate-をする決まりが無い">D-2</a>（本番に <code>0013</code> が当たっているかを見て、当たっていなければ確かめてから当てる）、<a href="#52-b-21-9-月の版で取った人員設定のバックアップをロードできない">B-21</a>（古いバックアップから戻す前に）</td>
+<td><a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a> の 1〜3（リポジトリの公開範囲・会社への連絡・<code>media/</code> に入れた Excel の確認。コードを直すより先に）、<a href="#52-b-21-9-月の版で取った人員設定のバックアップをロードできない">B-21</a>（古いバックアップから戻す前に）</td>
 <td>数日</td>
 </tr>
 <tr>
 <td>2（1〜2 週）</td>
-<td><a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a> の C（セッションを短く）、<a href="#53-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>、<a href="#64-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>、<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a></td>
+<td><a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a> の C（セッションを短く）、<a href="#53-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>、<a href="#63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>、<a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a></td>
 <td>1〜2 週</td>
 </tr>
 <tr>
 <td>3（1 か月）</td>
-<td><a href="#62-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a>・<a href="#68-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a>（リポジトリの整理）、<a href="#63-d-5-住所ホスト名がコードに直接書いてある">D-5</a>、<a href="#51-b-16-月間年間の集計で最初の-1-件の定義-ver-で全部を数える">B-16</a></td>
+<td><a href="#61-d-3-リポジトリに入れなくてよい物が-1272-ファイル200-mbある">D-3</a>・<a href="#67-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a>（リポジトリの整理）、<a href="#62-d-5-住所ホスト名がコードに直接書いてある">D-5</a>、<a href="#51-b-16-月間年間の集計で最初の-1-件の定義-ver-で全部を数える">B-16</a></td>
 <td>1 か月</td>
 </tr>
 <tr>
 <td>4（余裕の時）</td>
-<td><a href="#65-d-8-サポート安全の直しが終わった部品">D-8</a>（部品を新しく）、<a href="#67-d-12-同じコードの繰り返しが多い">D-12</a>、<a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a> の A か B（ログインの方式）</td>
+<td><a href="#64-d-8-サポート安全の直しが終わった部品">D-8</a>（部品を新しく）、<a href="#66-d-12-同じコードの繰り返しが多い">D-12</a>、<a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a> の A か B（ログインの方式）</td>
 <td>数か月</td>
 </tr>
 </tbody>
@@ -1681,11 +1578,11 @@ python manage.py qcluster            # Start Django-Q task queue worker
 <h3 id="81-確かめ方">8.1 確かめ方</h3>
 <ul>
 <li>GitHub の <code>master</code>（コミット <code>231f9c8</code>）を、<code>git archive</code> で手元の別のフォルダに書き出しました（作業フォルダ・本番・GitHub には、何も書き込んでいない）。前任者の PC の作業フォルダに、まだコミットしていない変更が無いことは、<code>git status</code> で確かめました。前の版の時（11 月 16 日の <code>7b4810f</code>）からの違い（<code>git diff</code>）は、1 ファイルずつ読みました。</li>
-<li>前の版に書いた直し方を、<code>231f9c8</code> に 1 つずつ照らし合わせ、まだ入っていない物だけをこの巻に残しました。残した物は、<code>231f9c8</code> の同じコードの場所に、そのまま当てはまりました（「今」のコードが一字一句同じ）。新しく <a href="#53-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>・<a href="#64-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>・<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a> の⑤・<a href="#68-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a> の直しを足し、全部を別の写しに入れて確かめました。直し方のコードは、その写しに入れた物と同じです（同じ一覧から、この巻のコードの枠を作っている）。</li>
+<li>前の版に書いた直し方を、<code>231f9c8</code> に 1 つずつ照らし合わせ、まだ入っていない物だけをこの巻に残しました。残した物は、<code>231f9c8</code> の同じコードの場所に、そのまま当てはまりました（「今」のコードが一字一句同じ）。新しく <a href="#53-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>・<a href="#63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>・<a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a> の⑤・<a href="#67-d-14-アプリのリポジトリの-docs-がこの資料の古い版claudemd-にも古い所がある">D-14</a> の直しを足し、全部を別の写しに入れて確かめました。直し方のコードは、その写しに入れた物と同じです（同じ一覧から、この巻のコードの枠を作っている）。</li>
 <li>アプリに入っているテスト用の設定（<code>hozen_another/test_settings.py</code>。データベースはメモリの中だけの SQLite）で、Django のテスト用の <code>Client</code> と、<code>kosu/tasks.py</code> の関数を直接呼んで試しました。<a href="#52-b-21-9-月の版で取った人員設定のバックアップをロードできない">B-21</a> の「古い見出しのバックアップ」は、今のコードで作ったバックアップの見出しを「ポップアップID6」に書き換えて作りました（本番のバックアップは使っていない）。</li>
 <li>画面のテストとビルドは、前任者の PC の <code>frontend/node_modules</code> を借りて、写しの上で流しました。</li>
 <li>GitHub Actions の設定と実行の記録は、GitHub の API で読みました（何も変えていない）。</li>
-<li><strong>本番のサーバー・データベースには、一切触っていません。</strong> <a href="#61-d-2-本番に-migrate-をする決まりが無い">D-2</a> の <code>0013</code> が本番に当たっているかは、この巻では確かめていません。</li>
+<li><strong>本番のサーバー・データベースには、一切触っていません。</strong></li>
 </ul>
 <h3 id="82-結果">8.2 結果</h3>
 <table>
@@ -1714,12 +1611,12 @@ python manage.py qcluster            # Start Django-Q task queue worker
 </tr>
 <tr>
 <td>記録（lock）のいちばん上と <code>package.json</code></td>
-<td>9 個食い違う（<a href="#64-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>）</td>
+<td>9 個食い違う（<a href="#63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>）</td>
 <td>同じ（作り直した記録）</td>
 </tr>
 <tr>
 <td>アプリのテストを流した後の <code>web_console.log</code></td>
-<td>1 行増える（<a href="#66-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>）</td>
+<td>1 行増える（<a href="#65-d-9-print-の行き先のすり替えとログのファイルの場所">D-9</a>）</td>
 <td>増えない</td>
 </tr>
 <tr>
@@ -1743,7 +1640,7 @@ python manage.py qcluster            # Start Django-Q task queue worker
 <h2 id="9-この巻のまとめ">9. この巻のまとめ</h2>
 <ul>
 <li>今の <code>master</code>（<code>231f9c8</code>）は、本番でも動いていて、<code>master</code> に入れた物はテストが通ると本番に出ます。<strong>直す時は、必ず作業用のブランチと Pull Request を通してください。</strong></li>
-<li>いちばん急ぐのは、本番に <code>0013</code> が当たっているかの確かめ（<a href="#61-d-2-本番に-migrate-をする決まりが無い">D-2</a>）と、リポジトリの履歴の Excel（<a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a>）です。9 月の版のバックアップから戻すことがあるなら、<a href="#52-b-21-9-月の版で取った人員設定のバックアップをロードできない">B-21</a> も先に直します。</li>
+<li>いちばん急ぐのは、リポジトリの履歴の Excel（<a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a>）です。9 月の版のバックアップから戻すことがあるなら、<a href="#52-b-21-9-月の版で取った人員設定のバックアップをロードできない">B-21</a> も先に直します。</li>
 <li>ログインの方式（<a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a>）は、会社の IT 担当と相談して決めます。セッションを短くするのは、すぐできます。</li>
 <li>直したら、この巻の該当する節に「済み（日付・コミット）」と書き足しておくと、次の人が助かります。</li>
 </ul>
