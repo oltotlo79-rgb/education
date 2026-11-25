@@ -558,8 +558,8 @@ li, tr { page-break-inside: avoid; }
 </tr>
 <tr>
 <td style="text-align: center;">□</td>
-<td>特に、<strong>手元でだけ書き換えた 2 か所</strong>（§8.1 の <code>frontend/.env.production</code> と <code>hozen_another/settings.py</code>）が、本番の形に戻っているか確かめる</td>
-<td>戻さずに push すると、本番の画面が使えなくなる</td>
+<td>特に、<strong>手元でだけ書き換えた所</strong>（§8.1 の <code>hozen_another/settings.py</code>）が、本番の形に戻っているか確かめる（<code>frontend/.env.production</code> は 2026 年 11 月 25 日に消された）</td>
+<td>戻さずに push すると、テストが通れば、そのまま本番に出る</td>
 </tr>
 <tr>
 <td style="text-align: center;">□</td>
@@ -1355,8 +1355,8 @@ li, tr { page-break-inside: avoid; }
 </tr>
 <tr>
 <td>画面が呼ぶサーバーの住所</td>
-<td><code>frontend/.env.production</code>（本番）と <code>frontend/.env</code>（手元）</td>
-<td>01 章 §17</td>
+<td>画面と同じサーバー（<code>frontend/src/api/axios.ts</code>。手元では <code>frontend/vite.config.mts</code> が <code>/api</code> を Django へ中継する。2026 年 11 月 25 日から）</td>
+<td>01 章 §17（前の説明）</td>
 </tr>
 <tr>
 <td>テスト</td>
@@ -1394,8 +1394,8 @@ li, tr { page-break-inside: avoid; }
 <li>手元でだけ書き換えた物なら、<code>git restore ファイル名</code> で元に戻す（02 章 §16）。直したい変更と混ざっている時は、その行だけを手で戻す。</li>
 </ol>
 <blockquote>
-<p><strong><code>frontend/.env.production</code> は、今は読まれません。</strong> 画面のビルドが Vite に変わった（2026 年 9 月）ので、<code>frontend/.env.production</code>・<code>frontend/.env</code> の <code>REACT_APP_API_BASE_URL</code> は使われなくなりました（01 章 §17.2 は、前の Create React App の時の説明です）。手元で <code>npm start</code> で動かす方法は、<a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の D-4 にあります。</p>
-<p><strong><code>settings.py</code> は、11 月 12 日から書き換えなくてよくなりました</strong>（<a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> の S-5）。<code>frontend/.env.production</code> を使わずに手元で動かす直し方は、15 巻の D-4（Vite の中継）にあります。</p>
+<p><strong><code>frontend/.env.production</code> は、2026 年 11 月 25 日に消されました。</strong> 画面のビルドが Vite に変わった（2026 年 9 月）時から、<code>REACT_APP_API_BASE_URL</code> は読まれていませんでした（01 章 §17.2 は、前の Create React App の時の説明です）。手元では、1 つ目の PowerShell で <code>python manage.py runserver</code>、2 つ目で <code>cd frontend</code> → <code>npm start</code> を打ち、ブラウザで <code>http://localhost:5173</code> を開きます（Vite が <code>/api</code> を <code>http://localhost:8000</code> の Django へ中継する）。</p>
+<p><strong><code>settings.py</code> は、11 月 12 日から書き換えなくてよくなりました</strong>（Cookie の設定が <code>'Lax'</code> になったため）。</p>
 </blockquote>
 <h3 id="82-押す前に必ずバックアップを取る操作">8.2 押す前に、必ずバックアップを取る操作</h3>
 <p>次の操作は、データが消えたり置き換わったりします。押す前に、<strong>管理者 ⇒ データ管理</strong> で、関係する種類のデータの「バックアップ開始」を押して、Excel を保存しておきます。</p>
@@ -1487,7 +1487,7 @@ li, tr { page-break-inside: avoid; }
 <li>テストも足します（12 章）。</li>
 </ul>
 <blockquote>
-<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 16 日の <code>master</code>、コミット <code>7b4810f</code>）で、安全・不具合・整理の面で直したい所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。GitHub の <code>master</code> は、アプリのテストが全部通るようになりましたが、<strong>本番は 9 月 3 日の版のままで、GitHub Actions は止めてあります。</strong> 本番に出す前にすること（15 巻の冒頭の「いちばん急ぐこと」と §9）を済ませてから出し、「🔴 すぐ」の物から直してください。</p>
+<p><strong>直すべき所の一覧:</strong> 今のアプリ（2026 年 11 月 25 日の <code>master</code>、コミット <code>231f9c8</code>。本番も同じ）で、まだ直すべき所は、場所（ファイルと行）と直し方つきで <a href="15_直すべき所と直し方.html">15_直すべき所と直し方</a> に全部まとめてあります。<strong>今は、<code>master</code> に push すると、GitHub Actions がテストを流し、通ればそのまま本番に出します。</strong> 直す時は作業用のブランチと Pull Request を通し、15 巻の冒頭の「いちばん急ぐこと」（本番に <code>migrate</code> が当たっているかの確かめなど）から始めてください。</p>
 </blockquote>
 <hr>
 <h2 id="9-よくある依頼と対応のしかた">9. よくある依頼と、対応のしかた</h2>
@@ -1608,8 +1608,8 @@ li, tr { page-break-inside: avoid; }
 </tr>
 <tr>
 <td style="text-align: center;">□</td>
-<td>本番で Django-Q のワーカー（<code>qcluster</code>）を動かしているか</td>
-<td><code>settings.py</code> に設定はあるが、本番の動かし方はリポジトリに無い（09 章 §3.4）</td>
+<td>本番で Django-Q のワーカー（<code>qcluster</code>）を動かす設定が残っていないか</td>
+<td>Django-Q は 2026 年 11 月 25 日にアプリから外した。本番の起動の設定に <code>qcluster</code> が残っていると、そこで失敗する（09 章 §3.4）</td>
 <td></td>
 </tr>
 <tr>
