@@ -211,16 +211,17 @@ li, tr { page-break-inside: avoid; }
 <body>
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/15_%E7%9B%B4%E3%81%99%E3%81%B9%E3%81%8D%E6%89%80%E3%81%A8%E7%9B%B4%E3%81%97%E6%96%B9.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><h1 id="15-直すべき所と直し方改修の一覧">15 直すべき所と直し方（改修の一覧）</h1>
 <blockquote>
-<p>この巻は、業務工数システムのプログラムを読み直して見つけた、<strong>今も直すべき所だけ</strong> を並べた物です。直った所は書いていません。今回読んだのは、GitHub の <code>master</code> の <strong>2026 年 11 月 26 日のコミット <code>284a16a</code></strong> です。前任者の PC の作業フォルダも同じで、まだコミットしていない変更はありませんでした。<strong>本番も、11 月 26 日から、この <code>284a16a</code> で動いています</strong>（GitHub Actions が、テストが通った版を本番に出した）。</p>
+<p>この巻は、業務工数システムのプログラムを読み直して見つけた、<strong>今も直すべき所だけ</strong> を並べた物です。直った所は書いていません。今回読んだのは、GitHub の <code>master</code> の <strong>2026 年 11 月 27 日のコミット <code>6338cfa</code></strong> です。前任者の PC の作業フォルダも同じで、まだコミットしていない変更はありませんでした。<strong>本番も、11 月 27 日から、この <code>6338cfa</code> で動いています</strong>（GitHub Actions が、テストが通った版を本番に出した）。</p>
 <p>どの項目にも、次を書いています。</p>
 <ul>
-<li><strong>どこ:</strong> ファイルと行番号（<code>284a16a</code> の行番号）</li>
+<li><strong>どこ:</strong> ファイルと行番号（<code>6338cfa</code> の行番号）</li>
 <li><strong>何が困るか</strong>と、手元で確かめた結果</li>
-<li><strong>直し方:</strong> 直す場所ごとに、「<strong>今</strong>」のコードと「<strong>直した後</strong>」のコードを、全部。直した後のコードは、<code>284a16a</code> の写しに全部入れて、アプリのテスト（352 個。この巻で足すテスト 3 個を含む）と画面のテスト（534 個）が全部通ることを確かめた物です（§8）</li>
+<li><strong>直し方:</strong> 直す場所ごとに、「<strong>今</strong>」のコードと「<strong>直した後</strong>」のコードを、全部。直した後のコードは、<code>6338cfa</code> の写しに全部入れて、アプリのテスト（353 個。この巻で足すテスト 4 個を含む）と画面のテスト（534 個）が全部通ることを確かめた物です（§8）</li>
 <li><strong>直ったことの確かめ方</strong></li>
 </ul>
 <p>⚠️ <strong>いちばん急ぐこと:</strong></p>
 <ul>
+<li><a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a>: 工数集計で、工数データが無い日・月・年を選ぶと、エラー（500）になります。本番でも起きています。直し方は 1 行です。</li>
 <li><a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a>: リポジトリの履歴に残っている Excel を、コードとは別に、すぐ確かめてください。</li>
 </ul>
 <p><strong>今は、<code>master</code> に入れた物は、テストが通ると、そのまま本番に出ます。</strong> 直す時は、必ず作業用のブランチで直し、Pull Request で見てもらってから <code>master</code> に入れてください（§3）。</p>
@@ -282,7 +283,7 @@ li, tr { page-break-inside: avoid; }
 <tbody>
 <tr>
 <td>✅ 手元で再現</td>
-<td><code>284a16a</code> を別のフォルダに写し、メモリの中だけのデータベースで動かして、本当にそうなることを確かめた（本番には一切触っていない。§8）</td>
+<td><code>6338cfa</code> を別のフォルダに写し、メモリの中だけのデータベースで動かして、本当にそうなることを確かめた（本番には一切触っていない。§8）</td>
 </tr>
 <tr>
 <td>📖 コードから</td>
@@ -290,10 +291,10 @@ li, tr { page-break-inside: avoid; }
 </tr>
 </tbody>
 </table>
-<p><strong>番号:</strong> S ＝ 安全（Security）、B ＝ 不具合（Bug）、D ＝ 開発・運用の整理（Development）。番号は前の版と同じ物を使っています（直った物と、直さないと決めた物は、この巻から外したので、番号が飛んでいます）。</p>
+<p><strong>番号:</strong> S ＝ 安全（Security）、B ＝ 不具合（Bug）、D ＝ 開発・運用の整理（Development）。番号は前の版と同じ物を使っています（直った物と、直さないと決めた物は、この巻から外したので、番号が飛んでいます）。新しい番号は <a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a> の 1 つです。</p>
 <h3 id="12-今と直した後の読み方">1.2 「今」と「直した後」の読み方</h3>
 <ul>
-<li><strong>場所:</strong> ファイルと、<code>284a16a</code> での行番号。たとえば「<code>kosu/tasks.py</code> の 124〜126 行目」。</li>
+<li><strong>場所:</strong> ファイルと、<code>6338cfa</code> での行番号。たとえば「<code>kosu/tasks.py</code> の 124〜126 行目」。</li>
 <li><strong>今:</strong> その行の、今のコード（コメントも含めて、ファイルのとおり）。</li>
 <li><strong>直した後:</strong> 「今」の行を、全部これに置き換えます。</li>
 <li>「この行の前に入れる」と書いてある物は、何も消さずに、その行の前に足します。</li>
@@ -370,6 +371,12 @@ li, tr { page-break-inside: avoid; }
 <td><code>tasks.py</code> 124〜126・982〜983 行目</td>
 </tr>
 <tr>
+<td><a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a></td>
+<td>🟠</td>
+<td>工数集計で、工数データが無い日・月・年を選ぶと 500 になる（本番でも）</td>
+<td><code>kosu_views.py</code> 1719 行目</td>
+</tr>
+<tr>
 <td><a href="#61-d-3-リポジトリに入れなくてよい物が-1257-ファイル175-mbある">D-3</a></td>
 <td>🟡</td>
 <td>リポジトリの 1,526 ファイルのうち 1,257（175 MB）が、入れなくてよい物</td>
@@ -394,17 +401,17 @@ li, tr { page-break-inside: avoid; }
 <td><code>requirements.txt</code></td>
 </tr>
 <tr>
-<td><a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a></td>
+<td><a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a></td>
 <td>🟡</td>
-<td>同じコードの繰り返しが 6 種類ある。お知らせの片付けは、もう食い違っている</td>
-<td><code>team_views.py</code>・<code>main_views.py</code>・<code>member_views.py</code>・<code>inquiry_views.py</code>・<code>asynchronous_views.py</code>・<code>kosu_views.py</code></td>
+<td>同じコードの繰り返しが、まだ 3 種類ある（メニューの API・バックアップの入口・月末の日）</td>
+<td><code>main_views.py</code>・<code>asynchronous_views.py</code>・<code>kosu_views.py</code></td>
 </tr>
 </tbody>
 </table>
 <hr>
 <h2 id="3-直す前の準備">3. 直す前の準備</h2>
 <h3 id="31-今はmaster-に入れると本番に出る">3.1 今は、<code>master</code> に入れると本番に出る</h3>
-<p><code>.github/workflows/master_hozen-kosu-react.yml</code> は、次のように動きます（11 月 25・26 日の実行の記録を、GitHub の API で読んで確かめた）。</p>
+<p><code>.github/workflows/master_hozen-kosu-react.yml</code> は、次のように動きます（11 月 25〜27 日の実行の記録を、GitHub の API で読んで確かめた）。</p>
 <table>
 <thead>
 <tr>
@@ -434,11 +441,11 @@ li, tr { page-break-inside: avoid; }
 <div class="codehilite"><div class="code-wrap" id="code-1"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">hozen-kosu-React</span>
 <span class="n">git</span> <span class="k">switch</span> <span class="n">master</span>
 <span class="n">git</span> <span class="n">pull</span>
-<span class="n">git</span> <span class="k">switch</span> <span class="n">-c</span> <span class="n">fix</span><span class="p">/</span><span class="n">d12</span>
+<span class="n">git</span> <span class="k">switch</span> <span class="n">-c</span> <span class="n">fix</span><span class="p">/</span><span class="n">b23</span>
 </code></pre></div></div>
 
 <blockquote>
-<p>📌 <strong>前任者の PC の作業フォルダ（2026 年 11 月 26 日の時点）:</strong> 作業中のブランチ <code>unify-comments-and-bugfix</code> が GitHub の <code>master</code> と同じ <code>284a16a</code> です。手元の <code>master</code> ブランチは、11 月 9 日の <code>3de68cd</code> のままです（GitHub より 19 コミット遅れている）。上の <code>git switch master</code> の後の <code>git pull</code> で、GitHub と同じになります。</p>
+<p>📌 <strong>前任者の PC の作業フォルダ（2026 年 11 月 28 日の時点）:</strong> 作業中のブランチ <code>unify-comments-and-bugfix</code> が GitHub の <code>master</code> と同じ <code>6338cfa</code> です。手元の <code>master</code> ブランチは、11 月 9 日の <code>3de68cd</code> のままです（GitHub より 20 コミット遅れている）。上の <code>git switch master</code> の後の <code>git pull</code> で、GitHub と同じになります。</p>
 </blockquote>
 <h3 id="32-本番のデータを先にバックアップする">3.2 本番のデータを、先にバックアップする</h3>
 <ul>
@@ -451,7 +458,7 @@ li, tr { page-break-inside: avoid; }
 <span class="n">npm</span> <span class="n">run</span> <span class="n">test</span><span class="p">:</span><span class="n">run</span>
 </code></pre></div></div>
 
-<p>2026 年 11 月 26 日に流した時は、次のとおりでした。</p>
+<p>2026 年 11 月 28 日に流した時は、次のとおりでした。</p>
 <table>
 <thead>
 <tr>
@@ -462,13 +469,13 @@ li, tr { page-break-inside: avoid; }
 </thead>
 <tbody>
 <tr>
-<td><code>284a16a</code>（今の <code>master</code>・今の本番）</td>
+<td><code>6338cfa</code>（今の <code>master</code>・今の本番）</td>
 <td>349 個 全部 OK</td>
 <td>534 個 全部 OK</td>
 </tr>
 <tr>
-<td><code>284a16a</code> に、この巻の直しを全部入れた写し</td>
-<td>352 個 全部 OK（<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の 2 個と <a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の 1 個を足した）</td>
+<td><code>6338cfa</code> に、この巻の直しを全部入れた写し</td>
+<td>353 個 全部 OK（<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の 2 個・<a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a> の 1 個・<a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a> の 1 個を足した）</td>
 <td>534 個 全部 OK</td>
 </tr>
 </tbody>
@@ -479,8 +486,8 @@ li, tr { page-break-inside: avoid; }
 </blockquote>
 <h3 id="34-1-つ直したらすぐ確かめてコミットする">3.4 1 つ直したら、すぐ確かめて、コミットする</h3>
 <ul>
-<li>1 つの番号（例: <a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>）を直したら、テストを流し、手元でその画面を動かしてから、コミットします。</li>
-<li>コミットのメッセージに番号を書きます（例: <code>B-22: バックアップの氏名の列を氏名だけにする</code>）。今の履歴は、ほとんどのメッセージが「バグ修正」なので、後から何を直したかを探せません。</li>
+<li>1 つの番号（例: <a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a>）を直したら、テストを流し、手元でその画面を動かしてから、コミットします。</li>
+<li>コミットのメッセージに番号を書きます（例: <code>B-23: データが無い日の工数集計を 500 にしない</code>）。今の履歴は、ほとんどのメッセージが「バグ修正」なので、後から何を直したかを探せません。</li>
 <li>いくつもの番号を 1 つのコミットに混ぜないでください。</li>
 <li>テストを足す時は、そのテストが確かめるコードの直しと、同じコミット（または同じ Pull Request）に入れます。テストだけを先に入れると、<code>master</code> のテストが落ち、本番に出せなくなります。</li>
 </ul>
@@ -679,7 +686,7 @@ li, tr { page-break-inside: avoid; }
 <p>🟡 余裕のある時に ／ 新しく見つかった ／ ✅ 手元で再現</p>
 <p><strong>どこ:</strong> <code>kosu/tasks.py</code> 124〜126 行目（<code>generate_kosu_backup</code>）・982〜983 行目（<code>generate_inquiry_backup</code>）</p>
 <p><strong>今:</strong> 11 月 25 日に、人員（<code>member</code>）の <code>__str__</code>（その人を文字にした時の表し方。<code>models.py</code> 130〜131 行目）が、氏名だけから「<code>ID_従業員番号:氏名</code>」に変わりました（管理サイトの選択肢で、同じ名前の人を見分けるため）。ところが、工数と問い合わせのバックアップは、「氏名」の列に <code>str(item.name)</code>（工数・問い合わせが指している人員を、文字にした物）を書いています。</p>
-<p>✅ <strong>手元で試した結果（<code>284a16a</code>）:</strong> 従業員番号 3002・氏名 <code>m3002</code> の人の工数と問い合わせをバックアップすると、「氏名」の列が <code>1_3002:m3002</code> になりました（11 月 25 日より前は <code>m3002</code>）。</p>
+<p>✅ <strong>手元で試した結果（<code>6338cfa</code>）:</strong> 従業員番号 3002・氏名 <code>m3002</code> の人の工数と問い合わせをバックアップすると、「氏名」の列が <code>1_3002:m3002</code> になりました（11 月 25 日より前は <code>m3002</code>）。</p>
 <p><strong>何が困るか:</strong> バックアップの Excel を人が見る時に、氏名の列が読みにくくなります。ロードは従業員番号で人を探すので（<code>tasks.py</code> 235・1067 行目）、戻すことはできます。</p>
 <p><strong>直し方:</strong> 人員の氏名の項目（<code>.name</code>）を書きます。人員が消されて外部キーが空の時は、空のセルにします（前は <code>'None'</code> という文字だった）。</p>
 <p><strong>場所:</strong> <code>kosu/tasks.py</code> の 124〜126 行目（generate_kosu_backup の 1 行の中身）</p>
@@ -708,7 +715,7 @@ li, tr { page-break-inside: avoid; }
       <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> 
 </code></pre></div></div>
 
-<p>守るテストを、<code>test_security.py</code> に足します（インポート・ファイルの頭の説明・ファイルのいちばん後ろ）。インポートとファイルの頭の説明には、<a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> のテストの分も一緒に書いてあります。</p>
+<p>守るテストを、<code>test_security.py</code> に足します（インポート・ファイルの頭の説明・ファイルのいちばん後ろ）。インポートとファイルの頭の説明には、<a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a>・<a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a> のテストの分も一緒に書いてあります。</p>
 <p><strong>場所:</strong> <code>kosu/tests/test_security.py</code> の 60〜61 行目（インポート）</p>
 <p>今:</p>
 <div class="codehilite"><div class="code-wrap" id="code-19"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 作業詳細選択肢の Excel を読み込む関数（ロードのテスト用）</span>
@@ -726,6 +733,7 @@ li, tr { page-break-inside: avoid; }
 <p>足すコード（この行の前に入れる）:</p>
 <div class="codehilite"><div class="code-wrap" id="code-21"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - TestBackupNameColumn : 工数・問い合わせのバックアップの「氏名」の列は、氏名だけ（B-22）</span>
 <span class="c1">#   - TestRemovePopUp  : お知らせの片付け（同じ問い合わせの物を全部消し、前に詰める）（D-12）</span>
+<span class="c1">#   - TestKosuTotalNoData : 工数データが無い日・月・年でも、工数集計は 200（B-23）</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>kosu/tests/test_security.py</code> の 434 行目の前（ファイルのいちばん後ろ）</p>
@@ -777,12 +785,122 @@ li, tr { page-break-inside: avoid; }
 <!-- /first-use -->
 
 <p><strong>直ったかの確かめ方:</strong> このテスト 2 個（<code>TestBackupNameColumn</code>）が通ること。✅ 直す前のコードに対して、このテストは 2 個とも落ち（「'1_3002:m3002' != 'm3002'」）、直すと通りました。</p>
+<h3 id="53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">5.3 B-23 工数集計で、データが無い日・月・年を選ぶと、エラー（500）になる</h3>
+<p>🟠 早めに ／ 新しく見つかった（指摘をもとに確かめた） ／ ✅ 手元で再現</p>
+<p><strong>どこ:</strong> <code>kosu/views/kosu_views.py</code> 1719 行目（<code>KosuTotal.post</code> の <code>day_object = datetime.datetime.strptime(day, '%Y-%m-%d')</code>）</p>
+<p><strong>今:</strong> 工数集計の API（<code>POST /api/kosu_total/</code>）は、選んだ期間に工数データが無い時、作業内容が空の工数データを、保存しないで作って返します。その就業日（<code>work_day2</code>）に、<code>day_object</code> を入れています（1734・1743・1752 行目）。ところが <code>day_object</code> は、<code>datetime.datetime.strptime(...)</code> で作った <strong>日時</strong>（<code>datetime</code>）で、<strong>日付</strong>（<code>date</code>）ではありません。返事の形を作る Django REST framework は、日付の項目に日時が入っていると、「時差の情報が消えるかもしれない」として、変換を断ります（<code>AssertionError: Expected a date, but got a datetime.</code>）。</p>
+<p>✅ <strong>手元で試した結果（<code>6338cfa</code>）:</strong> 2026 年 11 月 10 日にだけ工数データがある人で、集計を開きました。</p>
+<table>
+<thead>
+<tr>
+<th>選んだ日</th>
+<th>日間</th>
+<th>月間</th>
+<th>年間</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-11-10（データが有る日）</td>
+<td>200</td>
+<td>200</td>
+<td>200</td>
+</tr>
+<tr>
+<td>2026-11-11（その日には無いが、同じ月には有る）</td>
+<td><strong>500</strong></td>
+<td>200</td>
+<td>200</td>
+</tr>
+<tr>
+<td>2026-10-15（その月には無いが、同じ年には有る）</td>
+<td><strong>500</strong></td>
+<td><strong>500</strong></td>
+<td>200</td>
+</tr>
+<tr>
+<td>2025-05-01（その年には 1 件も無い）</td>
+<td><strong>500</strong></td>
+<td><strong>500</strong></td>
+<td><strong>500</strong></td>
+</tr>
+</tbody>
+</table>
+<p>最初に画面を開いた時（<code>GET</code>）は、就業日に文字（<code>'2026-11-28'</code> など）を入れているので、エラーになりません。</p>
+<p><strong>何が困るか:</strong> 工数を入れていない日（休みの日・入力前の日）や、入れる前の月・年を選ぶと、集計の画面が更新されません。画面は 500 の時に <code>err.response?.data.message</code> を出そうとしますが、500 の返事は HTML なので文が無く、何も知らせずに終わります（<code>KosuTotal.tsx</code> 167〜178 行目）。<strong>11 月 27 日から、本番でもこの状態です。</strong></p>
+<p><strong>直し方:</strong> <code>strptime(...)</code> の後ろに <code>.date()</code> を付けて、日付にします。絞り込み（<code>work_day2=day_object</code>・<code>work_day2__month=day_object.month</code> など）は、日付でも今までどおりに動きます。</p>
+<p><strong>場所:</strong> <code>kosu/views/kosu_views.py</code> の 1710〜1719 行目（KosuTotal.post の最初）</p>
+<p>今:</p>
+<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1">#   day_object: 年・月での絞り込みに使うため、日付文字列を日時データに変換したもの</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">day</span><span class="p">:</span>
+      <span class="n">day</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+      <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">day</span>
+    <span class="c1"># 集計期間が「日間・月間・年間」のどれでもない、または日付が読めない場合は 400 を返す</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;period&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;日間&#39;</span><span class="p">,</span> <span class="s1">&#39;月間&#39;</span><span class="p">,</span> <span class="s1">&#39;年間&#39;</span><span class="p">]:</span>
+      <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;集計期間を選んでください。&#39;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">day_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>直した後（上の行を、全部これに置き換える）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1">#   day_object: 年・月での絞り込みと、データが無い時の空の工数データの就業日に使う日付（date）</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">day</span><span class="p">:</span>
+      <span class="n">day</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+      <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">day</span>
+    <span class="c1"># 集計期間が「日間・月間・年間」のどれでもない、または日付が読めない場合は 400 を返す</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;period&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;日間&#39;</span><span class="p">,</span> <span class="s1">&#39;月間&#39;</span><span class="p">,</span> <span class="s1">&#39;年間&#39;</span><span class="p">]:</span>
+      <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;集計期間を選んでください。&#39;</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_400_BAD_REQUEST</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="c1"># .date() で、日時（datetime）ではなく日付（date）にする</span>
+      <span class="c1">#   （日時のままだと、データが無い時に作る空の工数データの就業日に日時が入り、返事を作る所で 500 になる）</span>
+      <span class="n">day_object</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>守るテストを、<code>test_security.py</code> のいちばん後ろに足します（ファイルの頭の説明は、<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の所に一緒に書いてある）。</p>
+<p><strong>場所:</strong> <code>kosu/tests/test_security.py</code> の 434 行目の前（ファイルのいちばん後ろ）</p>
+<p>足すコード（この行の前に入れる）:</p>
+<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># TestKosuTotalNoData: 工数データが無い日・月・年の工数集計のテスト（B-23）</span>
+<span class="c1">#   対象 : views/kosu_views.py の KosuTotal（POST /api/kosu_total/）</span>
+<span class="c1">#   内容 : 工数データが無い日を、日間・月間・年間のどれで集計しても、500 にならず、</span>
+<span class="c1">#          作業内容が空の工数データ（就業日はその日）が返ることを確認する。</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestKosuTotalNoData</span><span class="p">(</span><span class="n">SecurityTestBase</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;B-23: データが無い日・月・年でも、工数集計は 200。&quot;&quot;&quot;</span>
+
+  <span class="c1"># 【テスト】工数データが無い日を、日間・月間・年間で集計しても 200 になること</span>
+  <span class="c1">#   前提: 人員 2001 の工数データは 1 件も無い（SecurityTestBase の工数データは 2002 の物）</span>
+  <span class="c1">#   操作: 2001 でログインし、POST /api/kosu_total/ に date=2026-02-10 と、period を日間・月間・年間で送る</span>
+  <span class="c1">#   期待: 3 つとも 200 で、就業日 2026-02-10 の空の工数データが返る</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">test_no_data_is_200</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="mi">2001</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">period</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;日間&#39;</span><span class="p">,</span> <span class="s1">&#39;月間&#39;</span><span class="p">,</span> <span class="s1">&#39;年間&#39;</span><span class="p">]:</span>
+      <span class="n">r</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/api/kosu_total/&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">as_json</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="s1">&#39;2026-02-10&#39;</span><span class="p">,</span> <span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="n">period</span><span class="p">}))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">period</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;kosu_data&#39;</span><span class="p">][</span><span class="s1">&#39;work_day2&#39;</span><span class="p">],</span> <span class="s1">&#39;2026-02-10&#39;</span><span class="p">,</span> <span class="n">period</span><span class="p">)</span>
+</code></pre></div></div>
+
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>.login()</code></strong>（Python のテスト）: <code>kosu/tests/test_security.py</code> の <code>SecurityTestBase</code> にある、テスト用のメソッド。<code>self.login(2001)</code> で、従業員番号 2001 でログインしたテスト用のブラウザ（<code>Client</code>）を返します（ログインが 200 でなければ、その場でテストを失敗にする）。</li>
+<li><strong><code>.json()</code></strong>（Django）: テスト用のブラウザ（<code>Client</code>）で受け取った返事の <code>r.json()</code> は、返事の本文（JSON）を、Python の辞書にして返すメソッド。<code>r.json()['kosu_data']['work_day2']</code> で、返事の中の就業日を取り出せます。</li>
+<li><strong><code>as_json()</code></strong>（Python のテスト）: <code>kosu/tests/test_security.py</code> にある、テスト用の小さな関数。辞書を JSON の文字にして、<code>{'data': JSON の文字, 'content_type': 'application/json'}</code> を返します。<code>c.post('/api/kosu_total/', **as_json({'date': '2026-02-10', 'period': '日間'}))</code> のように <code>**</code> で広げて渡すと、JSON の本文を送れます。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
+<p><strong>直ったかの確かめ方:</strong> このテスト（<code>TestKosuTotalNoData</code>）が通ること。✅ 直す前のコードに対して、このテストは「Expected a <code>date</code>, but got a <code>datetime</code>」で落ち、直すと通りました。直した写しでは、上の表の 12 通りが全部 200 になり、データが無い時は、就業日がその日の空の工数データが返りました。手元で動かし、工数集計の画面で、工数を入れていない日を選んで「日間」「月間」「年間」を切り替え、グラフが空で出ること。</p>
 <hr>
 <h2 id="6-開発運用の整理d">6. 開発・運用の整理（D）</h2>
 <h3 id="61-d-3-リポジトリに入れなくてよい物が-1257-ファイル175-mbある">6.1 D-3 リポジトリに、入れなくてよい物が 1,257 ファイル（175 MB）ある</h3>
 <p>🟡 余裕のある時に ／ ✅ 数えた</p>
 <p><strong>どこ:</strong> <code>.gitignore</code>（9 行）と、下の表のファイル</p>
-<p><strong>今:</strong> <code>284a16a</code> のリポジトリは 1,526 ファイル・181 MB です。そのうち、次の物は、作り直せる・動かすと増える・人の PC の物で、リポジトリに入れなくてよい物です。</p>
+<p><strong>今:</strong> <code>6338cfa</code> のリポジトリは 1,526 ファイル・181 MB です。そのうち、次の物は、作り直せる・動かすと増える・人の PC の物で、リポジトリに入れなくてよい物です。</p>
 <table>
 <thead>
 <tr>
@@ -842,7 +960,7 @@ li, tr { page-break-inside: avoid; }
 <p>① <code>.gitignore</code> を、次に置き換えます。</p>
 <p><strong>場所:</strong> <code>.gitignore</code> の 1〜9 行目（.gitignore 全体）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-23"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
+<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
 **/__pycache__/
 *.py[cod]
 *$py.class
@@ -854,7 +972,7 @@ frontend/node_modules/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-24"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
+<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>.env
 **/__pycache__/
 *.py[cod]
 *$py.class
@@ -877,7 +995,7 @@ media/
 </code></pre></div></div>
 
 <p>② 記録から外します（手元のファイルは消えません）。</p>
-<div class="codehilite"><div class="code-wrap" id="code-25"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="nb">rm </span><span class="n">-r</span> <span class="p">-</span><span class="n">-cached</span> <span class="n">staticfiles</span> <span class="n">frontend</span><span class="p">/</span><span class="n">build</span> <span class="n">frontend</span><span class="p">/</span><span class="n">dist</span> <span class="n">node_modules</span> <span class="p">.</span><span class="n">vs</span>
+<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">git</span> <span class="nb">rm </span><span class="n">-r</span> <span class="p">-</span><span class="n">-cached</span> <span class="n">staticfiles</span> <span class="n">frontend</span><span class="p">/</span><span class="n">build</span> <span class="n">frontend</span><span class="p">/</span><span class="n">dist</span> <span class="n">node_modules</span> <span class="p">.</span><span class="n">vs</span>
 <span class="n">git</span> <span class="nb">rm </span><span class="p">-</span><span class="n">-cached</span> <span class="p">.</span><span class="n">coverage</span> <span class="n">web_console</span><span class="p">.</span><span class="n">log</span> <span class="n">package</span><span class="p">.</span><span class="n">json</span> <span class="n">package-lock</span><span class="p">.</span><span class="n">json</span> <span class="n">frontend</span><span class="p">/</span><span class="n">package</span><span class="p">.</span><span class="n">json</span><span class="p">.</span><span class="n">save</span> <span class="s2">&quot;frontend/node-v22.17.1-linux-x64.tar.xz&quot;</span>
 <span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">&quot;D-3: ビルドの結果・作業用のファイルをリポジトリから外す&quot;</span>
 </code></pre></div></div>
@@ -907,7 +1025,7 @@ media/
 <p><strong>直し方:</strong> 環境変数（<code>.env</code> や Azure の構成）にあればそれを、無ければ今の値を使うようにします（今の動きは変わりません）。</p>
 <p><strong>場所:</strong> <code>hozen_another/settings.py</code> の 55〜61 行目（ALLOWED_HOSTS）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-26"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
+<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
 <span class="c1">#   本番（Azure 上のサーバー）のホスト名と、開発用のローカル環境</span>
 <span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;&lt;本番のホスト名&gt;&#39;</span><span class="p">,</span>
@@ -917,7 +1035,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-27"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
+<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># このサーバーへのアクセスとして受け付けるホスト名の一覧（ここに無いホスト名宛てのリクエストは 400 エラー）</span>
 <span class="c1">#   .env や Azure の構成に ALLOWED_HOSTS（カンマ区切り）があればそれを使い、無ければ下の値（本番と手元）を使う</span>
 <span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s1">&#39;ALLOWED_HOSTS&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span>
     <span class="s1">&#39;&lt;本番のホスト名&gt;&#39;</span><span class="p">,</span>
@@ -938,7 +1056,7 @@ media/
 
 <p><strong>場所:</strong> <code>hozen_another/settings.py</code> の 287〜293 行目（CSRF_TRUSTED_ORIGINS）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-28"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
 <span class="c1">#   POST/PUT/DELETE のリクエストは、送信元（Origin ヘッダー）がここに含まれるか、同じホストである必要がある</span>
 <span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="p">[</span>
   <span class="s1">&#39;https://&lt;本番のホスト名&gt;&#39;</span><span class="p">,</span>
@@ -948,7 +1066,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-29"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
+<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># CSRF の確認で「信頼できる送信元」とみなすオリジンの一覧</span>
 <span class="c1">#   POST/PUT/DELETE のリクエストは、送信元（Origin ヘッダー）がここに含まれるか、同じホストである必要がある</span>
 <span class="c1">#   .env や Azure の構成に CSRF_TRUSTED_ORIGINS（カンマ区切り）があればそれを使う</span>
 <span class="n">CSRF_TRUSTED_ORIGINS</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="s1">&#39;CSRF_TRUSTED_ORIGINS&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span>
@@ -974,7 +1092,7 @@ media/
 <p>① <code>package.json</code> の、<code>scripts</code> の後ろから <code>devDependencies</code> の最初までを、次に置き換えます（<code>eslintConfig</code>・<code>browserslist</code> を消し、<code>@testing-library/dom</code> をテスト用の部品に足す）。</p>
 <p><strong>場所:</strong> <code>frontend/package.json</code> の 29〜49 行目（scripts の後ろから devDependencies の最初まで）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-30"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
+<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;eslintConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;extends&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="s2">&quot;react-app&quot;</span><span class="p">,</span>
@@ -998,14 +1116,14 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-31"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
+<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;@testing-library/dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^10.4.0&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;@testing-library/jest-dom&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;^6.9.1&quot;</span><span class="p">,</span>
 </code></pre></div></div>
 
 <p>② 記録を作り直して、2 つとも一緒にコミットします。</p>
-<div class="codehilite"><div class="code-wrap" id="code-32"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">frontend</span>
+<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="nb">cd </span><span class="n">frontend</span>
 <span class="n">npm</span> <span class="n">install</span>
 <span class="n">git</span> <span class="n">add</span> <span class="n">package</span><span class="p">.</span><span class="n">json</span> <span class="n">package-lock</span><span class="p">.</span><span class="n">json</span>
 <span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">&quot;D-7: package-lock.json を package.json に合わせて作り直す&quot;</span>
@@ -1014,16 +1132,16 @@ media/
 <p>③ <code>test_settings.py</code> の、Django-Q の名残を消します（頭の説明の 1 行は、11 月 26 日に足されたログの設定の説明に替える）。</p>
 <p><strong>場所:</strong> <code>hozen_another/test_settings.py</code> の 13 行目（ファイルの頭の説明。Django-Q の行を、ログの行に替える）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-33"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - Q_CLUSTER         : Django-Q をテスト向け（同期実行）に設定</span>
+<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - Q_CLUSTER         : Django-Q をテスト向け（同期実行）に設定</span>
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-34"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - LOGGING           : ログ（web_console.log）を、毎回新しい一時フォルダのファイルに書く</span>
+<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1">#   - LOGGING           : ログ（web_console.log）を、毎回新しい一時フォルダのファイルに書く</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>hozen_another/test_settings.py</code> の 35〜46 行目（Django-Q のテスト用設定。11 月 25 日に Django-Q を外したので、要らない）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-35"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Django-Q（非同期タスクキュー）のテスト用設定（settings.py の Q_CLUSTER を丸ごと置き換える）</span>
+<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># Django-Q（非同期タスクキュー）のテスト用設定（settings.py の Q_CLUSTER を丸ごと置き換える）</span>
 <span class="c1">#   name      … クラスター（タスク実行担当のまとまり）の名前</span>
 <span class="c1">#   sync: True … タスクを別プロセスに渡さず、その場で順番に実行する</span>
 <span class="c1">#   timeout   … 1つのタスクの実行時間の上限（秒）</span>
@@ -1067,646 +1185,51 @@ media/
 </tbody>
 </table>
 <p>Django を 5.1 以上にする時は、<code>settings.py</code> 305 行目の <code>STATICFILES_STORAGE</code> が使えなくなるので、次のように書き換えます。</p>
-<div class="codehilite"><div class="code-wrap" id="code-36"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STORAGES</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="n">STORAGES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;django.core.files.storage.FileSystemStorage&quot;</span><span class="p">},</span>
     <span class="s2">&quot;staticfiles&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;BACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;whitenoise.storage.CompressedManifestStaticFilesStorage&quot;</span><span class="p">},</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
 <p><strong>進め方:</strong> 一度に全部上げません。1 つずつ、テスト → 手元で動かす → Pull Request（Actions のテスト）→ 本番、の順にします。上げる前に、その部品の「リリースノート」（版ごとの変更点）の、変わった所・消えた所を読みます。</p>
-<h3 id="65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">6.5 D-12 同じコードの繰り返しが 6 種類ある（お知らせの片付けは、もう食い違っている）</h3>
-<p>🟡 余裕のある時に（③は早めに） ／ ✅ 手元で再現・確かめた</p>
+<h3 id="65-d-12-同じコードの繰り返しがまだ-3-種類ある">6.5 D-12 同じコードの繰り返しが、まだ 3 種類ある</h3>
+<p>🟡 余裕のある時に ／ ✅ 手元で確かめた（まとめた写しで、同じ頼みに同じ答えが返る）</p>
 <p><strong>どこ:</strong></p>
 <table>
 <thead>
 <tr>
 <th>繰り返し</th>
-<th>場所（<code>284a16a</code>）</th>
+<th>場所（<code>6338cfa</code>）</th>
 <th>まとめ方</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>① 班員1〜15 の従業員番号を並べる</td>
-<td><code>team_views.py</code> 91〜102・211〜222・406〜417・624〜635 行目、<code>main_views.py</code> 588〜599 行目</td>
-<td><code>team_utils.py</code> に関数 <code>member_number_list</code> を作る</td>
-</tr>
-<tr>
-<td>② 人員を作る時の、休憩時間の初めの値（24 項目）</td>
-<td><code>member_views.py</code> 146〜205 行目、<code>main_views.py</code> 300〜331 行目</td>
-<td><code>main_utils.py</code> に定数と関数 <code>default_break_times</code> を作る</td>
-</tr>
-<tr>
-<td>③ お知らせ（ポップアップ）の片付け</td>
-<td><code>inquiry_views.py</code> 267〜299・308〜336・540〜562・564〜585 行目</td>
-<td><code>inquiry_views.py</code> に関数 <code>remove_pop_up</code> を作る</td>
-</tr>
-<tr>
-<td>④ メニューの API 6 つ</td>
-<td><code>main_views.py</code> 421〜555・638〜695 行目</td>
+<td>① メニューの API 6 つ</td>
+<td><code>main_views.py</code> 398〜532・605〜662 行目</td>
 <td>元になるクラス <code>LoginMemberMenu</code> を作り、6 つはそれを受け継ぐ</td>
 </tr>
 <tr>
-<td>⑤ バックアップの入口の 19 個の <code>if</code></td>
+<td>② バックアップの入口の 19 個の <code>if</code></td>
 <td><code>asynchronous_views.py</code> 135〜407 行目</td>
 <td>「URL の名前 → 関数」の表（辞書）3 つにする</td>
 </tr>
 <tr>
-<td>⑥ 月末の日を求める計算</td>
+<td>③ 月末の日を求める計算</td>
 <td><code>kosu_views.py</code> 1370〜1382・1479〜1490・1558〜1569 行目</td>
 <td><code>calendar.monthrange</code> を使う</td>
 </tr>
 </tbody>
 </table>
-<p><strong>今:</strong> 同じ中身のコードが、何か所にも書いてあります（①は 5 か所・②は 2 か所・③は 4 か所・④は 6 つのクラス・⑤は 19 か所・⑥は 3 か所）。</p>
-<p><strong>何が困るか:</strong> 1 か所だけ直し忘れると、画面ごとに動きが違ってきます。✅ ③は、もう食い違っています。お知らせを消す時、問い合わせの詳細を開いた時は「最初の 1 つだけ」、問い合わせを消した時は「全部」を消し、詰め方も 1 回しか前に送らないので、同じ問い合わせのお知らせが 2 つある時（同じ問い合わせが 2 回編集された時など）に、次のようになります。</p>
-<table>
-<thead>
-<tr>
-<th>本人のお知らせの ID（前）</th>
-<th>した事</th>
-<th><code>284a16a</code> の結果</th>
-<th>直した後</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>[901, 1, 1, 902, 903]</code></td>
-<td>本人が問い合わせ 1 の詳細を開く</td>
-<td><code>[901, 1, 902, 903, 空]</code>（1 つ残る）</td>
-<td><code>[901, 902, 903, 空, 空]</code></td>
-</tr>
-<tr>
-<td><code>[901, 1, 1, 902, 903]</code></td>
-<td>担当者が問い合わせ 1 を消す</td>
-<td><code>[901, 空, 902, 903, 空]</code>（間に空きが残る）</td>
-<td><code>[901, 902, 903, 空, 空]</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>直し方:</strong> 繰り返しを 1 か所（関数・定数・クラス・表）にまとめ、元の場所はそれを呼ぶだけにします。①②④⑤⑥は、動きを変えません（まとめるだけ）。③は、上の食い違いもそろいます。1 つの番号（①〜⑥）ずつ直して、テストを流し、コミットします。1 つのファイルに何か所もある時は、下の方の場所から直してください（行番号がずれないように）。</p>
-<h4 id="-班員115-の従業員番号を並べる">① 班員1〜15 の従業員番号を並べる</h4>
-<p><code>team_utils.py</code> に、並べる関数 <code>member_number_list</code> を作り、前からある <code>team_member_numbers</code> も、それを使うようにします。</p>
-<p><strong>場所:</strong> <code>kosu/utils/team_utils.py</code> の 188〜200 行目（team_member_numbers の前に member_number_list を足し、team_member_numbers もそれを使う）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-37"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 班を管理する人の、班員の従業員番号を返す（TeamDetail で「自分の班員の工数データか」を確かめるのに使う）。</span>
-<span class="c1">#</span>
-<span class="c1"># 引数:</span>
-<span class="c1">#   leader_no: 班を管理する人（班員登録をした人）の従業員番号</span>
-<span class="c1"># 戻り値:</span>
-<span class="c1">#   set[int]: 班員1〜15 の従業員番号（空欄は除く。班員データが無ければ空）</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">team_member_numbers</span><span class="p">(</span><span class="n">leader_no</span><span class="p">):</span>
-  <span class="n">team</span> <span class="o">=</span> <span class="n">team_member</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">employee_no5</span><span class="o">=</span><span class="n">leader_no</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">team</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
-  <span class="c1"># member1〜member15 は文字列の項目なので、数字だけのものを数値にしてから集める</span>
-  <span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;member</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)]</span>
-  <span class="k">return</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()}</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-38"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># 班員データの班員1〜15 のうち、登録済みの従業員番号を、登録の順に返す（未設定＝None・空文字の枠は除く）。</span>
-<span class="c1">#   班員の番号を並べる所（team_views.py の 4 か所・main_views.py の班員MENU）は、全部これを使う。</span>
-<span class="c1">#</span>
-<span class="c1"># 引数:</span>
-<span class="c1">#   team: 班員データ（team_member）</span>
-<span class="c1"># 戻り値:</span>
-<span class="c1">#   list[str]: 班員の従業員番号（項目のままの文字列）</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">member_number_list</span><span class="p">(</span><span class="n">team</span><span class="p">):</span>
-  <span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;member</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)]</span>
-  <span class="k">return</span> <span class="p">[</span><span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">numbers</span> <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-
-
-
-<span class="c1"># 班を管理する人の、班員の従業員番号を返す（TeamDetail で「自分の班員の工数データか」を確かめるのに使う）。</span>
-<span class="c1">#</span>
-<span class="c1"># 引数:</span>
-<span class="c1">#   leader_no: 班を管理する人（班員登録をした人）の従業員番号</span>
-<span class="c1"># 戻り値:</span>
-<span class="c1">#   set[int]: 班員1〜15 の従業員番号（空欄は除く。班員データが無ければ空）</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">team_member_numbers</span><span class="p">(</span><span class="n">leader_no</span><span class="p">):</span>
-  <span class="n">team</span> <span class="o">=</span> <span class="n">team_member</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">employee_no5</span><span class="o">=</span><span class="n">leader_no</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-  <span class="k">if</span> <span class="n">team</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
-  <span class="c1"># member1〜member15 は文字列の項目なので、数字だけのものを数値にしてから集める</span>
-  <span class="k">return</span> <span class="p">{</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">member_number_list</span><span class="p">(</span><span class="n">team</span><span class="p">)</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()}</span>
-</code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>member_number_list()</code></strong>（Python）: この巻で <code>kosu/utils/team_utils.py</code> に足す関数。班員データ（<code>team_member</code>）の班員1〜15 のうち、登録済みの従業員番号を、登録の順に並べて返します（空欄は除く）。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
-<p><code>team_views.py</code> で使えるようにし、4 か所を、その関数を呼ぶ 1 行に置き換えます。</p>
-<p><strong>場所:</strong> <code>kosu/views/team_views.py</code> の 44 行目（インポート）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-39"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..utils.team_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">excel_function</span><span class="p">,</span> <span class="n">team_member_numbers</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..utils.team_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">excel_function</span><span class="p">,</span> <span class="n">member_number_list</span><span class="p">,</span> <span class="n">team_member_numbers</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/team_views.py</code> の 91〜102 行目（TeamNew.get）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号をリストにまとめる</span>
-    <span class="n">member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">team_data</span><span class="o">.</span><span class="n">member1</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member2</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member3</span><span class="p">,</span>
-        <span class="n">team_data</span><span class="o">.</span><span class="n">member4</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member5</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member6</span><span class="p">,</span>
-        <span class="n">team_data</span><span class="o">.</span><span class="n">member7</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member8</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member9</span><span class="p">,</span>
-        <span class="n">team_data</span><span class="o">.</span><span class="n">member10</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member11</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member12</span><span class="p">,</span>
-        <span class="n">team_data</span><span class="o">.</span><span class="n">member13</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member14</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member15</span>
-    <span class="p">]</span>
-    <span class="c1"># 未設定（None または空文字）の枠を除き、登録済みの班員の従業員番号だけにする</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">member_numbers</span> <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
-    <span class="p">]</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号（班員1〜15 のうち登録済みの物。登録の順。team_utils.py の member_number_list）</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="n">member_number_list</span><span class="p">(</span><span class="n">team_data</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/team_views.py</code> の 211〜222 行目（TeamList.get）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号をリストにまとめる</span>
-    <span class="n">member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member1</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member2</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member3</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member4</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member5</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member6</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member7</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member8</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member9</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member10</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member11</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member12</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member13</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member14</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member15</span>
-    <span class="p">]</span>
-    <span class="c1"># 未設定（None または空文字）の枠を除き、登録済みの班員の従業員番号だけにする</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">member_numbers</span> <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
-    <span class="p">]</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号（班員1〜15 のうち登録済みの物。登録の順。team_utils.py の member_number_list）</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="n">member_number_list</span><span class="p">(</span><span class="n">team_data</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/team_views.py</code> の 406〜417 行目（TeamCalendar.get）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号をリストにまとめる</span>
-    <span class="n">member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member1</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member2</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member3</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member4</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member5</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member6</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member7</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member8</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member9</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member10</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member11</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member12</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member13</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member14</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member15</span>
-    <span class="p">]</span>
-    <span class="c1"># 未設定（None または空文字）の枠を除き、登録済みの班員の従業員番号だけにする</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">member_numbers</span> <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
-    <span class="p">]</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号（班員1〜15 のうち登録済みの物。登録の順。team_utils.py の member_number_list）</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="n">member_number_list</span><span class="p">(</span><span class="n">team_data</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/team_views.py</code> の 624〜635 行目（TeamOverTime.get）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号をリストにまとめる</span>
-    <span class="n">member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member1</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member2</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member3</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member4</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member5</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member6</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member7</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member8</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member9</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member10</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member11</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member12</span><span class="p">,</span>
-      <span class="n">team_data</span><span class="o">.</span><span class="n">member13</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member14</span><span class="p">,</span> <span class="n">team_data</span><span class="o">.</span><span class="n">member15</span>
-    <span class="p">]</span>
-    <span class="c1"># 未設定（None または空文字）の枠を除き、登録済みの班員の従業員番号だけにする</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">member_numbers</span> <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
-    <span class="p">]</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 班員の従業員番号（班員1〜15 のうち登録済みの物。登録の順。team_utils.py の member_number_list）</span>
-    <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="n">member_number_list</span><span class="p">(</span><span class="n">team_data</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><code>main_views.py</code>（班員MENU）も同じです（インポートは②の 1 か所目でまとめて足す）。</p>
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 588〜599 行目（TeamMenu.get）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 班員1〜15 の従業員番号をリストにまとめる</span>
-      <span class="n">member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">team_get</span><span class="o">.</span><span class="n">member1</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member2</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member3</span><span class="p">,</span>
-        <span class="n">team_get</span><span class="o">.</span><span class="n">member4</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member5</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member6</span><span class="p">,</span>
-        <span class="n">team_get</span><span class="o">.</span><span class="n">member7</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member8</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member9</span><span class="p">,</span>
-        <span class="n">team_get</span><span class="o">.</span><span class="n">member10</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member11</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member12</span><span class="p">,</span>
-        <span class="n">team_get</span><span class="o">.</span><span class="n">member13</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member14</span><span class="p">,</span> <span class="n">team_get</span><span class="o">.</span><span class="n">member15</span>
-      <span class="p">]</span>
-      <span class="c1"># 未設定（None または空文字）の枠を除き、登録済みの班員の従業員番号だけにする</span>
-      <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">num</span> <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">member_numbers</span> <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span>
-      <span class="p">]</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 班員の従業員番号（班員1〜15 のうち登録済みの物。登録の順。team_utils.py の member_number_list）</span>
-      <span class="n">valid_member_numbers</span> <span class="o">=</span> <span class="n">member_number_list</span><span class="p">(</span><span class="n">team_get</span><span class="p">)</span>
-</code></pre></div></div>
-
-<h4 id="-人員を作る時の休憩時間の初めの値">② 人員を作る時の、休憩時間の初めの値</h4>
-<p><code>main_utils.py</code> に、24 項目の値を 1 つにまとめます。常昼・連1直・連2直（4〜6）は、どのショップも同じなので、共通の部分として 1 回だけ書きます。</p>
-<p><strong>場所:</strong> <code>kosu/utils/main_utils.py</code> の 127 行目の前（get_settings の説明の前）</p>
-<p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
-<span class="c1"># 人員を新しく作る時の、休憩時間の初めの値（24 項目）</span>
-<span class="c1">#   キー名  : break_time{直の番号}（昼休憩） / break_time{直の番号}_over{1〜3}（残業休憩1〜3）</span>
-<span class="c1">#             直の番号 1=1直, 2=2直, 3=3直, 4=常昼, 5=連1直, 6=連2直</span>
-<span class="c1">#   値の形式: &quot;#HHMMHHMM&quot;（開始時刻と終了時刻。例: &quot;#11401240&quot; は 11:40〜12:40）</span>
-<span class="c1">#   人員の登録（member_views.py の MemberNew）と、ヘルプの初期化で作る管理者（main_views.py の Help）で使う。</span>
-<span class="c1"># ------------------------------------------------------------</span>
-<span class="c1"># 常昼・連1直・連2直（4〜6）は、どのショップも同じ</span>
-<span class="n">_BREAK_TIMES_COMMON</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s1">&#39;break_time4&#39;</span><span class="p">:</span> <span class="s1">&#39;#12001300&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time4_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#19001915&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time4_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#01150215&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time4_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#06150630&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;break_time5&#39;</span><span class="p">:</span> <span class="s1">&#39;#10401130&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time5_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#15101520&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time5_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#20202110&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time5_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400150&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;break_time6&#39;</span><span class="p">:</span> <span class="s1">&#39;#21202210&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time6_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#01500200&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time6_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#07000750&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time6_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#12201230&#39;</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="c1"># 組立系ショップの 1直〜3直</span>
-<span class="n">BREAK_TIMES_ASSEMBLY</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s1">&#39;break_time1&#39;</span><span class="p">:</span> <span class="s1">&#39;#11401240&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time1_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#17201735&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time1_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#23350035&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time1_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#04350450&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;break_time2&#39;</span><span class="p">:</span> <span class="s1">&#39;#14101510&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time2_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#22002215&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time2_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#04150515&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time2_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#09150930&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;break_time3&#39;</span><span class="p">:</span> <span class="s1">&#39;#23500050&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time3_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#06400655&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time3_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#12551355&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time3_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#17551810&#39;</span><span class="p">,</span>
-  <span class="o">**</span><span class="n">_BREAK_TIMES_COMMON</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="c1"># それ以外のショップの 1直〜3直</span>
-<span class="n">BREAK_TIMES_STANDARD</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s1">&#39;break_time1&#39;</span><span class="p">:</span> <span class="s1">&#39;#10401130&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time1_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#15101520&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time1_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#20202110&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time1_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400150&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;break_time2&#39;</span><span class="p">:</span> <span class="s1">&#39;#17501840&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time2_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#22302240&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time2_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#03400430&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time2_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#09000910&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;break_time3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400230&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time3_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#07050715&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time3_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#12151305&#39;</span><span class="p">,</span> <span class="s1">&#39;break_time3_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#17351745&#39;</span><span class="p">,</span>
-  <span class="o">**</span><span class="n">_BREAK_TIMES_COMMON</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="c1"># 組立系ショップ（1直〜3直で、専用の休憩の並びを使う）</span>
-<span class="n">ASSEMBLY_SHOPS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;W1&#39;</span><span class="p">,</span> <span class="s1">&#39;W2&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;組長以上(W,A)&#39;</span><span class="p">]</span>
-
-
-<span class="c1"># ショップに合った、休憩時間の初めの値（24 項目の辞書の写し）を返す。</span>
-<span class="c1">#</span>
-<span class="c1"># 引数:</span>
-<span class="c1">#   shop: ショップ名</span>
-<span class="c1"># 戻り値:</span>
-<span class="c1">#   dict: break_time1〜break_time6_over3 の 24 項目</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">default_break_times</span><span class="p">(</span><span class="n">shop</span><span class="p">):</span>
-  <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">BREAK_TIMES_ASSEMBLY</span> <span class="k">if</span> <span class="n">shop</span> <span class="ow">in</span> <span class="n">ASSEMBLY_SHOPS</span> <span class="k">else</span> <span class="n">BREAK_TIMES_STANDARD</span><span class="p">)</span>
-</code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>default_break_times()</code></strong>（Python）: この巻で <code>kosu/utils/main_utils.py</code> に足す関数。ショップ名を渡すと、そのショップの、休憩時間の初めの値（<code>break_time1</code>〜<code>break_time6_over3</code> の 24 項目の辞書）を返します。組立系ショップ（<code>ASSEMBLY_SHOPS</code>）とそれ以外で、1直〜3直の値が違います。</li>
-<li><strong><code>dict()</code></strong>（Python）: 辞書を作る関数。<code>dict(BREAK_TIMES_ASSEMBLY)</code> は、辞書の写し（中身が同じで、別の辞書）を作ります。写しを返すと、受け取った側が中身を書き換えても、元の定数は変わりません。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
-<p>人員の登録（<code>member_views.py</code>）は、ショップに合った値をもらうだけにします。</p>
-<p><strong>場所:</strong> <code>kosu/views/member_views.py</code> の 28 行目（インポート）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..utils.main_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomPagination</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..utils.main_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomPagination</span><span class="p">,</span> <span class="n">default_break_times</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/member_views.py</code> の 146〜205 行目（MemberNew.post）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 休憩時間の初期値を設定する</span>
-    <span class="c1">#   キー名  : break_time{直の番号}（昼休憩） / break_time{直の番号}_over{1〜3}（残業休憩1〜3）</span>
-    <span class="c1">#             直の番号 1=1直, 2=2直, 3=3直, 4=常昼, 5=連1直, 6=連2直</span>
-    <span class="c1">#   値の形式: &quot;#HHMMHHMM&quot;（開始時刻と終了時刻。例: &quot;#11401240&quot; は 11:40〜12:40）</span>
-    <span class="c1"># 組立系ショップ（W1/W2/A1/A2/J/組長以上(W,A)）は、1直〜3直で専用の休憩パターンを使う</span>
-    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shop&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;W1&#39;</span><span class="p">,</span> <span class="s1">&#39;W2&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;組長以上(W,A)&#39;</span><span class="p">]:</span>
-      <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-        <span class="s1">&#39;break_time1&#39;</span><span class="p">:</span> <span class="s1">&#39;#11401240&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time1_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#17201735&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time1_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#23350035&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time1_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#04350450&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2&#39;</span><span class="p">:</span> <span class="s1">&#39;#14101510&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#22002215&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#04150515&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#09150930&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3&#39;</span><span class="p">:</span> <span class="s1">&#39;#23500050&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#06400655&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#12551355&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#17551810&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4&#39;</span><span class="p">:</span> <span class="s1">&#39;#12001300&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#19001915&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#01150215&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#06150630&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5&#39;</span><span class="p">:</span> <span class="s1">&#39;#10401130&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#15101520&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#20202110&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400150&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6&#39;</span><span class="p">:</span> <span class="s1">&#39;#21202210&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#01500200&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#07000750&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#12201230&#39;</span><span class="p">,</span>
-      <span class="p">})</span>
-    <span class="c1"># それ以外のショップは標準の休憩パターンを使う（常昼・連1直・連2直は組立系と同じ値）</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-        <span class="s1">&#39;break_time1&#39;</span><span class="p">:</span> <span class="s1">&#39;#10401130&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time1_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#15101520&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time1_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#20202110&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time1_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400150&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2&#39;</span><span class="p">:</span> <span class="s1">&#39;#17501840&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#22302240&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#03400430&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time2_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#09000910&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400230&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#07050715&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#12151305&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time3_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#17351745&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4&#39;</span><span class="p">:</span> <span class="s1">&#39;#12001300&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#19001915&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#01150215&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time4_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#06150630&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5&#39;</span><span class="p">:</span> <span class="s1">&#39;#10401130&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#15101520&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#20202110&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time5_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#01400150&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6&#39;</span><span class="p">:</span> <span class="s1">&#39;#21202210&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6_over1&#39;</span><span class="p">:</span> <span class="s1">&#39;#01500200&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6_over2&#39;</span><span class="p">:</span> <span class="s1">&#39;#07000750&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;break_time6_over3&#39;</span><span class="p">:</span> <span class="s1">&#39;#12201230&#39;</span><span class="p">,</span>
-      <span class="p">})</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 休憩時間の初期値を設定する（組立系ショップか、それ以外かで決まる。値は main_utils.py の default_break_times）</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">default_break_times</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shop&#39;</span><span class="p">)))</span>
-</code></pre></div></div>
-
-<p>ヘルプの初期化で作る管理者（<code>main_views.py</code>）も、同じ値を使います（前から組立系の値で作っているので、そのまま）。</p>
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 68 行目（インポート）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..utils.main_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomPagination</span><span class="p">,</span> <span class="n">get_all_model_names_in_myapp</span><span class="p">,</span> <span class="n">get_settings</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..utils.main_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BREAK_TIMES_ASSEMBLY</span><span class="p">,</span> <span class="n">CustomPagination</span><span class="p">,</span> <span class="n">get_all_model_names_in_myapp</span><span class="p">,</span> <span class="n">get_settings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..utils.team_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">member_number_list</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 300〜331 行目（Help.post の人員データの初期化）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>        <span class="c1">#   休憩時間は member_views.py の組立系ショップ（W1/W2/A1/A2/J/組長以上(W,A)）と同じ初期値</span>
-        <span class="c1">#   （値の形式は &quot;#HHMMHHMM&quot;＝開始時刻と終了時刻。例: &quot;#11401240&quot; は 11:40〜12:40）</span>
-        <span class="n">default_member</span> <span class="o">=</span> <span class="n">member</span><span class="p">(</span><span class="n">employee_no</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
-                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
-                                <span class="n">shop</span><span class="o">=</span><span class="s1">&#39;その他&#39;</span><span class="p">,</span>
-                                <span class="n">authority</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="n">administrator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="n">break_time1</span><span class="o">=</span><span class="s1">&#39;#11401240&#39;</span><span class="p">,</span>
-                                <span class="n">break_time1_over1</span><span class="o">=</span><span class="s1">&#39;#17201735&#39;</span><span class="p">,</span>
-                                <span class="n">break_time1_over2</span><span class="o">=</span><span class="s1">&#39;#23350035&#39;</span><span class="p">,</span>
-                                <span class="n">break_time1_over3</span><span class="o">=</span><span class="s1">&#39;#04350450&#39;</span><span class="p">,</span>
-                                <span class="n">break_time2</span><span class="o">=</span><span class="s1">&#39;#14101510&#39;</span><span class="p">,</span>
-                                <span class="n">break_time2_over1</span><span class="o">=</span><span class="s1">&#39;#22002215&#39;</span><span class="p">,</span>
-                                <span class="n">break_time2_over2</span><span class="o">=</span><span class="s1">&#39;#04150515&#39;</span><span class="p">,</span>
-                                <span class="n">break_time2_over3</span><span class="o">=</span><span class="s1">&#39;#09150930&#39;</span><span class="p">,</span>
-                                <span class="n">break_time3</span><span class="o">=</span><span class="s1">&#39;#23500050&#39;</span><span class="p">,</span>
-                                <span class="n">break_time3_over1</span><span class="o">=</span><span class="s1">&#39;#06400655&#39;</span><span class="p">,</span>
-                                <span class="n">break_time3_over2</span><span class="o">=</span><span class="s1">&#39;#12551355&#39;</span><span class="p">,</span>
-                                <span class="n">break_time3_over3</span><span class="o">=</span><span class="s1">&#39;#17551810&#39;</span><span class="p">,</span>
-                                <span class="n">break_time4</span><span class="o">=</span><span class="s1">&#39;#12001300&#39;</span><span class="p">,</span>
-                                <span class="n">break_time4_over1</span><span class="o">=</span><span class="s1">&#39;#19001915&#39;</span><span class="p">,</span>
-                                <span class="n">break_time4_over2</span><span class="o">=</span><span class="s1">&#39;#01150215&#39;</span><span class="p">,</span>
-                                <span class="n">break_time4_over3</span><span class="o">=</span><span class="s1">&#39;#06150630&#39;</span><span class="p">,</span>
-                                <span class="n">break_time5</span><span class="o">=</span><span class="s1">&#39;#10401130&#39;</span><span class="p">,</span>
-                                <span class="n">break_time5_over1</span><span class="o">=</span><span class="s1">&#39;#15101520&#39;</span><span class="p">,</span>
-                                <span class="n">break_time5_over2</span><span class="o">=</span><span class="s1">&#39;#20202110&#39;</span><span class="p">,</span>
-                                <span class="n">break_time5_over3</span><span class="o">=</span><span class="s1">&#39;#01400150&#39;</span><span class="p">,</span>
-                                <span class="n">break_time6</span><span class="o">=</span><span class="s1">&#39;#21202210&#39;</span><span class="p">,</span>
-                                <span class="n">break_time6_over1</span><span class="o">=</span><span class="s1">&#39;#01500200&#39;</span><span class="p">,</span>
-                                <span class="n">break_time6_over2</span><span class="o">=</span><span class="s1">&#39;#07000750&#39;</span><span class="p">,</span>
-                                <span class="n">break_time6_over3</span><span class="o">=</span><span class="s1">&#39;#12201230&#39;</span><span class="p">,</span>
-                                <span class="p">)</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>        <span class="c1">#   休憩時間は、組立系ショップ（W1/W2/A1/A2/J/組長以上(W,A)）の初期値（main_utils.py の BREAK_TIMES_ASSEMBLY）</span>
-        <span class="n">default_member</span> <span class="o">=</span> <span class="n">member</span><span class="p">(</span><span class="n">employee_no</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
-                                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
-                                <span class="n">shop</span><span class="o">=</span><span class="s1">&#39;その他&#39;</span><span class="p">,</span>
-                                <span class="n">authority</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="n">administrator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                <span class="o">**</span><span class="n">BREAK_TIMES_ASSEMBLY</span><span class="p">,</span>
-                                <span class="p">)</span>
-</code></pre></div></div>
-
-<h4 id="-お知らせポップアップの片付け">③ お知らせ（ポップアップ）の片付け</h4>
-<p><code>inquiry_views.py</code> に、片付ける関数 <code>remove_pop_up</code> を作ります。その問い合わせを指すお知らせを <strong>全部</strong> 消し、空いた枠を除いて前に詰めます。</p>
-<p><strong>場所:</strong> <code>kosu/views/inquiry_views.py</code> の 59 行目の前（inquiry_permission の後ろ）</p>
-<p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># お知らせ（ポップアップ）を片付ける。</span>
-<span class="c1">#   人員データ（本人向け）や管理者設定（担当者向け）のお知らせ 1〜5 から、その問い合わせを指す物を全部消し、</span>
-<span class="c1">#   文言の空いた枠も除いて前に詰める（例: [A, x, C, x, 空] → [A, C, 空, 空, 空]）。保存はしない。</span>
-<span class="c1">#</span>
-<span class="c1"># 引数:</span>
-<span class="c1">#   obj       : お知らせを持つデータ（member または administrator_data）</span>
-<span class="c1">#   inquiry_id: 問い合わせのID</span>
-<span class="c1"># 戻り値:</span>
-<span class="c1">#   bool: 消した物があれば True（呼んだ側が、その時だけ save() する）</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">remove_pop_up</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">inquiry_id</span><span class="p">):</span>
-  <span class="n">slots</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
-  <span class="c1"># その問い合わせを指す枠を除く（ID は文字列の項目なので、文字にそろえて比べる）</span>
-  <span class="n">keep</span> <span class="o">=</span> <span class="p">[(</span><span class="n">text</span><span class="p">,</span> <span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">slots</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">inquiry_id</span><span class="p">)]</span>
-  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keep</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">slots</span><span class="p">):</span>
-    <span class="k">return</span> <span class="kc">False</span>
-  <span class="c1"># 文言の空いた枠も除いて前に詰め、後ろの空いた枠を空にする</span>
-  <span class="n">keep</span> <span class="o">=</span> <span class="p">[(</span><span class="n">text</span><span class="p">,</span> <span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">keep</span> <span class="k">if</span> <span class="n">text</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
-  <span class="n">keep</span> <span class="o">+=</span> <span class="p">[(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">5</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">keep</span><span class="p">))</span>
-  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pid</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-    <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pid</span><span class="p">)</span>
-  <span class="k">return</span> <span class="kc">True</span>
-</code></pre></div></div>
-
-<!-- first-use -->
-
-<blockquote>
-<p><strong>▶ ここで初めて出てくるコード</strong></p>
-<ul>
-<li><strong><code>remove_pop_up()</code></strong>（Python）: この巻で <code>kosu/views/inquiry_views.py</code> に足す関数。人員データか管理者設定のお知らせ 1〜5 から、渡した問い合わせ ID を指す物を全部消し、残りを前に詰めます。消した物があれば <code>True</code> を返すので、その時だけ <code>save()</code> します。</li>
-<li><strong><code>setattr()</code></strong>（Python）: <code>setattr(物, '名前', 値)</code> は、物の属性（<code>物.名前</code>）に値を入れる関数。名前を文字で組み立てられるので、<code>setattr(m, f'pop_up{i}', '')</code> のように、<code>pop_up1</code>〜<code>pop_up5</code> を順に書き換えられます（読む方は <code>getattr</code>）。</li>
-</ul>
-</blockquote>
-<!-- /first-use -->
-
-<p>4 か所を、その関数を呼ぶだけにします（消した物があった時だけ保存する）。</p>
-<p><strong>場所:</strong> <code>kosu/views/inquiry_views.py</code> の 267〜299 行目（InquirDetail.get の本人向けお知らせ）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># ログイン者が問い合わせ者本人の場合: 本人向けお知らせ（回答通知）を既読にする</span>
-    <span class="k">if</span> <span class="n">inquir_member</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">inquir_member</span><span class="o">.</span><span class="n">employee_no</span> <span class="o">==</span> <span class="n">member_data</span><span class="o">.</span><span class="n">employee_no</span><span class="p">:</span>
-      <span class="c1"># 本人向けお知らせの削除:</span>
-      <span class="c1">#   pop_up_id1〜5 のうち、この問い合わせID と一致する最初の枠を空にする</span>
-      <span class="c1">#   （DBの値は文字列、pk は数値のため、両方 str() にそろえて比較する）</span>
-      <span class="n">inquir_member_changed</span> <span class="o">=</span> <span class="kc">False</span>
-      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="n">pop_up_id_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">pop_up_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">))</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-          <span class="n">inquir_member_changed</span> <span class="o">=</span> <span class="kc">True</span>
-          <span class="k">break</span>
-
-      <span class="c1"># 本人向けお知らせの前詰め（削除した場合のみ）:</span>
-      <span class="c1">#   枠1〜4 を順に見て、文言が空の枠があれば次の枠の内容を移し、次の枠を空にする</span>
-      <span class="c1">#   例: [A, 空, C, D, 空] → [A, C, D, 空, 空]</span>
-      <span class="k">if</span> <span class="n">inquir_member_changed</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-          <span class="n">pop_up_id_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-          <span class="n">pop_up_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-          <span class="n">next_pop_up_id_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
-          <span class="n">next_pop_up_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
-
-          <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_field</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_id_field</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_field</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_field</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_id_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-        <span class="c1"># 削除・前詰めの結果をまとめて最後に一度だけ保存（途中で何度も書き込まないため）</span>
-        <span class="n">inquir_member</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># ログイン者が問い合わせ者本人の場合: 本人向けお知らせ（回答通知）のうち、この問い合わせの物を片付けて保存する</span>
-    <span class="k">if</span> <span class="n">inquir_member</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">inquir_member</span><span class="o">.</span><span class="n">employee_no</span> <span class="o">==</span> <span class="n">member_data</span><span class="o">.</span><span class="n">employee_no</span><span class="p">:</span>
-      <span class="k">if</span> <span class="n">remove_pop_up</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
-        <span class="n">inquir_member</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/inquiry_views.py</code> の 308〜336 行目（InquirDetail.get の担当者向けお知らせ（if の中））</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 担当者向けお知らせの削除: この問い合わせID と一致する最初の枠を空にする</span>
-      <span class="n">admin_data_changed</span> <span class="o">=</span> <span class="kc">False</span>
-      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="n">pop_up_id_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">pop_up_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">))</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-          <span class="n">admin_data_changed</span> <span class="o">=</span> <span class="kc">True</span>
-          <span class="k">break</span>
-
-      <span class="c1"># 担当者向けお知らせの前詰め（削除した場合のみ）:</span>
-      <span class="c1">#   枠1〜4 を順に見て、問い合わせIDが空の枠があれば次の枠の内容を移し、次の枠を空にする</span>
-      <span class="c1">#   （本人向けは「文言」が空かどうか、こちらは「ID」が空かどうかで判定している）</span>
-      <span class="k">if</span> <span class="n">admin_data_changed</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-          <span class="n">pop_up_id_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-          <span class="n">pop_up_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-          <span class="n">next_pop_up_id_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
-          <span class="n">next_pop_up_field</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
-
-          <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_field</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_id_field</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_field</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_field</span><span class="p">))</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_id_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_field</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-        <span class="c1"># 削除・前詰めの結果をまとめて最後に一度だけ保存</span>
-        <span class="n">admin_data</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-64"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 担当者向けお知らせのうち、この問い合わせの物を片付けて保存する</span>
-      <span class="k">if</span> <span class="n">remove_pop_up</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
-        <span class="n">admin_data</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/inquiry_views.py</code> の 540〜562 行目（InquirUpdate.delete の本人向けお知らせ（if の中））</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-65"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 本人向けお知らせの削除: この問い合わせID と一致する枠をすべて空にする（まだ保存しない）</span>
-      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="n">pop_up_id_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">pop_up_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_id_attr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_id_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-      <span class="c1"># 本人向けお知らせの前詰め: 文言が空の枠があれば次の枠の内容を移し、次の枠を空にする（まだ保存しない）</span>
-      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-        <span class="n">pop_up_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">pop_up_id_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">next_pop_up_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">next_pop_up_id_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span>
-
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_attr</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_attr</span><span class="p">))</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pop_up_id_attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_id_attr</span><span class="p">))</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-          <span class="nb">setattr</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">next_pop_up_id_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-      <span class="c1"># 本人向けお知らせの変更を最後に一度だけ保存</span>
-      <span class="n">inquir_member</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-66"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>      <span class="c1"># 本人向けお知らせのうち、この問い合わせの物を片付けて保存する</span>
-      <span class="k">if</span> <span class="n">remove_pop_up</span><span class="p">(</span><span class="n">inquir_member</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
-        <span class="n">inquir_member</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p><strong>場所:</strong> <code>kosu/views/inquiry_views.py</code> の 564〜585 行目（InquirUpdate.delete の担当者向けお知らせ）</p>
-<p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-67"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 担当者向けお知らせの削除: この問い合わせID と一致する枠をすべて空にする（まだ保存しない）</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-      <span class="n">pop_up_id_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="n">pop_up_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_attr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-    <span class="c1"># 担当者向けお知らせの前詰め: 文言が空の枠があれば次の枠の内容を移し、次の枠を空にする（まだ保存しない）</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
-      <span class="n">pop_up_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pop_up</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="n">pop_up_id_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="n">next_pop_up_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pop_up</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="n">next_pop_up_id_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pop_up_id</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
-      <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_attr</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_attr</span><span class="p">))</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pop_up_id_attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_id_attr</span><span class="p">))</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">next_pop_up_id_attr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-
-    <span class="c1"># 担当者向けお知らせの変更を最後に一度だけ保存</span>
-    <span class="n">admin_data</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-68"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 担当者向けお知らせのうち、この問い合わせの物を片付けて保存する</span>
-    <span class="k">if</span> <span class="n">remove_pop_up</span><span class="p">(</span><span class="n">admin_data</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
-      <span class="n">admin_data</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-</code></pre></div></div>
-
-<blockquote>
-<p>片付けた後の空いた枠の値は、全部 <code>''</code>（空の文字）になります（前は <code>None</code> と <code>''</code> が混ざっていた）。画面（<code>MainMenu.tsx</code> の <code>pop_up_id1 &amp;&amp; …</code>）も、お知らせを書き込む所（<code>in ['', None]</code>）も、どちらも「空」として扱うので、見え方は変わりません。</p>
-</blockquote>
-<h4 id="-メニューの-api-6-つ">④ メニューの API 6 つ</h4>
+<p>（班員の番号の一覧・休憩時間の初めの値・お知らせの片付けは、11 月 27 日の <code>6338cfa</code> で、前の版の直し方のとおりにまとめられました。）</p>
+<p><strong>今:</strong> 同じ中身のコードが、何か所にも書いてあります（①は 6 つのクラス・②は 19 か所・③は 3 か所）。</p>
+<p><strong>何が困るか:</strong> 1 か所だけ直し忘れると、画面ごとに動きが違ってきます（前の版で書いたお知らせの片付けは、実際にそうなっていた）。新しいバックアップを足す時も、19 個の <code>if</code> の続きに、同じ形を書き足すことになります。</p>
+<p><strong>直し方:</strong> 繰り返しを 1 か所（クラス・表・関数）にまとめ、元の場所はそれを使うだけにします。どれも、動きは変えません（まとめるだけ）。1 つの番号（①〜③）ずつ直して、テストを流し、コミットします。1 つのファイルに何か所もある時は、下の方の場所から直してください（行番号がずれないように）。</p>
+<h4 id="-メニューの-api-6-つ">① メニューの API 6 つ</h4>
 <p>メイン・人員・工数区分定義・工数・問い合わせ・管理者のメニューの API は、違いが「工数区分定義 Ver を確かめるか」「管理者設定も返すか」「だれが使えるか」の 3 つだけです。元になるクラス <code>LoginMemberMenu</code> に中身を 1 回だけ書き、6 つのクラスは、その 3 つだけを決めます（URL の対応表 <code>kosu/urls.py</code> は、クラスの名前が同じなので直さなくてよい）。</p>
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 421〜463 行目（Menu の説明からクラスの終わりまで（元になるクラス LoginMemberMenu を足す））</p>
+<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 398〜440 行目（Menu の説明からクラスの終わりまで（元になるクラス LoginMemberMenu を足す））</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-69"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-40"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># Menu: メインMENU API</span>
 <span class="c1">#   URL  : /api/main_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1759,7 +1282,7 @@ media/
 <!-- /first-use -->
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-70"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-41"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># LoginMemberMenu: ログイン者の人員データを返す、メニューの API の元になるクラス</span>
 <span class="c1">#   メイン・人員・工数区分定義・工数・問い合わせ・管理者 の 6 つのメニューの API は、これを受け継いで、</span>
 <span class="c1">#   次の 3 つ（と permission_classes）だけを決める。</span>
@@ -1817,9 +1340,9 @@ media/
 </blockquote>
 <!-- /first-use -->
 
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 464〜495 行目（MemberMenu）</p>
+<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 441〜472 行目（MemberMenu）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-71"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-42"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># MemberMenu: 人員MENU API</span>
 <span class="c1">#   URL  : /api/member_menu/</span>
 <span class="c1">#   権限 : HasAuthority（権限ありの人員のみ）</span>
@@ -1851,7 +1374,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-72"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-43"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># MemberMenu: 人員MENU API</span>
 <span class="c1">#   URL  : /api/member_menu/</span>
 <span class="c1">#   権限 : HasAuthority（権限ありの人員のみ）</span>
@@ -1862,9 +1385,9 @@ media/
   <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">HasAuthority</span><span class="p">]</span>
 </code></pre></div></div>
 
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 496〜525 行目（DefMenu）</p>
+<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 473〜502 行目（DefMenu）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-73"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-44"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># DefMenu: 工数区分定義MENU API</span>
 <span class="c1">#   URL  : /api/def_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1894,7 +1417,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-74"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-45"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># DefMenu: 工数区分定義MENU API</span>
 <span class="c1">#   URL  : /api/def_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1904,9 +1427,9 @@ media/
   <span class="k">pass</span>
 </code></pre></div></div>
 
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 526〜555 行目（KosuMenu）</p>
+<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 503〜532 行目（KosuMenu）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-75"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-46"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># KosuMenu: 工数MENU API</span>
 <span class="c1">#   URL  : /api/kosu_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1936,7 +1459,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-76"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-47"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># KosuMenu: 工数MENU API</span>
 <span class="c1">#   URL  : /api/kosu_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1946,9 +1469,9 @@ media/
   <span class="k">pass</span>
 </code></pre></div></div>
 
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 638〜660 行目（InquirMenu）</p>
+<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 605〜627 行目（InquirMenu）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-77"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-48"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># InquirMenu: 問い合わせMENU API</span>
 <span class="c1">#   URL  : /api/inquir_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1971,7 +1494,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-78"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-49"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># InquirMenu: 問い合わせMENU API</span>
 <span class="c1">#   URL  : /api/inquir_menu/</span>
 <span class="c1">#   権限 : IsLoggedIn（ログイン済みなら誰でも）</span>
@@ -1981,9 +1504,9 @@ media/
   <span class="n">need_def_ver</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div></div>
 
-<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 661〜695 行目（AdministratorMenu）</p>
+<p><strong>場所:</strong> <code>kosu/views/main_views.py</code> の 628〜662 行目（AdministratorMenu）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-79"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-50"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># AdministratorMenu: 管理者MENU API</span>
 <span class="c1">#   URL  : /api/manager_menu/</span>
 <span class="c1">#   権限 : IsAdministrator（管理者のみ）</span>
@@ -2018,7 +1541,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-80"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-51"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># AdministratorMenu: 管理者MENU API</span>
 <span class="c1">#   URL  : /api/manager_menu/</span>
 <span class="c1">#   権限 : IsAdministrator（管理者のみ）</span>
@@ -2031,11 +1554,11 @@ media/
   <span class="n">with_settings</span> <span class="o">=</span> <span class="kc">True</span>
 </code></pre></div></div>
 
-<h4 id="-バックアップの入口の-19-個の-if">⑤ バックアップの入口の 19 個の <code>if</code></h4>
+<h4 id="-バックアップの入口の-19-個の-if">② バックアップの入口の 19 個の <code>if</code></h4>
 <p>「URL の名前 → 動かす関数」を、期間指定あり・全件バックアップ・ロードの 3 つの表にし、<code>backup</code> の中は、表を引くだけにします。新しいバックアップを足す時も、表に 1 行足すだけになります。</p>
 <p><strong>場所:</strong> <code>kosu/views/asynchronous_views.py</code> の 85 行目の前（backup の説明の前）</p>
 <p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-81"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-52"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
 <span class="c1"># backup が動かすタスク関数の表（URL の名前 → tasks.py の関数）</span>
 <span class="c1">#   新しいバックアップ・削除・ロードを足す時は、kosu/urls.py に URL を足し、ここに 1 行足す。</span>
 <span class="c1"># ------------------------------------------------------------</span>
@@ -2071,7 +1594,7 @@ media/
 
 <p><strong>場所:</strong> <code>kosu/views/asynchronous_views.py</code> の 135〜407 行目（backup の中の、19 個の if から最後の else まで）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-82"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># URL名に応じて、実行するタスク関数（task_function）と渡す引数（args）を決める</span>
+<div class="codehilite"><div class="code-wrap" id="code-53"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># URL名に応じて、実行するタスク関数（task_function）と渡す引数（args）を決める</span>
     <span class="c1"># 工数データバックアップ: 期間をチェックしてから generate_kosu_backup(開始日, 終了日)</span>
     <span class="k">if</span> <span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;kosu_backup&#39;</span><span class="p">:</span>  
         <span class="c1"># 期間の入力チェック。エラーがあれば 400 のレスポンスをそのまま返して終了</span>
@@ -2357,7 +1880,7 @@ media/
 <!-- /first-use -->
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-83"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># URL名に応じて、実行するタスク関数（task_function）と渡す引数（args）を決める（表は backup の上）</span>
+<div class="codehilite"><div class="code-wrap" id="code-54"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># URL名に応じて、実行するタスク関数（task_function）と渡す引数（args）を決める（表は backup の上）</span>
     <span class="c1"># 期間指定あり: 期間の入力チェックをしてから、関数(開始日, 終了日)</span>
     <span class="k">if</span> <span class="n">url_name</span> <span class="ow">in</span> <span class="n">PERIOD_TASKS</span><span class="p">:</span>
         <span class="c1"># 期間の入力チェック。エラーがあれば 400 のレスポンスをそのまま返して終了</span>
@@ -2400,21 +1923,21 @@ media/
         <span class="p">)</span>
 </code></pre></div></div>
 
-<h4 id="-月末の日">⑥ 月末の日</h4>
+<h4 id="-月末の日">③ 月末の日</h4>
 <p><code>calendar.monthrange(年, 月)</code> は、「その月の 1 日の曜日」と「その月の日数」の 2 つを返します。2 つ目が月末の日です。</p>
 <p><strong>場所:</strong> <code>kosu/views/kosu_views.py</code> の 47 行目（インポート）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-84"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<div class="codehilite"><div class="code-wrap" id="code-55"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-85"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">calendar</span>  <span class="c1"># 月の日数（月末の日）を求める</span>
+<div class="codehilite"><div class="code-wrap" id="code-56"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">calendar</span>  <span class="c1"># 月の日数（月末の日）を求める</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>kosu/views/kosu_views.py</code> の 1370〜1382 行目（KosuWorkWrite.post）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-86"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-57"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日取得</span>
     <span class="c1">#   翌月1日を作り（12月なら翌年1月1日）、そこから1日引いて月末日を求める</span>
     <span class="c1">#   例: 2026年11月 → 2026-12-01 の1日前 → 30日</span>
     <span class="n">select_month</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -2430,7 +1953,7 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-87"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日（月の日数）。calendar.monthrange は (1日の曜日, その月の日数) を返す（例: 2026年11月 → 30）</span>
+<div class="codehilite"><div class="code-wrap" id="code-58"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日（月の日数）。calendar.monthrange は (1日の曜日, その月の日数) を返す（例: 2026年11月 → 30）</span>
     <span class="n">day_end</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 </code></pre></div></div>
 
@@ -2446,7 +1969,7 @@ media/
 
 <p><strong>場所:</strong> <code>kosu/views/kosu_views.py</code> の 1479〜1490 行目（WorkDefault.post）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-88"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 選択月の最終日取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-59"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 選択月の最終日取得</span>
     <span class="c1">#   翌月1日を作り（12月なら翌年1月1日）、そこから1日引いて月末日を求める</span>
     <span class="n">select_month</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">month</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
@@ -2461,13 +1984,13 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-89"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日（月の日数）。calendar.monthrange は (1日の曜日, その月の日数) を返す（例: 2026年11月 → 30）</span>
+<div class="codehilite"><div class="code-wrap" id="code-60"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日（月の日数）。calendar.monthrange は (1日の曜日, その月の日数) を返す（例: 2026年11月 → 30）</span>
     <span class="n">day_end</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 </code></pre></div></div>
 
 <p><strong>場所:</strong> <code>kosu/views/kosu_views.py</code> の 1558〜1569 行目（TyokuDefault.post）</p>
 <p>今:</p>
-<div class="codehilite"><div class="code-wrap" id="code-90"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 月の最終日取得</span>
+<div class="codehilite"><div class="code-wrap" id="code-61"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 月の最終日取得</span>
     <span class="c1">#   翌月1日を作り（12月なら翌年1月1日）、そこから1日引いて月末日を求める</span>
     <span class="n">select_month</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">month</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
@@ -2482,15 +2005,15 @@ media/
 </code></pre></div></div>
 
 <p>直した後（上の行を、全部これに置き換える）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-91"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日（月の日数）。calendar.monthrange は (1日の曜日, その月の日数) を返す（例: 2026年11月 → 30）</span>
+<div class="codehilite"><div class="code-wrap" id="code-62"><button type="button" class="copy-btn">コピー</button><pre><span></span><code>    <span class="c1"># 指定月の最終日（月の日数）。calendar.monthrange は (1日の曜日, その月の日数) を返す（例: 2026年11月 → 30）</span>
     <span class="n">day_end</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 </code></pre></div></div>
 
 <h4 id="守るテスト">守るテスト</h4>
-<p>③の片付けを確かめるテストを、<code>test_security.py</code> のいちばん後ろに足します（インポートとファイルの頭の説明は、<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の所に一緒に書いてある）。</p>
+<p>11 月 27 日にまとめられた、お知らせの片付け（<code>remove_pop_up</code>）を守るテストも、<code>test_security.py</code> のいちばん後ろに足します（インポートとファイルの頭の説明は、<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の所に一緒に書いてある）。同じ問い合わせのお知らせが 2 つあっても、両方消えて前に詰まることを確かめます。</p>
 <p><strong>場所:</strong> <code>kosu/tests/test_security.py</code> の 434 行目の前（ファイルのいちばん後ろ）</p>
 <p>足すコード（この行の前に入れる）:</p>
-<div class="codehilite"><div class="code-wrap" id="code-92"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ---------------------------------------------------------------------------</span>
+<div class="codehilite"><div class="code-wrap" id="code-63"><button type="button" class="copy-btn">コピー</button><pre><span></span><code><span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># TestRemovePopUp: お知らせ（ポップアップ）の片付けのテスト（D-12）</span>
 <span class="c1">#   対象 : views/inquiry_views.py の remove_pop_up</span>
 <span class="c1">#   内容 : 同じ問い合わせを指すお知らせが2つあっても、両方消え、残りが前に詰まることを確認する。</span>
@@ -2513,11 +2036,21 @@ media/
     <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">remove_pop_up</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
 </code></pre></div></div>
 
+<!-- first-use -->
+
+<blockquote>
+<p><strong>▶ ここで初めて出てくるコード</strong></p>
+<ul>
+<li><strong><code>remove_pop_up()</code></strong>（Python）: この巻で <code>kosu/views/inquiry_views.py</code> に足す関数。人員データか管理者設定のお知らせ 1〜5 から、渡した問い合わせ ID を指す物を全部消し、残りを前に詰めます。消した物があれば <code>True</code> を返すので、その時だけ <code>save()</code> します。</li>
+</ul>
+</blockquote>
+<!-- /first-use -->
+
 <p><strong>直ったかの確かめ方:</strong></p>
 <ul>
-<li>アプリのテスト・画面のテストが、全部通ること。✅ <code>284a16a</code> に D-12 を全部入れた写しで、アプリのテスト 352 個（足したテストを含む）・画面のテスト 534 個が通り、型の確かめとビルドも通りました。</li>
-<li>✅ 直す前と直した後の写しに、同じ頼みを送って比べました（メニューの API 6 つと班員MENU を、管理者・権限あり・一般の 3 人で、工数区分定義 Ver の有り無しの両方・班員の画面 4 つ・人員の登録（組立系とそれ以外）・問い合わせの詳細と削除・バックアップの入口（期間の誤り・期間あり・全件・ファイル無しのロード・ファイル付きのロード）・2026 年 2 月・2028 年 2 月・12 月の勤務の初期値）。③の上の表の違いと、お知らせの空いた枠の値（<code>None</code> → <code>''</code>）のほかは、全部同じ答えでした。</li>
-<li>手元で動かし（<code>npm start</code>）、メインMENU・人員MENU・工数MENU・班員MENU・問い合わせ・データ管理のバックアップを、一通り開くこと。</li>
+<li>アプリのテスト・画面のテストが、全部通ること。✅ <code>6338cfa</code> にこの巻の直しを全部入れた写しで、アプリのテスト 353 個（足したテストを含む）・画面のテスト 534 個が通り、型の確かめとビルドも通りました。</li>
+<li>✅ 直す前と直した後の写しに、同じ頼みを送って比べました（メニューの API 6 つと班員MENU を、管理者・権限あり・一般の 3 人で、工数区分定義 Ver の有り無しの両方・バックアップの入口（期間の誤り・期間あり・全件・ファイル無しのロード・ファイル付きのロード）・2026 年 2 月・2028 年 2 月・12 月の勤務の初期値）。全部同じ答えでした。</li>
+<li>手元で動かし（<code>npm start</code>）、メインMENU・人員MENU・工数MENU・問い合わせMENU・管理者MENU・データ管理のバックアップを、一通り開くこと。</li>
 </ul>
 <hr>
 <h2 id="7-直す順番おすすめ">7. 直す順番（おすすめ）</h2>
@@ -2528,7 +2061,8 @@ media/
 <text x="93" y="44" font-size="17" fill="#b91c1c" text-anchor="middle" font-weight="800">段 1</text>
 <rect x="69" y="56" width="48" height="24" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
 <text x="93" y="72" font-size="12" fill="#b91c1c" text-anchor="middle" font-weight="700">すぐ</text>
-<text x="93" y="112" font-size="12" fill="#0f172a" text-anchor="middle">Excel S-9 の 1〜3</text>
+<text x="93" y="112" font-size="12" fill="#0f172a" text-anchor="middle">工数集計 B-23</text>
+<text x="93" y="146" font-size="12" fill="#0f172a" text-anchor="middle">Excel S-9 の 1〜3</text>
 <line x1="177" y1="165" x2="187" y2="165" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-15-1-475569)"/>
 <rect x="188" y="14" width="166" height="302" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
 <text x="271" y="44" font-size="17" fill="#c2410c" text-anchor="middle" font-weight="800">段 2</text>
@@ -2537,7 +2071,6 @@ media/
 <text x="271" y="112" font-size="12" fill="#0f172a" text-anchor="middle">セッション S-6 の C</text>
 <text x="271" y="146" font-size="12" fill="#0f172a" text-anchor="middle">氏名の列 B-22</text>
 <text x="271" y="180" font-size="12" fill="#0f172a" text-anchor="middle">部品の記録 D-7</text>
-<text x="271" y="214" font-size="12" fill="#0f172a" text-anchor="middle">お知らせ D-12 の③</text>
 <line x1="355" y1="165" x2="365" y2="165" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-15-1-475569)"/>
 <rect x="366" y="14" width="166" height="302" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="2"/>
 <text x="449" y="44" font-size="17" fill="#a16207" text-anchor="middle" font-weight="800">段 3</text>
@@ -2546,7 +2079,7 @@ media/
 <text x="449" y="112" font-size="12" fill="#0f172a" text-anchor="middle">リポジトリ D-3</text>
 <text x="449" y="146" font-size="12" fill="#0f172a" text-anchor="middle">設定 D-5</text>
 <text x="449" y="180" font-size="12" fill="#0f172a" text-anchor="middle">集計 B-16</text>
-<text x="449" y="214" font-size="12" fill="#0f172a" text-anchor="middle">繰り返し D-12 の残り</text>
+<text x="449" y="214" font-size="12" fill="#0f172a" text-anchor="middle">繰り返し D-12</text>
 <line x1="533" y1="165" x2="543" y2="165" stroke="#475569" stroke-width="2" marker-end="url(#ar-kosu-15-1-475569)"/>
 <rect x="544" y="14" width="166" height="302" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
 <text x="627" y="44" font-size="17" fill="#1e40af" text-anchor="middle" font-weight="800">段 4</text>
@@ -2569,17 +2102,17 @@ media/
 <tbody>
 <tr>
 <td>1（すぐ）</td>
-<td><a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a> の 1〜3（リポジトリの公開範囲・会社への連絡・<code>media/</code> に入れた Excel の確認。コードを直すより先に）</td>
+<td><a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a>（本番の工数集計のエラー。1 行の直し）、<a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a> の 1〜3（リポジトリの公開範囲・会社への連絡・<code>media/</code> に入れた Excel の確認。コードを直すより先に）</td>
 <td>数日</td>
 </tr>
 <tr>
 <td>2（1〜2 週）</td>
-<td><a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a> の C（セッションを短く）、<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>、<a href="#63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a>、<a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の③（お知らせの片付け。もう食い違っている）</td>
+<td><a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a> の C（セッションを短く）、<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a>、<a href="#63-d-7-画面の部品の記録lockが部品の一覧と食い違っている">D-7</a></td>
 <td>1〜2 週</td>
 </tr>
 <tr>
 <td>3（1 か月）</td>
-<td><a href="#61-d-3-リポジトリに入れなくてよい物が-1257-ファイル175-mbある">D-3</a>（リポジトリの整理）、<a href="#62-d-5-住所ホスト名がコードに直接書いてある">D-5</a>、<a href="#51-b-16-月間年間の集計で最初の-1-件の定義-ver-で全部を数える">B-16</a>、<a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の残り（①②④⑤⑥）</td>
+<td><a href="#61-d-3-リポジトリに入れなくてよい物が-1257-ファイル175-mbある">D-3</a>（リポジトリの整理）、<a href="#62-d-5-住所ホスト名がコードに直接書いてある">D-5</a>、<a href="#51-b-16-月間年間の集計で最初の-1-件の定義-ver-で全部を数える">B-16</a>、<a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a></td>
 <td>1 か月</td>
 </tr>
 <tr>
@@ -2597,9 +2130,9 @@ media/
 <h2 id="8-この巻で確かめたこと">8. この巻で確かめたこと</h2>
 <h3 id="81-確かめ方">8.1 確かめ方</h3>
 <ul>
-<li>GitHub の <code>master</code>（コミット <code>284a16a</code>）を、<code>git archive</code> で手元の別のフォルダに書き出しました（作業フォルダ・本番・GitHub には、何も書き込んでいない）。前任者の PC の作業フォルダに、まだコミットしていない変更が無いことは、<code>git status</code> で確かめました。前の版の時（11 月 25 日の <code>231f9c8</code>）からの違い（<code>git diff</code>）は、1 ファイルずつ読みました。</li>
-<li>前の版に書いた直し方を、<code>284a16a</code> に 1 つずつ照らし合わせ、まだ入っていない物だけをこの巻に残しました（B-21 は、前任者が「直す必要はない」と決めたので外した）。残した物は、<code>284a16a</code> の同じコードの場所に、そのまま当てはまりました（「今」のコードが一字一句同じ）。新しく <a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の直し（6 種類・29 か所とテスト）を書き、全部を別の写しに入れて確かめました。直し方のコードは、その写しに入れた物と同じです（同じ一覧から、この巻のコードの枠を作っている）。</li>
-<li>アプリに入っているテスト用の設定（<code>hozen_another/test_settings.py</code>。データベースはメモリの中だけの SQLite）で、Django のテスト用の <code>Client</code> と、<code>kosu/tasks.py</code> の関数を直接呼んで試しました。<a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> は、直す前と直した後の写しに同じ頼み（メニューの API 6 つを 3 人×定義 Ver の有り無しで・班員の画面・人員の登録・問い合わせの詳細と削除・バックアップの入口・勤務の初期値）を送り、答えを比べました。</li>
+<li>GitHub の <code>master</code>（コミット <code>6338cfa</code>）を、<code>git archive</code> で手元の別のフォルダに書き出しました（作業フォルダ・本番・GitHub には、何も書き込んでいない）。前任者の PC の作業フォルダに、まだコミットしていない変更が無いことは、<code>git status</code> で確かめました。前の版の時（11 月 26 日の <code>284a16a</code>）からの違い（<code>git diff</code>）は、1 ファイルずつ読みました。</li>
+<li>前の版に書いた直し方を、<code>6338cfa</code> に 1 つずつ照らし合わせ、まだ入っていない物だけをこの巻に残しました。残した物は、<code>6338cfa</code> の同じコードの場所に、そのまま当てはまりました（「今」のコードが一字一句同じ）。工数集計の不具合の指摘は、<code>6338cfa</code> の写しで確かめて <a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a> にし、直し方とテストを書きました。全部を別の写しに入れて確かめました。直し方のコードは、その写しに入れた物と同じです（同じ一覧から、この巻のコードの枠を作っている）。</li>
+<li>アプリに入っているテスト用の設定（<code>hozen_another/test_settings.py</code>。データベースはメモリの中だけの SQLite）で、Django のテスト用の <code>Client</code> と、<code>kosu/tasks.py</code> の関数を直接呼んで試しました。<a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a> は、工数データが 1 日分だけある人で、データが有る日・無い日・無い月・無い年を、日間・月間・年間で集計しました。<a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a> は、直す前と直した後の写しに同じ頼み（メニューの API 6 つを 3 人×定義 Ver の有り無しで・班員の画面・人員の登録・問い合わせの詳細と削除・バックアップの入口・勤務の初期値）を送り、答えを比べました。</li>
 <li>画面のテストとビルドは、前任者の PC の <code>frontend/node_modules</code> を借りて、写しの上で流しました。</li>
 <li>GitHub Actions の設定と実行の記録は、GitHub の API で読みました（何も変えていない）。</li>
 <li><strong>本番のサーバー・データベースには、一切触っていません。</strong></li>
@@ -2609,7 +2142,7 @@ media/
 <thead>
 <tr>
 <th>確かめたこと</th>
-<th><code>284a16a</code></th>
+<th><code>6338cfa</code></th>
 <th>この巻の直しを入れた写し</th>
 </tr>
 </thead>
@@ -2630,19 +2163,19 @@ media/
 <td>同じ（作り直した記録）</td>
 </tr>
 <tr>
-<td>同じ問い合わせのお知らせが 2 つある時に、本人が詳細を開く／担当者が消す</td>
-<td>1 つ残る／間に空きが残る（<a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の③）</td>
-<td>2 つとも消え、前に詰まる</td>
+<td>工数データが無い日・月・年の工数集計（日間・月間・年間の 12 通りのうち、データの無い 6 通り）</td>
+<td><strong>6 通りとも 500</strong>（<a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a>）</td>
+<td>12 通りとも 200</td>
 </tr>
 <tr>
-<td><a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> のまとめた所への同じ頼み（上の 8.1）</td>
+<td><a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a> のまとめた所への同じ頼み（上の 8.1）</td>
 <td>—</td>
-<td>直す前と同じ答え（お知らせの空いた枠が <code>null</code> でなく <code>''</code> になる所だけ違う）</td>
+<td>直す前と全く同じ答え</td>
 </tr>
 <tr>
 <td>アプリのテスト</td>
 <td>349 個 全部 OK</td>
-<td>352 個 全部 OK（<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の 2 個と <a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の 1 個を足した）</td>
+<td>353 個 全部 OK（<a href="#52-b-22-工数問い合わせのバックアップの氏名の列にid-と従業員番号まで入る">B-22</a> の 2 個・<a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a> の 1 個・<a href="#65-d-12-同じコードの繰り返しがまだ-3-種類ある">D-12</a> の 1 個を足した）</td>
 </tr>
 <tr>
 <td>画面のテスト</td>
@@ -2659,8 +2192,8 @@ media/
 <hr>
 <h2 id="9-この巻のまとめ">9. この巻のまとめ</h2>
 <ul>
-<li>今の <code>master</code>（<code>284a16a</code>）は、本番でも動いていて、<code>master</code> に入れた物はテストが通ると本番に出ます。<strong>直す時は、必ず作業用のブランチと Pull Request を通してください。</strong></li>
-<li>いちばん急ぐのは、リポジトリの履歴の Excel（<a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a>）です。コードでは、お知らせの片付け（<a href="#65-d-12-同じコードの繰り返しが-6-種類あるお知らせの片付けはもう食い違っている">D-12</a> の③）が、もう食い違っているので、早めにまとめます。</li>
+<li>今の <code>master</code>（<code>6338cfa</code>）は、本番でも動いていて、<code>master</code> に入れた物はテストが通ると本番に出ます。<strong>直す時は、必ず作業用のブランチと Pull Request を通してください。</strong></li>
+<li>いちばん急ぐのは、本番の工数集計のエラー（<a href="#53-b-23-工数集計でデータが無い日月年を選ぶとエラー500になる">B-23</a>。<code>.date()</code> を足す 1 行）と、リポジトリの履歴の Excel（<a href="#42-s-9-リポジトリの履歴に残っている-excel">S-9</a>）です。</li>
 <li>ログインの方式（<a href="#41-s-6-ログインにパスワードが無い従業員番号だけ">S-6</a>）は、会社の IT 担当と相談して決めます。セッションを短くするのは、すぐできます。</li>
 <li>直したら、この巻の該当する節に「済み（日付・コミット）」と書き足しておくと、次の人が助かります。</li>
 </ul>
