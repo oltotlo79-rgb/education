@@ -212,7 +212,7 @@ li, tr { page-break-inside: avoid; }
 <div class="web-bar"><a href="index.html">この資料の一覧</a><a href="../pdf/13_%E4%BB%98%E9%8C%B2_%E5%87%BA%E3%81%A6%E3%81%8F%E3%82%8B%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E4%B8%80%E8%A6%A7.pdf">PDF 版</a><span>コードの枠の右上の「コピー」を押すと、そのまま 1 回でコピーできます（字下げ・空の行もそのまま）。</span></div><p class="web-note" id="web-note" hidden>色の付いた枠のコードの、右上の「コピー」ボタンを押してください。コピーしたら、PDF を見ていた画面に戻ります（ブラウザーで PDF を見ていた時は「戻る」、VS Code で見ていた時は VS Code の窓に切り替えます）。</p><div class="paste-note" id="paste-note" role="status" hidden><button type="button" aria-label="閉じる">×</button><b>複数の行をコピーしました。</b>貼り付けた時に、次の確認が出ることがあります。どちらもエラーではなく、知らないうちにコマンドが動かないようにするための安全の確認です。<br>・コマンド プロンプトや PowerShell の窓（Windows Terminal）:「<b>複数の行を含むテキストを貼り付けようとしています。</b>…続行してもよろしいですか?」→ <b>「強制的に貼り付け」</b>を押す<br>・VS Code のターミナル:「<b>○ 行のテキストをターミナルに貼り付けますか?</b>」→ <b>「貼り付け」</b>を押す（「1 行として貼り付け」は、何行もの文字を 1 行にまとめて貼る物なので、押さないでください）</div><div style="text-align: center; padding: 28px 0 8px;">
 <div style="font-size: 14px; color: #475569;">業務工数システム 引き継ぎ教育資料</div>
 <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; line-height: 1.35;">13 付録 — 出てくるコードとコマンドの一覧</div>
-<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 647 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
+<div style="font-size: 13px; color: #475569; margin-top: 8px;">00〜12 と 15 に出てくる 646 個のコードの部品とコマンドを、機能ごとに、意味と初めて出てくる所つきで引く</div>
 </div>
 
 <style>
@@ -226,7 +226,7 @@ table { page-break-inside: auto; }
 
 <h1 id="13-付録-出てくるコードとコマンドの一覧機能ごと">13 付録: 出てくるコードとコマンドの一覧（機能ごと）</h1>
 <h2 id="この一覧について">この一覧について</h2>
-<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 647 個</strong>を、<strong>23 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
+<p>00〜12 と 15 の巻のコードに出てくる、<strong>PowerShell・Git・pip・npm のコマンド、HTML のタグと属性、CSS の項目、TypeScript と React、Python と Django・Django REST framework、pandas・openpyxl（Excel）、テストの道具、書式・記号・設定ファイルなど 646 個</strong>を、<strong>23 の分類</strong>に分けて、1 つずつ説明した一覧です。</p>
 <ul>
 <li><strong>本文との関係:</strong> どの部品も、本文の中で<strong>初めて出てくるコードのすぐ下</strong>に、「<strong>▶ ここで初めて出てくるコード</strong>」の箱で同じ説明を載せています。この一覧は、それを機能ごとに並べ直した物です。</li>
 <li><strong>使い方:</strong> 「この <code>useEffect</code> は何だっけ？」「<code>.filter()</code> は Django と TypeScript で何が違う？」と思ったら、下の「分類の一覧」から分類を選んで探してください。Web 版（<code>kosu\html</code>）なら、<code>Ctrl</code> ＋ <code>F</code> で、コードの名前で探すのがいちばん速いです。</li>
@@ -273,13 +273,13 @@ table { page-break-inside: auto; }
 <td><a href="#cat-4">Python の道具</a></td>
 <td>12</td>
 <td><a href="#cat-16">Python</a></td>
-<td>125</td>
+<td>121</td>
 </tr>
 <tr>
 <td><a href="#cat-5">Django の道具</a></td>
 <td>5</td>
 <td><a href="#cat-17">Django</a></td>
-<td>61</td>
+<td>62</td>
 </tr>
 <tr>
 <td><a href="#cat-6">Node.js</a></td>
@@ -315,7 +315,7 @@ table { page-break-inside: auto; }
 <td><a href="#cat-11">HTML</a></td>
 <td>40</td>
 <td><a href="#cat-23">Python のテスト</a></td>
-<td>7</td>
+<td>9</td>
 </tr>
 <tr>
 <td><a href="#cat-12">CSS</a></td>
@@ -3071,31 +3071,6 @@ table { page-break-inside: auto; }
 <td>15 5. 不具合</td>
 </tr>
 <tr>
-<td><code>member_number_list()</code></td>
-<td>この巻で <code>kosu/utils/team_utils.py</code> に足す関数。班員データ（<code>team_member</code>）の班員1〜15 のうち、登録済みの従業員番号を、登録の順に並べて返します（空欄は除く）。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>default_break_times()</code></td>
-<td>この巻で <code>kosu/utils/main_utils.py</code> に足す関数。ショップ名を渡すと、そのショップの、休憩時間の初めの値（<code>break_time1</code>〜<code>break_time6_over3</code> の 24 項目の辞書）を返します。組立系ショップ（<code>ASSEMBLY_SHOPS</code>）とそれ以外で、1直〜3直の値が違います。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>dict()</code></td>
-<td>辞書を作る関数。<code>dict(BREAK_TIMES_ASSEMBLY)</code> は、辞書の写し（中身が同じで、別の辞書）を作ります。写しを返すと、受け取った側が中身を書き換えても、元の定数は変わりません。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>remove_pop_up()</code></td>
-<td>この巻で <code>kosu/views/inquiry_views.py</code> に足す関数。人員データか管理者設定のお知らせ 1〜5 から、渡した問い合わせ ID を指す物を全部消し、残りを前に詰めます。消した物があれば <code>True</code> を返すので、その時だけ <code>save()</code> します。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
-<td><code>setattr()</code></td>
-<td><code>setattr(物, '名前', 値)</code> は、物の属性（<code>物.名前</code>）に値を入れる関数。名前を文字で組み立てられるので、<code>setattr(m, f'pop_up{i}', '')</code> のように、<code>pop_up1</code>〜<code>pop_up5</code> を順に書き換えられます（読む方は <code>getattr</code>）。</td>
-<td>15 6. 開発・運用の整理</td>
-</tr>
-<tr>
 <td><code>get_settings()</code></td>
 <td><code>kosu/utils/main_utils.py</code> にある、このアプリの関数。管理者設定（<code>administrator_data</code>）を 1 件返します。設定が 1 件も無い時は、初めの値（一覧の件数 20）で作ってから返すので、設定が無くても 500 になりません。</td>
 <td>15 6. 開発・運用の整理</td>
@@ -3113,6 +3088,11 @@ table { page-break-inside: auto; }
 <tr>
 <td><code>.monthrange()</code></td>
 <td><code>calendar.monthrange(年, 月)</code> は、（その月の 1 日の曜日, その月の日数）の 2 つを返す関数（<code>calendar</code> は、Python に最初から入っている部品）。<code>calendar.monthrange(2026, 2)[1]</code> は 28、うるう年の <code>calendar.monthrange(2028, 2)[1]</code> は 29 です。</td>
+<td>15 6. 開発・運用の整理</td>
+</tr>
+<tr>
+<td><code>remove_pop_up()</code></td>
+<td>この巻で <code>kosu/views/inquiry_views.py</code> に足す関数。人員データか管理者設定のお知らせ 1〜5 から、渡した問い合わせ ID を指す物を全部消し、残りを前に詰めます。消した物があれば <code>True</code> を返すので、その時だけ <code>save()</code> します。</td>
 <td>15 6. 開発・運用の整理</td>
 </tr>
 </tbody>
@@ -3425,6 +3405,11 @@ table { page-break-inside: auto; }
 <tr>
 <td><code>.distinct()</code></td>
 <td>問い合わせの結果から、重なった値を 1 つにするメソッド。<code>.values_list('def_ver2', flat=True).distinct()</code> は、使われている定義の Ver 名を、重ならないように並べます。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.json()</code></td>
+<td>テスト用のブラウザ（<code>Client</code>）で受け取った返事の <code>r.json()</code> は、返事の本文（JSON）を、Python の辞書にして返すメソッド。<code>r.json()['kosu_data']['work_day2']</code> で、返事の中の就業日を取り出せます。</td>
 <td>15 5. 不具合</td>
 </tr>
 <tr>
@@ -3832,6 +3817,16 @@ table { page-break-inside: auto; }
 <tr>
 <td><code>make_member()</code></td>
 <td><code>kosu/tests/test_security.py</code> にある、テスト用の小さな関数。<code>make_member(3001)</code> で、従業員番号 3001 の人員を、休憩時間などの要る項目を埋めて作り、作った人員を返します。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>.login()</code></td>
+<td><code>kosu/tests/test_security.py</code> の <code>SecurityTestBase</code> にある、テスト用のメソッド。<code>self.login(2001)</code> で、従業員番号 2001 でログインしたテスト用のブラウザ（<code>Client</code>）を返します（ログインが 200 でなければ、その場でテストを失敗にする）。</td>
+<td>15 5. 不具合</td>
+</tr>
+<tr>
+<td><code>as_json()</code></td>
+<td><code>kosu/tests/test_security.py</code> にある、テスト用の小さな関数。辞書を JSON の文字にして、<code>{'data': JSON の文字, 'content_type': 'application/json'}</code> を返します。<code>c.post('/api/kosu_total/', **as_json({'date': '2026-02-10', 'period': '日間'}))</code> のように <code>**</code> で広げて渡すと、JSON の本文を送れます。</td>
 <td>15 5. 不具合</td>
 </tr>
 </tbody>
